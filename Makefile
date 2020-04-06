@@ -13,7 +13,7 @@ stop: ## Stop and clean Docker server
 
 .PHONY: test
 test: bin/phpunit  ## Run the test suite
-	php ./bin/phpunit --bootstrap ./tests/bootstrap.php ./tests
+	php ./bin/phpunit --bootstrap ./tests/bootstrap.php --testdox ./tests
 
 .PHONY: lint
 lint: bin/phpcs  ## Run the linter on the PHP files

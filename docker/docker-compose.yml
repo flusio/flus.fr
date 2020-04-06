@@ -8,6 +8,8 @@ services:
             - "9000:9000"
         volumes:
             - ..:/var/www/html:z
+        env_file:
+            - ../.env
         user: $USER
 
     nginx:

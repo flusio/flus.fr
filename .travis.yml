@@ -4,9 +4,15 @@ php:
     - 7.3
     - 7.4
 
+services:
+  - docker
+
 cache:
     directories:
         - bin
+
+before_install:
+    - docker run -d -p 127.0.0.1:12111-12112:12111-12112 stripemock/stripe-mock:latest
 
 script:
     - make lint

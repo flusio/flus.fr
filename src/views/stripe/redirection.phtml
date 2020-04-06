@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="initial-scale=1.0" />
+    </head>
+
+    <body>
+        <p>
+            Vous allez être redirigé vers Stripe dans quelques secondes, veuillez patienter…
+        </p>
+
+        <p id="stripe-error">
+        </p>
+
+        <script src="https://js.stripe.com/v3/"></script>
+        <script>
+            window.setTimeout(function() {
+                var stripe = Stripe('<?= $stripe_public_key ?>');
+                stripe.redirectToCheckout({
+                    sessionId: '<?= $stripe_session_id ?>',
+                }).then(function (result) {
+                    document.getElementById('stripe-error').innerText = result.error.message;
+                });
+            }, 3000);
+        </script>
+    </body>
+</html>

@@ -1,0 +1,52 @@
+<h1>Participer à la cagnotte commune</h1>
+
+<form method="post" action="<?= url('payments#pay') ?>">
+    <div class="form-group">
+        <label for="amount">
+            Montant
+        </label>
+
+        <input
+            id="amount"
+            name="amount"
+            type="number"
+            step="0.5"
+            min="1"
+            max="1000"
+            value="<?= $amount ?>"
+            required
+        />
+
+        <?php if (isset($error_amount)): ?>
+            <p class="form-group__error">
+                <?= $error_amount ?>
+            </p>
+        <?php endif; ?>
+    </div>
+
+    <div class="form-group">
+        <label for="email">
+            Courriel
+        </label>
+
+        <input
+            id="email"
+            name="email"
+            type="email"
+            value="<?= $email ?>"
+            required
+        />
+
+        <?php if (isset($error_email)): ?>
+            <p class="form-group__error">
+                <?= $error_email ?>
+            </p>
+        <?php endif; ?>
+    </div>
+
+    <div class="form__group">
+        <button type="submit">
+            Participer
+        </button>
+    </div>
+</form>
