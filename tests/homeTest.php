@@ -4,6 +4,7 @@ namespace Website\controllers\home;
 
 use Minz\Tests\IntegrationTestCase;
 
+// phpcs:disable Squiz.Classes.ValidClassName.NotCamelCaps
 class homeTest extends IntegrationTestCase
 {
     public function testIndex()

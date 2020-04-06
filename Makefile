@@ -17,7 +17,7 @@ test: bin/phpunit  ## Run the test suite
 
 .PHONY: lint
 lint: bin/phpcs  ## Run the linter on the PHP files
-	php ./bin/phpcs --standard=PSR12 ./src ./tests
+	php ./bin/phpcs -s --standard=PSR12 ./src ./tests
 
 .PHONY: lint-fix
 lint-fix: bin/phpcbf ## Fix the errors raised by the linter
