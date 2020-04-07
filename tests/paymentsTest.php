@@ -3,6 +3,7 @@
 namespace Website\controllers\home;
 
 use Minz\Tests\IntegrationTestCase;
+use Website\models;
 use Website\services;
 
 // phpcs:disable Squiz.Classes.ValidClassName.NotCamelCaps
@@ -83,6 +84,29 @@ class paymentsTest extends IntegrationTestCase
             "'self' 'unsafe-inline' js.stripe.com",
             $csp['script-src']
         );
+    }
+
+    public function testPayActionCreatesAPayment()
+    {
+        $payment_dao = new models\dao\Payment();
+        $faker = \Faker\Factory::create();
+        $email = $faker->email;
+        $amount = $faker->numberBetween(1, 1000);
+
+        $request = new \Minz\Request('POST', '/cagnotte', [
+            'email' => $email,
+            'amount' => $amount,
+        ]);
+
+        $this->assertSame(0, $payment_dao->count());
+        $response = self::$application->run($request);
+        $this->assertSame(1, $payment_dao->count());
+
+        $payment = new models\Payment($payment_dao->take());
+        $this->assertSame($email, $payment->email);
+        $this->assertSame($amount * 100, $payment->amount);
+        $this->assertFalse($payment->completed);
+        $this->assertNotNull($payment->payment_intent_id);
     }
 
     public function testPayActionWithWrongEmailReturnsABadRequest()
