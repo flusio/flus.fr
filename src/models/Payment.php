@@ -15,6 +15,15 @@ class Payment extends \Minz\Model
     public const MAX_AMOUNT = 1000 * 100;
 
     public const PROPERTIES = [
+        'id' => 'integer',
+
+        'created_at' => 'datetime',
+
+        'completed' => [
+            'type' => 'boolean',
+            'required' => true,
+        ],
+
         'email' => [
             'type' => 'string',
             'required' => true,
@@ -25,6 +34,11 @@ class Payment extends \Minz\Model
             'type' => 'integer',
             'required' => true,
             'validator' => '\Website\models\Payment::validateAmount',
+        ],
+
+        'payment_intent_id' => [
+            'type' => 'string',
+            'validator' => '\Website\models\Payment::validatePaymentIntentId',
         ],
     ];
 
@@ -46,6 +60,7 @@ class Payment extends \Minz\Model
         return new self([
             'email' => strtolower($email),
             'amount' => intval($amount * 100),
+            'completed' => false,
         ]);
     }
 
@@ -78,5 +93,15 @@ class Payment extends \Minz\Model
     public static function validateAmount($amount)
     {
         return $amount >= self::MIN_AMOUNT && $amount <= self::MAX_AMOUNT;
+    }
+
+    /**
+     * @param string $id
+     *
+     * @return boolean Returns true if the value is not empty
+     */
+    public static function validatePaymentIntentId($id)
+    {
+        return strlen($id) > 0;
     }
 }

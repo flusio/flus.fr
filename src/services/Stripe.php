@@ -2,6 +2,8 @@
 
 namespace Website\services;
 
+use Website\models;
+
 /**
  * This class allows an easy use of the Stripe service.
  *
@@ -54,6 +56,10 @@ class Stripe
             'success_url' => $this->success_url,
             'cancel_url' => $this->cancel_url,
         ]);
+
+        $payment_dao = new models\dao\Payment();
+        $payment->setProperty('payment_intent_id', $stripe_session->payment_intent);
+        $payment_dao->save($payment);
 
         $response = \Minz\Response::ok('stripe/redirection.phtml', [
             'stripe_public_key' => \Minz\Configuration::$application['stripe_public_key'],
