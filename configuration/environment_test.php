@@ -9,5 +9,8 @@ return [
         'stripe_private_key' => 'sk_test_123',
         'stripe_public_key' => 'pk_test_123',
     ],
+    'database' => [
+        'dsn' => 'sqlite::memory:',
+    ],
     'no_syslog' => !getenv('APP_SYSLOG_ENABLED'),
 ];

@@ -11,6 +11,10 @@ start: ## Start a development server (use Docker)
 stop: ## Stop and clean Docker server
 	docker-compose -f docker/docker-compose.yml down
 
+.PHONY: init
+init: ## Initialize the application
+	php ./cli --request /system/init
+
 .PHONY: test
 test: bin/phpunit  ## Run the test suite
 	php ./bin/phpunit --bootstrap ./tests/bootstrap.php --testdox ./tests
