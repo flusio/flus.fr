@@ -27,6 +27,10 @@ class Application
 
     public function run($request)
     {
+        \Minz\Output\View::declareDefaultVariables([
+            'errors' => [],
+        ]);
+
         return $this->engine->run($request);
     }
 }

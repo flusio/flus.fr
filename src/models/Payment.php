@@ -83,6 +83,14 @@ class Payment extends \Minz\Model
      */
     public static function init($email, $amount, $address)
     {
+        if (!is_numeric($amount)) {
+            throw new \Minz\Errors\ModelPropertyError(
+                'amount',
+                \Minz\Errors\ModelPropertyError::VALUE_INVALID,
+                "`amount` property is invalid ({$amount})."
+            );
+        }
+
         return new self([
             'email' => strtolower($email),
             'amount' => intval($amount * 100),

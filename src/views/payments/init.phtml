@@ -17,9 +17,9 @@
             required
         />
 
-        <?php if (isset($error_amount)): ?>
+        <?php if (isset($errors['amount'])): ?>
             <p class="form-group__error">
-                <?= $error_amount ?>
+                <?= $errors['amount'] ?>
             </p>
         <?php endif; ?>
     </div>
@@ -37,9 +37,9 @@
             required
         />
 
-        <?php if (isset($error_email)): ?>
+        <?php if (isset($errors['email'])): ?>
             <p class="form-group__error">
-                <?= $error_email ?>
+                <?= $errors['email'] ?>
             </p>
         <?php endif; ?>
     </div>
@@ -62,9 +62,9 @@
                         required
                     />
 
-                    <?php if (isset($error_address_first_name)): ?>
+                    <?php if (isset($errors['address_first_name'])): ?>
                         <p class="form-group__error">
-                            <?= $error_address_first_name ?>
+                            <?= $errors['address_first_name'] ?>
                         </p>
                     <?php endif; ?>
                 </div>
@@ -78,9 +78,9 @@
                         required
                     />
 
-                    <?php if (isset($error_address_last_name)): ?>
+                    <?php if (isset($errors['address_last_name'])): ?>
                         <p class="form-group__error">
-                            <?= $error_address_last_name ?>
+                            <?= $errors['address_last_name'] ?>
                         </p>
                     <?php endif; ?>
                 </div>
@@ -100,9 +100,9 @@
                 required
             />
 
-            <?php if (isset($error_address_address1)): ?>
+            <?php if (isset($errors['address_address1'])): ?>
                 <p class="form-group__error">
-                    <?= $error_address_address1 ?>
+                    <?= $errors['address_address1'] ?>
                 </p>
             <?php endif; ?>
         </div>
@@ -122,9 +122,9 @@
                         required
                     />
 
-                    <?php if (isset($error_address_postcode)): ?>
+                    <?php if (isset($errors['address_postcode'])): ?>
                         <p class="form-group__error">
-                            <?= $error_address_postcode ?>
+                            <?= $errors['address_postcode'] ?>
                         </p>
                     <?php endif; ?>
                 </div>
@@ -138,9 +138,9 @@
                         required
                     />
 
-                    <?php if (isset($error_address_city)): ?>
+                    <?php if (isset($errors['address_city'])): ?>
                         <p class="form-group__error">
-                            <?= $error_address_city ?>
+                            <?= $errors['address_city'] ?>
                         </p>
                     <?php endif; ?>
                 </div>
