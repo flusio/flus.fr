@@ -23,11 +23,12 @@ class paymentsTest extends IntegrationTestCase
     /**
      * @dataProvider payParamsProvider
      */
-    public function testPayActionRendersCorrectly($email, $amount)
+    public function testPayActionRendersCorrectly($email, $amount, $address)
     {
         $request = new \Minz\Request('POST', '/cagnotte', [
             'email' => $email,
             'amount' => $amount,
+            'address' => $address,
         ]);
 
         $response = self::$application->run($request);
@@ -40,7 +41,7 @@ class paymentsTest extends IntegrationTestCase
     /**
      * @dataProvider payParamsProvider
      */
-    public function testPayActionAcceptsFloatAmounts($email, $amount)
+    public function testPayActionAcceptsFloatAmounts($email, $amount, $address)
     {
         $faker = \Faker\Factory::create();
         $amount = $faker->randomFloat(2, 1.00, 1000.0);
@@ -48,6 +49,7 @@ class paymentsTest extends IntegrationTestCase
         $request = new \Minz\Request('POST', '/cagnotte', [
             'email' => $email,
             'amount' => $amount,
+            'address' => $address,
         ]);
 
         $response = self::$application->run($request);
@@ -58,11 +60,12 @@ class paymentsTest extends IntegrationTestCase
     /**
      * @dataProvider payParamsProvider
      */
-    public function testPayActionConfiguresStripe($email, $amount)
+    public function testPayActionConfiguresStripe($email, $amount, $address)
     {
         $request = new \Minz\Request('POST', '/cagnotte', [
             'email' => $email,
             'amount' => $amount,
+            'address' => $address,
         ]);
 
         $response = self::$application->run($request);
@@ -89,13 +92,14 @@ class paymentsTest extends IntegrationTestCase
     /**
      * @dataProvider payParamsProvider
      */
-    public function testPayActionCreatesAPayment($email, $amount)
+    public function testPayActionCreatesAPayment($email, $amount, $address)
     {
         $payment_dao = new models\dao\Payment();
 
         $request = new \Minz\Request('POST', '/cagnotte', [
             'email' => $email,
             'amount' => $amount,
+            'address' => $address,
         ]);
 
         $this->assertSame(0, $payment_dao->count());
@@ -103,16 +107,22 @@ class paymentsTest extends IntegrationTestCase
         $this->assertSame(1, $payment_dao->count());
 
         $payment = new models\Payment($payment_dao->take());
+        $payment_address = $payment->address();
         $this->assertSame($email, $payment->email);
         $this->assertSame($amount * 100, $payment->amount);
         $this->assertFalse($payment->completed);
         $this->assertNotNull($payment->payment_intent_id);
+        $this->assertSame($address['first_name'], $payment_address['first_name']);
+        $this->assertSame($address['last_name'], $payment_address['last_name']);
+        $this->assertSame($address['address1'], $payment_address['address1']);
+        $this->assertSame($address['postcode'], $payment_address['postcode']);
+        $this->assertSame($address['city'], $payment_address['city']);
     }
 
     /**
      * @dataProvider payParamsProvider
      */
-    public function testPayActionWithWrongEmailReturnsABadRequest($email, $amount)
+    public function testPayActionWithWrongEmailReturnsABadRequest($email, $amount, $address)
     {
         $faker = \Faker\Factory::create();
         $email = $faker->domainName;
@@ -120,6 +130,7 @@ class paymentsTest extends IntegrationTestCase
         $request = new \Minz\Request('POST', '/cagnotte', [
             'email' => $email,
             'amount' => $amount,
+            'address' => $address,
         ]);
 
         $response = self::$application->run($request);
@@ -134,7 +145,7 @@ class paymentsTest extends IntegrationTestCase
     /**
      * @dataProvider payParamsProvider
      */
-    public function testPayActionWithAmountLessThan1ReturnsABadRequest($email, $amount)
+    public function testPayActionWithAmountLessThan1ReturnsABadRequest($email, $amount, $address)
     {
         $faker = \Faker\Factory::create();
         $amount = $faker->randomFloat(2, 0.0, 0.99);
@@ -142,6 +153,7 @@ class paymentsTest extends IntegrationTestCase
         $request = new \Minz\Request('POST', '/cagnotte', [
             'email' => $email,
             'amount' => $amount,
+            'address' => $address,
         ]);
 
         $response = self::$application->run($request);
@@ -156,7 +168,7 @@ class paymentsTest extends IntegrationTestCase
     /**
      * @dataProvider payParamsProvider
      */
-    public function testPayActionWithAmountMoreThan1000ReturnsABadRequest($email, $amount)
+    public function testPayActionWithAmountMoreThan1000ReturnsABadRequest($email, $amount, $address)
     {
         $faker = \Faker\Factory::create();
         $amount = $faker->numberBetween(1001, PHP_INT_MAX / 100);
@@ -164,6 +176,7 @@ class paymentsTest extends IntegrationTestCase
         $request = new \Minz\Request('POST', '/cagnotte', [
             'email' => $email,
             'amount' => $amount,
+            'address' => $address,
         ]);
 
         $response = self::$application->run($request);
@@ -178,7 +191,7 @@ class paymentsTest extends IntegrationTestCase
     /**
      * @dataProvider payParamsProvider
      */
-    public function testPayActionWithAmountAsStringReturnsABadRequest($email, $amount)
+    public function testPayActionWithAmountAsStringReturnsABadRequest($email, $amount, $address)
     {
         $faker = \Faker\Factory::create();
         $amount = $faker->word;
@@ -186,6 +199,7 @@ class paymentsTest extends IntegrationTestCase
         $request = new \Minz\Request('POST', '/cagnotte', [
             'email' => $email,
             'amount' => $amount,
+            'address' => $address,
         ]);
 
         $response = self::$application->run($request);
@@ -200,10 +214,11 @@ class paymentsTest extends IntegrationTestCase
     /**
      * @dataProvider payParamsProvider
      */
-    public function testPayActionWithMissingAmountReturnsABadRequest($email, $amount)
+    public function testPayActionWithMissingAmountReturnsABadRequest($email, $amount, $address)
     {
         $request = new \Minz\Request('POST', '/cagnotte', [
             'email' => $email,
+            'address' => $address,
         ]);
 
         $response = self::$application->run($request);
@@ -218,10 +233,11 @@ class paymentsTest extends IntegrationTestCase
     /**
      * @dataProvider payParamsProvider
      */
-    public function testPayActionWithMissingEmailReturnsABadRequest($email, $amount)
+    public function testPayActionWithMissingEmailReturnsABadRequest($email, $amount, $address)
     {
         $request = new \Minz\Request('POST', '/cagnotte', [
             'amount' => $amount,
+            'address' => $address,
         ]);
 
         $response = self::$application->run($request);
@@ -233,6 +249,139 @@ class paymentsTest extends IntegrationTestCase
         );
     }
 
+    /**
+     * @dataProvider payParamsProvider
+     */
+    public function testPayActionWithMissingFirstNameReturnsABadRequest($email, $amount, $address)
+    {
+        unset($address['first_name']);
+
+        $request = new \Minz\Request('POST', '/cagnotte', [
+            'email' => $email,
+            'amount' => $amount,
+            'address' => $address,
+        ]);
+
+        $response = self::$application->run($request);
+
+        $this->assertResponse(
+            $response,
+            400,
+            'Votre prénom est obligatoire.',
+        );
+    }
+
+    /**
+     * @dataProvider payParamsProvider
+     */
+    public function testPayActionWithMissingLastNameReturnsABadRequest($email, $amount, $address)
+    {
+        unset($address['last_name']);
+
+        $request = new \Minz\Request('POST', '/cagnotte', [
+            'email' => $email,
+            'amount' => $amount,
+            'address' => $address,
+        ]);
+
+        $response = self::$application->run($request);
+
+        $this->assertResponse(
+            $response,
+            400,
+            'Votre nom est obligatoire.',
+        );
+    }
+
+    /**
+     * @dataProvider payParamsProvider
+     */
+    public function testPayActionWithMissingAddress1ReturnsABadRequest($email, $amount, $address)
+    {
+        unset($address['address1']);
+
+        $request = new \Minz\Request('POST', '/cagnotte', [
+            'email' => $email,
+            'amount' => $amount,
+            'address' => $address,
+        ]);
+
+        $response = self::$application->run($request);
+
+        $this->assertResponse(
+            $response,
+            400,
+            'Votre adresse est obligatoire.',
+        );
+    }
+
+    /**
+     * @dataProvider payParamsProvider
+     */
+    public function testPayActionWithMissingPostcodeReturnsABadRequest($email, $amount, $address)
+    {
+        unset($address['postcode']);
+
+        $request = new \Minz\Request('POST', '/cagnotte', [
+            'email' => $email,
+            'amount' => $amount,
+            'address' => $address,
+        ]);
+
+        $response = self::$application->run($request);
+
+        $this->assertResponse(
+            $response,
+            400,
+            'Votre code postal est obligatoire.',
+        );
+    }
+
+    /**
+     * @dataProvider payParamsProvider
+     */
+    public function testPayActionWithMissingCityReturnsABadRequest($email, $amount, $address)
+    {
+        unset($address['city']);
+
+        $request = new \Minz\Request('POST', '/cagnotte', [
+            'email' => $email,
+            'amount' => $amount,
+            'address' => $address,
+        ]);
+
+        $response = self::$application->run($request);
+
+        $this->assertResponse(
+            $response,
+            400,
+            'Votre ville est obligatoire.',
+        );
+    }
+
+    /**
+     * @dataProvider payParamsProvider
+     */
+    public function testPayActionWithAddressAsSingleParamReturnsABadRequest($email, $amount, $address)
+    {
+        $faker = \Faker\Factory::create();
+        $address = $faker->address;
+
+        $request = new \Minz\Request('POST', '/cagnotte', [
+            'email' => $email,
+            'amount' => $amount,
+            'address' => $address,
+        ]);
+
+        $response = self::$application->run($request);
+
+        $this->assertResponse(
+            $response,
+            400,
+            'Votre prénom est obligatoire.',
+        );
+    }
+
     public function payParamsProvider()
     {
         $faker = \Faker\Factory::create();
@@ -241,6 +390,13 @@ class paymentsTest extends IntegrationTestCase
             $datasets[] = [
                 $faker->email,
                 $faker->numberBetween(1, 1000),
+                [
+                    'first_name' => $faker->firstName,
+                    'last_name' => $faker->lastName,
+                    'address1' => $faker->streetAddress,
+                    'postcode' => $faker->postcode,
+                    'city' => $faker->city,
+                ],
             ];
         }
 

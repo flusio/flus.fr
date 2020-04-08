@@ -40,6 +40,31 @@ class Payment extends \Minz\Model
             'type' => 'string',
             'validator' => '\Website\models\Payment::validatePaymentIntentId',
         ],
+
+        'address_first_name' => [
+            'type' => 'string',
+            'required' => true,
+        ],
+
+        'address_last_name' => [
+            'type' => 'string',
+            'required' => true,
+        ],
+
+        'address_address1' => [
+            'type' => 'string',
+            'required' => true,
+        ],
+
+        'address_postcode' => [
+            'type' => 'string',
+            'required' => true,
+        ],
+
+        'address_city' => [
+            'type' => 'string',
+            'required' => true,
+        ],
     ];
 
     /**
@@ -50,17 +75,23 @@ class Payment extends \Minz\Model
      *
      * @param string $email
      * @param integer|float $amount
+     * @param array $address
      *
      * @throws \Minz\Errors\ModelPropertyError if a value is invalid
      *
      * @return \Website\models\Payment
      */
-    public static function init($email, $amount)
+    public static function init($email, $amount, $address)
     {
         return new self([
             'email' => strtolower($email),
             'amount' => intval($amount * 100),
             'completed' => false,
+            'address_first_name' => $address['first_name'],
+            'address_last_name' => $address['last_name'],
+            'address_address1' => $address['address1'],
+            'address_postcode' => $address['postcode'],
+            'address_city' => $address['city'],
         ]);
     }
 
@@ -74,6 +105,23 @@ class Payment extends \Minz\Model
         parent::__construct(self::PROPERTIES);
         $this->fromValues($values);
     }
+
+    /**
+     * Return the address information as an array
+     *
+     * @return array
+     */
+    public function address()
+    {
+        return [
+            'first_name' => $this->address_first_name,
+            'last_name' => $this->address_last_name,
+            'address1' => $this->address_address1,
+            'postcode' => $this->address_postcode,
+            'city' => $this->address_city,
+        ];
+    }
+
 
     /**
      * @param string $email

@@ -44,6 +44,110 @@
         <?php endif; ?>
     </div>
 
+    <fieldset>
+        <legend>Adresse postale</legend>
+
+        <div class="form-group">
+            <label for="first-name">
+                Prénom et nom
+            </label>
+
+            <div class="columns">
+                <div class="columns__item">
+                    <input
+                        id="first-name"
+                        name="address[first_name]"
+                        type="text"
+                        value="<?= $address['first_name'] ?>"
+                        required
+                    />
+
+                    <?php if (isset($error_address_first_name)): ?>
+                        <p class="form-group__error">
+                            <?= $error_address_first_name ?>
+                        </p>
+                    <?php endif; ?>
+                </div>
+
+                <div class="columns__item">
+                    <input
+                        id="last-name"
+                        name="address[last_name]"
+                        type="text"
+                        value="<?= $address['last_name'] ?>"
+                        required
+                    />
+
+                    <?php if (isset($error_address_last_name)): ?>
+                        <p class="form-group__error">
+                            <?= $error_address_last_name ?>
+                        </p>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="address1">
+                Adresse
+            </label>
+
+            <input
+                id="address1"
+                name="address[address1]"
+                type="text"
+                value="<?= $address['address1'] ?>"
+                required
+            />
+
+            <?php if (isset($error_address_address1)): ?>
+                <p class="form-group__error">
+                    <?= $error_address_address1 ?>
+                </p>
+            <?php endif; ?>
+        </div>
+
+        <div class="form-group">
+            <label for="postcode">
+                Code postal et ville
+            </label>
+
+            <div class="columns">
+                <div class="columns__item">
+                    <input
+                        id="postcode"
+                        name="address[postcode]"
+                        type="text"
+                        value="<?= $address['postcode'] ?>"
+                        required
+                    />
+
+                    <?php if (isset($error_address_postcode)): ?>
+                        <p class="form-group__error">
+                            <?= $error_address_postcode ?>
+                        </p>
+                    <?php endif; ?>
+                </div>
+
+                <div class="columns__item">
+                    <input
+                        id="city"
+                        name="address[city]"
+                        type="text"
+                        value="<?= $address['city'] ?>"
+                        required
+                    />
+
+                    <?php if (isset($error_address_city)): ?>
+                        <p class="form-group__error">
+                            <?= $error_address_city ?>
+                        </p>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+
     <div class="form__group">
         <button type="submit">
             Participer
