@@ -33,21 +33,13 @@ function init()
 function pay($request)
 {
     $email = $request->param('email');
-    $amount = $request->param('amount');
+    $amount = $request->param('amount', 0);
 
     if (!$email) {
         return \Minz\Response::badRequest('payments/init.phtml', [
             'email' => $email,
             'amount' => $amount,
             'error_email' => 'L’adresse courriel est obligatoire.',
-        ]);
-    }
-
-    if (!$amount) {
-        return \Minz\Response::badRequest('payments/init.phtml', [
-            'email' => $email,
-            'amount' => $amount,
-            'error_amount' => 'Le montant est obligatoire.',
         ]);
     }
 

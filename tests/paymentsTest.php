@@ -211,7 +211,7 @@ class paymentsTest extends IntegrationTestCase
         $this->assertResponse(
             $response,
             400,
-            'Le montant est obligatoire.',
+            'Le montant doit être compris entre 1 et 1000 €.',
         );
     }
 
