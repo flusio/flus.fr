@@ -188,4 +188,40 @@ class paymentsTest extends IntegrationTestCase
             'Le montant doit être une valeur numérique comprise entre 1 et 1000 €.',
         );
     }
+
+    public function testPayActionWithMissingAmountReturnsABadRequest()
+    {
+        $faker = \Faker\Factory::create();
+        $email = $faker->email;
+
+        $request = new \Minz\Request('POST', '/cagnotte', [
+            'email' => $email,
+        ]);
+
+        $response = self::$application->run($request);
+
+        $this->assertResponse(
+            $response,
+            400,
+            'Le montant est obligatoire.',
+        );
+    }
+
+    public function testPayActionWithMissingEmailReturnsABadRequest()
+    {
+        $faker = \Faker\Factory::create();
+        $amount = $faker->numberBetween(1, 1000);
+
+        $request = new \Minz\Request('POST', '/cagnotte', [
+            'amount' => $amount,
+        ]);
+
+        $response = self::$application->run($request);
+
+        $this->assertResponse(
+            $response,
+            400,
+            'L’adresse courriel est obligatoire.',
+        );
+    }
 }
