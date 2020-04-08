@@ -92,14 +92,14 @@ class Payment extends \Minz\Model
         }
 
         return new self([
-            'email' => strtolower($email),
+            'email' => strtolower(trim($email)),
             'amount' => intval($amount * 100),
             'completed' => false,
-            'address_first_name' => $address['first_name'],
-            'address_last_name' => $address['last_name'],
-            'address_address1' => $address['address1'],
-            'address_postcode' => $address['postcode'],
-            'address_city' => $address['city'],
+            'address_first_name' => trim($address['first_name']),
+            'address_last_name' => trim($address['last_name']),
+            'address_address1' => trim($address['address1']),
+            'address_postcode' => trim($address['postcode']),
+            'address_city' => trim($address['city']),
         ]);
     }
 
