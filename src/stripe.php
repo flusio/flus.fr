@@ -39,7 +39,7 @@ function hooks($request)
 
         if ($raw_payment) {
             $payment = new models\Payment($raw_payment);
-            $payment->setProperty('completed', true);
+            $payment->complete();
             $payment_dao->save($payment);
         } else {
             \Minz\Log::warning("Payment {$session->payment_intent} completed, not in database.");

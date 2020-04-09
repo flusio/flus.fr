@@ -111,7 +111,7 @@ class paymentsTest extends IntegrationTestCase
         $this->assertSame('common_pot', $payment->type);
         $this->assertSame($email, $payment->email);
         $this->assertSame($amount * 100, $payment->amount);
-        $this->assertFalse($payment->completed);
+        $this->assertNull($payment->completed_at);
         $this->assertNotNull($payment->payment_intent_id);
         $this->assertSame($address['first_name'], $payment_address['first_name']);
         $this->assertSame($address['last_name'], $payment_address['last_name']);
@@ -430,7 +430,7 @@ class paymentsTest extends IntegrationTestCase
         $this->assertSame('subscription', $payment->type);
         $this->assertSame($email, $payment->email);
         $this->assertSame($expected_amount, $payment->amount);
-        $this->assertFalse($payment->completed);
+        $this->assertNull($payment->completed_at);
         $this->assertNotNull($payment->payment_intent_id);
         $this->assertSame($address['first_name'], $payment_address['first_name']);
         $this->assertSame($address['last_name'], $payment_address['last_name']);

@@ -20,3 +20,47 @@ $faker_seed = random_int(PHP_INT_MIN, PHP_INT_MAX);
 
 $faker->seed($faker_seed);
 echo 'Faker seed: ' . $faker_seed . "\n";
+
+// Initialize factories
+\Minz\Tests\DatabaseFactory::addFactory(
+    'payments',
+    '\Website\models\dao\Payment',
+    [
+        'created_at' => function () {
+            $faker = \Faker\Factory::create();
+            return $faker->unixTime;
+        },
+        'type' => function () {
+            $faker = \Faker\Factory::create();
+            return $faker->randomElement(['common_pot', 'subscription']);
+        },
+        'email' => function () {
+            $faker = \Faker\Factory::create();
+            return $faker->email;
+        },
+        'amount' => function () {
+            $faker = \Faker\Factory::create();
+            return $faker->numberBetween(1, 1000);
+        },
+        'address_first_name' => function () {
+            $faker = \Faker\Factory::create();
+            return $faker->firstName;
+        },
+        'address_last_name' => function () {
+            $faker = \Faker\Factory::create();
+            return $faker->lastName;
+        },
+        'address_address1' => function () {
+            $faker = \Faker\Factory::create();
+            return $faker->streetAddress;
+        },
+        'address_postcode' => function () {
+            $faker = \Faker\Factory::create();
+            return $faker->postcode;
+        },
+        'address_city' => function () {
+            $faker = \Faker\Factory::create();
+            return $faker->city;
+        },
+    ]
+);

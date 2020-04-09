@@ -50,4 +50,16 @@ class Payment extends \Minz\DatabaseModel
             return null;
         }
     }
+
+    /**
+     * Return the last invoice number saved in the database
+     *
+     * @return string
+     */
+    public function findLastInvoiceNumber()
+    {
+        $sql = 'SELECT invoice_number FROM payments ORDER BY completed_at LIMIT 1';
+        $statement = $this->query($sql);
+        return $statement->fetchColumn();
+    }
 }

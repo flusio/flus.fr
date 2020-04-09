@@ -19,9 +19,11 @@ class Payment extends \Minz\Model
 
         'created_at' => 'datetime',
 
-        'completed' => [
-            'type' => 'boolean',
-            'required' => true,
+        'completed_at' => 'datetime',
+
+        'invoice_number' => [
+            'type' => 'string',
+            'validator' => '\Website\models\Payment::validateInvoiceNumber',
         ],
 
         'type' => [
@@ -112,7 +114,6 @@ class Payment extends \Minz\Model
             'type' => $type,
             'email' => strtolower(trim($email)),
             'amount' => intval($amount * 100),
-            'completed' => false,
             'address_first_name' => trim($address['first_name']),
             'address_last_name' => trim($address['last_name']),
             'address_address1' => trim($address['address1']),
@@ -146,6 +147,48 @@ class Payment extends \Minz\Model
             'postcode' => $this->address_postcode,
             'city' => $this->address_city,
         ];
+    }
+
+    /**
+     * Mark the payment as completed
+     */
+    public function complete()
+    {
+        $now = \Minz\Time::now();
+
+        $payment_dao = new dao\Payment();
+        $last_invoice_number = $payment_dao->findLastInvoiceNumber();
+        if ($last_invoice_number) {
+            list(
+                $last_invoice_year,
+                $last_invoice_month,
+                $last_invoice_sequence
+            ) = array_map('intval', explode('-', $last_invoice_number));
+
+            $year = intval($now->format('Y'));
+            if ($last_invoice_year === $year) {
+                $invoice_sequence = $last_invoice_sequence + 1;
+            } else {
+                $invoice_sequence = 1;
+            }
+        } else {
+            $invoice_sequence = 1;
+        }
+
+        $invoice_number = $now->format('Y-m') . sprintf('-%04d', $invoice_sequence);
+        $this->setProperty('completed_at', $now);
+        $this->setProperty('invoice_number', $invoice_number);
+    }
+
+    /**
+     * @param string $invoice_number
+     *
+     * @return boolean Returns true if the number is valid
+     */
+    public static function validateInvoiceNumber($invoice_number)
+    {
+        $pattern = '/^[1-9][0-9]{3}-[0-9]{2}-[0-9]{4}$/';
+        return preg_match($pattern, $invoice_number) === 1;
     }
 
     /**
