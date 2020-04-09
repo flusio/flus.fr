@@ -48,11 +48,6 @@ class Stripe
                 'currency' => 'eur',
                 'quantity' => 1,
             ]],
-            'payment_intent_data' => [
-                'metadata' => [
-                    'type' => 'cagnotte',
-                ],
-            ],
             'success_url' => $this->success_url,
             'cancel_url' => $this->cancel_url,
         ]);
