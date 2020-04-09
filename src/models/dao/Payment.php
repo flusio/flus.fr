@@ -27,6 +27,7 @@ class Payment extends \Minz\DatabaseModel
     {
         if ($model->id === null) {
             $values = $model->toValues();
+            $values['id'] = bin2hex(random_bytes(16));
             $values['created_at'] = \Minz\Time::now()->getTimestamp();
             return $this->create($values);
         } else {

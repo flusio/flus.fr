@@ -26,6 +26,9 @@ echo 'Faker seed: ' . $faker_seed . "\n";
     'payments',
     '\Website\models\dao\Payment',
     [
+        'id' => function () {
+            return bin2hex(random_bytes(16));
+        },
         'created_at' => function () {
             $faker = \Faker\Factory::create();
             return $faker->unixTime;

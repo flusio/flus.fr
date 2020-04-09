@@ -15,7 +15,7 @@ class Payment extends \Minz\Model
     public const MAX_AMOUNT = 1000 * 100;
 
     public const PROPERTIES = [
-        'id' => 'integer',
+        'id' => 'string',
 
         'created_at' => 'datetime',
 

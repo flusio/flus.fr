@@ -1,5 +1,5 @@
 CREATE TABLE payments (
-    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    id TEXT PRIMARY KEY NOT NULL,
     created_at datetime NOT NULL,
     type TEXT NOT NULL,
     invoice_number TEXT,
