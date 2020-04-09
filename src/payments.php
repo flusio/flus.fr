@@ -127,6 +127,6 @@ function formatPaymentError($error)
     } elseif ($property === 'address_city') {
         return 'Votre ville est obligatoire.';
     } else {
-        throw $e;
+        throw $error;
     }
 }
