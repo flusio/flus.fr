@@ -24,6 +24,12 @@ class Payment extends \Minz\Model
             'required' => true,
         ],
 
+        'type' => [
+            'type' => 'string',
+            'required' => true,
+            'validator' => '\Website\models\Payment::validateType',
+        ],
+
         'email' => [
             'type' => 'string',
             'required' => true,
@@ -65,6 +71,16 @@ class Payment extends \Minz\Model
             'type' => 'string',
             'required' => true,
         ],
+
+        'username' => [
+            'type' => 'string',
+            'validator' => '\Website\models\Payment::validateUsername',
+        ],
+
+        'frequency' => [
+            'type' => 'string',
+            'validator' => '\Website\models\Payment::validateFrequency',
+        ],
     ];
 
     /**
@@ -73,6 +89,7 @@ class Payment extends \Minz\Model
      * While a Payment object always manipulates amounts as cent values, the
      * `init` method takes the amount in euros. This is why float are accepted.
      *
+     * @param string $type
      * @param string $email
      * @param integer|float $amount
      * @param array $address
@@ -81,7 +98,7 @@ class Payment extends \Minz\Model
      *
      * @return \Website\models\Payment
      */
-    public static function init($email, $amount, $address)
+    public static function init($type, $email, $amount, $address)
     {
         if (!is_numeric($amount)) {
             throw new \Minz\Errors\ModelPropertyError(
@@ -92,6 +109,7 @@ class Payment extends \Minz\Model
         }
 
         return new self([
+            'type' => $type,
             'email' => strtolower(trim($email)),
             'amount' => intval($amount * 100),
             'completed' => false,
@@ -130,6 +148,16 @@ class Payment extends \Minz\Model
         ];
     }
 
+    /**
+     * @param string $type
+     *
+     * @return boolean Returns true if the value is either `common_pot` or
+     *                 `subscription`
+     */
+    public static function validateType($type)
+    {
+        return $type === 'common_pot' || $type === 'subscription';
+    }
 
     /**
      * @param string $email
@@ -159,5 +187,28 @@ class Payment extends \Minz\Model
     public static function validatePaymentIntentId($id)
     {
         return strlen($id) > 0;
+    }
+
+    /**
+     * @param string $username
+     *
+     * @return boolean Returns true if the username is valid
+     */
+    public static function validateUsername($username)
+    {
+        // This is the same pattern as in FreshRSS
+        // @see https://github.com/FreshRSS/FreshRSS/blob/master/app/Controllers/userController.php#L11
+        $pattern = '/^([0-9a-zA-Z_][0-9a-zA-Z_.@-]{1,38}|[0-9a-zA-Z])$/';
+        return preg_match($pattern, $username) === 1;
+    }
+
+    /**
+     * @param string $frequency
+     *
+     * @return boolean Returns true if the value is either `month` or `year`
+     */
+    public static function validateFrequency($frequency)
+    {
+        return $frequency === 'month' || $frequency === 'year';
     }
 }

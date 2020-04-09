@@ -17,6 +17,7 @@ class Application
         $router->addRoute('get', '/merci', 'payments#succeeded');
         $router->addRoute('get', '/annulation', 'payments#canceled');
 
+        $router->addRoute('post', '/payments/subscriptions', 'payments#paySubscription');
         $router->addRoute('post', '/stripe/hooks', 'stripe#hooks');
 
         $router->addRoute('cli', '/system/init', 'system#init');

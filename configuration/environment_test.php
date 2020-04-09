@@ -14,6 +14,8 @@ return [
         'stripe_private_key' => 'sk_test_123',
         'stripe_public_key' => 'pk_test_123',
 
+        'flus_private_key' => 'sk_test_123',
+
         // used only in tests
         'number_of_datasets' => $number_of_datasets,
     ],

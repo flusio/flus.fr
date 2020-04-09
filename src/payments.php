@@ -26,7 +26,7 @@ function init()
 }
 
 /**
- * Handle the payement request and redirect to Stripe.
+ * Handle the payment request and redirect to Stripe.
  *
  * Parameters are:
  *
@@ -55,7 +55,7 @@ function pay($request)
     ]);
 
     try {
-        $payment = models\Payment::init($email, $amount, $address);
+        $payment = models\Payment::init('common_pot', $email, $amount, $address);
     } catch (\Minz\Errors\ModelPropertyError $e) {
         return \Minz\Response::badRequest('payments/init.phtml', [
             'email' => $email,
@@ -65,6 +65,69 @@ function pay($request)
                 $e->property() => formatPaymentError($e),
             ],
         ]);
+    }
+
+    $stripe = new services\Stripe(
+        \Minz\Url::absoluteFor('payments#succeeded'),
+        \Minz\Url::absoluteFor('payments#canceled')
+    );
+
+    return $stripe->pay($payment);
+}
+
+/**
+ * Handle the payment request for a subscription and redirect to Stripe.
+ *
+ * Parameters are:
+ *
+ * - `email`
+ * - `username`
+ * - `frequency`, it must be `month` or `year`
+ * - `address[first_name]`
+ * - `address[last_name]`
+ * - `address[address1]`
+ * - `address[postcode]`
+ * - `address[city]`
+ *
+ * The request must be authenticated (basic auth) with the Flus token.
+ *
+ * @param \Minz\Request $request
+ *
+ * @return \Minz\Response
+ */
+function paySubscription($request)
+{
+    $auth_token = $request->header('PHP_AUTH_USER', '');
+    $private_key = \Minz\Configuration::$application['flus_private_key'];
+    if (!hash_equals($private_key, $auth_token)) {
+        return \Minz\Response::unauthorized();
+    }
+
+    $email = $request->param('email');
+    $amount = $request->param('amount', 0);
+    $address = $request->param('address', [
+        'first_name' => '',
+        'last_name' => '',
+        'address1' => '',
+        'postcode' => '',
+        'city' => '',
+    ]);
+    $username = $request->param('username', '');
+
+    $frequency = $request->param('frequency');
+    if ($frequency === 'month') {
+        $amount = 3;
+    } elseif ($frequency === 'year') {
+        $amount = 30;
+    }
+
+    try {
+        $payment = models\Payment::init('subscription', $email, $amount, $address);
+        $payment->setProperty('username', trim($username));
+        $payment->setProperty('frequency', $frequency);
+    } catch (\Minz\Errors\ModelPropertyError $e) {
+        $output = new \Minz\Output\Text($e->getMessage());
+        return new \Minz\Response(400, $output);
     }
 
     $stripe = new services\Stripe(
