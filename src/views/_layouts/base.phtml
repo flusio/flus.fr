@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="initial-scale=1.0" />
+        <link rel="canonical" href="<?= $canonical ?>">
+        <link rel="shortcut icon" href="<?= url_static('favicon-32px.png') ?>">
+
+        <link rel="stylesheet" href="<?= url_static('style.css') ?>">
+
+        <title><?= $title ?></title>
+
+        <?php if (isset($description)): ?>
+            <meta name="description" content="<?= $description ?>" />
+        <?php endif; ?>
+
+        <?php if (isset($og)): ?>
+            <meta property="og:title" content="<?= $title ?>" />
+            <meta property="og:type" content="<?= $og['type'] ?>" />
+            <meta property="og:description" content="<?= $description ?>" />
+            <meta property="og:locale" content="fr_FR" />
+            <meta property="og:url" content="<?= $canonical ?>" />
+            <meta property="og:image" content="<?= $og['image'] ?>" />
+            <meta name="twitter:card" content="<?= $og['twitter_card'] ?>">
+        <?php endif; ?>
+    </head>
+
+    <body>
+        <div class="layout">
+            <header class="layout__header">
+                <nav>
+                    <a href="<?= url('home#index') ?>">
+                        <img
+                            class="logo"
+                            src="<?= url_static('logo.svg') ?>"
+                            width="221"
+                            height="75"
+                            alt="Flus"
+                         />
+                    </a>
+                </nav>
+            </header>
+
+            <main class="layout__content" id="contenu">
+                <?= $this->safe('content') ?>
+            </main>
+
+            <footer class="layout__footer">
+                <p>
+                    <a href="https://flus.io/i/?a=about">mentions légales</a>
+                </p>
+
+                <p class="copyright">
+                    Copyright © Flus 2020.<br />
+                    <a href="#">AGPL-3.0</a>&nbsp;·&nbsp;<a href="<?= url('home#credits') ?>">Crédits</a>
+                </p>
+            </footer>
+        </div>
+    </body>
+</html>

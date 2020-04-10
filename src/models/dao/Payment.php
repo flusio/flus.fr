@@ -66,4 +66,17 @@ class Payment extends \Minz\DatabaseModel
         $statement = $this->query($sql);
         return $statement->fetchColumn();
     }
+
+    /**
+     * Return the sum of amounts for completed payments
+     *
+     * @return integer
+     */
+    public function findTotalRevenue()
+    {
+        $sql = 'SELECT SUM(amount) FROM payments '
+             . 'WHERE completed_at IS NOT NULL';
+        $statement = $this->query($sql);
+        return intval($statement->fetchColumn());
+    }
 }
