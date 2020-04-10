@@ -1,3 +1,4 @@
 /bin
 /.env
 /data/db.sqlite
+/data/invoices/facture*

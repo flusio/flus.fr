@@ -17,6 +17,8 @@ class Application
         $router->addRoute('get', '/merci', 'payments#succeeded');
         $router->addRoute('get', '/annulation', 'payments#canceled');
 
+        $router->addRoute('get', '/invoices/pdf/:id', 'invoices#download_pdf');
+
         $router->addRoute('post', '/payments/subscriptions', 'payments#paySubscription');
         $router->addRoute('post', '/stripe/hooks', 'stripe#hooks');
 
@@ -24,6 +26,8 @@ class Application
 
         $this->engine = new \Minz\Engine($router);
         \Minz\Url::setRouter($router);
+
+        setlocale(LC_ALL, 'fr_FR.UTF8');
     }
 
     public function run($request)

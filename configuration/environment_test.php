@@ -5,6 +5,9 @@ if ($number_of_datasets < 1) {
     $number_of_datasets = 1;
 }
 
+$temporary_directory = sys_get_temp_dir() . '/flus';
+@mkdir($temporary_directory);
+
 return [
     'app_name' => 'Website',
     'url_options' => [
@@ -22,5 +25,6 @@ return [
     'database' => [
         'dsn' => 'sqlite::memory:',
     ],
+    'data_path' => $temporary_directory,
     'no_syslog' => !getenv('APP_SYSLOG_ENABLED'),
 ];
