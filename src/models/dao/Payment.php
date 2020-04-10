@@ -59,7 +59,10 @@ class Payment extends \Minz\DatabaseModel
      */
     public function findLastInvoiceNumber()
     {
-        $sql = 'SELECT invoice_number FROM payments ORDER BY completed_at LIMIT 1';
+        $sql = 'SELECT invoice_number FROM payments '
+             . 'WHERE invoice_number IS NOT NULL '
+             . 'ORDER BY invoice_number DESC '
+             . 'LIMIT 1';
         $statement = $this->query($sql);
         return $statement->fetchColumn();
     }

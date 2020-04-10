@@ -89,12 +89,15 @@ class PaymentTest extends TestCase
         $payment_factory->create([
             'invoice_number' => $now->format('Y') . '-01-0001',
         ]);
+        $payment_factory->create([
+            'invoice_number' => $now->format('Y') . '-01-0002',
+        ]);
 
         $payment = Payment::init($type, $email, $amount, $address);
 
         $payment->complete();
 
-        $expected_invoice_number = $now->format('Y-m') . '-0002';
+        $expected_invoice_number = $now->format('Y-m') . '-0003';
         $this->assertSame($expected_invoice_number, $payment->invoice_number);
     }
 
@@ -112,12 +115,40 @@ class PaymentTest extends TestCase
         $payment_factory->create([
             'invoice_number' => $previous_year->format('Y-m') . '-0001',
         ]);
+        $payment_factory->create([
+            'invoice_number' => $previous_year->format('Y-m') . '-0002',
+        ]);
 
         $payment = Payment::init($type, $email, $amount, $address);
 
         $payment->complete();
 
         $expected_invoice_number = $now->format('Y-m') . '-0001';
+        $this->assertSame($expected_invoice_number, $payment->invoice_number);
+    }
+
+    /**
+     * @dataProvider propertiesProvider
+     */
+    public function testCompleteIgnoresNullInvoiceNumbers($type, $email, $amount, $address)
+    {
+        $faker = \Faker\Factory::create();
+        $now = $faker->dateTime;
+        \Minz\Time::freeze($now);
+
+        $payment_factory = new \Minz\Tests\DatabaseFactory('payments');
+        $payment_factory->create([
+            'invoice_number' => null,
+        ]);
+        $payment_factory->create([
+            'invoice_number' => $now->format('Y') . '-01-0001',
+        ]);
+
+        $payment = Payment::init($type, $email, $amount, $address);
+
+        $payment->complete();
+
+        $expected_invoice_number = $now->format('Y-m') . '-0002';
         $this->assertSame($expected_invoice_number, $payment->invoice_number);
     }
 
