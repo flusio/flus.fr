@@ -1,0 +1,21 @@
+<?php
+    $this->layout('error.phtml', [
+        'title' => 'Une erreur est survenue',
+        'error' => $error,
+    ]);
+?>
+
+<h1>
+    Une erreur est survenue durant le traitement de votre requête.
+</h1>
+
+<p>
+    Si vous le souhaitez, vous pouvez <a href="mailto:marien@flus.io">me
+        prévenir par courriel</a>.
+</p>
+
+<p>
+    <a href="<?= url('home#index') ?>">
+        Revenir à la page d’accueil
+    </a>
+</p>

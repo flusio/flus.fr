@@ -1,0 +1,16 @@
+<?php
+    $this->layout('error.phtml', [
+        'title' => 'Page non trouvée',
+        'error' => $error,
+    ]);
+?>
+
+<h1>
+    Cette page n’existe pas.
+</h1>
+
+<p>
+    <a href="<?= url('home#index') ?>">
+        Revenir à la page d’accueil
+    </a>
+</p>

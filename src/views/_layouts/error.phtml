@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="initial-scale=1.0" />
+        <link rel="shortcut icon" href="<?= url_static('favicon-32px.png') ?>">
+
+        <link rel="stylesheet" href="<?= url_static('style.css') ?>">
+
+        <title><?= $title ?></title>
+    </head>
+
+    <body>
+        <div class="layout layout--error">
+            <header class="layout__header">
+                <nav>
+                    <a href="<?= url('home#index') ?>">
+                        Oh non&nbsp;😟
+                    </a>
+                </nav>
+            </header>
+
+            <main class="layout__content" id="contenu">
+                <?= $this->safe('content') ?>
+
+                <?php if ($environment === 'development'): ?>
+                    <pre class="error-box"><?= (string)$error ?></pre>
+                <?php endif; ?>
+            </main>
+        </div>
+    </body>
+</html>

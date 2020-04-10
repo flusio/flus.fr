@@ -35,6 +35,7 @@ class Application
     public function run($request)
     {
         \Minz\Output\View::declareDefaultVariables([
+            'environment' => \Minz\Configuration::$environment,
             'errors' => [],
         ]);
 

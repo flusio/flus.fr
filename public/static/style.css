@@ -321,9 +321,18 @@ hr::after {
     justify-content: center;
 }
 
+.layout--error .layout__header a {
+    font-size: var(--size-large);
+    text-decoration: none;
+}
+
 .layout__content {
     grid-column: main;
     grid-row: main;
+}
+
+.layout--error .layout__content {
+    text-align: center;
 }
 
 .layout__footer {
@@ -585,4 +594,19 @@ hr::after {
     font-size: var(--size-small);
     font-style: italic;
     text-align: center;
+}
+
+.error-box {
+    position: absolute;
+    left: 0;
+    right: 0;
+
+    padding: var(--space-medium);
+
+    text-align: left;
+    color: var(--color-white);
+
+    background-color: var(--color-black);
+
+    overflow: auto;
 }
