@@ -47,10 +47,13 @@
     --color-white: #FDFCFF;
     --color-black: #0c0c0d;
     --color-grey-1: #665e6c;
+    --color-grey-2: #DFDAE6;
+    --color-grey-3: #EFEDF2;
     --color-purple-1: #7762df;
     --color-purple-2: #4500d0;
     --color-turquoise-1: #00d0ad;
     --color-turquoise-2: #00baad;
+    --color-red-1: #ba1109;
 
     --color-text: var(--color-black);
     --color-text-secondary: var(--color-grey-1);

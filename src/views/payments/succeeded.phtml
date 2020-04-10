@@ -1,3 +1,16 @@
-<p>
-    Merci&nbsp;!
+<?php
+    $this->layout('base.phtml', [
+        'title' => 'Flus vous remercie',
+        'canonical' => url_full('payments#succeeded'),
+    ]);
+?>
+
+<p class="paragraph--featured">
+    Votre paiement a bien été pris en compte, merci&nbsp;!
+</p>
+
+<p class="paragraph--center">
+    <a class="call-to-action" href="<?= url('home#index') ?>">
+        Revenir à la page d’accueil
+    </a>
 </p>

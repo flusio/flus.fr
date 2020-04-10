@@ -3,12 +3,16 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="initial-scale=1.0" />
+        <link rel="stylesheet" href="<?= url_static('stripe_redirection.css') ?>">
     </head>
 
     <body>
         <p>
-            Vous allez être redirigé vers Stripe dans quelques secondes, veuillez patienter…
+            Vous allez être redirigé·e vers Stripe dans quelques instants,
+            veuillez patienter…
         </p>
+
+        <div id="spinner"></div>
 
         <p id="stripe-error">
         </p>
@@ -20,6 +24,7 @@
                 stripe.redirectToCheckout({
                     sessionId: '<?= $stripe_session_id ?>',
                 }).then(function (result) {
+                    document.getElementById('spinner').remove();
                     document.getElementById('stripe-error').innerText = result.error.message;
                 });
             }, 3000);

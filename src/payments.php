@@ -14,7 +14,7 @@ function init()
 {
     return \Minz\Response::ok('payments/init.phtml', [
         'email' => '',
-        'amount' => 3,
+        'amount' => 30,
         'address' => [
             'first_name' => '',
             'last_name' => '',

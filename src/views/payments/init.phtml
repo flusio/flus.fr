@@ -1,21 +1,62 @@
-<h1>Participer à la cagnotte commune</h1>
+<?php
+    $this->layout('base.phtml', [
+        'title' => 'Participer à la cagnotte commune de Flus',
+        'canonical' => url_full('payments#init'),
+        'description' => 'Flus propose une cagnotte commune à laquelle n’importe qui peut participer pour fournir des abonnements gratuits à celles et ceux qui n’en ont pas les moyens.',
+        'og' => [
+            'type' => 'website',
+            'image' => url_full_static('illustrations/savings.svg'),
+            'twitter_card' => 'summary_large_image',
+        ],
+    ]);
+?>
 
-<form method="post" action="<?= url('payments#payCommonPot') ?>">
-    <div class="form-group">
+<div class="title">
+    <h1 class="title__header">
+        Cagnotte commune
+    </h1>
+</div>
+
+<div class="section__intro">
+    <p>
+        La cagnotte commune sera accessible dès la sortie de la prochaine
+        version de Flus. Elle sera mise à disposition de n’importe qui n’ayant
+        pas les moyens de payer un abonnement.
+    </p>
+
+    <p>
+        <strong>Vous pouvez y contribuer dès maintenant afin de soutenir mon
+            travail.</strong>
+    </p>
+</div>
+
+<form
+     method="post"
+     action="<?= url('payments#payCommonPot') ?>"
+     class="form--common-pot"
+ >
+    <div class="form-group <?= isset($errors['amount']) ? 'form-group--invalid' : '' ?>">
         <label for="amount">
             Montant
         </label>
 
-        <input
-            id="amount"
-            name="amount"
-            type="number"
-            step="0.5"
-            min="1"
-            max="1000"
-            value="<?= $amount ?>"
-            required
-        />
+        <div class="form-group__stack">
+            <input
+                id="amount"
+                name="amount"
+                type="number"
+                step="0.5"
+                min="1"
+                max="1000"
+                value="<?= $amount ?>"
+                required
+                <?= isset($errors['amount']) ? 'autofocus' : '' ?>
+            />
+
+            <span>
+                euros
+            </span>
+        </div>
 
         <?php if (isset($errors['amount'])): ?>
             <p class="form-group__error">
@@ -24,10 +65,16 @@
         <?php endif; ?>
     </div>
 
-    <div class="form-group">
+    <div class="form-group <?= isset($errors['email']) ? 'form-group--invalid' : '' ?>">
         <label for="email">
-            Courriel
+            Adresse courriel
         </label>
+
+        <p class="form-group__caption">
+            Cette adresse doit être transmise à Stripe pour assurer le bon
+            déroulement du paiement. Vous y recevrez également un reçu, mais
+            elle ne servira à rien d’autre.
+        </p>
 
         <input
             id="email"
@@ -47,13 +94,18 @@
     <fieldset>
         <legend>Adresse postale</legend>
 
-        <div class="form-group">
-            <label for="first-name">
-                Prénom et nom
-            </label>
+        <p class="fieldset__caption">
+            Cette adresse m’est nécessaire pour pouvoir vous adresser une
+            facture en bonne et due forme.
+        </p>
 
-            <div class="columns">
-                <div class="columns__item">
+        <div class="columns">
+            <div class="columns__item">
+                <div class="form-group <?= isset($errors['address_first_name']) ? 'form-group--invalid' : '' ?>">
+                    <label for="first-name">
+                        Prénom
+                    </label>
+
                     <input
                         id="first-name"
                         name="address[first_name]"
@@ -68,8 +120,14 @@
                         </p>
                     <?php endif; ?>
                 </div>
+            </div>
 
-                <div class="columns__item">
+            <div class="columns__item">
+                <div class="form-group <?= isset($errors['address_last_name']) ? 'form-group--invalid' : '' ?>">
+                    <label for="last-name">
+                        Nom
+                    </label>
+
                     <input
                         id="last-name"
                         name="address[last_name]"
@@ -87,7 +145,7 @@
             </div>
         </div>
 
-        <div class="form-group">
+        <div class="form-group <?= isset($errors['address_address1']) ? 'form-group--invalid' : '' ?>">
             <label for="address1">
                 Adresse
             </label>
@@ -107,13 +165,13 @@
             <?php endif; ?>
         </div>
 
-        <div class="form-group">
-            <label for="postcode">
-                Code postal et ville
-            </label>
+        <div class="columns">
+            <div class="columns__item columns__item--postcode">
+                <div class="form-group <?= isset($errors['address_postcode']) ? 'form-group--invalid' : '' ?>">
+                    <label for="postcode">
+                        Code postal
+                    </label>
 
-            <div class="columns">
-                <div class="columns__item">
                     <input
                         id="postcode"
                         name="address[postcode]"
@@ -128,8 +186,14 @@
                         </p>
                     <?php endif; ?>
                 </div>
+            </div>
 
-                <div class="columns__item">
+            <div class="columns__item columns__item--city">
+                <div class="form-group <?= isset($errors['address_city']) ? 'form-group--invalid' : '' ?>">
+                    <label for="city">
+                        Ville
+                    </label>
+
                     <input
                         id="city"
                         name="address[city]"
@@ -148,9 +212,9 @@
         </div>
     </fieldset>
 
-    <div class="form__group">
-        <button type="submit">
-            Participer
+    <div class="form__actions">
+        <button type="submit" class="button--primary">
+            Participer à la cagnotte
         </button>
     </div>
 </form>

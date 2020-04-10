@@ -1,3 +1,16 @@
-<p>
+<?php
+    $this->layout('base.phtml', [
+        'title' => 'Annulation de votre paiement',
+        'canonical' => url_full('payments#canceled'),
+    ]);
+?>
+
+<p class="paragraph--featured">
     Votre paiement a bien été annulé.
+</p>
+
+<p class="paragraph--center">
+    <a class="call-to-action" href="<?= url('home#index') ?>">
+        Revenir à la page d’accueil
+    </a>
 </p>

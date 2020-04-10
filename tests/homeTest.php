@@ -20,7 +20,7 @@ class homeTest extends IntegrationTestCase
 
     public function testCreditsRendersCorrectly()
     {
-        $request = new \Minz\Request('GET', '/credits.html');
+        $request = new \Minz\Request('GET', '/credits');
 
         $response = self::$application->run($request);
 

@@ -12,8 +12,7 @@ class Application
         // Initialize the routes
         $router = new \Minz\Router();
         $router->addRoute('get', '/', 'home#index');
-        $router->addRoute('get', '/index.html', 'home#index');
-        $router->addRoute('get', '/credits.html', 'home#credits');
+        $router->addRoute('get', '/credits', 'home#credits');
         $router->addRoute('get', '/cagnotte', 'payments#init');
         $router->addRoute('post', '/cagnotte', 'payments#payCommonPot');
         $router->addRoute('get', '/merci', 'payments#succeeded');
