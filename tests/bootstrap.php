@@ -43,7 +43,7 @@ echo 'Faker seed: ' . $faker_seed . "\n";
         },
         'amount' => function () {
             $faker = \Faker\Factory::create();
-            return $faker->numberBetween(1, 1000);
+            return $faker->numberBetween(100, 100000);
         },
         'address_first_name' => function () {
             $faker = \Faker\Factory::create();
