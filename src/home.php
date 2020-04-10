@@ -14,7 +14,7 @@ function index()
     $response = \Minz\Response::ok('home/index.phtml', [
         'total_revenue' => number_format($total_revenue, 2, ',', '&nbsp;'),
         'revenue_target' => number_format($revenue_target, 0, ',', '&nbsp;'),
-        'percent_target' => $percent_target,
+        'percent_target' => intval($percent_target),
     ]);
     $response->setContentSecurityPolicy('style-src', "'self' 'unsafe-inline'");
     return $response;
