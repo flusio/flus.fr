@@ -143,8 +143,8 @@ function paySubscription($request)
     }
 
     $stripe_service = new services\Stripe(
-        \Minz\Url::absoluteFor('payments#succeeded'),
-        \Minz\Url::absoluteFor('payments#canceled')
+        $request->param('success_url', \Minz\Url::absoluteFor('payments#succeeded')),
+        $request->param('cancel_url', \Minz\Url::absoluteFor('payments#canceled'))
     );
 
     $period = $payment->frequency === 'month' ? '1 mois' : '1 an';
