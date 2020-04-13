@@ -67,12 +67,21 @@ function payCommonPot($request)
         ]);
     }
 
-    $stripe = new services\Stripe(
+    $stripe_service = new services\Stripe(
         \Minz\Url::absoluteFor('payments#succeeded'),
         \Minz\Url::absoluteFor('payments#canceled')
     );
 
-    return $stripe->pay($payment);
+    $stripe_session = $stripe_service->createSession($payment);
+
+    $payment_dao = new models\dao\Payment();
+    $payment->setProperty('payment_intent_id', $stripe_session->payment_intent);
+    $payment->setProperty('session_id', $stripe_session->id);
+    $payment_id = $payment_dao->save($payment);
+
+    return \Minz\Response::redirect('payments#pay', [
+        'id' => $payment_id,
+    ]);
 }
 
 /**
@@ -130,12 +139,26 @@ function paySubscription($request)
         return new \Minz\Response(400, $output);
     }
 
-    $stripe = new services\Stripe(
+    $stripe_service = new services\Stripe(
         \Minz\Url::absoluteFor('payments#succeeded'),
         \Minz\Url::absoluteFor('payments#canceled')
     );
 
-    return $stripe->pay($payment);
+    $stripe_session = $stripe_service->createSession($payment);
+
+    $payment_dao = new models\dao\Payment();
+    $payment->setProperty('payment_intent_id', $stripe_session->payment_intent);
+    $payment->setProperty('session_id', $stripe_session->id);
+    $id = $payment_dao->save($payment);
+
+    // need to reload payment to get id and created_at
+    $payment = new models\Payment($payment_dao->find($id));
+    $json_payment = $payment->toJson();
+
+    $output = new \Minz\Output\Text($json_payment);
+    $response = new \Minz\Response(200, $output);
+    $response->setHeader('Content-Type', 'application/json');
+    return $response;
 }
 
 /**

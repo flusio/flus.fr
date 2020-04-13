@@ -23,7 +23,7 @@ class paymentsTest extends IntegrationTestCase
     /**
      * @dataProvider payCommonPotProvider
      */
-    public function testPayCommonPotRendersCorrectly($email, $amount, $address)
+    public function testPayCommonPotRedirectsCorrectly($email, $amount, $address)
     {
         $request = new \Minz\Request('POST', '/cagnotte', [
             'email' => $email,
@@ -33,9 +33,9 @@ class paymentsTest extends IntegrationTestCase
 
         $response = self::$application->run($request);
 
-        $this->assertResponse($response, 200);
-        $pointer = $response->output()->pointer();
-        $this->assertSame('stripe/redirection.phtml', $pointer);
+        $this->assertResponse($response, 302);
+        $location = $response->headers(true)['Location'];
+        $this->assertStringMatchesFormat('/payments/%s/pay', $location);
     }
 
     /**
@@ -54,7 +54,7 @@ class paymentsTest extends IntegrationTestCase
 
         $response = self::$application->run($request);
 
-        $this->assertResponse($response, 200);
+        $this->assertResponse($response, 302);
     }
 
     /**
@@ -356,6 +356,10 @@ class paymentsTest extends IntegrationTestCase
      */
     public function testPaySubscriptionRendersCorrectly($email, $username, $frequency, $address)
     {
+        $faker = \Faker\Factory::create();
+        $now = $faker->dateTime;
+        \Minz\Time::freeze($now);
+
         $request = new \Minz\Request('POST', '/payments/subscriptions', [
             'email' => $email,
             'username' => $username,
@@ -367,9 +371,19 @@ class paymentsTest extends IntegrationTestCase
 
         $response = self::$application->run($request);
 
-        $this->assertResponse($response, 200);
-        $pointer = $response->output()->pointer();
-        $this->assertSame('stripe/redirection.phtml', $pointer);
+        $this->assertResponse($response, 200, null, [
+            'Content-Type' => 'application/json'
+        ]);
+
+        $payment = json_decode($response->render(), true);
+        $expected_amount = $frequency === 'month' ? 300 : 3000;
+        $this->assertNotNull($payment['id']);
+        $this->assertSame($now->getTimestamp(), $payment['created_at']);
+        $this->assertNull($payment['completed_at']);
+        $this->assertSame($expected_amount, $payment['amount']);
+        $this->assertSame($frequency, $payment['frequency']);
+
+        \Minz\Time::unfreeze();
     }
 
     /**

@@ -155,6 +155,24 @@ class Payment extends \Minz\Model
     }
 
     /**
+     * @return string
+     */
+    public function toJson()
+    {
+        $attributes = [
+            'id' => $this->id,
+            'created_at' => $this->created_at->getTimestamp(),
+            'completed_at' => null,
+            'frequency' => $this->frequency,
+            'amount' => $this->amount,
+        ];
+        if ($this->completed_at) {
+            $attributes['completed_at'] = $this->completed_at->getTimestamp();
+        }
+        return json_encode($attributes);
+    }
+
+    /**
      * Mark the payment as completed
      */
     public function complete()
