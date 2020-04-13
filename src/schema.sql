@@ -12,6 +12,7 @@ CREATE TABLE payments (
     address_postcode TEXT NOT NULL,
     address_city TEXT NOT NULL,
     payment_intent_id TEXT,
+    session_id TEXT,
     username TEXT,
     frequency TEXT
 );

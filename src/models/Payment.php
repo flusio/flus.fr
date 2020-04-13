@@ -49,6 +49,11 @@ class Payment extends \Minz\Model
             'validator' => '\Website\models\Payment::validatePaymentIntentId',
         ],
 
+        'session_id' => [
+            'type' => 'string',
+            'validator' => '\Website\models\Payment::validateSessionId',
+        ],
+
         'address_first_name' => [
             'type' => 'string',
             'required' => true,
@@ -150,6 +155,24 @@ class Payment extends \Minz\Model
     }
 
     /**
+     * @return string
+     */
+    public function toJson()
+    {
+        $attributes = [
+            'id' => $this->id,
+            'created_at' => $this->created_at->getTimestamp(),
+            'completed_at' => null,
+            'frequency' => $this->frequency,
+            'amount' => $this->amount,
+        ];
+        if ($this->completed_at) {
+            $attributes['completed_at'] = $this->completed_at->getTimestamp();
+        }
+        return json_encode($attributes);
+    }
+
+    /**
      * Mark the payment as completed
      */
     public function complete()
@@ -228,6 +251,16 @@ class Payment extends \Minz\Model
      * @return boolean Returns true if the value is not empty
      */
     public static function validatePaymentIntentId($id)
+    {
+        return strlen($id) > 0;
+    }
+
+    /**
+     * @param string $id
+     *
+     * @return boolean Returns true if the value is not empty
+     */
+    public static function validateSessionId($id)
     {
         return strlen($id) > 0;
     }

@@ -42,7 +42,7 @@ function init()
  *
  * @return \Minz\Response
  */
-function pay($request)
+function payCommonPot($request)
 {
     $email = $request->param('email');
     $amount = $request->param('amount', 0);
@@ -67,12 +67,21 @@ function pay($request)
         ]);
     }
 
-    $stripe = new services\Stripe(
+    $stripe_service = new services\Stripe(
         \Minz\Url::absoluteFor('payments#succeeded'),
         \Minz\Url::absoluteFor('payments#canceled')
     );
 
-    return $stripe->pay($payment);
+    $stripe_session = $stripe_service->createSession($payment);
+
+    $payment_dao = new models\dao\Payment();
+    $payment->setProperty('payment_intent_id', $stripe_session->payment_intent);
+    $payment->setProperty('session_id', $stripe_session->id);
+    $payment_id = $payment_dao->save($payment);
+
+    return \Minz\Response::redirect('payments#pay', [
+        'id' => $payment_id,
+    ]);
 }
 
 /**
@@ -130,12 +139,60 @@ function paySubscription($request)
         return new \Minz\Response(400, $output);
     }
 
-    $stripe = new services\Stripe(
+    $stripe_service = new services\Stripe(
         \Minz\Url::absoluteFor('payments#succeeded'),
         \Minz\Url::absoluteFor('payments#canceled')
     );
 
-    return $stripe->pay($payment);
+    $stripe_session = $stripe_service->createSession($payment);
+
+    $payment_dao = new models\dao\Payment();
+    $payment->setProperty('payment_intent_id', $stripe_session->payment_intent);
+    $payment->setProperty('session_id', $stripe_session->id);
+    $id = $payment_dao->save($payment);
+
+    // need to reload payment to get id and created_at
+    $payment = new models\Payment($payment_dao->find($id));
+    $json_payment = $payment->toJson();
+
+    $output = new \Minz\Output\Text($json_payment);
+    $response = new \Minz\Response(200, $output);
+    $response->setHeader('Content-Type', 'application/json');
+    return $response;
+}
+
+/**
+ * Handle the payment itself
+ *
+ * Parameter is:
+ *
+ * - `id` of the Payment
+ *
+ * @param \Minz\Request $request
+ *
+ * @return \Minz\Response
+ */
+function pay($request)
+{
+    $payment_dao = new models\dao\Payment();
+    $payment_id = $request->param('id');
+    $raw_payment = $payment_dao->find($payment_id);
+    if (!$raw_payment) {
+        return \Minz\Response::notFound('not_found.phtml');
+    }
+
+    $payment = new models\Payment($raw_payment);
+    if ($payment->completed_at) {
+        return \Minz\Response::badRequest();
+    }
+
+    $response = \Minz\Response::ok('stripe/redirection.phtml', [
+        'stripe_public_key' => \Minz\Configuration::$application['stripe_public_key'],
+        'stripe_session_id' => $payment->session_id,
+    ]);
+    $response->setContentSecurityPolicy('default-src', "'self' js.stripe.com");
+    $response->setContentSecurityPolicy('script-src', "'self' 'unsafe-inline' js.stripe.com");
+    return $response;
 }
 
 /**

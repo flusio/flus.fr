@@ -2,8 +2,6 @@
 
 namespace Website\services;
 
-use Website\models;
-
 /**
  * This class allows an easy use of the Stripe service.
  *
@@ -31,15 +29,15 @@ class Stripe
     }
 
     /**
-     * Initiate a Stripe checkout session and return a Response redirecting to Stripe.
+     * Return a Stripe checkout session
      *
      * @param \Website\models\Payment $payment
      *
-     * @return \Minz\Response
+     * @return \Stripe\Checkout\Session
      */
-    public function pay($payment)
+    public function createSession($payment)
     {
-        $stripe_session = \Stripe\Checkout\Session::create([
+        return \Stripe\Checkout\Session::create([
             'customer_email' => $payment->email,
             'payment_method_types' => ['card'],
             'line_items' => [[
@@ -51,17 +49,5 @@ class Stripe
             'success_url' => $this->success_url,
             'cancel_url' => $this->cancel_url,
         ]);
-
-        $payment_dao = new models\dao\Payment();
-        $payment->setProperty('payment_intent_id', $stripe_session->payment_intent);
-        $payment_dao->save($payment);
-
-        $response = \Minz\Response::ok('stripe/redirection.phtml', [
-            'stripe_public_key' => \Minz\Configuration::$application['stripe_public_key'],
-            'stripe_session_id' => $stripe_session->id,
-        ]);
-        $response->setContentSecurityPolicy('default-src', "'self' js.stripe.com");
-        $response->setContentSecurityPolicy('script-src', "'self' 'unsafe-inline' js.stripe.com");
-        return $response;
     }
 }

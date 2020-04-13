@@ -21,9 +21,9 @@ class paymentsTest extends IntegrationTestCase
     }
 
     /**
-     * @dataProvider payParamsProvider
+     * @dataProvider payCommonPotProvider
      */
-    public function testPayActionRendersCorrectly($email, $amount, $address)
+    public function testPayCommonPotRedirectsCorrectly($email, $amount, $address)
     {
         $request = new \Minz\Request('POST', '/cagnotte', [
             'email' => $email,
@@ -33,15 +33,15 @@ class paymentsTest extends IntegrationTestCase
 
         $response = self::$application->run($request);
 
-        $this->assertResponse($response, 200);
-        $pointer = $response->output()->pointer();
-        $this->assertSame('stripe/redirection.phtml', $pointer);
+        $this->assertResponse($response, 302);
+        $location = $response->headers(true)['Location'];
+        $this->assertStringMatchesFormat('/payments/%s/pay', $location);
     }
 
     /**
-     * @dataProvider payParamsProvider
+     * @dataProvider payCommonPotProvider
      */
-    public function testPayActionAcceptsFloatAmounts($email, $amount, $address)
+    public function testPayCommonPotAcceptsFloatAmounts($email, $amount, $address)
     {
         $faker = \Faker\Factory::create();
         $amount = $faker->randomFloat(2, 1.00, 1000.0);
@@ -54,45 +54,13 @@ class paymentsTest extends IntegrationTestCase
 
         $response = self::$application->run($request);
 
-        $this->assertResponse($response, 200);
+        $this->assertResponse($response, 302);
     }
 
     /**
-     * @dataProvider payParamsProvider
+     * @dataProvider payCommonPotProvider
      */
-    public function testPayActionConfiguresStripe($email, $amount, $address)
-    {
-        $request = new \Minz\Request('POST', '/cagnotte', [
-            'email' => $email,
-            'amount' => $amount,
-            'address' => $address,
-        ]);
-
-        $response = self::$application->run($request);
-
-        $variables = $response->output()->variables();
-        $headers = $response->headers(true);
-        $csp = $headers['Content-Security-Policy'];
-
-        $this->assertSame(
-            \Minz\Configuration::$application['stripe_public_key'],
-            $variables['stripe_public_key']
-        );
-        $this->assertTrue(strlen($variables['stripe_session_id']) > 0);
-        $this->assertSame(
-            "'self' js.stripe.com",
-            $csp['default-src']
-        );
-        $this->assertSame(
-            "'self' 'unsafe-inline' js.stripe.com",
-            $csp['script-src']
-        );
-    }
-
-    /**
-     * @dataProvider payParamsProvider
-     */
-    public function testPayActionCreatesAPayment($email, $amount, $address)
+    public function testPayCommonPotCreatesAPayment($email, $amount, $address)
     {
         $payment_dao = new models\dao\Payment();
 
@@ -121,9 +89,9 @@ class paymentsTest extends IntegrationTestCase
     }
 
     /**
-     * @dataProvider payParamsProvider
+     * @dataProvider payCommonPotProvider
      */
-    public function testPayActionWithWrongEmailReturnsABadRequest($email, $amount, $address)
+    public function testPayCommonPotWithWrongEmailReturnsABadRequest($email, $amount, $address)
     {
         $faker = \Faker\Factory::create();
         $email = $faker->domainName;
@@ -144,9 +112,9 @@ class paymentsTest extends IntegrationTestCase
     }
 
     /**
-     * @dataProvider payParamsProvider
+     * @dataProvider payCommonPotProvider
      */
-    public function testPayActionWithAmountLessThan1ReturnsABadRequest($email, $amount, $address)
+    public function testPayCommonPotWithAmountLessThan1ReturnsABadRequest($email, $amount, $address)
     {
         $faker = \Faker\Factory::create();
         $amount = $faker->randomFloat(2, 0.0, 0.99);
@@ -167,9 +135,9 @@ class paymentsTest extends IntegrationTestCase
     }
 
     /**
-     * @dataProvider payParamsProvider
+     * @dataProvider payCommonPotProvider
      */
-    public function testPayActionWithAmountMoreThan1000ReturnsABadRequest($email, $amount, $address)
+    public function testPayCommonPotWithAmountMoreThan1000ReturnsABadRequest($email, $amount, $address)
     {
         $faker = \Faker\Factory::create();
         $amount = $faker->numberBetween(1001, PHP_INT_MAX / 100);
@@ -190,9 +158,9 @@ class paymentsTest extends IntegrationTestCase
     }
 
     /**
-     * @dataProvider payParamsProvider
+     * @dataProvider payCommonPotProvider
      */
-    public function testPayActionWithAmountAsStringReturnsABadRequest($email, $amount, $address)
+    public function testPayCommonPotWithAmountAsStringReturnsABadRequest($email, $amount, $address)
     {
         $faker = \Faker\Factory::create();
         $amount = $faker->word;
@@ -213,9 +181,9 @@ class paymentsTest extends IntegrationTestCase
     }
 
     /**
-     * @dataProvider payParamsProvider
+     * @dataProvider payCommonPotProvider
      */
-    public function testPayActionWithMissingAmountReturnsABadRequest($email, $amount, $address)
+    public function testPayCommonPotWithMissingAmountReturnsABadRequest($email, $amount, $address)
     {
         $request = new \Minz\Request('POST', '/cagnotte', [
             'email' => $email,
@@ -232,9 +200,9 @@ class paymentsTest extends IntegrationTestCase
     }
 
     /**
-     * @dataProvider payParamsProvider
+     * @dataProvider payCommonPotProvider
      */
-    public function testPayActionWithMissingEmailReturnsABadRequest($email, $amount, $address)
+    public function testPayCommonPotWithMissingEmailReturnsABadRequest($email, $amount, $address)
     {
         $request = new \Minz\Request('POST', '/cagnotte', [
             'amount' => $amount,
@@ -251,9 +219,9 @@ class paymentsTest extends IntegrationTestCase
     }
 
     /**
-     * @dataProvider payParamsProvider
+     * @dataProvider payCommonPotProvider
      */
-    public function testPayActionWithMissingFirstNameReturnsABadRequest($email, $amount, $address)
+    public function testPayCommonPotWithMissingFirstNameReturnsABadRequest($email, $amount, $address)
     {
         unset($address['first_name']);
 
@@ -273,9 +241,9 @@ class paymentsTest extends IntegrationTestCase
     }
 
     /**
-     * @dataProvider payParamsProvider
+     * @dataProvider payCommonPotProvider
      */
-    public function testPayActionWithMissingLastNameReturnsABadRequest($email, $amount, $address)
+    public function testPayCommonPotWithMissingLastNameReturnsABadRequest($email, $amount, $address)
     {
         unset($address['last_name']);
 
@@ -295,9 +263,9 @@ class paymentsTest extends IntegrationTestCase
     }
 
     /**
-     * @dataProvider payParamsProvider
+     * @dataProvider payCommonPotProvider
      */
-    public function testPayActionWithMissingAddress1ReturnsABadRequest($email, $amount, $address)
+    public function testPayCommonPotWithMissingAddress1ReturnsABadRequest($email, $amount, $address)
     {
         unset($address['address1']);
 
@@ -317,9 +285,9 @@ class paymentsTest extends IntegrationTestCase
     }
 
     /**
-     * @dataProvider payParamsProvider
+     * @dataProvider payCommonPotProvider
      */
-    public function testPayActionWithMissingPostcodeReturnsABadRequest($email, $amount, $address)
+    public function testPayCommonPotWithMissingPostcodeReturnsABadRequest($email, $amount, $address)
     {
         unset($address['postcode']);
 
@@ -339,9 +307,9 @@ class paymentsTest extends IntegrationTestCase
     }
 
     /**
-     * @dataProvider payParamsProvider
+     * @dataProvider payCommonPotProvider
      */
-    public function testPayActionWithMissingCityReturnsABadRequest($email, $amount, $address)
+    public function testPayCommonPotWithMissingCityReturnsABadRequest($email, $amount, $address)
     {
         unset($address['city']);
 
@@ -361,9 +329,9 @@ class paymentsTest extends IntegrationTestCase
     }
 
     /**
-     * @dataProvider payParamsProvider
+     * @dataProvider payCommonPotProvider
      */
-    public function testPayActionWithAddressAsSingleParamReturnsABadRequest($email, $amount, $address)
+    public function testPayCommonPotWithAddressAsSingleParamReturnsABadRequest($email, $amount, $address)
     {
         $faker = \Faker\Factory::create();
         $address = $faker->address;
@@ -388,6 +356,10 @@ class paymentsTest extends IntegrationTestCase
      */
     public function testPaySubscriptionRendersCorrectly($email, $username, $frequency, $address)
     {
+        $faker = \Faker\Factory::create();
+        $now = $faker->dateTime;
+        \Minz\Time::freeze($now);
+
         $request = new \Minz\Request('POST', '/payments/subscriptions', [
             'email' => $email,
             'username' => $username,
@@ -399,9 +371,19 @@ class paymentsTest extends IntegrationTestCase
 
         $response = self::$application->run($request);
 
-        $this->assertResponse($response, 200);
-        $pointer = $response->output()->pointer();
-        $this->assertSame('stripe/redirection.phtml', $pointer);
+        $this->assertResponse($response, 200, null, [
+            'Content-Type' => 'application/json'
+        ]);
+
+        $payment = json_decode($response->render(), true);
+        $expected_amount = $frequency === 'month' ? 300 : 3000;
+        $this->assertNotNull($payment['id']);
+        $this->assertSame($now->getTimestamp(), $payment['created_at']);
+        $this->assertNull($payment['completed_at']);
+        $this->assertSame($expected_amount, $payment['amount']);
+        $this->assertSame($frequency, $payment['frequency']);
+
+        \Minz\Time::unfreeze();
     }
 
     /**
@@ -484,7 +466,74 @@ class paymentsTest extends IntegrationTestCase
         $this->assertResponse($response, 400);
     }
 
-    public function payParamsProvider()
+    public function testPayRendersCorrectly()
+    {
+        $payment_id = self::$factories['payments']->create();
+        $request = new \Minz\Request('GET', "/payments/{$payment_id}/pay");
+
+        $response = self::$application->run($request);
+
+        $this->assertResponse($response, 200);
+        $pointer = $response->output()->pointer();
+        $this->assertSame('stripe/redirection.phtml', $pointer);
+    }
+
+    public function testPayConfiguresStripe()
+    {
+        $faker = \Faker\Factory::create();
+        $session_id = $faker->regexify('cs_test_[\w\d]{56}');
+        $payment_id = self::$factories['payments']->create([
+            'session_id' => $session_id,
+        ]);
+        $request = new \Minz\Request('GET', "/payments/{$payment_id}/pay");
+
+        $response = self::$application->run($request);
+
+        $variables = $response->output()->variables();
+        $headers = $response->headers(true);
+        $csp = $headers['Content-Security-Policy'];
+
+        $this->assertSame(
+            \Minz\Configuration::$application['stripe_public_key'],
+            $variables['stripe_public_key']
+        );
+        $this->assertSame(
+            $session_id,
+            $variables['stripe_session_id']
+        );
+        $this->assertSame(
+            "'self' js.stripe.com",
+            $csp['default-src']
+        );
+        $this->assertSame(
+            "'self' 'unsafe-inline' js.stripe.com",
+            $csp['script-src']
+        );
+    }
+
+    public function testPayWithUnknownIdReturnsANotFound()
+    {
+        $request = new \Minz\Request('GET', "/payments/unknown/pay");
+
+        $response = self::$application->run($request);
+
+        $this->assertResponse($response, 404);
+    }
+
+    public function testPayWithPaidPaymentReturnsBadRequest()
+    {
+        $faker = \Faker\Factory::create();
+        $payment_id = self::$factories['payments']->create([
+            'completed_at' => $faker->dateTime->getTimestamp(),
+        ]);
+        $request = new \Minz\Request('GET', "/payments/{$payment_id}/pay");
+
+        $response = self::$application->run($request);
+
+        $this->assertResponse($response, 400);
+    }
+
+    public function payCommonPotProvider()
     {
         $faker = \Faker\Factory::create();
         $datasets = [];
