@@ -42,7 +42,7 @@ function init()
  *
  * @return \Minz\Response
  */
-function pay($request)
+function payCommonPot($request)
 {
     $email = $request->param('email');
     $amount = $request->param('amount', 0);

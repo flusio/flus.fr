@@ -15,7 +15,7 @@ class Application
         $router->addRoute('get', '/index.html', 'home#index');
         $router->addRoute('get', '/credits.html', 'home#credits');
         $router->addRoute('get', '/cagnotte', 'payments#init');
-        $router->addRoute('post', '/cagnotte', 'payments#pay');
+        $router->addRoute('post', '/cagnotte', 'payments#payCommonPot');
         $router->addRoute('get', '/merci', 'payments#succeeded');
         $router->addRoute('get', '/annulation', 'payments#canceled');
 
