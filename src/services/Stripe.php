@@ -54,6 +54,7 @@ class Stripe
 
         $payment_dao = new models\dao\Payment();
         $payment->setProperty('payment_intent_id', $stripe_session->payment_intent);
+        $payment->setProperty('session_id', $stripe_session->id);
         $payment_dao->save($payment);
 
         $response = \Minz\Response::ok('stripe/redirection.phtml', [

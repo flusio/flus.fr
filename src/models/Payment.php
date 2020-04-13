@@ -49,6 +49,11 @@ class Payment extends \Minz\Model
             'validator' => '\Website\models\Payment::validatePaymentIntentId',
         ],
 
+        'session_id' => [
+            'type' => 'string',
+            'validator' => '\Website\models\Payment::validateSessionId',
+        ],
+
         'address_first_name' => [
             'type' => 'string',
             'required' => true,
@@ -228,6 +233,16 @@ class Payment extends \Minz\Model
      * @return boolean Returns true if the value is not empty
      */
     public static function validatePaymentIntentId($id)
+    {
+        return strlen($id) > 0;
+    }
+
+    /**
+     * @param string $id
+     *
+     * @return boolean Returns true if the value is not empty
+     */
+    public static function validateSessionId($id)
     {
         return strlen($id) > 0;
     }

@@ -23,7 +23,7 @@
             <main class="layout__content" id="contenu">
                 <?= $this->safe('content') ?>
 
-                <?php if ($environment === 'development'): ?>
+                <?php if ($environment !== 'production' && $error): ?>
                     <pre class="error-box"><?= (string)$error ?></pre>
                 <?php endif; ?>
             </main>

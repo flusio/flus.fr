@@ -60,38 +60,6 @@ class paymentsTest extends IntegrationTestCase
     /**
      * @dataProvider payCommonPotProvider
      */
-    public function testPayCommonPotConfiguresStripe($email, $amount, $address)
-    {
-        $request = new \Minz\Request('POST', '/cagnotte', [
-            'email' => $email,
-            'amount' => $amount,
-            'address' => $address,
-        ]);
-
-        $response = self::$application->run($request);
-
-        $variables = $response->output()->variables();
-        $headers = $response->headers(true);
-        $csp = $headers['Content-Security-Policy'];
-
-        $this->assertSame(
-            \Minz\Configuration::$application['stripe_public_key'],
-            $variables['stripe_public_key']
-        );
-        $this->assertTrue(strlen($variables['stripe_session_id']) > 0);
-        $this->assertSame(
-            "'self' js.stripe.com",
-            $csp['default-src']
-        );
-        $this->assertSame(
-            "'self' 'unsafe-inline' js.stripe.com",
-            $csp['script-src']
-        );
-    }
-
-    /**
-     * @dataProvider payCommonPotProvider
-     */
     public function testPayCommonPotCreatesAPayment($email, $amount, $address)
     {
         $payment_dao = new models\dao\Payment();
@@ -478,6 +446,73 @@ class paymentsTest extends IntegrationTestCase
         ], [
             'PHP_AUTH_USER' => \Minz\Configuration::$application['flus_private_key'],
         ]);
+
+        $response = self::$application->run($request);
+
+        $this->assertResponse($response, 400);
+    }
+
+    public function testPayRendersCorrectly()
+    {
+        $payment_id = self::$factories['payments']->create();
+        $request = new \Minz\Request('GET', "/payments/{$payment_id}/pay");
+
+        $response = self::$application->run($request);
+
+        $this->assertResponse($response, 200);
+        $pointer = $response->output()->pointer();
+        $this->assertSame('stripe/redirection.phtml', $pointer);
+    }
+
+    public function testPayConfiguresStripe()
+    {
+        $faker = \Faker\Factory::create();
+        $session_id = $faker->regexify('cs_test_[\w\d]{56}');
+        $payment_id = self::$factories['payments']->create([
+            'session_id' => $session_id,
+        ]);
+        $request = new \Minz\Request('GET', "/payments/{$payment_id}/pay");
+
+        $response = self::$application->run($request);
+
+        $variables = $response->output()->variables();
+        $headers = $response->headers(true);
+        $csp = $headers['Content-Security-Policy'];
+
+        $this->assertSame(
+            \Minz\Configuration::$application['stripe_public_key'],
+            $variables['stripe_public_key']
+        );
+        $this->assertSame(
+            $session_id,
+            $variables['stripe_session_id']
+        );
+        $this->assertSame(
+            "'self' js.stripe.com",
+            $csp['default-src']
+        );
+        $this->assertSame(
+            "'self' 'unsafe-inline' js.stripe.com",
+            $csp['script-src']
+        );
+    }
+
+    public function testPayWithUnknownIdReturnsANotFound()
+    {
+        $request = new \Minz\Request('GET', "/payments/unknown/pay");
+
+        $response = self::$application->run($request);
+
+        $this->assertResponse($response, 404);
+    }
+
+    public function testPayWithPaidPaymentReturnsBadRequest()
+    {
+        $faker = \Faker\Factory::create();
+        $payment_id = self::$factories['payments']->create([
+            'completed_at' => $faker->dateTime->getTimestamp(),
+        ]);
+        $request = new \Minz\Request('GET', "/payments/{$payment_id}/pay");
 
         $response = self::$application->run($request);
 

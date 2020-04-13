@@ -19,9 +19,10 @@ class Application
         $router->addRoute('get', '/merci', 'payments#succeeded');
         $router->addRoute('get', '/annulation', 'payments#canceled');
 
+        $router->addRoute('get', '/payments/:id/pay', 'payments#pay');
+        $router->addRoute('post', '/payments/subscriptions', 'payments#paySubscription');
         $router->addRoute('get', '/invoices/pdf/:id', 'invoices#download_pdf');
 
-        $router->addRoute('post', '/payments/subscriptions', 'payments#paySubscription');
         $router->addRoute('post', '/stripe/hooks', 'stripe#hooks');
 
         $router->addRoute('cli', '/system/init', 'system#init');
@@ -37,6 +38,7 @@ class Application
         \Minz\Output\View::declareDefaultVariables([
             'environment' => \Minz\Configuration::$environment,
             'errors' => [],
+            'error' => null,
         ]);
 
         return $this->engine->run($request);
