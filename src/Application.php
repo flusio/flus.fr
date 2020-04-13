@@ -19,6 +19,7 @@ class Application
         $router->addRoute('get', '/merci', 'payments#succeeded');
         $router->addRoute('get', '/annulation', 'payments#canceled');
 
+        $router->addRoute('get', '/payments/:id', 'payments#show');
         $router->addRoute('get', '/payments/:id/pay', 'payments#pay');
         $router->addRoute('post', '/payments/subscriptions', 'payments#paySubscription');
         $router->addRoute('get', '/invoices/pdf/:id', 'invoices#download_pdf');

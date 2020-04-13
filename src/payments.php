@@ -169,6 +169,43 @@ function paySubscription($request)
 }
 
 /**
+ * Return information on payment as a Json
+ *
+ * Parameter is:
+ *
+ * - `id` of the Payment
+ *
+ * The request must be authenticated (basic auth) with the Flus token.
+ *
+ * @param \Minz\Request $request
+ *
+ * @return \Minz\Response
+ */
+function show($request)
+{
+    $auth_token = $request->header('PHP_AUTH_USER', '');
+    $private_key = \Minz\Configuration::$application['flus_private_key'];
+    if (!hash_equals($private_key, $auth_token)) {
+        return \Minz\Response::unauthorized();
+    }
+
+    $payment_dao = new models\dao\Payment();
+    $payment_id = $request->param('id');
+    $raw_payment = $payment_dao->find($payment_id);
+    if (!$raw_payment) {
+        return \Minz\Response::notFound();
+    }
+
+    $payment = new models\Payment($raw_payment);
+    $json_payment = $payment->toJson();
+
+    $output = new \Minz\Output\Text($json_payment);
+    $response = new \Minz\Response(200, $output);
+    $response->setHeader('Content-Type', 'application/json');
+    return $response;
+}
+
+/**
  * Handle the payment itself
  *
  * Parameter is:

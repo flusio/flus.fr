@@ -533,6 +533,70 @@ class paymentsTest extends IntegrationTestCase
         $this->assertResponse($response, 400);
     }
 
+    public function testShowRendersCorrectly()
+    {
+        $faker = \Faker\Factory::create();
+        $created_at = $faker->dateTime;
+        $completed_at = $faker->dateTime;
+        $amount = $faker->numberBetween(100, 100000);
+        $frequency = $faker->randomElement(['month', 'year']);
+
+        $payment_id = self::$factories['payments']->create([
+            'created_at' => $created_at->getTimestamp(),
+            'completed_at' => $completed_at->getTimestamp(),
+            'amount' => $amount,
+            'frequency' => $frequency,
+        ]);
+        $request = new \Minz\Request('GET', "/payments/{$payment_id}", [], [
+            'PHP_AUTH_USER' => \Minz\Configuration::$application['flus_private_key'],
+        ]);
+
+        $response = self::$application->run($request);
+
+        $this->assertResponse($response, 200, null, [
+            'Content-Type' => 'application/json'
+        ]);
+
+        $payment = json_decode($response->render(), true);
+        $this->assertSame($payment_id, $payment['id']);
+        $this->assertEquals($created_at->getTimestamp(), $payment['created_at']);
+        $this->assertEquals($completed_at->getTimestamp(), $payment['completed_at']);
+        $this->assertSame($amount, $payment['amount']);
+        $this->assertSame($frequency, $payment['frequency']);
+    }
+
+    public function testShowWithUnknownIdReturnsNotFound()
+    {
+        $request = new \Minz\Request('GET', '/payments/unknown', [], [
+            'PHP_AUTH_USER' => \Minz\Configuration::$application['flus_private_key'],
+        ]);
+
+        $response = self::$application->run($request);
+
+        $this->assertResponse($response, 404);
+    }
+
+    public function testShowWithMissingAuthenticationReturnsUnauthorized()
+    {
+        $faker = \Faker\Factory::create();
+        $created_at = $faker->dateTime;
+        $completed_at = $faker->dateTime;
+        $amount = $faker->numberBetween(100, 100000);
+        $frequency = $faker->randomElement(['month', 'year']);
+
+        $payment_id = self::$factories['payments']->create([
+            'created_at' => $created_at->getTimestamp(),
+            'completed_at' => $completed_at->getTimestamp(),
+            'amount' => $amount,
+            'frequency' => $frequency,
+        ]);
+        $request = new \Minz\Request('GET', "/payments/{$payment_id}");
+
+        $response = self::$application->run($request);
+
+        $this->assertResponse($response, 401);
+    }
+
     public function payCommonPotProvider()
     {
         $faker = \Faker\Factory::create();
