@@ -32,16 +32,17 @@ class Stripe
      * Return a Stripe checkout session
      *
      * @param \Website\models\Payment $payment
+     * @param \string $name
      *
      * @return \Stripe\Checkout\Session
      */
-    public function createSession($payment)
+    public function createSession($payment, $name)
     {
         return \Stripe\Checkout\Session::create([
             'customer_email' => $payment->email,
             'payment_method_types' => ['card'],
             'line_items' => [[
-                'name' => 'Participation à la cagnotte de Flus',
+                'name' => $name,
                 'amount' => $payment->amount,
                 'currency' => 'eur',
                 'quantity' => 1,

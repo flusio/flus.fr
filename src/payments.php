@@ -72,7 +72,10 @@ function payCommonPot($request)
         \Minz\Url::absoluteFor('payments#canceled')
     );
 
-    $stripe_session = $stripe_service->createSession($payment);
+    $stripe_session = $stripe_service->createSession(
+        $payment,
+        'Participation à la cagnotte de Flus'
+    );
 
     $payment_dao = new models\dao\Payment();
     $payment->setProperty('payment_intent_id', $stripe_session->payment_intent);
@@ -144,7 +147,11 @@ function paySubscription($request)
         \Minz\Url::absoluteFor('payments#canceled')
     );
 
-    $stripe_session = $stripe_service->createSession($payment);
+    $period = $payment->frequency === 'month' ? '1 mois' : '1 an';
+    $stripe_session = $stripe_service->createSession(
+        $payment,
+        "Abonnement à Flus ({$period})"
+    );
 
     $payment_dao = new models\dao\Payment();
     $payment->setProperty('payment_intent_id', $stripe_session->payment_intent);
