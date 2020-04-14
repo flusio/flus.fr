@@ -40,6 +40,13 @@ input {
     transition: border .2s ease-in-out;
 }
 
+input[type="checkbox"] {
+    width: auto;
+    height: auto;
+
+    vertical-align: middle;
+}
+
 input:focus {
     border-color: var(--color-turquoise-2);
 }
@@ -127,4 +134,8 @@ legend {
 
 .form--common-pot .columns__item--postcode {
     max-width: 8em;
+}
+
+.form--common-pot .form-group--cgv {
+    padding: var(--space-medium);
 }

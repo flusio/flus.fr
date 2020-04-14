@@ -28,4 +28,15 @@ class homeTest extends IntegrationTestCase
         $pointer = $response->output()->pointer();
         $this->assertSame('home/credits.phtml', $pointer);
     }
+
+    public function testCgvRendersCorrectly()
+    {
+        $request = new \Minz\Request('GET', '/cgv');
+
+        $response = self::$application->run($request);
+
+        $this->assertResponse($response, 200, 'Conditions Générales de Vente');
+        $pointer = $response->output()->pointer();
+        $this->assertSame('home/cgv.phtml', $pointer);
+    }
 }

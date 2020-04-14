@@ -44,6 +44,7 @@ function init()
  */
 function payCommonPot($request)
 {
+    $accept_cgv = $request->param('accept_cgv', false);
     $email = $request->param('email');
     $amount = $request->param('amount', 0);
     $address = $request->param('address', [
@@ -53,6 +54,17 @@ function payCommonPot($request)
         'postcode' => '',
         'city' => '',
     ]);
+
+    if (!$accept_cgv) {
+        return \Minz\Response::badRequest('payments/init.phtml', [
+            'email' => $email,
+            'amount' => $amount,
+            'address' => $address,
+            'errors' => [
+                'cgv' => 'Vous devez accepter ces conditions pour participer à la cagnotte.',
+            ],
+        ]);
+    }
 
     try {
         $payment = models\Payment::init('common_pot', $email, $amount, $address);

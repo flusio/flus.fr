@@ -29,6 +29,7 @@ class paymentsTest extends IntegrationTestCase
             'email' => $email,
             'amount' => $amount,
             'address' => $address,
+            'accept_cgv' => true,
         ]);
 
         $response = self::$application->run($request);
@@ -50,6 +51,7 @@ class paymentsTest extends IntegrationTestCase
             'email' => $email,
             'amount' => $amount,
             'address' => $address,
+            'accept_cgv' => true,
         ]);
 
         $response = self::$application->run($request);
@@ -68,6 +70,7 @@ class paymentsTest extends IntegrationTestCase
             'email' => $email,
             'amount' => $amount,
             'address' => $address,
+            'accept_cgv' => true,
         ]);
 
         $this->assertSame(0, $payment_dao->count());
@@ -91,6 +94,27 @@ class paymentsTest extends IntegrationTestCase
     /**
      * @dataProvider payCommonPotProvider
      */
+    public function testPayCommonPotWithoutAcceptingCgvReturnsABadRequest($email, $amount, $address)
+    {
+        $request = new \Minz\Request('POST', '/cagnotte', [
+            'email' => $email,
+            'amount' => $amount,
+            'address' => $address,
+            'accept_cgv' => false,
+        ]);
+
+        $response = self::$application->run($request);
+
+        $this->assertResponse(
+            $response,
+            400,
+            'Vous devez accepter ces conditions pour participer à la cagnotte.'
+        );
+    }
+
+    /**
+     * @dataProvider payCommonPotProvider
+     */
     public function testPayCommonPotWithWrongEmailReturnsABadRequest($email, $amount, $address)
     {
         $faker = \Faker\Factory::create();
@@ -100,6 +124,7 @@ class paymentsTest extends IntegrationTestCase
             'email' => $email,
             'amount' => $amount,
             'address' => $address,
+            'accept_cgv' => true,
         ]);
 
         $response = self::$application->run($request);
@@ -123,6 +148,7 @@ class paymentsTest extends IntegrationTestCase
             'email' => $email,
             'amount' => $amount,
             'address' => $address,
+            'accept_cgv' => true,
         ]);
 
         $response = self::$application->run($request);
@@ -146,6 +172,7 @@ class paymentsTest extends IntegrationTestCase
             'email' => $email,
             'amount' => $amount,
             'address' => $address,
+            'accept_cgv' => true,
         ]);
 
         $response = self::$application->run($request);
@@ -169,6 +196,7 @@ class paymentsTest extends IntegrationTestCase
             'email' => $email,
             'amount' => $amount,
             'address' => $address,
+            'accept_cgv' => true,
         ]);
 
         $response = self::$application->run($request);
@@ -188,6 +216,7 @@ class paymentsTest extends IntegrationTestCase
         $request = new \Minz\Request('POST', '/cagnotte', [
             'email' => $email,
             'address' => $address,
+            'accept_cgv' => true,
         ]);
 
         $response = self::$application->run($request);
@@ -207,6 +236,7 @@ class paymentsTest extends IntegrationTestCase
         $request = new \Minz\Request('POST', '/cagnotte', [
             'amount' => $amount,
             'address' => $address,
+            'accept_cgv' => true,
         ]);
 
         $response = self::$application->run($request);
@@ -229,6 +259,7 @@ class paymentsTest extends IntegrationTestCase
             'email' => $email,
             'amount' => $amount,
             'address' => $address,
+            'accept_cgv' => true,
         ]);
 
         $response = self::$application->run($request);
@@ -251,6 +282,7 @@ class paymentsTest extends IntegrationTestCase
             'email' => $email,
             'amount' => $amount,
             'address' => $address,
+            'accept_cgv' => true,
         ]);
 
         $response = self::$application->run($request);
@@ -273,6 +305,7 @@ class paymentsTest extends IntegrationTestCase
             'email' => $email,
             'amount' => $amount,
             'address' => $address,
+            'accept_cgv' => true,
         ]);
 
         $response = self::$application->run($request);
@@ -295,6 +328,7 @@ class paymentsTest extends IntegrationTestCase
             'email' => $email,
             'amount' => $amount,
             'address' => $address,
+            'accept_cgv' => true,
         ]);
 
         $response = self::$application->run($request);
@@ -317,6 +351,7 @@ class paymentsTest extends IntegrationTestCase
             'email' => $email,
             'amount' => $amount,
             'address' => $address,
+            'accept_cgv' => true,
         ]);
 
         $response = self::$application->run($request);
@@ -340,6 +375,7 @@ class paymentsTest extends IntegrationTestCase
             'email' => $email,
             'amount' => $amount,
             'address' => $address,
+            'accept_cgv' => true,
         ]);
 
         $response = self::$application->run($request);

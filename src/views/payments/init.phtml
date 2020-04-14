@@ -19,9 +19,9 @@
 
 <div class="section__intro">
     <p>
-        La cagnotte commune sera accessible dès la sortie de la prochaine
-        version de Flus. Elle sera mise à disposition de n’importe qui n’ayant
-        pas les moyens de payer un abonnement.
+        La cagnotte commune sera activée dès la sortie de la prochaine version
+        de Flus. Elle sera mise à disposition de n’importe qui souhaitant
+        bénéficier d’un abonnement gratuit.
     </p>
 
     <p>
@@ -69,12 +69,6 @@
         <label for="email">
             Adresse courriel
         </label>
-
-        <p class="form-group__caption">
-            Cette adresse doit être transmise à Stripe pour assurer le bon
-            déroulement du paiement. Vous y recevrez également un reçu, mais
-            elle ne servira à rien d’autre.
-        </p>
 
         <input
             id="email"
@@ -211,6 +205,35 @@
             </div>
         </div>
     </fieldset>
+
+    <div class="form-group form-group--cgv <?= isset($errors['cgv']) ? 'form-group--invalid' : '' ?>">
+        <p class="form-group__caption">
+            Avant d’aller plus loin, vous devriez prendre le temps de
+            <a href="<?= url('home#cgv') ?>" target="_blank" rel="noopener noreferrer nofollow">
+                lire les Conditions Générales de Vente (<abbr>CGV</abbr>)</a>
+            pour vous assurer que celles-ci vous conviennent. Vous serez
+            ensuite redirigé·e vers <a href="https://stripe.com/fr">Stripe</a>
+            pour le paiement.
+        </p>
+
+        <label for="cgv">
+            <input
+                id="cgv"
+                name="accept_cgv"
+                type="checkbox"
+                required
+            />
+
+            Accepter les Conditions Générales de Vente et le traitement de vos
+            données par la société Stripe.
+        </label>
+
+        <?php if (isset($errors['cgv'])): ?>
+            <p class="form-group__error">
+                <?= $errors['cgv'] ?>
+            </p>
+        <?php endif; ?>
+    </div>
 
     <div class="form__actions">
         <button type="submit" class="button--primary">

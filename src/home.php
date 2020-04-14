@@ -24,3 +24,8 @@ function credits()
 {
     return \Minz\Response::ok('home/credits.phtml');
 }
+
+function cgv()
+{
+    return \Minz\Response::ok('home/cgv.phtml');
+}
