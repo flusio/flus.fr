@@ -593,6 +593,26 @@ hr::after {
     background-color: #1877F2;
 }
 
+.faq__question {
+    font-weight: bold;
+
+    counter-increment: manifesto-counter;
+}
+
+.faq__question::before {
+    width: 2.5rem;
+    height: 2.5rem;
+
+    color: var(--color-text-secondary);
+    font-size: var(--size-small);
+
+    content: counter(manifesto-counter) " ·";
+}
+
+.faq__answer {
+    margin-bottom: var(--space-medium);
+}
+
 .copyright {
     font-size: var(--size-small);
     font-style: italic;

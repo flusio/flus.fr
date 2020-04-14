@@ -11,233 +11,333 @@
     ]);
 ?>
 
-<div class="title">
-    <h1 class="title__header">
-        Cagnotte commune
-    </h1>
-</div>
-
-<div class="section__intro">
-    <p>
-        La cagnotte commune sera activée dès la sortie de la prochaine version
-        de Flus. Elle sera mise à disposition de n’importe qui souhaitant
-        bénéficier d’un abonnement gratuit.
-    </p>
-
-    <p>
-        <strong>Vous pouvez y contribuer dès maintenant afin de soutenir mon
-            travail.</strong>
-    </p>
-</div>
-
-<form
-     method="post"
-     action="<?= url('payments#payCommonPot') ?>"
-     class="form--common-pot"
- >
-    <div class="form-group <?= isset($errors['amount']) ? 'form-group--invalid' : '' ?>">
-        <label for="amount">
-            Montant
-        </label>
-
-        <div class="form-group__stack">
-            <input
-                id="amount"
-                name="amount"
-                type="number"
-                step="0.5"
-                min="1"
-                max="1000"
-                value="<?= $amount ?>"
-                required
-                <?= isset($errors['amount']) ? 'autofocus' : '' ?>
-            />
-
-            <span>
-                euros
-            </span>
-        </div>
-
-        <?php if (isset($errors['amount'])): ?>
-            <p class="form-group__error">
-                <?= $errors['amount'] ?>
-            </p>
-        <?php endif; ?>
+<section>
+    <div class="title">
+        <h1 class="title__header">
+            Cagnotte commune
+        </h1>
     </div>
 
-    <div class="form-group <?= isset($errors['email']) ? 'form-group--invalid' : '' ?>">
-        <label for="email">
-            Adresse courriel
-        </label>
-
-        <input
-            id="email"
-            name="email"
-            type="email"
-            value="<?= $email ?>"
-            required
-        />
-
-        <?php if (isset($errors['email'])): ?>
-            <p class="form-group__error">
-                <?= $errors['email'] ?>
-            </p>
-        <?php endif; ?>
-    </div>
-
-    <fieldset>
-        <legend>Adresse postale</legend>
-
-        <p class="fieldset__caption">
-            Cette adresse m’est nécessaire pour pouvoir vous adresser une
-            facture en bonne et due forme.
+    <div class="section__intro">
+        <p>
+            La cagnotte commune sera activée dès la sortie de la prochaine version
+            de Flus. Elle sera mise à disposition de n’importe qui souhaitant
+            bénéficier d’un abonnement gratuit.
         </p>
 
-        <div class="columns">
-            <div class="columns__item">
-                <div class="form-group <?= isset($errors['address_first_name']) ? 'form-group--invalid' : '' ?>">
-                    <label for="first-name">
-                        Prénom
-                    </label>
+        <p>
+            <strong>Vous pouvez y contribuer dès maintenant afin de soutenir mon
+                travail.</strong>
+        </p>
 
-                    <input
-                        id="first-name"
-                        name="address[first_name]"
-                        type="text"
-                        value="<?= $address['first_name'] ?>"
-                        required
-                    />
+        <p>
+            <a href="#fonctionnement">
+                En savoir plus
+            </a>
+        </p>
+    </div>
 
-                    <?php if (isset($errors['address_first_name'])): ?>
-                        <p class="form-group__error">
-                            <?= $errors['address_first_name'] ?>
-                        </p>
-                    <?php endif; ?>
-                </div>
-            </div>
-
-            <div class="columns__item">
-                <div class="form-group <?= isset($errors['address_last_name']) ? 'form-group--invalid' : '' ?>">
-                    <label for="last-name">
-                        Nom
-                    </label>
-
-                    <input
-                        id="last-name"
-                        name="address[last_name]"
-                        type="text"
-                        value="<?= $address['last_name'] ?>"
-                        required
-                    />
-
-                    <?php if (isset($errors['address_last_name'])): ?>
-                        <p class="form-group__error">
-                            <?= $errors['address_last_name'] ?>
-                        </p>
-                    <?php endif; ?>
-                </div>
-            </div>
-        </div>
-
-        <div class="form-group <?= isset($errors['address_address1']) ? 'form-group--invalid' : '' ?>">
-            <label for="address1">
-                Adresse
+    <form
+         method="post"
+         action="<?= url('payments#payCommonPot') ?>"
+         class="form--common-pot"
+     >
+        <div class="form-group <?= isset($errors['amount']) ? 'form-group--invalid' : '' ?>">
+            <label for="amount">
+                Montant
             </label>
 
-            <input
-                id="address1"
-                name="address[address1]"
-                type="text"
-                value="<?= $address['address1'] ?>"
-                required
-            />
+            <div class="form-group__stack">
+                <input
+                    id="amount"
+                    name="amount"
+                    type="number"
+                    step="0.5"
+                    min="1"
+                    max="1000"
+                    value="<?= $amount ?>"
+                    required
+                    <?= isset($errors['amount']) ? 'autofocus' : '' ?>
+                />
 
-            <?php if (isset($errors['address_address1'])): ?>
+                <span>
+                    euros
+                </span>
+            </div>
+
+            <?php if (isset($errors['amount'])): ?>
                 <p class="form-group__error">
-                    <?= $errors['address_address1'] ?>
+                    <?= $errors['amount'] ?>
                 </p>
             <?php endif; ?>
         </div>
 
-        <div class="columns">
-            <div class="columns__item columns__item--postcode">
-                <div class="form-group <?= isset($errors['address_postcode']) ? 'form-group--invalid' : '' ?>">
-                    <label for="postcode">
-                        Code postal
-                    </label>
+        <div class="form-group <?= isset($errors['email']) ? 'form-group--invalid' : '' ?>">
+            <label for="email">
+                Adresse courriel
+            </label>
 
-                    <input
-                        id="postcode"
-                        name="address[postcode]"
-                        type="text"
-                        value="<?= $address['postcode'] ?>"
-                        required
-                    />
-
-                    <?php if (isset($errors['address_postcode'])): ?>
-                        <p class="form-group__error">
-                            <?= $errors['address_postcode'] ?>
-                        </p>
-                    <?php endif; ?>
-                </div>
-            </div>
-
-            <div class="columns__item columns__item--city">
-                <div class="form-group <?= isset($errors['address_city']) ? 'form-group--invalid' : '' ?>">
-                    <label for="city">
-                        Ville
-                    </label>
-
-                    <input
-                        id="city"
-                        name="address[city]"
-                        type="text"
-                        value="<?= $address['city'] ?>"
-                        required
-                    />
-
-                    <?php if (isset($errors['address_city'])): ?>
-                        <p class="form-group__error">
-                            <?= $errors['address_city'] ?>
-                        </p>
-                    <?php endif; ?>
-                </div>
-            </div>
-        </div>
-    </fieldset>
-
-    <div class="form-group form-group--cgv <?= isset($errors['cgv']) ? 'form-group--invalid' : '' ?>">
-        <p class="form-group__caption">
-            Avant d’aller plus loin, vous devriez prendre le temps de
-            <a href="<?= url('home#cgv') ?>" target="_blank" rel="noopener noreferrer nofollow">
-                lire les Conditions Générales de Vente (<abbr>CGV</abbr>)</a>
-            pour vous assurer que celles-ci vous conviennent. Vous serez
-            ensuite redirigé·e vers <a href="https://stripe.com/fr">Stripe</a>
-            pour le paiement.
-        </p>
-
-        <label for="cgv">
             <input
-                id="cgv"
-                name="accept_cgv"
-                type="checkbox"
+                id="email"
+                name="email"
+                type="email"
+                value="<?= $email ?>"
                 required
             />
 
-            Accepter les Conditions Générales de Vente et le traitement de vos
-            données par la société Stripe.
-        </label>
+            <?php if (isset($errors['email'])): ?>
+                <p class="form-group__error">
+                    <?= $errors['email'] ?>
+                </p>
+            <?php endif; ?>
+        </div>
 
-        <?php if (isset($errors['cgv'])): ?>
-            <p class="form-group__error">
-                <?= $errors['cgv'] ?>
+        <fieldset>
+            <legend>Adresse postale</legend>
+
+            <p class="fieldset__caption">
+                Cette adresse m’est nécessaire pour pouvoir vous adresser une
+                facture en bonne et due forme.
             </p>
-        <?php endif; ?>
+
+            <div class="columns">
+                <div class="columns__item">
+                    <div class="form-group <?= isset($errors['address_first_name']) ? 'form-group--invalid' : '' ?>">
+                        <label for="first-name">
+                            Prénom
+                        </label>
+
+                        <input
+                            id="first-name"
+                            name="address[first_name]"
+                            type="text"
+                            value="<?= $address['first_name'] ?>"
+                            required
+                        />
+
+                        <?php if (isset($errors['address_first_name'])): ?>
+                            <p class="form-group__error">
+                                <?= $errors['address_first_name'] ?>
+                            </p>
+                        <?php endif; ?>
+                    </div>
+                </div>
+
+                <div class="columns__item">
+                    <div class="form-group <?= isset($errors['address_last_name']) ? 'form-group--invalid' : '' ?>">
+                        <label for="last-name">
+                            Nom
+                        </label>
+
+                        <input
+                            id="last-name"
+                            name="address[last_name]"
+                            type="text"
+                            value="<?= $address['last_name'] ?>"
+                            required
+                        />
+
+                        <?php if (isset($errors['address_last_name'])): ?>
+                            <p class="form-group__error">
+                                <?= $errors['address_last_name'] ?>
+                            </p>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group <?= isset($errors['address_address1']) ? 'form-group--invalid' : '' ?>">
+                <label for="address1">
+                    Adresse
+                </label>
+
+                <input
+                    id="address1"
+                    name="address[address1]"
+                    type="text"
+                    value="<?= $address['address1'] ?>"
+                    required
+                />
+
+                <?php if (isset($errors['address_address1'])): ?>
+                    <p class="form-group__error">
+                        <?= $errors['address_address1'] ?>
+                    </p>
+                <?php endif; ?>
+            </div>
+
+            <div class="columns">
+                <div class="columns__item columns__item--postcode">
+                    <div class="form-group <?= isset($errors['address_postcode']) ? 'form-group--invalid' : '' ?>">
+                        <label for="postcode">
+                            Code postal
+                        </label>
+
+                        <input
+                            id="postcode"
+                            name="address[postcode]"
+                            type="text"
+                            value="<?= $address['postcode'] ?>"
+                            required
+                        />
+
+                        <?php if (isset($errors['address_postcode'])): ?>
+                            <p class="form-group__error">
+                                <?= $errors['address_postcode'] ?>
+                            </p>
+                        <?php endif; ?>
+                    </div>
+                </div>
+
+                <div class="columns__item columns__item--city">
+                    <div class="form-group <?= isset($errors['address_city']) ? 'form-group--invalid' : '' ?>">
+                        <label for="city">
+                            Ville
+                        </label>
+
+                        <input
+                            id="city"
+                            name="address[city]"
+                            type="text"
+                            value="<?= $address['city'] ?>"
+                            required
+                        />
+
+                        <?php if (isset($errors['address_city'])): ?>
+                            <p class="form-group__error">
+                                <?= $errors['address_city'] ?>
+                            </p>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+
+        <div class="form-group form-group--cgv <?= isset($errors['cgv']) ? 'form-group--invalid' : '' ?>">
+            <p class="form-group__caption">
+                Avant d’aller plus loin, vous devriez prendre le temps de
+                <a href="<?= url('home#cgv') ?>" target="_blank" rel="noopener noreferrer nofollow">
+                    lire les Conditions Générales de Vente (<abbr>CGV</abbr>)</a>
+                pour vous assurer que celles-ci vous conviennent. Vous serez
+                ensuite redirigé·e vers <a href="https://stripe.com/fr">Stripe</a>
+                pour le paiement.
+            </p>
+
+            <label for="cgv">
+                <input
+                    id="cgv"
+                    name="accept_cgv"
+                    type="checkbox"
+                    required
+                />
+
+                Accepter les Conditions Générales de Vente et le traitement de vos
+                données par la société Stripe.
+            </label>
+
+            <?php if (isset($errors['cgv'])): ?>
+                <p class="form-group__error">
+                    <?= $errors['cgv'] ?>
+                </p>
+            <?php endif; ?>
+        </div>
+
+        <div class="form__actions">
+            <button type="submit" class="button--primary">
+                Participer à la cagnotte
+            </button>
+        </div>
+    </form>
+</section>
+
+<section class="section" id="fonctionnement">
+    <div class="title">
+        <h2 class="title__header">
+            Fonctionnement
+        </h2>
     </div>
 
-    <div class="form__actions">
-        <button type="submit" class="button--primary">
-            Participer à la cagnotte
-        </button>
-    </div>
-</form>
+    <p class="section__intro">
+        N’importe qui devrait pouvoir bénéficier de l’accès à l’information.
+        Or, j’ai également besoin de vivre de mon activité. Pour concilier ces
+        deux positions, j’ai mis en place ce système de cagnotte commune.
+    </p>
+
+    <dl class="faq">
+        <dt class="faq__question">
+            En quoi consiste cette cagnotte commune&nbsp;?
+        </dt>
+        <dd class="faq__answer">
+            Il s’agit de proposer un système alternatif de paiement pour les
+            personnes n’ayant pas les moyens de s’offrir un abonnement à Flus.
+            Cette cagnotte permet simplement de mettre en commun les moyens des
+            un·es et des autres pour bénéficier tous ensemble de l’accès à ce
+            service. Elle permet également de proposer un autre moyen de
+            soutenir mon travail aux personnes qui le souhaitent.
+        </dd>
+
+        <dt class="faq__question">
+            Qui peut y participer&nbsp;?
+        </dt>
+        <dd class="faq__answer">
+            N’importe qui peut financer la cagnotte tant qu’il en a les moyens
+            et l’envie. Il n’y a bien entendu aucune obligation à y participer,
+            et cela n’offre aucun privilège supplémentaire.
+        </dd>
+
+        <dt class="faq__question">
+            Quand sera-t-elle disponible&nbsp;?
+        </dt>
+        <dd class="faq__answer">
+            Je compte ouvrir Flus <abbr>v2</abbr> en bêta vers la mi-automne,
+            la cagnotte sera activée à ce moment-là.
+        </dd>
+
+        <dt class="faq__question">
+            Comment en bénéficier&nbsp;?
+        </dt>
+        <dd class="faq__answer">
+            Les personnes qui souhaitent bénéficier d’un abonnement gratuit
+            auront simplement à en faire la demande au moment du
+            renouvellement de leur abonnement, aucune justification ne leur
+            sera demandée.
+        </dd>
+
+        <dt class="faq__question">
+            Comment seront débloqués les abonnements gratuits&nbsp;?
+        </dt>
+        <dd class="faq__answer">
+            La somme totale de la cagnotte sera divisée par le prix d’un
+            abonnement mensuel et donnera ainsi le nombre d’abonnements
+            disponibles. Ainsi, une somme de 30&nbsp;€ dans la cagnotte
+            débloquera 10 abonnements mensuels.
+        </dd>
+
+        <dt class="faq__question">
+            Pourra-t-on bénéficier d’abonnements annuels gratuits&nbsp;?
+        </dt>
+        <dd class="faq__answer">
+            Pour l’instant ce n’est pas prévu. Afin de laisser la chance au
+            plus de monde possible de bénéficier d’un abonnement gratuit, je
+            préfère ne pas laisser la possibilité d’en prendre un trop grand
+            nombre en une seule fois. Les mécanismes de cette cagnotte ne sont
+            toutefois pas entièrement arrêtés.
+        </dd>
+
+        <dt class="faq__question">
+            Puis-je bénéficier d’un abonnement gratuit, via la cagnotte, sur
+            Flus <abbr>v1</abbr>&nbsp;?
+        </dt>
+        <dd class="faq__answer">
+            Malheureusement, non. Cela demanderait un temps supplémentaire de
+            développement, que je considère plus utile à passer sur d’autres
+            choses. Je considère par ailleurs que des alternatives suffisamment
+            simples, accessibles et respectueuses de vos données existent, la
+            plupart du temps gratuitement. Je préfère ainsi la réserver pour la
+            <abbr>v2</abbr> qui apportera une expérience totalement différente
+            et unique.
+        </dd>
+    </ol>
+</section>
+
+<hr />
