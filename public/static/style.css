@@ -381,6 +381,32 @@ hr::after {
     padding-top: var(--space-medium);
 }
 
+.revenues {
+    display: flex;
+    margin-top: var(--space-large);
+    margin-bottom: var(--space-large);
+    padding-left: 0;
+
+    justify-content: center;
+
+    list-style: none;
+}
+
+.revenues__item {
+    margin: var(--space-medium);
+    padding: var(--space-small);
+}
+
+.revenues__amount {
+    font-weight: bold;
+    font-size: var(--size-large);
+}
+
+.revenues__label {
+    color: var(--color-grey-1);
+    font-size: var(--size-small);
+}
+
 .revenues__actions {
     display: flex;
     margin-top: var(--space-large);

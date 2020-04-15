@@ -1,0 +1,142 @@
+<?php
+    $this->layout('base.phtml', [
+        'title' => 'Financement de Flus, comment ça fonctionne ?',
+        'canonical' => url_full('home#funding'),
+    ]);
+?>
+
+<section class="section">
+    <div class="title">
+        <h1 class="title__header">Financement</h1>
+    </div>
+
+    <p class="section__intro">
+        J’ai décidé de faire de Flus mon activité principale. Pour en vivre, il
+        me faut donc rendre le service payant. Cette page me permet de vous
+        expliquer à quoi je destine l’argent récolté, en toute transparence.
+    </p>
+
+    <ul class="revenues">
+        <li class="revenues__item">
+            <div class="revenues__amount">
+                <?= $subscriptions_amount ?>&nbsp;€
+            </div>
+            <div class="revenues__label">
+                abonnements
+            </div>
+        </li>
+
+        <li class="revenues__item">
+            <div class="revenues__amount">
+                <?= $common_pot_amount ?>&nbsp;€<br />
+            </div>
+            <div class="revenues__label">
+                en cagnotte
+            </div>
+        </li>
+    </ul>
+
+    <div class="gauge" style="--gauge-value: <?= $percent_target ?>%;">
+        <p class="gauge__status">
+            Montant récolté&nbsp;: <strong><?= $this->safe('total_revenue') ?>
+                sur <?= $this->safe('revenue_target') ?>&nbsp;€</strong>
+        </p>
+
+        <ul class="gauge__container">
+            <li class="gauge__current"></li>
+
+            <li class="gauge__item gauge__item--purchases">
+                Achats<br />8&nbsp;%
+            </li>
+
+            <li class="gauge__item gauge__item--services">
+                Prestations<br />16,5&nbsp;%
+            </li>
+
+            <li class="gauge__item gauge__item--social">
+                Cotisations<br />16,5&nbsp;%
+            </li>
+
+            <li class="gauge__item gauge__item--salary">
+                Rémunération<br />59&nbsp;%
+            </li>
+        </ul>
+    </div>
+</section>
+
+<hr />
+
+<section class="section">
+    <p>
+        Cet argent va me permettre de financer quatre principaux postes de
+        dépenses que je détaille ci-dessous.
+    </p>
+
+    <p>
+        <strong>Le premier poste est celui des achats.</strong> Compte-tenu des
+        frais déjà engagé depuis le début de mon activité, j’ai estimé avec une
+        marge relativement importante que mes dépenses devraient s’élever à
+        environ 2&nbsp;500&nbsp;€ sur un an. Ce poste comprend le paiement des
+        serveurs, noms de domaine et fournitures éventuelles. J’y ai également
+        adjoint les frais liés aux paiements, ainsi que mes frais bancaires et
+        de mutuelle.
+    </p>
+
+    <p>
+        <strong>Le second poste, celui des prestations, est le plus variable.</strong>
+        J’ai souhaité provisionner un budget pour faire appel à des
+        prestataires externes. J’ai estimé ce budget à 5&nbsp;000&nbsp;€, ce
+        qui peut représenter par exemple 10 jours de travail à 500&nbsp;€ pour
+        un ou une <abbr>UX</abbr> designer. J’utiliserai également ce budget si
+        j’ai besoin de faire appel à un avocat. À noter que je l’ai déjà entamé
+        pour la réalisation de mon logo.
+    </p>
+
+    <p>
+        <strong>Ensuite, j’ai réfléchi à combien je souhaitais me rémunérer.</strong>
+        Je considère que je peux commencer à vivre sans avoir à me poser de
+        questions sur comment je vais terminer la fin du mois à environ
+        1&nbsp;500&nbsp;€ par mois, c’est-à-dire 18&nbsp;000&nbsp;€ annuel.
+        En tant que micro-entrepreneur, je ne bénéficie pas d’une aussi bonne
+        couverture sociale que ce dont je pourrais bénéficier en tant que
+        salarié en <abbr>CDI</abbr>. Je souhaite donc à terme pouvoir augmenter
+        cette rémunération afin d’arriver à un niveau de vie moins fragile.
+    </p>
+
+    <p>
+        <strong>Le dernier poste de dépenses est celui des cotisations sociales.</strong>
+        En micro-entreprise au régime micro-social simplifié, je suis prélevé à
+        hauteur de 22&nbsp;% de mon chiffre d’affaires (<abbr>CA</abbr>). Je
+        bénéficie également de l’aide aux créateurs et repreneurs d’entreprise
+        (<abbr>ACRE</abbr>) qui représente une exonération de ces cotisations.
+        Je ne rentre pas dans les subtilités du calcul de ces cotisations et
+        j’ai simplifié en considérant 16,5&nbsp;% de mon <abbr>CA</abbr> cible,
+        c’est-à-dire environ 5&nbsp;000&nbsp;€.
+    </p>
+
+    <p class="section__outro paragraph--center">
+        Si vous souhaitez me soutenir, vous avez le choix entre vous créer un
+        compte payant et <strong>bénéficier de la version actuelle de
+            Flus</strong> –&nbsp;sous la forme d’un agrégateur de flux
+        <abbr>RSS</abbr>&nbsp;–, ou bien <strong>financer une cagnotte commune
+            pour la prochaine version</strong>.
+    </p>
+
+    <div class="revenues__actions">
+        <a class="revenues__button call-to-action" href="https://flus.io/i/?c=auth&a=register">
+            Créez un compte payant
+        </a>
+
+        <a class="revenues__button call-to-action" href="<?= url('payments#init') ?>">
+            Participez à la cagnotte commune
+        </a>
+    </div>
+
+    <p class="paragraph--center">
+        <a href="<?= url('home#index') ?>">
+            Retourner à l’accueil
+        </a>
+    </p>
+</section>
+
+<hr />

@@ -92,4 +92,17 @@ class Payment extends \Minz\DatabaseModel
         $statement = $this->query($sql);
         return intval($statement->fetchColumn());
     }
+
+    /**
+     * Return the sum of amounts for completed subscriptions payments
+     *
+     * @return integer
+     */
+    public function findSubscriptionsRevenue()
+    {
+        $sql = 'SELECT SUM(amount) FROM payments '
+             . 'WHERE type = "subscription" AND completed_at IS NOT NULL';
+        $statement = $this->query($sql);
+        return intval($statement->fetchColumn());
+    }
 }
