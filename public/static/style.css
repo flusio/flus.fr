@@ -246,7 +246,7 @@ hr::after {
 
 .illustration {
     display: block;
-    margin: var(--space-medium);
+    margin: var(--space-large) var(--space-medium);
 }
 
 .illustration--centered {
@@ -274,11 +274,6 @@ hr::after {
         shape-outside: polygon(85px 65px, 300px 15px, 470px 80px, 480px 100%, 40px 100%, 0 50%);
     }
 
-    .illustration.savings {
-        margin-top: var(--space-large);
-        margin-bottom: var(--space-large);
-    }
-
     .illustration.reading {
         margin-top: 1em;
         margin-left: -14em;
@@ -295,6 +290,7 @@ hr::after {
     }
 
     .illustration.me {
+        margin-top: 0;
         margin-right: -3em;
 
         shape-outside: circle(53% at 125px center);
@@ -312,6 +308,10 @@ hr::after {
     .layout {
         grid-template-columns: 1fr [main] 60ch 1fr;
     }
+}
+
+.layout--error {
+    grid-template-rows: [header] minmax(5em, 30vmin) [main] 1fr;
 }
 
 .layout__header {
