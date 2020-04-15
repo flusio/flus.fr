@@ -34,10 +34,6 @@ class Application
         \Minz\Url::setRouter($router);
 
         setlocale(LC_ALL, 'fr_FR.UTF8');
-
-        // make sure to clear Stripe cookies
-        setcookie('__stripe_mid', '', time() - 3600);
-        setcookie('__stripe_sid', '', time() - 3600);
     }
 
     public function run($request)

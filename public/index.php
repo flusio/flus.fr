@@ -27,6 +27,10 @@ $request = new \Minz\Request($http_method, $http_uri, $http_parameters, $_SERVER
 $application = new \Website\Application();
 $response = $application->run($request);
 
+// make sure to clear Stripe cookies
+setcookie('__stripe_mid', '', time() - 3600);
+setcookie('__stripe_sid', '', time() - 3600);
+
 // Generate the HTTP headers and output
 http_response_code($response->code());
 foreach ($response->headers() as $header) {
