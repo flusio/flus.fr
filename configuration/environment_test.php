@@ -11,9 +11,11 @@ $temporary_directory = sys_get_temp_dir() . '/flus';
 return [
     'app_name' => 'Website',
     'use_session' => false,
+
     'url_options' => [
         'host' => 'localhost',
     ],
+
     'application' => [
         'stripe_private_key' => 'sk_test_123',
         'stripe_public_key' => 'pk_test_123',
@@ -23,9 +25,16 @@ return [
         // used only in tests
         'number_of_datasets' => $number_of_datasets,
     ],
+
     'database' => [
         'dsn' => 'sqlite::memory:',
     ],
+
+    'mailer' => [
+        'type' => 'mail',
+        'from' => 'root@localhost',
+    ],
+
     'data_path' => $temporary_directory,
     'no_syslog' => !getenv('APP_SYSLOG_ENABLED'),
 ];

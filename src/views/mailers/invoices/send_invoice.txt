@@ -1,0 +1,9 @@
+Bonjour,
+
+Votre paiement pour Flus a bien été pris en compte et je vous en remercie ! Vous trouverez ci-joint le reçu associé à ce paiement.
+
+En vous souhaitant une bonne journée / soirée !
+
+Marien
+
+PS : ce courriel vous a été envoyé parce que vous – ou quelqu’un d’autre – avez effectué un paiement sur le site <?= url_full('home#index') ?>
