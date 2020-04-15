@@ -38,19 +38,16 @@ function download_pdf($request)
         return \Minz\Response::notFound();
     }
 
-    $invoice_filename = "facture_{$payment->invoice_number}.pdf";
-
     $invoices_path = \Minz\Configuration::$data_path . '/invoices';
     @mkdir($invoices_path);
 
-    $invoice_path = $invoices_path . '/' . $invoice_filename;
-    if (!file_exists($invoice_path)) {
+    if (!$payment->invoiceExists()) {
         $invoice_pdf_service = new services\InvoicePDF($payment);
-        $invoice_pdf_service->createPDF($invoice_path);
+        $invoice_pdf_service->createPDF($payment->invoiceFilepath());
     }
 
-    $output = new \Minz\Output\File($invoice_path);
+    $output = new \Minz\Output\File($payment->invoiceFilepath());
     $response = new \Minz\Response(200, $output);
-    $response->setHeader('Content-Disposition', 'attachment; filename="' . $invoice_filename . '"');
+    $response->setHeader('Content-Disposition', 'attachment; filename="' . $payment->invoiceFilename() . '"');
     return $response;
 }

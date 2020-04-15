@@ -155,6 +155,43 @@ class Payment extends \Minz\Model
     }
 
     /**
+     * @return string|null
+     */
+    public function invoiceFilepath()
+    {
+        if (!$this->invoice_number) {
+            return null;
+        }
+
+        $invoices_path = \Minz\Configuration::$data_path . '/invoices';
+        return $invoices_path . '/' . $this->invoiceFilename();
+    }
+
+    /**
+     * @return string|null
+     */
+    public function invoiceFilename()
+    {
+        if (!$this->invoice_number) {
+            return null;
+        }
+
+        return "facture_{$this->invoice_number}.pdf";
+    }
+
+    /**
+     * @return boolean
+     */
+    public function invoiceExists()
+    {
+        if (!$this->invoice_number) {
+            return false;
+        }
+
+        return file_exists($this->invoiceFilepath());
+    }
+
+    /**
      * @return string
      */
     public function toJson()
