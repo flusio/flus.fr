@@ -1,0 +1,161 @@
+<?php
+    $this->layout('base.phtml', [
+        'title' => 'Mentions légales · Flus',
+        'canonical' => url_full('home#legal'),
+    ]);
+?>
+
+<section class="section">
+    <div class="title">
+        <h1 class="title__header">Mentions légales</h1>
+    </div>
+
+    <p class="section__intro">
+        Vous trouverez ici toutes les informations que je suis légalement
+        tenu de vous présenter concernant mon identité et la gestion de vos
+        données personnelles. Il est important que vous puissiez avoir
+        confiance dans la manière dont elles sont gérées, c’est pourquoi j’ai
+        tenté de rendre cette page la plus lisible possible.
+    </p>
+
+    <h2 id="éditeur-et-directeur-de-la-publication">Éditeur et directeur de la publication</h2>
+
+    <p>
+        L’éditeur et directeur de la publication de ce site est Marien Fressinaud.
+        Adresse : 57 rue du Vercors – 38000 Grenoble – France.
+        Courriel : <a href="mailto:marien@flus.io">marien@flus.io</a>
+    </p>
+
+    <p>
+        Flus, micro-entreprise<br />
+        <abbr>RCS</abbr> Grenoble 878 196 278<br />
+        N° Siret : 878 196 278 00013
+    </p>
+
+    <h2 id="hébergeur">Hébergeur</h2>
+
+    <p>
+        Ce site est hébergé chez <a href="https://www.hetzner.com">Hetzner Online GmbH</a>.
+        Adresse : Industriestr. 25 – 91710 Gunzenhausen – Allemagne.
+        Téléphone : +49 (0)9831 505-0
+    </p>
+
+    <h2 id="conditions-générales">Conditions générales</h2>
+
+    <ul>
+        <li><a href="<?= url('home#cgv') ?>">Conditions Générales de Vente (<abbr>CGV</abbr>) de la cagnotte commune</a></li>
+    </ul>
+
+    <h2 id="données-personnelles">Données personnelles</h2>
+
+    <p>
+        Cette section traite de la gestion des données personnelles du site
+        <?= url_full('home#index') ?>. Pour toute question ou réclamation, vous
+        pouvez <a href="mailto:support@flus.io">me contacter par courriel</a>.
+    </p>
+
+    <p>
+        Conformément aux dispositions du règlement général sur la protection des
+        données (<abbr>RGPD</abbr>), vous disposez d’un droit d’accès et de
+        modification des données vous concernant.
+    </p>
+
+    <img
+        class="illustration illustration--centered personal-information"
+        alt=""
+        src="<?= url_static('illustrations/personal-information.svg') ?>"
+        height="200"
+    />
+
+    <h3 id="données-collectées">Données collectées</h3>
+
+    <p>
+        Votre visite sur ce site génère sur le serveur, et en toutes
+        circonstances des logs, conservés sur une durée de 365 jours. Ces logs
+        incluent adresse <abbr>IP</abbr>, date et heure de connexion, user
+        agent et page visitée. Ceux-ci sont utilisés pour connaître l’activité
+        sur la plateforme et répondre aux requêtes judiciaires. Ils peuvent
+        être utilisés pour retrouver la source d’un problème survenant sur le
+        site.
+    </p>
+
+    <p>Les données collectées lors de la participation à la cagnotte commune sont&nbsp;:</p>
+
+    <ul>
+        <li>une adresse courriel&nbsp;;</li>
+        <li>les nom et prénom de l’acheteur&nbsp;;</li>
+        <li>une adresse de facturation.</li>
+    </ul>
+
+    <p>
+        Ces données sont obligatoires afin d’établir une facture et vous
+        l’envoyer. Je suis tenu <a href="https://www.legifrance.gouv.fr/affichCodeArticle.do?idArticle=LEGIARTI000006219327&cidTexte=LEGITEXT000005634379">légalement</a>
+        de conserver ces factures sur une période de 10 ans.
+    </p>
+
+    <p>
+        L’adresse courriel est également transmise au prestataire de paiement,
+        <a href="https://stripe.com/fr">Stripe</a> afin de faciliter la saisie
+        du formulaire de paiement (ça fait un champ en moins à remplir
+        manuellement).
+    </p>
+
+    <p>
+        Par ailleurs, Stripe place deux cookies (<code>__stripe_mid</code> et
+        <code>__stripe_sid</code>) lors de la redirection vers son service.
+        Ceux-ci sont nécessaires au bon déroulé du paiement, mais sont
+        supprimés dès lors que vous revenez sur le site. Cette suppression ne
+        concerne pas d’éventuels cookies placés sur le domaine
+        checkout.stripe.com, ce qui me serait techniquement impossible à
+        réaliser.
+    </p>
+
+    <h3 id="destinataires-des-données">Destinataires des données</h3>
+
+    <p>
+        Il existe un unique destinataire interne en la qualité de l’éditeur
+        désigné plus haut dans ces mentions légales.
+    </p>
+
+    <p>
+        Les sous-traitants suivants peuvent également être amenés à avoir accès
+        aux données :
+    </p>
+
+    <ul>
+        <li>
+            <a href="https://www.hetzner.com/">Hetzner</a>, en qualité
+            d’hébergeur du serveur physique (en Allemagne), a accès aux machines&nbsp;;
+        </li>
+
+        <li>
+            <a href="https://www.rsync.net/">rsync.net</a> héberge les sauvegardes
+            <strong>chiffrées</strong> des données, sur un serveur localisé en
+            Suisse (je ne dispose pas de l’accès <code>root</code> sur ce
+            serveur)&nbsp;;
+        </li>
+
+        <li>
+            <a href="https://www.stripe.com/">Stripe</a> (qui fournit l’interface
+            de paiement) accède à votre adresse courriel. Il vous demandera par
+            ailleurs les informations liées à votre carte bleue et peut être
+            amené à vous redemander votre adresse postale s’il juge que le
+            paiement est « risqué ».
+        </li>
+    </ul>
+
+    <h3 id="sécurité">Sécurité</h3>
+
+    <p>Les éléments suivants sont mis en œuvre pour assurer la sécurité du service :</p>
+
+    <ul>
+        <li>Site accessible en <abbr>HTTPS</abbr> avec des configurations de sécurité modernes</li>
+        <li>Échanges chiffrés avec le prestataire de paiement</li>
+        <li>Traçabilité à travers la journalisation des accès (logs)</li>
+        <li>Mise à jour système et du service appliquée régulièrement</li>
+        <li>Sauvegarde journalière des données chiffrées sur un serveur externe
+            avec <a href="https://www.borgbackup.org/">BorgBackup</a></li>
+    </ul>
+</section>
+
+<hr />

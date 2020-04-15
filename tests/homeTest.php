@@ -29,6 +29,17 @@ class homeTest extends IntegrationTestCase
         $this->assertSame('home/credits.phtml', $pointer);
     }
 
+    public function testLegalRendersCorrectly()
+    {
+        $request = new \Minz\Request('GET', '/mentions-legales');
+
+        $response = self::$application->run($request);
+
+        $this->assertResponse($response, 200, 'Mentions légales');
+        $pointer = $response->output()->pointer();
+        $this->assertSame('home/legal.phtml', $pointer);
+    }
+
     public function testCgvRendersCorrectly()
     {
         $request = new \Minz\Request('GET', '/cgv');

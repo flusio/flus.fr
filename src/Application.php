@@ -14,6 +14,7 @@ class Application
         $router->addRoute('get', '/', 'home#index');
         $router->addRoute('get', '/financement', 'home#funding');
         $router->addRoute('get', '/credits', 'home#credits');
+        $router->addRoute('get', '/mentions-legales', 'home#legal');
         $router->addRoute('get', '/cgv', 'home#cgv');
         $router->addRoute('get', '/cagnotte', 'payments#init');
         $router->addRoute('post', '/cagnotte', 'payments#payCommonPot');
