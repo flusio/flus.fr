@@ -18,6 +18,10 @@
         </h1>
     </div>
 
+    <p class="paragraph--featured">
+        Elle s’élève pour l’instant à <?= $this->safe('common_pot_amount') ?>&nbsp;€
+    </p>
+
     <div class="section__intro">
         <p>
             La cagnotte commune sera activée dès la sortie de la prochaine version
@@ -307,10 +311,11 @@
             Comment seront débloqués les abonnements gratuits&nbsp;?
         </dt>
         <dd class="faq__answer">
-            La somme totale de la cagnotte sera divisée par le prix d’un
-            abonnement mensuel et donnera ainsi le nombre d’abonnements
-            disponibles. Ainsi, une somme de 30&nbsp;€ dans la cagnotte
-            débloquera 10 abonnements mensuels.
+            La somme de la cagnotte sera divisée par le prix d’un abonnement
+            mensuel et déterminera le nombre d’abonnements disponibles. Ainsi
+            la somme de <?= $this->safe('common_pot_amount') ?>&nbsp;€
+            débloquera <?= $this->safe('available_accounts') ?> abonnements
+            mensuels.
         </dd>
 
         <dt class="faq__question">

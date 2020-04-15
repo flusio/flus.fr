@@ -12,9 +12,14 @@ use Website\services;
  */
 function init()
 {
+    $payment_dao = new models\dao\Payment();
+    $common_pot_amount = $payment_dao->findCommonPotRevenue() / 100;
+    $available_accounts = floor($common_pot_amount / 3);
     return \Minz\Response::ok('payments/init.phtml', [
         'email' => '',
         'amount' => 30,
+        'common_pot_amount' => number_format($common_pot_amount, 2, ',', '&nbsp;'),
+        'available_accounts' => number_format($available_accounts, 0, ',', '&nbsp;'),
         'address' => [
             'first_name' => '',
             'last_name' => '',
@@ -44,6 +49,10 @@ function init()
  */
 function payCommonPot($request)
 {
+    $payment_dao = new models\dao\Payment();
+    $common_pot_amount = $payment_dao->findCommonPotRevenue() / 100;
+    $available_accounts = floor($common_pot_amount / 3);
+
     $accept_cgv = $request->param('accept_cgv', false);
     $email = $request->param('email');
     $amount = $request->param('amount', 0);
@@ -60,6 +69,8 @@ function payCommonPot($request)
             'email' => $email,
             'amount' => $amount,
             'address' => $address,
+            'common_pot_amount' => number_format($common_pot_amount, 2, ',', '&nbsp;'),
+            'available_accounts' => number_format($available_accounts, 0, ',', '&nbsp;'),
             'errors' => [
                 'cgv' => 'Vous devez accepter ces conditions pour participer à la cagnotte.',
             ],
@@ -73,6 +84,8 @@ function payCommonPot($request)
             'email' => $email,
             'amount' => $amount,
             'address' => $address,
+            'common_pot_amount' => number_format($common_pot_amount, 2, ',', '&nbsp;'),
+            'available_accounts' => number_format($available_accounts, 0, ',', '&nbsp;'),
             'errors' => [
                 $e->property() => formatPaymentError($e),
             ],
@@ -89,7 +102,6 @@ function payCommonPot($request)
         'Participation à la cagnotte de Flus'
     );
 
-    $payment_dao = new models\dao\Payment();
     $payment->setProperty('payment_intent_id', $stripe_session->payment_intent);
     $payment->setProperty('session_id', $stripe_session->id);
     $payment_id = $payment_dao->save($payment);

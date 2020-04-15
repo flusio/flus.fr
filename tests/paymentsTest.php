@@ -20,6 +20,30 @@ class paymentsTest extends IntegrationTestCase
         $this->assertSame('payments/init.phtml', $pointer);
     }
 
+    public function testInitActionShowsAmountOfTheCommonPot()
+    {
+        $faker = \Faker\Factory::create();
+        $amount_common_pot = $faker->numberBetween(100, 100000);
+        $amount_subscriptions = $faker->numberBetween(100, 100000);
+        self::$factories['payments']->create([
+            'type' => 'common_pot',
+            'amount' => $amount_common_pot,
+            'completed_at' => $faker->dateTime->getTimestamp(),
+        ]);
+        self::$factories['payments']->create([
+            'type' => 'subscription',
+            'amount' => $amount_subscriptions,
+            'completed_at' => $faker->dateTime->getTimestamp(),
+        ]);
+
+        $request = new \Minz\Request('GET', '/cagnotte');
+
+        $response = self::$application->run($request);
+
+        $expected_amount = ($amount_common_pot / 100) . '&nbsp;€';
+        $this->assertResponse($response, 200, $expected_amount);
+    }
+
     /**
      * @dataProvider payCommonPotProvider
      */

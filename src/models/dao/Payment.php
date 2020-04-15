@@ -79,4 +79,17 @@ class Payment extends \Minz\DatabaseModel
         $statement = $this->query($sql);
         return intval($statement->fetchColumn());
     }
+
+    /**
+     * Return the sum of amounts for completed common pot payments
+     *
+     * @return integer
+     */
+    public function findCommonPotRevenue()
+    {
+        $sql = 'SELECT SUM(amount) FROM payments '
+             . 'WHERE type = "common_pot" AND completed_at IS NOT NULL';
+        $statement = $this->query($sql);
+        return intval($statement->fetchColumn());
+    }
 }
