@@ -2,6 +2,7 @@
 
 return [
     'app_name' => 'Website',
+    'use_session' => false,
     'url_options' => [
         'host' => 'localhost',
         'port' => 8000,

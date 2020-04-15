@@ -10,6 +10,7 @@ $temporary_directory = sys_get_temp_dir() . '/flus';
 
 return [
     'app_name' => 'Website',
+    'use_session' => false,
     'url_options' => [
         'host' => 'localhost',
     ],

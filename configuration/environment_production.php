@@ -2,6 +2,7 @@
 
 return [
     'app_name' => 'Website',
+    'use_session' => false,
     'url_options' => [
         'protocol' => 'https',
         'host' => getenv('APP_HOST'),
