@@ -40,7 +40,7 @@ class paymentsTest extends IntegrationTestCase
 
         $response = self::$application->run($request);
 
-        $expected_amount = ($amount_common_pot / 100) . '&nbsp;€';
+        $expected_amount = number_format(($amount_common_pot / 100), 2, ',', '&nbsp') . '&nbsp;€';
         $this->assertResponse($response, 200, $expected_amount);
     }
 
