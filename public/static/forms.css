@@ -109,6 +109,9 @@ legend {
 }
 
 .form__actions {
+    margin-top: var(--space-medium);
+    margin-bottom: var(--space-large);
+
     text-align: center;
 }
 
