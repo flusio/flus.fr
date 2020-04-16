@@ -9,6 +9,14 @@
         initialize() {
             const initialAmount = this.data.get('initialAmount');
             this.setAmount(initialAmount);
+
+            const buttonsDisabled = this.buttonTargets.every((button) => {
+                return initialAmount !== button.dataset.value;
+            });
+
+            if (buttonsDisabled) {
+                this.element.classList.add('amount-selector--disable-buttons');
+            }
         }
 
         setAmount(amount) {
@@ -16,8 +24,7 @@
             amountElement.value = amount;
 
             this.buttonTargets.forEach((button) => {
-                const buttonValue = button.dataset.value;
-                if (amount === buttonValue) {
+                if (amount === button.dataset.value) {
                     button.classList.add('amount-selector__button--active');
                 } else {
                     button.classList.remove('amount-selector__button--active');
