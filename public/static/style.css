@@ -134,20 +134,26 @@ a:focus {
     border-color: inherit;
 }
 
-.title {
+.header {
+    margin-bottom: var(--space-large);
+
     font-family: var(--font-family-title);
     text-align: center;
     text-transform: lowercase;
     letter-spacing: .01em;
 }
 
-.title .title__header {
+.header__title {
     display: inline-block;
 }
 
-.title .title__header::after {
+.header__title::after {
     display: block;
     height: .3rem;
+    max-width: 75%;
+    margin-top: .5rem;
+    margin-left: auto;
+    margin-right: auto;
 
     background: linear-gradient(to right, var(--color-turquoise-1),
                                           var(--color-turquoise-2));
