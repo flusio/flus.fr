@@ -3,6 +3,8 @@
 namespace Website\controllers\stripe;
 
 use Website\models;
+use Website\mailers;
+use Website\services;
 
 /**
  * Handle the checkout.session.completed event from Stripe
@@ -37,12 +39,24 @@ function hooks($request)
             'payment_intent_id' => $session->payment_intent,
         ]);
 
-        if ($raw_payment) {
-            $payment = new models\Payment($raw_payment);
-            $payment->complete();
-            $payment_dao->save($payment);
-        } else {
+        if (!$raw_payment) {
             \Minz\Log::warning("Payment {$session->payment_intent} completed, not in database.");
+            return \Minz\Response::ok();
+        }
+
+        $payment = new models\Payment($raw_payment);
+        $payment->complete();
+        $payment_dao->save($payment);
+
+        $invoice_pdf_service = new services\InvoicePDF($payment);
+        $invoice_pdf_service->createPDF($payment->invoiceFilepath());
+
+        $invoice_mailer = new mailers\Invoices();
+        $result = $invoice_mailer->sendInvoice($payment->email, $payment->invoiceFilepath());
+        if (!$result) {
+            \Minz\Log::error(
+                "Invoice {$payment->invoice_number} failed to be sent by email."
+            );
         }
     }
 
