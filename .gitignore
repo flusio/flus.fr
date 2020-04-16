@@ -2,3 +2,6 @@
 /.env
 /data/db.sqlite
 /data/invoices/facture*
+
+/public/carnet/*
+!/public/carnet/.keep
