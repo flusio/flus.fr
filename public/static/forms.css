@@ -85,6 +85,12 @@ legend {
     margin-bottom: 1em;
 }
 
+.form-group__stack {
+    display: flex;
+
+    align-items: baseline;
+}
+
 .form-group__caption {
     margin-top: -.25em;
     margin-bottom: .25em;
@@ -118,13 +124,6 @@ legend {
 /**
  * Custom styles
  */
-.form--common-pot input#amount {
-    max-width: 5em;
-    margin-right: .25em;
-
-    text-align: center;
-}
-
 .form--common-pot .columns__item {
     padding: 0;
 }
@@ -141,4 +140,57 @@ legend {
 
 .form--common-pot .form-group--cgv {
     padding: var(--space-medium);
+}
+
+.amount-selector {
+    margin-top: var(--space-large);
+    margin-bottom: var(--space-large);
+
+    text-align: center;
+}
+
+.amount-selector__input {
+    max-width: 5em;
+    margin-right: .25em;
+
+    text-align: center;
+}
+
+.amount-selector__container {
+    margin-top: var(--space-medium);
+    margin-bottom: var(--space-medium);
+}
+
+.amount-selector__button {
+    padding: var(--space-small) var(--space-medium);
+
+    color: var(--color-text);
+    font-size: var(--size-large);
+
+    background-color: var(--color-turquoise-1);
+    border: .2rem solid var(--color-text);
+    border-radius: .25em;
+
+    transition: background-color .2s ease-in-out;
+}
+
+.amount-selector__button + .amount-selector__button {
+    margin-left: var(--space-medium);
+ }
+
+.amount-selector__button:hover,
+.amount-selector__button:focus,
+.amount-selector__button--active {
+    background-color: var(--color-purple-1);
+}
+
+.amount-selector__button--active {
+    color: var(--color-white);
+}
+
+.amount-selector--disable-buttons .amount-selector__button {
+    color: var(--color-text-secondary);
+
+    background-color: var(--color-grey-3);
+    border-color: var(--color-grey-2);
 }

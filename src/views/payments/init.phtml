@@ -48,20 +48,71 @@
          action="<?= url('payments#payCommonPot') ?>"
          class="form--common-pot"
      >
-        <div class="form-group <?= isset($errors['amount']) ? 'form-group--invalid' : '' ?>">
-            <label for="amount">
-                Montant
+         <div
+             class="amount-selector form-group <?= isset($errors['amount']) ? 'form-group--invalid' : '' ?>"
+             data-controller="amount-selector"
+             data-amount-selector-initial-amount="<?= $amount ?>"
+         >
+            <label>
+                Sélectionner un montant
             </label>
 
-            <div class="form-group__stack">
+            <div class="amount-selector__container">
+                <button
+                    type="button"
+                    class="amount-selector__button"
+                    data-action="amount-selector#select"
+                    data-target="amount-selector.button"
+                    data-value="15"
+                >
+                    15&nbsp;€
+                </button>
+
+                <button
+                    type="button"
+                    class="amount-selector__button"
+                    data-action="amount-selector#select"
+                    data-target="amount-selector.button"
+                    data-value="30"
+                >
+                    30&nbsp;€
+                </button>
+
+                <button
+                    type="button"
+                    class="amount-selector__button"
+                    data-action="amount-selector#select"
+                    data-target="amount-selector.button"
+                    data-value="45"
+                >
+                    45&nbsp;€
+                </button>
+
+                <button
+                    type="button"
+                    class="amount-selector__button"
+                    data-action="amount-selector#select"
+                    data-target="amount-selector.button"
+                    data-value="60"
+                >
+                    60&nbsp;€
+                </button>
+            </div>
+
+            <label for="amount">
+                ou choisir
+
                 <input
                     id="amount"
+                    class="amount-selector__input"
                     name="amount"
                     type="number"
                     step="0.5"
                     min="1"
                     max="1000"
                     value="<?= $amount ?>"
+                    data-action="amount-selector#change"
+                    data-target="amount-selector.amount"
                     required
                     <?= isset($errors['amount']) ? 'autofocus' : '' ?>
                 />
@@ -69,7 +120,7 @@
                 <span>
                     euros
                 </span>
-            </div>
+            </label>
 
             <?php if (isset($errors['amount'])): ?>
                 <p class="form-group__error">
