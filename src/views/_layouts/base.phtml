@@ -7,10 +7,12 @@
         <link rel="shortcut icon" href="<?= url_static('favicon-32px.png') ?>">
 
         <link rel="stylesheet" href="<?= url_static('style.css') ?>">
-        <link rel="stylesheet" href="<?= url_static('forms.css') ?>">
 
-        <script src="<?= url_static('stimulus.min.js') ?>" defer></script>
-        <script src="<?= url_static('amount-selector.js') ?>" defer></script>
+        <?php if ($load_form_statics): ?>
+            <link rel="stylesheet" href="<?= url_static('forms.css') ?>">
+            <script src="<?= url_static('stimulus.min.js') ?>" defer></script>
+            <script src="<?= url_static('amount-selector.js') ?>" defer></script>
+        <?php endif; ?>
 
         <title><?= $title ?></title>
 

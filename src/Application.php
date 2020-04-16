@@ -43,6 +43,7 @@ class Application
             'environment' => \Minz\Configuration::$environment,
             'errors' => [],
             'error' => null,
+            'load_form_statics' => false,
         ]);
 
         return $this->engine->run($request);
