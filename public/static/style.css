@@ -292,6 +292,7 @@ hr::after {
 
     .illustration.privacy {
         margin-top: -6em;
+        margin-bottom: 0;
         margin-left: -10em;
     }
 
