@@ -28,8 +28,14 @@ $application = new \Website\Application();
 $response = $application->run($request);
 
 // make sure to clear Stripe cookies
-setcookie('__stripe_mid', '', time() - 3600);
-setcookie('__stripe_sid', '', time() - 3600);
+if (\Minz\Configuration::$environment === 'production') {
+    $host = \Minz\Configuration::$url_options['host'];
+    setcookie('__stripe_mid', '', time() - 3600, '/', '.' . $host);
+    setcookie('__stripe_sid', '', time() - 3600, '/', '.' . $host);
+} else {
+    setcookie('__stripe_mid', '', time() - 3600);
+    setcookie('__stripe_sid', '', time() - 3600);
+}
 
 // Generate the HTTP headers and output
 http_response_code($response->code());
