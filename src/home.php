@@ -6,6 +6,10 @@ use Website\models;
 
 function index()
 {
+    if (!\Minz\Configuration::$application['enabled']) {
+        return \Minz\Response::ok('maintenance.phtml');
+    }
+
     $payment_dao = new models\dao\Payment();
     $total_revenue = $payment_dao->findTotalRevenue() / 100;
     $revenue_target = 30000;

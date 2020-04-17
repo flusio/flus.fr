@@ -17,6 +17,8 @@ return [
     ],
 
     'application' => [
+        'enabled' => true,
+
         'stripe_private_key' => 'sk_test_123',
         'stripe_public_key' => 'pk_test_123',
 
