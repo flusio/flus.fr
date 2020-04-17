@@ -281,8 +281,9 @@ hr::after {
     .illustration.collaboration {
         margin-top: 6em;
         margin-right: -5em;
+        padding: .5em;
 
-        shape-outside: polygon(85px 65px, 300px 15px, 470px 80px, 480px 100%, 40px 100%, 0 50%);
+        shape-outside: polygon(85px 130px, 300px 80px, 470px 80px, 480px 100%, 20px 100%, -50px 50%);
     }
 
     .illustration.reading {
@@ -302,8 +303,8 @@ hr::after {
     }
 
     .illustration.me {
-        margin-top: 0;
         margin-right: -3em;
+        padding: .5em;
 
         shape-outside: circle(53% at 125px center);
     }
