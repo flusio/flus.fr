@@ -1,6 +1,9 @@
 (() => {
     const application = Stimulus.Application.start();
 
+    document.querySelector('.amount-selector__container').style.display = 'block';
+    document.querySelector('.amount-selector__choose-label').style.display = 'inline';
+
     application.register('amount-selector', class extends Stimulus.Controller {
         static get targets() {
             return ['amount', 'button'];

@@ -23,6 +23,16 @@ body {
     background-color: #fdfcff;
 }
 
+/**
+ * These are displayed with JavaScript, so the form doesn't look broken with JS
+ * disabled.
+ */
+#waiting-message,
+#stripe-error,
+#spinner {
+    display: none;
+}
+
 #stripe-error {
     color: #ba1109;
 }

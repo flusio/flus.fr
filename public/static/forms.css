@@ -167,6 +167,15 @@ legend {
     margin-bottom: var(--space-medium);
 }
 
+/**
+ * These are displayed with JavaScript, so the form doesn't look broken with JS
+ * disabled.
+ */
+.amount-selector__container,
+.amount-selector__choose-label {
+    display: none;
+}
+
 .amount-selector__button {
     padding: var(--space-small) var(--space-medium);
 

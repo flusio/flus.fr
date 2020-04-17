@@ -7,7 +7,14 @@
     </head>
 
     <body>
-        <p>
+        <noscript>
+            <p>
+                Vous devez activer le JavaScript sur cette page et la suivante
+                pour pouvoir continuer, déso&nbsp;!
+            </p>
+        </noscript>
+
+        <p id="waiting-message">
             Vous allez être redirigé·e vers Stripe dans quelques instants,
             veuillez patienter…
         </p>
@@ -19,6 +26,10 @@
 
         <script src="https://js.stripe.com/v3/"></script>
         <script>
+            document.getElementById('waiting-message').style.display = 'block';
+            document.getElementById('spinner').style.display = 'block';
+            document.getElementById('stripe-error').style.display = 'block';
+
             window.setTimeout(function() {
                 var stripe = Stripe('<?= $stripe_public_key ?>');
                 stripe.redirectToCheckout({
