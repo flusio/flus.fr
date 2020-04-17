@@ -570,15 +570,12 @@ hr::after {
 
 .manifesto__item::before {
     display: block;
-    width: 2.5rem;
     height: 2.5rem;
-    margin-left: auto;
-    margin-right: auto;
 
     color: var(--color-text-secondary);
     font-size: var(--size-small);
 
-    content: "· " counter(manifesto-counter) " ·";
+    content: "· " counter(manifesto-counter) " ·";
 }
 
 .sharing {
@@ -644,7 +641,7 @@ hr::after {
     color: var(--color-text-secondary);
     font-size: var(--size-small);
 
-    content: counter(manifesto-counter) " ·";
+    content: counter(manifesto-counter) " ·";
 }
 
 .faq__answer {
