@@ -66,7 +66,7 @@ class InvoicePDF extends \FPDF
         if ($payment->type === 'common_pot') {
             $this->purchases = [
                 [
-                    'description' => "Participation à la cagnotte commune\nde flus.io",
+                    'description' => "Participation à la cagnotte commune\nde Flus",
                     'number' => 1,
                     'price' => $amount,
                     'total' => $amount,
@@ -78,7 +78,7 @@ class InvoicePDF extends \FPDF
             $period = $payment->frequency === 'month' ? '1 mois' : '1 an';
             $this->purchases = [
                 [
-                    'description' => "Renouvellement d'un abonnement\nde " . $period . " à flus.io",
+                    'description' => "Renouvellement d'un abonnement\nde " . $period . " à Flus",
                     'number' => 1,
                     'price' => $amount,
                     'total' => $amount,

@@ -72,7 +72,7 @@ class InvoicePDFTest extends TestCase
 
         $this->assertSame(1, count($invoice_pdf->purchases));
         $this->assertSame(
-            "Renouvellement d'un abonnement\nde 1 mois à flus.io",
+            "Renouvellement d'un abonnement\nde 1 mois à Flus",
             $invoice_pdf->purchases[0]['description']
         );
         $this->assertSame(
@@ -100,7 +100,7 @@ class InvoicePDFTest extends TestCase
 
         $this->assertSame(1, count($invoice_pdf->purchases));
         $this->assertSame(
-            "Renouvellement d'un abonnement\nde 1 an à flus.io",
+            "Renouvellement d'un abonnement\nde 1 an à Flus",
             $invoice_pdf->purchases[0]['description']
         );
         $this->assertSame(
@@ -126,7 +126,7 @@ class InvoicePDFTest extends TestCase
 
         $this->assertSame(1, count($invoice_pdf->purchases));
         $this->assertSame(
-            "Participation à la cagnotte commune\nde flus.io",
+            "Participation à la cagnotte commune\nde Flus",
             $invoice_pdf->purchases[0]['description']
         );
         $this->assertSame(
