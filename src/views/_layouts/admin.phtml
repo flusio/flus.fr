@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="initial-scale=1.0" />
+        <link rel="shortcut icon" href="<?= url_static('favicon-32px.png') ?>">
+
+        <link rel="stylesheet" href="<?= url_static('admin.css') ?>">
+        <link rel="stylesheet" href="<?= url_static('forms.css') ?>">
+
+        <title><?= $title ?></title>
+    </head>
+
+    <body>
+        <div class="layout">
+            <header class="layout__header">
+                <a href="<?= url('admin#index') ?>">
+                    <img
+                        class="logo"
+                        src="<?= url_static('logo.svg') ?>"
+                        width="125"
+                        height="42"
+                        alt="Flus"
+                     />
+                </a>
+
+                <?php if ($current_user): ?>
+                    <form method="post" action="<?= url('admin#delete_session') ?>">
+                        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+                        <button class="button--ghost" type="submit">
+                            Se déconnecter
+                        </button>
+                    </form>
+                <?php endif; ?>
+            </header>
+
+            <main class="layout__content" id="contenu">
+                <?= $this->safe('content') ?>
+            </main>
+        </div>
+    </body>
+</html>

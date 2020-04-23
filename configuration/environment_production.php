@@ -2,7 +2,6 @@
 
 return [
     'app_name' => 'Website',
-    'use_session' => false,
 
     'url_options' => [
         'protocol' => 'https',
@@ -11,6 +10,8 @@ return [
 
     'application' => [
         'enabled' => getenv('APP_ENABLED'),
+
+        'admin_secret' => getenv('APP_ADMIN_SECRET'),
 
         'stripe_private_key' => getenv('APP_STRIPE_PRIVATE_KEY'),
         'stripe_public_key' => getenv('APP_STRIPE_PUBLIC_KEY'),

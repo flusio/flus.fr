@@ -3,9 +3,11 @@
 $app_path = realpath(__DIR__ . '/..');
 
 include $app_path . '/autoload.php';
+include $app_path . '/tests/utils.php';
 
 \Minz\Configuration::load('test', $app_path);
 \Minz\Environment::initialize();
+\Minz\Environment::startSession();
 
 \Stripe\Stripe::$apiBase = 'http://localhost:12111';
 

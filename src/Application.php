@@ -9,6 +9,8 @@ class Application
 
     public function __construct()
     {
+        include_once('utils/application.php');
+
         // Initialize the routes
         $router = new \Minz\Router();
         $router->addRoute('get', '/', 'home#index');
@@ -25,6 +27,11 @@ class Application
         $router->addRoute('get', '/payments/:id/pay', 'payments#pay');
         $router->addRoute('post', '/payments/subscriptions', 'payments#paySubscription');
         $router->addRoute('get', '/invoices/pdf/:id', 'invoices#download_pdf');
+
+        $router->addRoute('get', '/admin', 'admin#index');
+        $router->addRoute('get', '/admin/login', 'admin#login');
+        $router->addRoute('post', '/admin/login', 'admin#create_session');
+        $router->addRoute('post', '/admin/logout', 'admin#delete_session');
 
         $router->addRoute('post', '/stripe/hooks', 'stripe#hooks');
 
@@ -44,6 +51,7 @@ class Application
             'errors' => [],
             'error' => null,
             'load_form_statics' => false,
+            'current_user' => utils\currentUser(),
         ]);
 
         return $this->engine->run($request);

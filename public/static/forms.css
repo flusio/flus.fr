@@ -16,6 +16,24 @@
     background-color: var(--color-purple-1);
 }
 
+.button--ghost {
+    padding: .5em 1em;
+
+    font-size: 1em;
+    color: var(--color-text);
+
+    background-color: var(--color-grey-3);
+    border: none;
+    border-radius: 1.5em;
+
+    transition: background-color .2s ease-in-out;
+}
+
+.button--ghost:hover,
+.button--ghost:focus {
+    background-color: var(--color-grey-2);
+}
+
 label {
     display: block;
     margin-bottom: .5em;
@@ -125,6 +143,13 @@ legend {
     margin-bottom: var(--space-large);
 
     text-align: center;
+}
+
+.form__error {
+    padding-left: .5em;
+    padding-right: .5em;
+
+    color: var(--color-red-1);
 }
 
 /**
