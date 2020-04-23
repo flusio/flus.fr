@@ -2,6 +2,7 @@
 
 namespace Website\controllers\invoices;
 
+use Website\utils;
 use Website\models;
 use Website\mailers;
 use Website\services;
@@ -21,9 +22,10 @@ use Website\services;
  */
 function download_pdf($request)
 {
+    $current_user = utils\currentUser();
     $auth_token = $request->header('PHP_AUTH_USER', '');
     $private_key = \Minz\Configuration::$application['flus_private_key'];
-    if (!hash_equals($private_key, $auth_token)) {
+    if (!$current_user && !hash_equals($private_key, $auth_token)) {
         return \Minz\Response::unauthorized();
     }
 

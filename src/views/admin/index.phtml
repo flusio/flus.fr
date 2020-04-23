@@ -1,9 +1,59 @@
 <?php
     $this->layout('admin.phtml', [
-        'title' => 'Administration',
+        'title' => 'Paiements en ' . $year,
     ]);
 ?>
 
 <div class="header">
-    <h1 class="header__title">Administration</h1>
+    <h1 class="header__title">Paiements en <?= $year ?></h1>
 </div>
+
+<?php foreach ($payments_by_months as $month => $payments): ?>
+    <h2><?= format_month($month, '%B') ?></h2>
+
+    <table>
+        <tbody>
+            <?php foreach ($payments as $payment): ?>
+                <tr <?= !$payment->completed_at ? 'class="row--ghost"' : ''?> >
+                    <td class="cell--right">
+                        <?= format_amount($payment->amount) ?>
+                    </td>
+
+                    <td>
+                        <?php if ($payment->type === 'subscription'): ?>
+                            Abonnement
+                        <?php elseif ($payment->type === 'common_pot'): ?>
+                            Cagnotte
+                        <?php else: ?>
+                            Heu… non
+                        <?php endif; ?>
+                    </td>
+
+                    <td>
+                        <?= $payment->email ?>
+                    </td>
+
+                    <td>
+                        <?php if ($payment->completed_at): ?>
+                            <?= format_date($payment->completed_at, '%d %b') ?>
+                        <?php endif; ?>
+                    </td>
+
+                    <td>
+                        <?php if ($payment->invoice_number): ?>
+                            <a href="<?= url('download_pdf_from_admin', ['id' => $payment->id]) ?>">
+                                <?= $payment->invoice_number ?>
+                            </a>
+                        <?php endif; ?>
+                    </td>
+
+                    <td>
+                        <a href="https://dashboard.stripe.com/payments/<?= $payment->payment_intent_id ?>">
+                            💰&nbsp;Stripe
+                        </a>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+<?php endforeach; ?>

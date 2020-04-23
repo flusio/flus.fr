@@ -10,6 +10,7 @@ class Application
     public function __construct()
     {
         include_once('utils/application.php');
+        include_once('utils/view_helpers.php');
 
         // Initialize the routes
         $router = new \Minz\Router();
@@ -32,6 +33,7 @@ class Application
         $router->addRoute('get', '/admin/login', 'admin#login');
         $router->addRoute('post', '/admin/login', 'admin#create_session');
         $router->addRoute('post', '/admin/logout', 'admin#delete_session');
+        $router->addRoute('get', '/admin/invoices/pdf/:id', 'invoices#download_pdf', 'download_pdf_from_admin');
 
         $router->addRoute('post', '/stripe/hooks', 'stripe#hooks');
 

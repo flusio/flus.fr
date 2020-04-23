@@ -105,4 +105,30 @@ class Payment extends \Minz\DatabaseModel
         $statement = $this->query($sql);
         return intval($statement->fetchColumn());
     }
+
+    /**
+     * Return the payments for a given year
+     *
+     * @param integer $year
+     *
+     * @return array
+     */
+    public function listByYear($year)
+    {
+        $sql = 'SELECT * FROM payments '
+             . 'WHERE strftime("%Y", created_at, "unixepoch") = ? '
+             . 'ORDER BY created_at DESC';
+        $statement = $this->prepare($sql);
+        $result = $statement->execute([$year]);
+        if (!$result) {
+            throw self::sqlStatementError($statement);
+        }
+
+        $result = $statement->fetchAll();
+        if ($result !== false) {
+            return $result;
+        } else {
+            throw self::sqlStatementError($statement);
+        }
+    }
 }
