@@ -10,7 +10,11 @@ if (!$environment) {
 }
 
 // Get the http information and create a proper Request
-$http_method = $_SERVER['REQUEST_METHOD'];
+$request_method = strtolower($_SERVER['REQUEST_METHOD']);
+$http_method = $request_method;
+if ($http_method === 'head') {
+    $http_method = 'get';
+}
 $http_uri = $_SERVER['REQUEST_URI'];
 $http_parameters = array_merge(
     $_GET,
@@ -46,4 +50,7 @@ http_response_code($response->code());
 foreach ($response->headers() as $header) {
     header($header);
 }
-echo $response->render();
+
+if ($request_method !== 'head') {
+    echo $response->render();
+}
