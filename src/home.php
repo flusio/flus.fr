@@ -58,3 +58,13 @@ function cgv()
 {
     return \Minz\Response::ok('home/cgv.phtml');
 }
+
+function robots()
+{
+    return \Minz\Response::ok('home/robots.txt');
+}
+
+function sitemap()
+{
+    return \Minz\Response::ok('home/sitemap.xml');
+}

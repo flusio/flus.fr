@@ -24,6 +24,9 @@ class Application
         $router->addRoute('get', '/merci', 'payments#succeeded');
         $router->addRoute('get', '/annulation', 'payments#canceled');
 
+        $router->addRoute('get', '/robots.txt', 'home#robots');
+        $router->addRoute('get', '/sitemap.xml', 'home#sitemap');
+
         $router->addRoute('get', '/payments/:id', 'payments#show');
         $router->addRoute('get', '/payments/:id/pay', 'payments#pay');
         $router->addRoute('post', '/payments/subscriptions', 'payments#paySubscription');
