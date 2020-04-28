@@ -271,6 +271,33 @@
                     </div>
                 </div>
             </div>
+
+            <div class="form-group <?= isset($errors['address_country']) ? 'form-group--invalid' : '' ?>">
+                <label for="country">
+                    Pays
+                </label>
+
+                <select
+                    id="country"
+                    name="address[country]"
+                    required
+                >
+                    <?php foreach ($countries as $code => $label): ?>
+                        <option
+                            value="<?= $code ?>"
+                            <?= $address['country'] === $code ? 'selected' : '' ?>
+                        >
+                            <?= $label ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+
+                <?php if (isset($errors['address_country'])): ?>
+                    <p class="form-group__error">
+                        <?= $errors['address_country'] ?>
+                    </p>
+                <?php endif; ?>
+            </div>
         </fieldset>
 
         <div class="form-group form-group--cgv <?= isset($errors['cgv']) ? 'form-group--invalid' : '' ?>">

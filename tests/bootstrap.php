@@ -69,5 +69,9 @@ echo 'Use SEED=' . $faker_seed . " to reproduce this suite.\n";
             $faker = \Faker\Factory::create();
             return $faker->city;
         },
+        'address_country' => function () {
+            $faker = \Faker\Factory::create();
+            return $faker->randomElement(\Website\utils\Countries::codes());
+        },
     ]
 );
