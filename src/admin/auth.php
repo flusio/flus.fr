@@ -1,37 +1,8 @@
 <?php
 
-namespace Website\controllers\admin;
+namespace Website\controllers\admin\auth;
 
 use Website\utils;
-use Website\models;
-
-/**
- * Show the admin main page
- *
- * @return \Minz\Response
- */
-function index()
-{
-    $current_user = utils\currentUser();
-    if (!$current_user) {
-        return \Minz\Response::redirect('admin#login');
-    }
-
-    $year = \Minz\Time::now()->format('Y');
-    $payment_dao = new models\dao\Payment();
-    $raw_payments = $payment_dao->listByYear($year);
-    $payments_by_months = [];
-    foreach ($raw_payments as $raw_payment) {
-        $payment = new models\Payment($raw_payment);
-        $month = intval($payment->created_at->format('n'));
-        $payments_by_months[$month][] = $payment;
-    }
-
-    return \Minz\Response::ok('admin/index.phtml', [
-        'year' => $year,
-        'payments_by_months' => $payments_by_months,
-    ]);
-}
 
 /**
  * Show the admin login page
@@ -48,7 +19,7 @@ function index()
 function login($request)
 {
     if (utils\currentUser()) {
-        return \Minz\Response::redirect('admin#index');
+        return \Minz\Response::redirect('admin');
     }
 
     return \Minz\Response::ok('admin/login.phtml', [
@@ -75,7 +46,7 @@ function login($request)
 function create_session($request)
 {
     if (utils\currentUser()) {
-        return \Minz\Response::redirect('admin#index');
+        return \Minz\Response::redirect('admin');
     }
 
     $password = $request->param('password');
@@ -96,7 +67,7 @@ function create_session($request)
         if ($from) {
             $location = urldecode($from);
         } else {
-            $location = 'admin#index';
+            $location = 'admin';
         }
         return \Minz\Response::redirect($location, ['status' => 'connected']);
     } else {

@@ -32,10 +32,10 @@ class Application
         $router->addRoute('post', '/payments/subscriptions', 'payments#paySubscription');
         $router->addRoute('get', '/invoices/pdf/:id', 'invoices#download_pdf');
 
-        $router->addRoute('get', '/admin', 'admin#index');
-        $router->addRoute('get', '/admin/login', 'admin#login');
-        $router->addRoute('post', '/admin/login', 'admin#create_session');
-        $router->addRoute('post', '/admin/logout', 'admin#delete_session');
+        $router->addRoute('get', '/admin', 'admin/payments#index', 'admin');
+        $router->addRoute('get', '/admin/login', 'admin/auth#login', 'login');
+        $router->addRoute('post', '/admin/login', 'admin/auth#create_session', 'create_session');
+        $router->addRoute('post', '/admin/logout', 'admin/auth#delete_session', 'logout');
         $router->addRoute('get', '/admin/invoices/pdf/:id', 'invoices#download_pdf', 'download_pdf_from_admin');
 
         $router->addRoute('post', '/stripe/hooks', 'stripe#hooks');

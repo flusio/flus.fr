@@ -1,12 +1,12 @@
 <?php
 
-namespace Website\controllers\admin;
+namespace Website\controllers\admin\auth;
 
 use Minz\Tests\IntegrationTestCase;
 use Website\tests;
 
 // phpcs:disable Squiz.Classes.ValidClassName.NotCamelCaps
-class adminTest extends IntegrationTestCase
+class authTest extends IntegrationTestCase
 {
     /**
      * @after
@@ -134,7 +134,6 @@ class adminTest extends IntegrationTestCase
         $response = self::$application->run($request);
 
         $this->assertResponse($response, 302, null, ['Location' => '/']);
-        var_dump($_SESSION);
         $this->assertArrayNotHasKey('connected', $_SESSION);
     }
 
