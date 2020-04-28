@@ -15,6 +15,10 @@ stop: ## Stop and clean Docker server
 init: ## Initialize the application
 	php ./cli --request /system/init
 
+.PHONY: migrate
+migrate: ## Apply pending migrations
+	php ./cli --request /system/migrate
+
 .PHONY: test
 test: bin/phpunit  ## Run the test suite
 	php ./bin/phpunit --bootstrap ./tests/bootstrap.php --testdox ./tests

@@ -41,6 +41,7 @@ class Application
         $router->addRoute('post', '/stripe/hooks', 'stripe#hooks');
 
         $router->addRoute('cli', '/system/init', 'system#init');
+        $router->addRoute('cli', '/system/migrate', 'system#migrate');
         $router->addRoute('cli', '/invoices/:id/email', 'invoices#send_pdf');
 
         $this->engine = new \Minz\Engine($router);
