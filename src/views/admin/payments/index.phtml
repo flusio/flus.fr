@@ -8,6 +8,10 @@
     <h1 class="header__title">Paiements en <?= $year ?></h1>
 </div>
 
+<a href="<?= url('new admin payment') ?>">
+    Créer un paiement
+</a>
+
 <?php foreach ($payments_by_months as $month => $payments): ?>
     <h2><?= format_month($month, '%B') ?></h2>
 
@@ -47,11 +51,13 @@
                         <?php endif; ?>
                     </td>
 
-                    <td>
-                        <a href="https://dashboard.stripe.com/payments/<?= $payment->payment_intent_id ?>">
-                            💰&nbsp;Stripe
-                        </a>
-                    </td>
+                    <?php if ($payment->payment_intent_id): ?>
+                        <td>
+                            <a href="https://dashboard.stripe.com/payments/<?= $payment->payment_intent_id ?>">
+                                💰&nbsp;Stripe
+                            </a>
+                        </td>
+                    <?php endif; ?>
                 </tr>
             <?php endforeach; ?>
         </tbody>

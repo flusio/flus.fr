@@ -36,6 +36,8 @@ class Application
         $router->addRoute('get', '/admin/login', 'admin/auth#login', 'login');
         $router->addRoute('post', '/admin/login', 'admin/auth#create_session', 'create_session');
         $router->addRoute('post', '/admin/logout', 'admin/auth#delete_session', 'logout');
+        $router->addRoute('get', '/admin/payments/new', 'admin/payments#init', 'new admin payment');
+        $router->addRoute('post', '/admin/payments/new', 'admin/payments#create', 'create admin payment');
         $router->addRoute('get', '/admin/invoices/pdf/:id', 'invoices#download_pdf', 'download_pdf_from_admin');
 
         $router->addRoute('post', '/stripe/hooks', 'stripe#hooks');

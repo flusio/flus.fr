@@ -58,7 +58,8 @@ input {
     transition: border .2s ease-in-out;
 }
 
-input[type="checkbox"] {
+input[type="checkbox"],
+input[type="radio"] {
     width: auto;
     height: auto;
 

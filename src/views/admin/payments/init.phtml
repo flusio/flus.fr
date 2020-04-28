@@ -1,0 +1,314 @@
+<?php
+    $this->layout('admin.phtml', [
+        'title' => 'Créer un nouveau paiement',
+    ]);
+?>
+
+<section class="section">
+    <div class="header">
+        <h1 class="header__title">
+            Nouveau paiement
+        </h1>
+    </div>
+
+    <form
+        method="post"
+        action="<?= url('create admin payment') ?>"
+        class="form--common-pot"
+    >
+        <?php if ($error): ?>
+            <p class="form__error">
+                <?= $error ?>
+            </p>
+        <?php endif; ?>
+
+        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+
+        <fieldset
+            class="form-group"
+            data-controller="payment-type-selector"
+            data-payment-type-selector-initial-type="<?= $type ?>"
+        >
+            <legend>Type de paiement</legend>
+
+            <label for="type_common_pot">
+                <input
+                    id="type_common_pot"
+                    type="radio"
+                    name="type"
+                    value="common_pot"
+                    <?= $type === 'common_pot' ? 'checked' : '' ?>
+                    required
+                    data-action="payment-type-selector#change"
+                    data-target="payment-type-selector.input"
+                />
+
+                Cagnotte
+            </label>
+
+            <label for="type_subscription_month">
+                <input
+                    id="type_subscription_month"
+                    type="radio"
+                    name="type"
+                    value="subscription_month"
+                    <?= $type === 'subscription_month' ? 'checked' : '' ?>
+                    required
+                    data-action="payment-type-selector#change"
+                    data-target="payment-type-selector.input"
+                />
+
+                Abonnement 1 mois
+            </label>
+
+            <label for="type_subscription_year">
+                <input
+                    id="type_subscription_year"
+                    type="radio"
+                    name="type"
+                    value="subscription_year"
+                    <?= $type === 'subscription_year' ? 'checked' : '' ?>
+                    required
+                    data-action="payment-type-selector#change"
+                    data-target="payment-type-selector.input"
+                />
+
+                Abonnement 1 an
+            </label>
+
+        </fieldset>
+
+        <div class="form-group <?= isset($errors['email']) ? 'form-group--invalid' : '' ?>">
+            <label for="email">
+                Adresse courriel
+            </label>
+
+            <input
+                id="email"
+                name="email"
+                type="email"
+                value="<?= $email ?>"
+                required
+            />
+
+            <?php if (isset($errors['email'])): ?>
+                <p class="form-group__error">
+                    <?= $errors['email'] ?>
+                </p>
+            <?php endif; ?>
+        </div>
+
+        <div
+            id="form-group-amount"
+            class="form-group <?= isset($errors['amount']) ? 'form-group--invalid' : '' ?>"
+        >
+            <label for="amount">
+                Sélectionner un montant
+            </label>
+
+            <input
+                id="amount"
+                class="amount-selector__input"
+                name="amount"
+                type="number"
+                step="0.5"
+                min="1"
+                max="1000"
+                value="<?= $amount ?>"
+            />
+
+            <?php if (isset($errors['amount'])): ?>
+                <p class="form-group__error">
+                    <?= $errors['amount'] ?>
+                </p>
+            <?php endif; ?>
+        </div>
+
+        <div
+            id="form-group-username"
+            class="form-group <?= isset($errors['username']) ? 'form-group--invalid' : '' ?>"
+        >
+            <label for="username">
+                Nom d’utilisateur·ice
+            </label>
+
+            <input
+                id="username"
+                name="username"
+                type="text"
+                value="<?= $username ?>"
+            />
+
+            <?php if (isset($errors['username'])): ?>
+                <p class="form-group__error">
+                    <?= $errors['username'] ?>
+                </p>
+            <?php endif; ?>
+        </div>
+
+        <fieldset>
+            <legend>Adresse postale</legend>
+
+            <div class="columns">
+                <div class="columns__item">
+                    <div class="form-group <?= isset($errors['address_first_name']) ? 'form-group--invalid' : '' ?>">
+                        <label for="first-name">
+                            Prénom
+                        </label>
+
+                        <input
+                            id="first-name"
+                            name="address[first_name]"
+                            type="text"
+                            value="<?= $address['first_name'] ?>"
+                            required
+                        />
+
+                        <?php if (isset($errors['address_first_name'])): ?>
+                            <p class="form-group__error">
+                                <?= $errors['address_first_name'] ?>
+                            </p>
+                        <?php endif; ?>
+                    </div>
+                </div>
+
+                <div class="columns__item">
+                    <div class="form-group <?= isset($errors['address_last_name']) ? 'form-group--invalid' : '' ?>">
+                        <label for="last-name">
+                            Nom
+                        </label>
+
+                        <input
+                            id="last-name"
+                            name="address[last_name]"
+                            type="text"
+                            value="<?= $address['last_name'] ?>"
+                            required
+                        />
+
+                        <?php if (isset($errors['address_last_name'])): ?>
+                            <p class="form-group__error">
+                                <?= $errors['address_last_name'] ?>
+                            </p>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group <?= isset($errors['address_address1']) ? 'form-group--invalid' : '' ?>">
+                <label for="address1">
+                    Adresse
+                </label>
+
+                <input
+                    id="address1"
+                    name="address[address1]"
+                    type="text"
+                    value="<?= $address['address1'] ?>"
+                    required
+                />
+
+                <?php if (isset($errors['address_address1'])): ?>
+                    <p class="form-group__error">
+                        <?= $errors['address_address1'] ?>
+                    </p>
+                <?php endif; ?>
+            </div>
+
+            <div class="columns">
+                <div class="columns__item columns__item--postcode">
+                    <div class="form-group <?= isset($errors['address_postcode']) ? 'form-group--invalid' : '' ?>">
+                        <label for="postcode">
+                            Code postal
+                        </label>
+
+                        <input
+                            id="postcode"
+                            name="address[postcode]"
+                            type="text"
+                            value="<?= $address['postcode'] ?>"
+                            required
+                        />
+
+                        <?php if (isset($errors['address_postcode'])): ?>
+                            <p class="form-group__error">
+                                <?= $errors['address_postcode'] ?>
+                            </p>
+                        <?php endif; ?>
+                    </div>
+                </div>
+
+                <div class="columns__item columns__item--city">
+                    <div class="form-group <?= isset($errors['address_city']) ? 'form-group--invalid' : '' ?>">
+                        <label for="city">
+                            Ville
+                        </label>
+
+                        <input
+                            id="city"
+                            name="address[city]"
+                            type="text"
+                            value="<?= $address['city'] ?>"
+                            required
+                        />
+
+                        <?php if (isset($errors['address_city'])): ?>
+                            <p class="form-group__error">
+                                <?= $errors['address_city'] ?>
+                            </p>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group <?= isset($errors['address_country']) ? 'form-group--invalid' : '' ?>">
+                <label for="country">
+                    Pays
+                </label>
+
+                <select
+                    id="country"
+                    name="address[country]"
+                    required
+                >
+                    <?php foreach ($countries as $code => $label): ?>
+                        <option value="<?= $code ?>" <?= $address['country'] === $code ? 'selected' : '' ?>>
+                            <?= $label ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+
+                <?php if (isset($errors['address_country'])): ?>
+                    <p class="form-group__error">
+                        <?= $errors['address_country'] ?>
+                    </p>
+                <?php endif; ?>
+            </div>
+        </fieldset>
+
+        <div class="form-group">
+            <label for="generate-invoice">
+                <input
+                    id="generate-invoice"
+                    name="generate_invoice"
+                    type="checkbox"
+                    <?= $generate_invoice ? 'checked' : '' ?>
+                />
+
+                Générer une facture
+            </label>
+        </div>
+
+        <div class="form__actions">
+            <button type="submit" class="button--primary">
+                Créer le paiement
+            </button>
+        </div>
+    </form>
+
+    <p class="paragraph--center">
+        <a href="<?= url('admin') ?>">
+            Revenir à l’administration
+        </a>
+    </p>
+</section>
