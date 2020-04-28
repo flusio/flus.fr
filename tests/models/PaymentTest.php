@@ -167,6 +167,7 @@ class PaymentTest extends TestCase
                     'address1' => $faker->streetAddress,
                     'postcode' => $faker->postcode,
                     'city' => $faker->city,
+                    'country' => $faker->randomElement(\Website\utils\Countries::codes()),
                 ],
             ];
         }

@@ -79,6 +79,12 @@ class Payment extends \Minz\Model
             'required' => true,
         ],
 
+        'address_country' => [
+            'type' => 'string',
+            'required' => true,
+            'validator' => '\Website\utils\Countries::isSupported',
+        ],
+
         'username' => [
             'type' => 'string',
             'validator' => '\Website\models\Payment::validateUsername',
@@ -124,6 +130,7 @@ class Payment extends \Minz\Model
             'address_address1' => trim($address['address1']),
             'address_postcode' => trim($address['postcode']),
             'address_city' => trim($address['city']),
+            'address_country' => trim($address['country']),
         ]);
     }
 
@@ -151,6 +158,7 @@ class Payment extends \Minz\Model
             'address1' => $this->address_address1,
             'postcode' => $this->address_postcode,
             'city' => $this->address_city,
+            'country' => $this->address_country,
         ];
     }
 

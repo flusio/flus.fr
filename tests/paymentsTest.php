@@ -113,8 +113,31 @@ class paymentsTest extends IntegrationTestCase
         $this->assertSame($address['address1'], $payment_address['address1']);
         $this->assertSame($address['postcode'], $payment_address['postcode']);
         $this->assertSame($address['city'], $payment_address['city']);
+        $this->assertSame('FR', $payment_address['country']);
     }
 
+    /**
+     * @dataProvider payCommonPotProvider
+     */
+    public function testPayCommonPotAcceptsCountry($email, $amount, $address)
+    {
+        $payment_dao = new models\dao\Payment();
+        $faker = \Faker\Factory::create();
+        $address['country'] = $faker->randomElement(\Website\utils\Countries::codes());
+
+        $request = new \Minz\Request('POST', '/cagnotte', [
+            'email' => $email,
+            'amount' => $amount,
+            'address' => $address,
+            'accept_cgv' => true,
+        ]);
+
+        $response = self::$application->run($request);
+
+        $payment = new models\Payment($payment_dao->take());
+        $payment_address = $payment->address();
+        $this->assertSame($address['country'], $payment_address['country']);
+    }
     /**
      * @dataProvider payCommonPotProvider
      */
@@ -479,8 +502,34 @@ class paymentsTest extends IntegrationTestCase
         $this->assertSame($address['address1'], $payment_address['address1']);
         $this->assertSame($address['postcode'], $payment_address['postcode']);
         $this->assertSame($address['city'], $payment_address['city']);
+        $this->assertSame('FR', $payment_address['country']);
         $this->assertSame($username, $payment->username);
         $this->assertSame($frequency, $payment->frequency);
+    }
+
+    /**
+     * @dataProvider paySubscriptionParamsProvider
+     */
+    public function testPaySubscriptionAcceptsCountry($email, $username, $frequency, $address)
+    {
+        $payment_dao = new models\dao\Payment();
+        $faker = \Faker\Factory::create();
+        $address['country'] = $faker->randomElement(\Website\utils\Countries::codes());
+
+        $request = new \Minz\Request('POST', '/payments/subscriptions', [
+            'email' => $email,
+            'username' => $username,
+            'frequency' => $frequency,
+            'address' => $address,
+        ], [
+            'PHP_AUTH_USER' => \Minz\Configuration::$application['flus_private_key'],
+        ]);
+
+        $response = self::$application->run($request);
+
+        $payment = new models\Payment($payment_dao->take());
+        $payment_address = $payment->address();
+        $this->assertSame($address['country'], $payment_address['country']);
     }
 
     /**

@@ -2,6 +2,8 @@
 
 namespace Website\services;
 
+use Website\utils;
+
 /**
  * Generate a PDF invoice for a given payment.
  *
@@ -53,6 +55,7 @@ class InvoicePDF extends \FPDF
             $address['first_name'] . ' ' . $address['last_name'],
             $address['address1'],
             $address['postcode'] . ' ' . $address['city'],
+            utils\Countries::codeToLabel($address['country']),
         ];
 
         $amount = $payment->amount / 100 . ' €';

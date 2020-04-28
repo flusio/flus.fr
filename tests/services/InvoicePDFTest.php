@@ -4,6 +4,7 @@ namespace Website\services;
 
 use PHPUnit\Framework\TestCase;
 use Website\models;
+use Website\utils;
 
 class InvoicePDFTest extends TestCase
 {
@@ -55,10 +56,12 @@ class InvoicePDFTest extends TestCase
         $expected_line1 = $address['first_name'] . ' ' . $address['last_name'];
         $expected_line2 = $address['address1'];
         $expected_line3 = $address['postcode'] . ' ' . $address['city'];
+        $expected_line4 = utils\Countries::codeToLabel($address['country']);
 
         $this->assertSame($expected_line1, $invoice_pdf->customer[0]);
         $this->assertSame($expected_line2, $invoice_pdf->customer[1]);
         $this->assertSame($expected_line3, $invoice_pdf->customer[2]);
+        $this->assertSame($expected_line4, $invoice_pdf->customer[3]);
     }
 
     /**
@@ -204,6 +207,7 @@ class InvoicePDFTest extends TestCase
                 'address_address1' => $faker->streetAddress,
                 'address_postcode' => $faker->postcode,
                 'address_city' => $faker->city,
+                'address_country' => $faker->randomElement(\Website\utils\Countries::codes()),
                 'completed_at' => $completed_at->getTimestamp(),
                 'invoice_number' => $invoice_number,
             ]);
@@ -231,6 +235,7 @@ class InvoicePDFTest extends TestCase
                 'address_address1' => $faker->streetAddress,
                 'address_postcode' => $faker->postcode,
                 'address_city' => $faker->city,
+                'address_country' => $faker->randomElement(\Website\utils\Countries::codes()),
                 'completed_at' => $completed_at->getTimestamp(),
                 'invoice_number' => $invoice_number,
             ]);

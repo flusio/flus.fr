@@ -11,6 +11,7 @@ CREATE TABLE payments (
     address_address1 TEXT NOT NULL,
     address_postcode TEXT NOT NULL,
     address_city TEXT NOT NULL,
+    address_country TEXT NOT NULL DEFAULT "FR",
     payment_intent_id TEXT,
     session_id TEXT,
     username TEXT,

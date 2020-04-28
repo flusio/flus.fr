@@ -42,6 +42,7 @@ function init()
  * - `address[address1]`
  * - `address[postcode]`
  * - `address[city]`
+ * - `address[country]`, optional (default is `FR`)
  *
  * @param \Minz\Request $request
  *
@@ -62,6 +63,7 @@ function payCommonPot($request)
         'address1' => '',
         'postcode' => '',
         'city' => '',
+        'country' => 'FR',
     ]);
 
     if (!$accept_cgv) {
@@ -124,6 +126,7 @@ function payCommonPot($request)
  * - `address[address1]`
  * - `address[postcode]`
  * - `address[city]`
+ * - `address[country]`, optional (default is `FR`)
  *
  * The request must be authenticated (basic auth) with the Flus token.
  *
@@ -147,6 +150,7 @@ function paySubscription($request)
         'address1' => '',
         'postcode' => '',
         'city' => '',
+        'country' => 'FR',
     ]);
     $username = $request->param('username', '');
 
@@ -314,6 +318,8 @@ function formatPaymentError($error)
         return 'Votre code postal est obligatoire.';
     } elseif ($property === 'address_city') {
         return 'Votre ville est obligatoire.';
+    } elseif ($property === 'address_country') {
+        return 'Le pays que vous avez renseigné est invalide.';
     } else {
         throw $error;
     }
