@@ -6,4 +6,4 @@ En vous souhaitant une bonne journée / soirée !
 
 Marien
 
-PS : ce courriel vous a été envoyé parce que vous – ou quelqu’un d’autre – avez effectué un paiement sur le site <?= url_full('home#index') ?>
+PS : ce courriel vous a été envoyé parce que vous – ou quelqu’un d’autre – avez effectué un paiement sur le site <?= url_full('home') ?>

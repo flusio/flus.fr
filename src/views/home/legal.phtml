@@ -1,7 +1,7 @@
 <?php
     $this->layout('base.phtml', [
         'title' => 'Mentions légales · Flus',
-        'canonical' => url_full('home#legal'),
+        'canonical' => url_full('legal'),
     ]);
 ?>
 
@@ -43,14 +43,14 @@
     <h2 id="conditions-générales">Conditions générales</h2>
 
     <ul>
-        <li><a href="<?= url('home#cgv') ?>">Conditions Générales de Vente (<abbr>CGV</abbr>) de la cagnotte commune</a></li>
+        <li><a href="<?= url('cgv') ?>">Conditions Générales de Vente (<abbr>CGV</abbr>) de la cagnotte commune</a></li>
     </ul>
 
     <h2 id="données-personnelles">Données personnelles</h2>
 
     <p>
         Cette section traite de la gestion des données personnelles du site
-        <?= url_full('home#index') ?>. Pour toute question ou réclamation, vous
+        <?= url_full('home') ?>. Pour toute question ou réclamation, vous
         pouvez <a href="mailto:support@flus.io">me contacter par courriel</a>.
     </p>
 

@@ -1,7 +1,7 @@
 <?php
     $this->layout('base.phtml', [
         'title' => 'Flus, média social citoyen',
-        'canonical' => url_full('home#index'),
+        'canonical' => url_full('home'),
         'description' => 'Flus se transforme pour devenir un lieu apaisé donnant de la voix à celles et ceux qui fréquentent l’information de qualité.',
         'og' => [
             'type' => 'website',
@@ -151,7 +151,7 @@
             Créez un compte payant
         </a>
 
-        <a class="revenues__button call-to-action" href="<?= url('payments#init') ?>">
+        <a class="revenues__button call-to-action" href="<?= url('common pot') ?>">
             Participez à la cagnotte commune
         </a>
     </div>
@@ -195,7 +195,7 @@
         </ul>
 
         <p class="gauge__about">
-            <a href="<?= url('home#funding') ?>">
+            <a href="<?= url('funding') ?>">
                 en savoir plus
             </a>
         </p>
@@ -365,7 +365,7 @@
     </div>
 
     <p class="paragraph--center">
-        <a href="<?= url('payments#init') ?>">
+        <a href="<?= url('common pot') ?>">
             Contribuer à la cagnotte
         </a>
     </p>
@@ -388,7 +388,7 @@
                 <li class="sharing__item sharing__item--mail">
                     <a
                         class="sharing__link"
-                        href="mailto:?subject=<?= rawurlencode('Aidons Flus à se développer') ?>&amp;body=<?= rawurlencode('Faites comme moi et soutenez Flus, un futur média social citoyen pour celles et ceux qui veulent s’informer correctement et de manière apaisée en ligne ' . url_full('home#index')) ?>"
+                        href="mailto:?subject=<?= rawurlencode('Aidons Flus à se développer') ?>&amp;body=<?= rawurlencode('Faites comme moi et soutenez Flus, un futur média social citoyen pour celles et ceux qui veulent s’informer correctement et de manière apaisée en ligne ' . url_full('home')) ?>"
                         title="Partager par courriel"
                     >
                         <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
@@ -403,7 +403,7 @@
                         class="sharing__link"
                         target="_blank"
                         rel="noopener noreferrer nofollow"
-                        href="https://twitter.com/intent/tweet?text=<?= rawurlencode('Faites comme moi et soutenez Flus, un futur média social citoyen pour celles et ceux qui veulent s’informer correctement et de manière apaisée en ligne ' . url_full('home#index')) ?>"
+                        href="https://twitter.com/intent/tweet?text=<?= rawurlencode('Faites comme moi et soutenez Flus, un futur média social citoyen pour celles et ceux qui veulent s’informer correctement et de manière apaisée en ligne ' . url_full('home')) ?>"
                         title="Partager sur Twitter"
                     >
                         <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
@@ -418,7 +418,7 @@
                         class="sharing__link"
                         target="_blank"
                         rel="noopener noreferrer nofollow"
-                        href="https://www.facebook.com/sharer/sharer.php?u=<?= rawurlencode(url_full('home#index')) ?>"
+                        href="https://www.facebook.com/sharer/sharer.php?u=<?= rawurlencode(url_full('home')) ?>"
                         title="Partager sur Facebook"
                     >
                         <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">

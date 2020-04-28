@@ -1,7 +1,7 @@
 <?php
     $this->layout('base.phtml', [
         'title' => 'Financement de Flus, comment ça fonctionne ?',
-        'canonical' => url_full('home#funding'),
+        'canonical' => url_full('funding'),
     ]);
 ?>
 
@@ -141,13 +141,13 @@
             Créez un compte payant
         </a>
 
-        <a class="revenues__button call-to-action" href="<?= url('payments#init') ?>">
+        <a class="revenues__button call-to-action" href="<?= url('common pot') ?>">
             Participez à la cagnotte commune
         </a>
     </div>
 
     <p class="paragraph--center">
-        <a href="<?= url('home#index') ?>">
+        <a href="<?= url('home') ?>">
             Retourner à l’accueil
         </a>
     </p>

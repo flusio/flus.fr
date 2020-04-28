@@ -1,6 +1,6 @@
 User-agent: *
 Disallow: /admin/
 
-Sitemap: <?= url_full('home#sitemap') ?>
+Sitemap: <?= url_full('sitemap.xml') ?>
 
 Sitemap: <?= url_full('carnet/sitemap.xml') ?>

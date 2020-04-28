@@ -14,18 +14,18 @@ class Application
 
         // Initialize the routes
         $router = new \Minz\Router();
-        $router->addRoute('get', '/', 'home#index');
-        $router->addRoute('get', '/financement', 'home#funding');
-        $router->addRoute('get', '/credits', 'home#credits');
-        $router->addRoute('get', '/mentions-legales', 'home#legal');
-        $router->addRoute('get', '/cgv', 'home#cgv');
-        $router->addRoute('get', '/cagnotte', 'payments#init');
-        $router->addRoute('post', '/cagnotte', 'payments#payCommonPot');
+        $router->addRoute('get', '/', 'home#index', 'home');
+        $router->addRoute('get', '/financement', 'home#funding', 'funding');
+        $router->addRoute('get', '/credits', 'home#credits', 'credits');
+        $router->addRoute('get', '/mentions-legales', 'home#legal', 'legal');
+        $router->addRoute('get', '/cgv', 'home#cgv', 'cgv');
+        $router->addRoute('get', '/cagnotte', 'payments#init', 'common pot');
+        $router->addRoute('post', '/cagnotte', 'payments#payCommonPot', 'submit common pot');
         $router->addRoute('get', '/merci', 'payments#succeeded');
         $router->addRoute('get', '/annulation', 'payments#canceled');
 
-        $router->addRoute('get', '/robots.txt', 'home#robots');
-        $router->addRoute('get', '/sitemap.xml', 'home#sitemap');
+        $router->addRoute('get', '/robots.txt', 'home#robots', 'robots.txt');
+        $router->addRoute('get', '/sitemap.xml', 'home#sitemap', 'sitemap.xml');
 
         $router->addRoute('get', '/payments/:id', 'payments#show');
         $router->addRoute('get', '/payments/:id/pay', 'payments#pay');

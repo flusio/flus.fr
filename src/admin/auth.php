@@ -96,5 +96,5 @@ function delete_session($request)
         session_unset();
     }
 
-    return \Minz\Response::redirect('home#index');
+    return \Minz\Response::redirect('home');
 }

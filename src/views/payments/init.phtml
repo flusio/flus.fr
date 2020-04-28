@@ -1,7 +1,7 @@
 <?php
     $this->layout('base.phtml', [
         'title' => 'Participer à la cagnotte commune de Flus',
-        'canonical' => url_full('payments#init'),
+        'canonical' => url_full('common pot'),
         'description' => 'Flus propose une cagnotte commune à laquelle n’importe qui peut participer pour fournir des abonnements gratuits à celles et ceux qui n’en ont pas les moyens.',
         'og' => [
             'type' => 'website',
@@ -46,7 +46,7 @@
 
     <form
          method="post"
-         action="<?= url('payments#payCommonPot') ?>"
+         action="<?= url('submit common pot') ?>"
          class="form--common-pot"
      >
          <div
@@ -276,7 +276,7 @@
         <div class="form-group form-group--cgv <?= isset($errors['cgv']) ? 'form-group--invalid' : '' ?>">
             <p class="form-group__caption">
                 Avant d’aller plus loin, vous devriez prendre le temps de
-                <a href="<?= url('home#cgv') ?>" target="_blank" rel="noopener noreferrer nofollow">
+                <a href="<?= url('cgv') ?>" target="_blank" rel="noopener noreferrer nofollow">
                     lire les Conditions Générales de Vente (<abbr>CGV</abbr>)</a>
                 pour vous assurer que celles-ci vous conviennent. Vous serez
                 ensuite redirigé·e vers <a href="https://stripe.com/fr">Stripe</a>

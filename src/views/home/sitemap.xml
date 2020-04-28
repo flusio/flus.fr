@@ -2,37 +2,37 @@
 
 <urlset xmlns="https://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-        <loc><?= url_full('home#index') ?></loc>
+        <loc><?= url_full('home') ?></loc>
         <changefreq>weekly</changefreq>
         <priority>1.0</priority>
     </url>
 
     <url>
-        <loc><?= url_full('payments#init') ?></loc>
+        <loc><?= url_full('common pot') ?></loc>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>
 
     <url>
-        <loc><?= url_full('home#funding') ?></loc>
+        <loc><?= url_full('funding') ?></loc>
         <changefreq>weekly</changefreq>
         <priority>0.7</priority>
     </url>
 
     <url>
-        <loc><?= url_full('home#credits') ?></loc>
+        <loc><?= url_full('credits') ?></loc>
         <changefreq>yearly</changefreq>
         <priority>0.5</priority>
     </url>
 
     <url>
-        <loc><?= url_full('home#legal') ?></loc>
+        <loc><?= url_full('legal') ?></loc>
         <changefreq>yearly</changefreq>
         <priority>0.5</priority>
     </url>
 
     <url>
-        <loc><?= url_full('home#cgv') ?></loc>
+        <loc><?= url_full('cgv') ?></loc>
         <changefreq>yearly</changefreq>
         <priority>0.5</priority>
     </url>
