@@ -11,8 +11,6 @@ return [
     ],
 
     'application' => [
-        'enabled' => true,
-
         'admin_secret' => $dotenv->pop('APP_ADMIN_SECRET'),
 
         'stripe_private_key' => $dotenv->pop('APP_STRIPE_PRIVATE_KEY'),

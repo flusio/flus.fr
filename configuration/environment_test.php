@@ -16,8 +16,6 @@ return [
     ],
 
     'application' => [
-        'enabled' => true,
-
         'admin_secret' => \password_hash('secret', \PASSWORD_BCRYPT),
 
         'stripe_private_key' => 'sk_test_123',
