@@ -27,7 +27,7 @@ function index()
         $payments_by_months[$month][] = $payment;
     }
 
-    return \Minz\Response::ok('admin/index.phtml', [
+    return \Minz\Response::ok('admin/payments/index.phtml', [
         'year' => $year,
         'payments_by_months' => $payments_by_months,
     ]);

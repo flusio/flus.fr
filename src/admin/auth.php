@@ -22,7 +22,7 @@ function login($request)
         return \Minz\Response::redirect('admin');
     }
 
-    return \Minz\Response::ok('admin/login.phtml', [
+    return \Minz\Response::ok('admin/auth/login.phtml', [
         'from' => $request->param('from'),
     ]);
 }
@@ -54,7 +54,7 @@ function create_session($request)
 
     $csrf = new \Minz\CSRF();
     if (!$csrf->validateToken($request->param('csrf'))) {
-        return \Minz\Response::badRequest('admin/login.phtml', [
+        return \Minz\Response::badRequest('admin/auth/login.phtml', [
             'from' => $from,
             'error' => 'Une vérification de sécurité a échoué, veuillez réessayer de soumettre le formulaire.',
         ]);
@@ -71,7 +71,7 @@ function create_session($request)
         }
         return \Minz\Response::redirect($location, ['status' => 'connected']);
     } else {
-        return \Minz\Response::badRequest('admin/login.phtml', [
+        return \Minz\Response::badRequest('admin/auth/login.phtml', [
             'from' => $from,
             'error' => 'Le mot de passe semble invalide, désolé.',
         ]);
