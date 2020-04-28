@@ -40,6 +40,21 @@ class Countries
         'SK' => 'Slovaquie',
     ];
 
+    public static function listSorted()
+    {
+        $countries = self::COUNTRIES;
+        uasort($countries, function ($country_1, $country_2) {
+            if ($country_1 === 'France') {
+                return -1;
+            }
+            if ($country_2 === 'France') {
+                return 1;
+            }
+            return \strnatcmp($country_1, $country_2);
+        });
+        return $countries;
+    }
+
     public static function codes()
     {
         return array_keys(self::COUNTRIES);

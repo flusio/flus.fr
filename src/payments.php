@@ -3,6 +3,7 @@
 namespace Website\controllers\payments;
 
 use Website\models;
+use Website\utils;
 use Website\services;
 
 /**
@@ -16,6 +17,7 @@ function init()
     $common_pot_amount = $payment_dao->findCommonPotRevenue() / 100;
     $available_accounts = floor($common_pot_amount / 3);
     return \Minz\Response::ok('payments/init.phtml', [
+        'countries' => utils\Countries::listSorted(),
         'email' => '',
         'amount' => 30,
         'common_pot_amount' => number_format($common_pot_amount, 2, ',', '&nbsp;'),
@@ -26,6 +28,7 @@ function init()
             'address1' => '',
             'postcode' => '',
             'city' => '',
+            'country' => 'FR',
         ],
     ]);
 }
@@ -68,6 +71,7 @@ function payCommonPot($request)
 
     if (!$accept_cgv) {
         return \Minz\Response::badRequest('payments/init.phtml', [
+            'countries' => utils\Countries::listSorted(),
             'email' => $email,
             'amount' => $amount,
             'address' => $address,
@@ -83,6 +87,7 @@ function payCommonPot($request)
         $payment = models\Payment::init('common_pot', $email, $amount, $address);
     } catch (\Minz\Errors\ModelPropertyError $e) {
         return \Minz\Response::badRequest('payments/init.phtml', [
+            'countries' => utils\Countries::listSorted(),
             'email' => $email,
             'amount' => $amount,
             'address' => $address,

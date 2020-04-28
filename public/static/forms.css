@@ -75,6 +75,30 @@ input[type="number"]:focus {
     outline: none;
 }
 
+select {
+    width: 50%;
+    height: 2.5em;
+    padding: .25em;
+
+    color: var(--color-black);
+    font-size: 1em;
+    font-family: inherit;
+
+    background: linear-gradient(to bottom, var(--color-grey-3), var(--color-grey-2));
+    border: .25rem solid var(--color-grey-1);
+    border-radius: .25em;
+
+    transition: border .2s ease-in-out;
+}
+
+select:hover {
+    background: var(--color-grey-3);
+}
+
+select:focus {
+    border-color: var(--color-turquoise-2);
+}
+
 fieldset {
     margin-top: var(--space-medium);
     margin-bottom: var(--space-medium);
