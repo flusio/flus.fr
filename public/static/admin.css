@@ -273,6 +273,16 @@ hr::after {
     justify-content: space-between;
 }
 
+.layout__header-separator {
+    flex: 1;
+}
+
+.layout__header-link {
+    padding-left: var(--space-medium);
+    padding-right: var(--space-medium);
+    margin-right: var(--space-medium);
+}
+
 .layout__content {
     max-width: 80ch;
     margin-left: auto;
