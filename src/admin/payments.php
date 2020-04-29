@@ -270,6 +270,62 @@ function complete($request)
 }
 
 /**
+ * Destroy a payment
+ *
+ * Parameter is:
+ *
+ * - `id` of the Payment
+ *
+ * @param \Minz\Request $request
+ *
+ * @return \Minz\Response
+ */
+function destroy($request)
+{
+    $current_user = utils\currentUser();
+    if (!$current_user) {
+        return \Minz\Response::redirect('login', ['from' => 'admin/payments#index']);
+    }
+
+    $payment_dao = new models\dao\Payment();
+    $payment_id = $request->param('id');
+    $raw_payment = $payment_dao->find($payment_id);
+    if (!$raw_payment) {
+        return \Minz\Response::notFound('not_found.phtml');
+    }
+
+    $payment = new models\Payment($raw_payment);
+    if ($payment->completed_at) {
+        return \Minz\Response::badRequest('admin/payments/show.phtml', [
+            'payment' => $payment,
+            'error' => 'Ce paiement a déjà été confirmé… qu’est-ce que vous essayez de faire ?',
+        ]);
+    }
+
+    if ($payment->invoice_number) {
+        return \Minz\Response::badRequest('admin/payments/show.phtml', [
+            'payment' => $payment,
+            'error' => 'Ce paiement est associé à une facture et ne peut être supprimé.',
+        ]);
+    }
+
+    $csrf = new \Minz\CSRF();
+    if (!$csrf->validateToken($request->param('csrf'))) {
+        return \Minz\Response::badRequest('admin/payments/show.phtml', [
+            'completed_at' => \Minz\Time::now(),
+            'payment' => $payment,
+            'error' => 'Une vérification de sécurité a échoué, veuillez réessayer de soumettre le formulaire.',
+        ]);
+    }
+
+    $payment_dao->delete($payment->id);
+
+    return \Minz\Response::redirect('admin', [
+        'status' => 'payment_deleted',
+    ]);
+}
+
+/**
  * Format a ModelPropertyError as a user-friendly string
  *
  * @param \Minz\Errors\ModelPropertyError $error

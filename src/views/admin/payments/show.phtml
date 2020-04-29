@@ -54,6 +54,16 @@
             </div>
 
             <div class="columns__item">
+                <?php if (!$payment->invoice_number): ?>
+                    <form method="post" action="<?= url('destroy admin payment', ['id' => $payment->id]) ?>">
+                        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+
+                        ou
+                        <button type="submit" class="button--ghost">
+                            Supprimer le paiement
+                        </button>
+                    </form>
+                <?php endif; ?>
             </div>
         </div>
     <?php endif; ?>

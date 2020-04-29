@@ -40,6 +40,7 @@ class Application
         $router->addRoute('post', '/admin/payments/new', 'admin/payments#create', 'create admin payment');
         $router->addRoute('get', '/admin/payments/:id', 'admin/payments#show', 'admin payment');
         $router->addRoute('post', '/admin/payments/:id/complete', 'admin/payments#complete', 'complete admin payment');
+        $router->addRoute('post', '/admin/payments/:id/destroy', 'admin/payments#destroy', 'destroy admin payment');
         $router->addRoute('get', '/admin/invoices/pdf/:id', 'invoices#download_pdf', 'download_pdf_from_admin');
 
         $router->addRoute('post', '/stripe/hooks', 'stripe#hooks');
