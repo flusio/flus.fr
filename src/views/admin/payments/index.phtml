@@ -40,6 +40,10 @@
                     <td>
                         <?php if ($payment->completed_at): ?>
                             <?= format_date($payment->completed_at, '%d %b') ?>
+                        <?php else: ?>
+                            <a href="<?= url('admin payment', ['id' => $payment->id]) ?>">
+                                non payé
+                            </a>
                         <?php endif; ?>
                     </td>
 

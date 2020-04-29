@@ -46,17 +46,16 @@ class PaymentTest extends TestCase
     /**
      * @dataProvider propertiesProvider
      */
-    public function testCompleteSetsCompletedAtToCurrentDateTime($type, $email, $amount, $address)
+    public function testComplete($type, $email, $amount, $address)
     {
         $faker = \Faker\Factory::create();
-        $now = $faker->dateTime;
-        \Minz\Time::freeze($now);
+        $completed_at = $faker->dateTime;
 
         $payment = Payment::init($type, $email, $amount, $address);
 
-        $payment->complete();
+        $payment->complete($completed_at);
 
-        $this->assertEquals($now, $payment->completed_at);
+        $this->assertEquals($completed_at, $payment->completed_at);
     }
 
     /**
@@ -70,7 +69,7 @@ class PaymentTest extends TestCase
 
         $payment = Payment::init($type, $email, $amount, $address);
 
-        $payment->complete();
+        $payment->complete($now);
 
         $expected_invoice_number = $now->format('Y-m') . '-0001';
         $this->assertSame($expected_invoice_number, $payment->invoice_number);
@@ -95,7 +94,7 @@ class PaymentTest extends TestCase
 
         $payment = Payment::init($type, $email, $amount, $address);
 
-        $payment->complete();
+        $payment->complete($now);
 
         $expected_invoice_number = $now->format('Y-m') . '-0003';
         $this->assertSame($expected_invoice_number, $payment->invoice_number);
@@ -121,7 +120,7 @@ class PaymentTest extends TestCase
 
         $payment = Payment::init($type, $email, $amount, $address);
 
-        $payment->complete();
+        $payment->complete($now);
 
         $expected_invoice_number = $now->format('Y-m') . '-0001';
         $this->assertSame($expected_invoice_number, $payment->invoice_number);
@@ -146,7 +145,7 @@ class PaymentTest extends TestCase
 
         $payment = Payment::init($type, $email, $amount, $address);
 
-        $payment->complete();
+        $payment->complete($now);
 
         $expected_invoice_number = $now->format('Y-m') . '-0002';
         $this->assertSame($expected_invoice_number, $payment->invoice_number);

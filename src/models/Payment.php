@@ -219,10 +219,12 @@ class Payment extends \Minz\Model
 
     /**
      * Mark the payment as completed
+     *
+     * @param \DateTime $completed_at
      */
-    public function complete()
+    public function complete($completed_at)
     {
-        $this->setProperty('completed_at', \Minz\Time::now());
+        $this->setProperty('completed_at', $completed_at);
         if (!$this->invoice_number) {
             $this->setProperty('invoice_number', self::generateInvoiceNumber());
         }

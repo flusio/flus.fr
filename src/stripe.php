@@ -45,7 +45,7 @@ function hooks($request)
         }
 
         $payment = new models\Payment($raw_payment);
-        $payment->complete();
+        $payment->complete(\Minz\Time::now());
         $payment_dao->save($payment);
 
         $invoice_pdf_service = new services\InvoicePDF($payment);

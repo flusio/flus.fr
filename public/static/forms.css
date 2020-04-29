@@ -164,8 +164,9 @@ legend {
 }
 
 .form__actions {
-    margin-top: var(--space-medium);
-    margin-bottom: var(--space-large);
+    padding-top: var(--space-medium);
+    padding-bottom: var(--space-medium);
+    margin-bottom: var(--space-medium);
 
     text-align: center;
 }
