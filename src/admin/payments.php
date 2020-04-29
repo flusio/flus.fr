@@ -50,6 +50,7 @@ function init()
         'type' => 'common_pot',
         'username' => '',
         'email' => '',
+        'company_vat_number' => '',
         'amount' => 30,
         'address' => [
             'first_name' => '',
@@ -74,6 +75,7 @@ function init()
  *   value between 1 and 1000.
  * - `email`
  * - `username`, optional
+ * - `company_vat_number`, optional
  * - `address[first_name]`
  * - `address[last_name]`
  * - `address[address1]`
@@ -96,6 +98,7 @@ function create($request)
     $type = $request->param('type');
     $email = $request->param('email');
     $username = $request->param('username');
+    $company_vat_number = $request->param('company_vat_number');
     $amount = $request->param('amount', 0);
     $address = $request->param('address', [
         'first_name' => '',
@@ -114,6 +117,7 @@ function create($request)
             'type' => $type,
             'email' => $email,
             'username' => $username,
+            'company_vat_number' => $company_vat_number,
             'amount' => $amount,
             'address' => $address,
             'generate_invoice' => $generate_invoice,
@@ -137,6 +141,7 @@ function create($request)
             'type' => $type,
             'email' => $email,
             'username' => $username,
+            'company_vat_number' => $company_vat_number,
             'amount' => $amount,
             'address' => $address,
             'generate_invoice' => $generate_invoice,
@@ -157,6 +162,10 @@ function create($request)
             $payment->setProperty('username', trim($username));
         }
 
+        if ($company_vat_number) {
+            $payment->setProperty('company_vat_number', trim($company_vat_number));
+        }
+
         if ($generate_invoice) {
             $payment->setProperty('invoice_number', models\Payment::generateInvoiceNumber());
         }
@@ -166,6 +175,7 @@ function create($request)
             'type' => $type,
             'email' => $email,
             'username' => $username,
+            'company_vat_number' => $company_vat_number,
             'amount' => $amount,
             'address' => $address,
             'generate_invoice' => $generate_invoice,

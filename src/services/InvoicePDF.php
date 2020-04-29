@@ -93,6 +93,10 @@ class InvoicePDF extends \FPDF
                 ],
             ];
         }
+
+        if ($payment->company_vat_number) {
+            $this->metadata['N° TVA client'] = $payment->company_vat_number;
+        }
     }
 
     /**
@@ -130,7 +134,7 @@ class InvoicePDF extends \FPDF
 
     private function addCustomerInformation($infos)
     {
-        $this->SetY(60);
+        $this->SetY(70);
         $this->SetX(-100);
 
         $this->SetFont('', '');
@@ -145,7 +149,7 @@ class InvoicePDF extends \FPDF
 
     private function addPurchases($purchases)
     {
-        $this->SetXY(20, 110);
+        $this->SetXY(20, 130);
         $this->SetFont('', 'B');
         $this->Cell(90, 10, 'Description', 0, 0, '', true);
         $this->Cell(25, 10, $this->pdfDecode('Quantité'), 0, 0, '', true);

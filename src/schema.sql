@@ -15,5 +15,6 @@ CREATE TABLE payments (
     payment_intent_id TEXT,
     session_id TEXT,
     username TEXT,
-    frequency TEXT
+    frequency TEXT,
+    company_vat_number TEXT
 );

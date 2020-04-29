@@ -38,6 +38,21 @@ class InvoicePDFTest extends TestCase
     /**
      * @dataProvider subscriptionPaymentProvider
      */
+    public function testPdfWithVatNumber($payment)
+    {
+        $faker = \Faker\Factory::create('fr_FR');
+        $vat_number = $faker->vat;
+        $payment->setProperty('company_vat_number', $vat_number);
+
+        $invoice_pdf = new InvoicePDF($payment);
+
+        $metadata = $invoice_pdf->metadata;
+        $this->assertSame($metadata['N° TVA client'], $vat_number);
+    }
+
+    /**
+     * @dataProvider subscriptionPaymentProvider
+     */
     public function testPdfNotCompletedIsDue($payment)
     {
         $payment->setProperty('completed_at', null);
