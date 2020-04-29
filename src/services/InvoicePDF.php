@@ -43,11 +43,16 @@ class InvoicePDF extends \FPDF
 
         $this->logo = \Minz\Configuration::$app_path . '/public/static/logo-512px.png';
 
-        $date = strftime('%d %B %Y', $payment->completed_at->getTimestamp());
+        $established_at = strftime('%d %B %Y', $payment->created_at->getTimestamp());
+        if ($payment->completed_at) {
+            $paid_at = strftime('%d %B %Y', $payment->completed_at->getTimestamp());
+        } else {
+            $paid_at = 'à payer';
+        }
         $this->metadata = [
             'N° facture' => $payment->invoice_number,
-            'Établie le' => $date,
-            'Payée le' => $date,
+            'Établie le' => $established_at,
+            'Payée le' => $paid_at,
         ];
 
         $address = $payment->address();

@@ -27,11 +27,25 @@ class InvoicePDFTest extends TestCase
         $invoice_pdf = new InvoicePDF($payment);
 
         $metadata = $invoice_pdf->metadata;
-        $expected_date = $date = strftime('%d %B %Y', $payment->completed_at->getTimestamp());
+        $expected_established = $date = strftime('%d %B %Y', $payment->created_at->getTimestamp());
+        $expected_paid = $date = strftime('%d %B %Y', $payment->completed_at->getTimestamp());
         $this->assertSame($payment->invoice_number, $metadata['N° facture']);
-        $this->assertSame($expected_date, $metadata['Établie le']);
-        $this->assertSame($expected_date, $metadata['Payée le']);
+        $this->assertSame($expected_established, $metadata['Établie le']);
+        $this->assertSame($expected_paid, $metadata['Payée le']);
         $this->assertSame($payment->username, $metadata['Identifiant client']);
+    }
+
+    /**
+     * @dataProvider subscriptionPaymentProvider
+     */
+    public function testPdfNotCompletedIsDue($payment)
+    {
+        $payment->setProperty('completed_at', null);
+
+        $invoice_pdf = new InvoicePDF($payment);
+
+        $metadata = $invoice_pdf->metadata;
+        $this->assertSame('à payer', $metadata['Payée le']);
     }
 
     /**
@@ -197,6 +211,7 @@ class InvoicePDFTest extends TestCase
             $invoice_number = $completed_at->format('Y-m') . sprintf('-%04d', $faker->randomNumber(4));
 
             $payment = new models\Payment([
+                'created_at' => $faker->dateTime->getTimestamp(),
                 'type' => 'subscription',
                 'username' => $faker->username,
                 'frequency' => $faker->randomElement(['month', 'year']),
@@ -227,6 +242,7 @@ class InvoicePDFTest extends TestCase
             $invoice_number = $completed_at->format('Y-m') . sprintf('-%04d', $faker->randomNumber(4));
 
             $payment = new models\Payment([
+                'created_at' => $faker->dateTime->getTimestamp(),
                 'type' => 'common_pot',
                 'email' => $faker->email,
                 'amount' => $faker->numberBetween(100, 100000),

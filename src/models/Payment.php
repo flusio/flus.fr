@@ -222,6 +222,17 @@ class Payment extends \Minz\Model
      */
     public function complete()
     {
+        $this->setProperty('completed_at', \Minz\Time::now());
+        if (!$this->invoice_number) {
+            $this->setProperty('invoice_number', self::generateInvoiceNumber());
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public static function generateInvoiceNumber()
+    {
         $now = \Minz\Time::now();
 
         $payment_dao = new dao\Payment();
@@ -243,9 +254,7 @@ class Payment extends \Minz\Model
             $invoice_sequence = 1;
         }
 
-        $invoice_number = $now->format('Y-m') . sprintf('-%04d', $invoice_sequence);
-        $this->setProperty('completed_at', $now);
-        $this->setProperty('invoice_number', $invoice_number);
+        return $now->format('Y-m') . sprintf('-%04d', $invoice_sequence);
     }
 
     /**
