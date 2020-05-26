@@ -2,21 +2,12 @@
 
 namespace Website\admin;
 
-use Website\tests;
-
 class AuthTest extends \PHPUnit\Framework\TestCase
 {
+    use \tests\LoginHelper;
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\ResponseAsserts;
-
-    /**
-     * @after
-     */
-    public function logout()
-    {
-        tests\utils\logout();
-    }
 
     public function testLogin()
     {
@@ -29,7 +20,7 @@ class AuthTest extends \PHPUnit\Framework\TestCase
 
     public function testLoginWhenConnected()
     {
-        tests\utils\login();
+        $this->login();
         $request = new \Minz\Request('GET', '/admin/login');
 
         $response = self::$application->run($request);
@@ -68,7 +59,7 @@ class AuthTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateSessionWhenConnected()
     {
-        tests\utils\login();
+        $this->login();
         $request = new \Minz\Request('POST', '/admin/login', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
             'password' => 'secret',
@@ -128,7 +119,7 @@ class AuthTest extends \PHPUnit\Framework\TestCase
 
     public function testDeleteSession()
     {
-        tests\utils\login();
+        $this->login();
         $request = new \Minz\Request('POST', '/admin/logout', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
         ]);
@@ -152,7 +143,7 @@ class AuthTest extends \PHPUnit\Framework\TestCase
 
     public function testDeleteSessionFailsIfCsrfIsWrong()
     {
-        tests\utils\login();
+        $this->login();
         (new \Minz\CSRF())->generateToken();
         $request = new \Minz\Request('POST', '/admin/logout', [
             'csrf' => 'not the token',

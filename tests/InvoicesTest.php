@@ -4,6 +4,7 @@ namespace Website;
 
 class InvoicesTest extends \PHPUnit\Framework\TestCase
 {
+    use \tests\LoginHelper;
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\FactoriesHelper;
@@ -49,7 +50,7 @@ class InvoicesTest extends \PHPUnit\Framework\TestCase
      */
     public function testDownloadPdfWithAuthenticatedUserRendersAPdf($completed_at, $invoice_number)
     {
-        tests\utils\login();
+        $this->login();
 
         $payment_id = $this->create('payments', [
             'completed_at' => $completed_at->format(\Minz\Model::DATETIME_FORMAT),
@@ -65,8 +66,6 @@ class InvoicesTest extends \PHPUnit\Framework\TestCase
             'Content-Type' => 'application/pdf',
             'Content-Disposition' => 'attachment; filename="' . $expected_filename . '"',
         ]);
-
-        tests\utils\logout();
     }
 
     public function testDownloadPdfWithNonExistingPaymentReturnsNotFound()
