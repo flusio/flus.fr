@@ -413,6 +413,29 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider payCommonPotProvider
      */
+    public function testPayCommonPotWithInvalidCountryReturnsABadRequest($email, $amount, $address)
+    {
+        $address['country'] = 'invalid';
+
+        $request = new \Minz\Request('POST', '/cagnotte', [
+            'email' => $email,
+            'amount' => $amount,
+            'address' => $address,
+            'accept_cgv' => true,
+        ]);
+
+        $response = self::$application->run($request);
+
+        $this->assertResponse(
+            $response,
+            400,
+            'Le pays que vous avez renseigné est invalide.',
+        );
+    }
+
+    /**
+     * @dataProvider payCommonPotProvider
+     */
     public function testPayCommonPotWithAddressAsSingleParamReturnsABadRequest($email, $amount, $address)
     {
         $faker = \Faker\Factory::create();
@@ -704,6 +727,24 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         $response = self::$application->run($request);
 
         $this->assertResponse($response, 401);
+    }
+
+    public function testSucceededRendersCorrectly()
+    {
+        $request = new \Minz\Request('GET', '/merci');
+
+        $response = self::$application->run($request);
+
+        $this->assertResponse($response, 200, 'Votre paiement a bien été pris en compte');
+    }
+
+    public function testCanceledRendersCorrectly()
+    {
+        $request = new \Minz\Request('GET', '/annulation');
+
+        $response = self::$application->run($request);
+
+        $this->assertResponse($response, 200, 'Votre paiement a bien été annulé');
     }
 
     public function payCommonPotProvider()

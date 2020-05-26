@@ -323,7 +323,7 @@ class Payments
             } elseif ($property === 'address_country') {
                 $formatted_error = 'Le pays que vous avez renseigné est invalide.';
             } else {
-                $formatted_error = $error;
+                $formatted_error = $error; // @codeCoverageIgnore
             }
 
             $formatted_errors[$property] = $formatted_error;
