@@ -116,7 +116,7 @@ class Payment extends \Minz\DatabaseModel
     public function listByYear($year)
     {
         $sql = 'SELECT * FROM payments '
-             . 'WHERE strftime("%Y", created_at, "unixepoch") = ? '
+             . 'WHERE strftime("%Y", datetime(created_at)) = ? '
              . 'ORDER BY created_at DESC';
         $statement = $this->prepare($sql);
         $result = $statement->execute([$year]);
