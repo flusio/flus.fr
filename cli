@@ -52,3 +52,4 @@ $response = $application->run($request);
 
 // Display the content
 echo $response->render();
+echo "\n";

@@ -14,15 +14,13 @@ class System
     public function init()
     {
         $app_path = \Minz\Configuration::$app_path;
+        $data_path = \Minz\Configuration::$data_path;
         $schema_path = $app_path . '/src/schema.sql';
         $migrations_path = $app_path . '/src/migrations';
-        $migrations_version_path = $app_path . '/data/migrations_version.txt';
+        $migrations_version_path = $data_path . '/migrations_version.txt';
 
         if (file_exists($migrations_version_path)) {
-            $output = new \Minz\Output\Text(
-                "data/migrations_version.txt file exists, the system is already initialized.\n"
-            );
-            return new \Minz\Response(500, $output);
+            return \Minz\Response::text(500, 'The system is already initialized.'); // @codeCoverageIgnore
         }
 
         $schema = file_get_contents($schema_path);
@@ -33,14 +31,10 @@ class System
         $version = $migrator->lastVersion();
         $saved = @file_put_contents($migrations_version_path, $version);
         if ($saved === false) {
-            $output = new \Minz\Output\Text(
-                "Cannot save data/migrations_version.txt file ({$version}).\n"
-            );
-            return new \Minz\Response(500, $output);
+            return \Minz\Response::text(500, "Cannot save the migrations version file (version: {$version})."); // @codeCoverageIgnore
         }
 
-        $output = new \Minz\Output\Text("The system has been initialized.\n");
-        return new \Minz\Response(200, $output);
+        return \Minz\Response::text(200, 'The system has been initialized.');
     }
 
     /**
@@ -54,20 +48,17 @@ class System
     public function migrate($request)
     {
         $app_path = \Minz\Configuration::$app_path;
+        $data_path = \Minz\Configuration::$data_path;
         $migrations_path = $app_path . '/src/migrations';
-        $migrations_version_path = $app_path . '/data/migrations_version.txt';
+        $migrations_version_path = $data_path . '/migrations_version.txt';
 
         if (!file_exists($migrations_version_path)) {
-            $output = new \Minz\Output\Text(
-                "data/migrations_version.txt file does not exist, you must initialize the system first.\n"
-            );
-            return new \Minz\Response(500, $output);
+            return \Minz\Response::text(500, 'You must initialize the system first.');
         }
 
         $migration_version = @file_get_contents($migrations_version_path);
         if ($migration_version === false) {
-            $output = new \Minz\Output\Text("Cannot read data/migrations_version.txt file.\n");
-            return new \Minz\Response(500, $output);
+            return \Minz\Response::text(500, 'Cannot read the migrations version file.'); // @codeCoverageIgnore
         }
 
         $migrator = new \Minz\Migrator($migrations_path);
@@ -77,8 +68,7 @@ class System
         }
 
         if ($migrator->upToDate()) {
-            $output = new \Minz\Output\Text("Your system is already up to date.\n");
-            return new \Minz\Response(200, $output);
+            return \Minz\Response::text(200, 'Your system is already up to date.');
         }
 
         $results = $migrator->migrate();
@@ -86,22 +76,26 @@ class System
         $new_version = $migrator->version();
         $saved = @file_put_contents($migrations_version_path, $new_version);
         if ($saved === false) {
-            $output = new \Minz\Output\Text(
-                "Cannot save data/migrations_version.txt file ({$version}).\n"
-            );
-            return new \Minz\Response(500, $output);
+            $text = "Cannot save the migrations version file (version: {$version})."; // @codeCoverageIgnore
+            return \Minz\Response::text(500, $text); // @codeCoverageIgnore
         }
 
-        $text = "Migrations results:\n";
+        $has_error = false;
+        $text = '';
         foreach ($results as $migration => $result) {
             if ($result === true) {
                 $result = 'OK';
             } elseif ($result === false) {
                 $result = 'KO';
             }
-            $text = $text . $migration . ': ' . $result . "\n";
+
+            if ($result !== 'OK') {
+                $has_error = true;
+            }
+
+            $text .= "\n" . $migration . ': ' . $result;
         }
-        $output = new \Minz\Output\Text($text);
-        return new \Minz\Response(200, $output);
+
+        return \Minz\Response::text($has_error ? 500 : 200, $text);
     }
 }
