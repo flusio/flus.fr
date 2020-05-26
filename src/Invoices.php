@@ -71,14 +71,12 @@ class Invoices
         $payment_id = $request->param('id');
         $raw_payment = $payment_dao->find($payment_id);
         if (!$raw_payment) {
-            $output = new \Minz\Output\Text("Le paiement n’existe pas.\n");
-            return new \Minz\Response(404, $output);
+            return \Minz\Response::text(404, 'Le paiement n’existe pas.');
         }
 
         $payment = new models\Payment($raw_payment);
         if (!$payment->invoice_number) {
-            $output = new \Minz\Output\Text("Ce paiement n’a pas de numéro de facture associé.\n");
-            return new \Minz\Response(400, $output);
+            return \Minz\Response::text(400, 'Ce paiement n’a pas de numéro de facture associé.');
         }
 
         if (!$payment->invoiceExists()) {
@@ -90,13 +88,12 @@ class Invoices
         $result = $invoice_mailer->sendInvoice($payment->email, $payment->invoiceFilepath());
 
         if ($result) {
-            $output = new \Minz\Output\Text(
-                "La facture {$payment->invoice_number} a été envoyée à l’adresse {$payment->email}.\n"
+            return \Minz\Response::text(
+                200,
+                "La facture {$payment->invoice_number} a été envoyée à l’adresse {$payment->email}."
             );
-            return new \Minz\Response(200, $output);
         } else {
-            $output = new \Minz\Output\Text("La facture n’a pas pu être envoyée.\n");
-            return new \Minz\Response(500, $output);
+            return \Minz\Response::text(500, 'La facture n’a pas pu être envoyée.'); // @codeCoverageIgnore
         }
     }
 }

@@ -34,7 +34,7 @@ return [
     ],
 
     'mailer' => [
-        'type' => 'mail',
+        'type' => 'test',
         'from' => 'root@localhost',
     ],
 

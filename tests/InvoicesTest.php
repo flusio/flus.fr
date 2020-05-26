@@ -8,6 +8,7 @@ class InvoicesTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\ResponseAsserts;
+    use \Minz\Tests\MailerAsserts;
 
     /**
      * @afterClass
@@ -109,6 +110,63 @@ class InvoicesTest extends \PHPUnit\Framework\TestCase
         $response = self::$application->run($request);
 
         $this->assertResponse($response, 401);
+    }
+
+    /**
+     * @dataProvider completedParametersProvider
+     */
+    public function testSendPdfSucceedsAndSendsAnEmail($completed_at, $invoice_number)
+    {
+        $faker = \Faker\Factory::create();
+        $email = $faker->email;
+        $payment_id = $this->create('payments', [
+            'completed_at' => $completed_at->format(\Minz\Model::DATETIME_FORMAT),
+            'invoice_number' => $invoice_number,
+            'email' => $email,
+        ]);
+
+        $this->assertEmailsCount(0);
+
+        $request = new \Minz\Request('CLI', '/invoices/' . $payment_id . '/email');
+
+        $response = self::$application->run($request);
+
+        $this->assertResponse($response, 200, "La facture {$invoice_number} a été envoyée à l’adresse {$email}.");
+        $this->assertEmailsCount(1);
+        $email_sent = \Minz\Tests\Mailer::take();
+        $this->assertEmailSubject($email_sent, '[Flus] Reçu pour votre paiement');
+        $this->assertEmailContainsTo($email_sent, $email);
+        $this->assertEmailContainsBody($email_sent, 'Votre paiement pour Flus a bien été pris en compte');
+        $attachments = $email_sent->getAttachments();
+        $this->assertSame(1, count($attachments));
+    }
+
+    public function testSendPdfFailsIfNonExistingPayment()
+    {
+        $request = new \Minz\Request('CLI', '/invoices/non_existing/email');
+
+        $response = self::$application->run($request);
+
+        $this->assertResponse($response, 404, 'Le paiement n’existe pas.');
+        $this->assertEmailsCount(0);
+    }
+
+    /**
+     * @dataProvider completedParametersProvider
+     */
+    public function testSendPdfFailsIfNoInvoiceNumber($completed_at, $invoice_number)
+    {
+        $payment_id = $this->create('payments', [
+            'completed_at' => $completed_at->format(\Minz\Model::DATETIME_FORMAT),
+            'invoice_number' => null,
+        ]);
+
+        $request = new \Minz\Request('CLI', '/invoices/' . $payment_id . '/email');
+
+        $response = self::$application->run($request);
+
+        $this->assertResponse($response, 400, 'Ce paiement n’a pas de numéro de facture associé.');
+        $this->assertEmailsCount(0);
     }
 
     public function completedParametersProvider()
