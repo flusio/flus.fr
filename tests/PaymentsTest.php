@@ -1,14 +1,14 @@
 <?php
 
-namespace Website\controllers\home;
+namespace Website;
 
-use Minz\Tests\IntegrationTestCase;
-use Website\models;
-use Website\services;
-
-// phpcs:disable Squiz.Classes.ValidClassName.NotCamelCaps
-class paymentsTest extends IntegrationTestCase
+class PaymentsTest extends \PHPUnit\Framework\TestCase
 {
+    use \Minz\Tests\InitializerHelper;
+    use \Minz\Tests\ApplicationHelper;
+    use \Minz\Tests\FactoriesHelper;
+    use \Minz\Tests\ResponseAsserts;
+
     public function testInitActionRendersCorrectly()
     {
         $request = new \Minz\Request('GET', '/cagnotte');
@@ -25,12 +25,12 @@ class paymentsTest extends IntegrationTestCase
         $faker = \Faker\Factory::create();
         $amount_common_pot = $faker->numberBetween(100, 100000);
         $amount_subscriptions = $faker->numberBetween(100, 100000);
-        self::$factories['payments']->create([
+        $this->create('payments', [
             'type' => 'common_pot',
             'amount' => $amount_common_pot,
             'completed_at' => $faker->dateTime->getTimestamp(),
         ]);
-        self::$factories['payments']->create([
+        $this->create('payments', [
             'type' => 'subscription',
             'amount' => $amount_subscriptions,
             'completed_at' => $faker->dateTime->getTimestamp(),
@@ -577,7 +577,7 @@ class paymentsTest extends IntegrationTestCase
 
     public function testPayRendersCorrectly()
     {
-        $payment_id = self::$factories['payments']->create();
+        $payment_id = $this->create('payments');
         $request = new \Minz\Request('GET', "/payments/{$payment_id}/pay");
 
         $response = self::$application->run($request);
@@ -591,7 +591,7 @@ class paymentsTest extends IntegrationTestCase
     {
         $faker = \Faker\Factory::create();
         $session_id = $faker->regexify('cs_test_[\w\d]{56}');
-        $payment_id = self::$factories['payments']->create([
+        $payment_id = $this->create('payments', [
             'session_id' => $session_id,
         ]);
         $request = new \Minz\Request('GET', "/payments/{$payment_id}/pay");
@@ -632,7 +632,7 @@ class paymentsTest extends IntegrationTestCase
     public function testPayWithPaidPaymentReturnsBadRequest()
     {
         $faker = \Faker\Factory::create();
-        $payment_id = self::$factories['payments']->create([
+        $payment_id = $this->create('payments', [
             'completed_at' => $faker->dateTime->getTimestamp(),
         ]);
         $request = new \Minz\Request('GET', "/payments/{$payment_id}/pay");
@@ -650,9 +650,9 @@ class paymentsTest extends IntegrationTestCase
         $amount = $faker->numberBetween(100, 100000);
         $frequency = $faker->randomElement(['month', 'year']);
 
-        $payment_id = self::$factories['payments']->create([
-            'created_at' => $created_at->getTimestamp(),
-            'completed_at' => $completed_at->getTimestamp(),
+        $payment_id = $this->create('payments', [
+            'created_at' => $created_at->format(\Minz\Model::DATETIME_FORMAT),
+            'completed_at' => $completed_at->format(\Minz\Model::DATETIME_FORMAT),
             'amount' => $amount,
             'frequency' => $frequency,
         ]);
@@ -693,7 +693,7 @@ class paymentsTest extends IntegrationTestCase
         $amount = $faker->numberBetween(100, 100000);
         $frequency = $faker->randomElement(['month', 'year']);
 
-        $payment_id = self::$factories['payments']->create([
+        $payment_id = $this->create('payments', [
             'created_at' => $created_at->getTimestamp(),
             'completed_at' => $completed_at->getTimestamp(),
             'amount' => $amount,

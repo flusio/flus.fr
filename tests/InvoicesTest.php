@@ -1,14 +1,14 @@
 <?php
 
-namespace Website\controllers\invoices;
+namespace Website;
 
-use Minz\Tests\IntegrationTestCase;
-use Website\tests;
-use Website\models;
-
-// phpcs:disable Squiz.Classes.ValidClassName.NotCamelCaps
-class invoicesTest extends IntegrationTestCase
+class InvoicesTest extends \PHPUnit\Framework\TestCase
 {
+    use \Minz\Tests\InitializerHelper;
+    use \Minz\Tests\ApplicationHelper;
+    use \Minz\Tests\FactoriesHelper;
+    use \Minz\Tests\ResponseAsserts;
+
     /**
      * @afterClass
      */
@@ -25,8 +25,8 @@ class invoicesTest extends IntegrationTestCase
      */
     public function testDownloadPdfRendersAPdf($completed_at, $invoice_number)
     {
-        $payment_id = self::$factories['payments']->create([
-            'completed_at' => $completed_at->getTimestamp(),
+        $payment_id = $this->create('payments', [
+            'completed_at' => $completed_at->format(\Minz\Model::DATETIME_FORMAT),
             'invoice_number' => $invoice_number,
         ]);
 
@@ -50,8 +50,8 @@ class invoicesTest extends IntegrationTestCase
     {
         tests\utils\login();
 
-        $payment_id = self::$factories['payments']->create([
-            'completed_at' => $completed_at->getTimestamp(),
+        $payment_id = $this->create('payments', [
+            'completed_at' => $completed_at->format(\Minz\Model::DATETIME_FORMAT),
             'invoice_number' => $invoice_number,
         ]);
 
@@ -81,7 +81,7 @@ class invoicesTest extends IntegrationTestCase
 
     public function testDownloadPdfWithPaymentWithNoInvoiceNumberReturnsNotFound()
     {
-        $payment_id = self::$factories['payments']->create([
+        $payment_id = $this->create('payments', [
             'invoice_number' => null,
         ]);
 
@@ -99,8 +99,8 @@ class invoicesTest extends IntegrationTestCase
      */
     public function testDownloadPdfWithMissingAuthenticationReturnsUnauthorized($completed_at, $invoice_number)
     {
-        $payment_id = self::$factories['payments']->create([
-            'completed_at' => $completed_at->getTimestamp(),
+        $payment_id = $this->create('payments', [
+            'completed_at' => $completed_at->format(\Minz\Model::DATETIME_FORMAT),
             'invoice_number' => $invoice_number,
         ]);
 

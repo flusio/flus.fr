@@ -1,12 +1,13 @@
 <?php
 
-namespace Website\controllers\home;
+namespace Website;
 
-use Minz\Tests\IntegrationTestCase;
-
-// phpcs:disable Squiz.Classes.ValidClassName.NotCamelCaps
-class homeTest extends IntegrationTestCase
+class HomeTest extends \PHPUnit\Framework\TestCase
 {
+    use \Minz\Tests\InitializerHelper;
+    use \Minz\Tests\ApplicationHelper;
+    use \Minz\Tests\ResponseAsserts;
+
     public function testIndexRendersCorrectly()
     {
         $request = new \Minz\Request('GET', '/');

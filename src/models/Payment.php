@@ -118,18 +118,10 @@ class Payment extends \Minz\Model
      */
     public static function init($type, $email, $amount, $address)
     {
-        if (!is_numeric($amount)) {
-            throw new \Minz\Errors\ModelPropertyError(
-                'amount',
-                \Minz\Errors\ModelPropertyError::VALUE_INVALID,
-                "`amount` property is invalid ({$amount})."
-            );
-        }
-
         return new self([
             'type' => $type,
             'email' => strtolower(trim($email)),
-            'amount' => intval($amount * 100),
+            'amount' => is_numeric($amount) ? intval($amount * 100) : $amount,
             'address_first_name' => trim($address['first_name']),
             'address_last_name' => trim($address['last_name']),
             'address_address1' => trim($address['address1']),
@@ -229,9 +221,9 @@ class Payment extends \Minz\Model
      */
     public function complete($completed_at)
     {
-        $this->setProperty('completed_at', $completed_at);
+        $this->completed_at = $completed_at;
         if (!$this->invoice_number) {
-            $this->setProperty('invoice_number', self::generateInvoiceNumber());
+            $this->invoice_number = self::generateInvoiceNumber();
         }
     }
 

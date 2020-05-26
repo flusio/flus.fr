@@ -1,9 +1,9 @@
 <?php
 
-$dotenv = new \Minz\Dotenv($app_path . '/.env');
-
 return [
     'app_name' => 'Website',
+
+    'secret_key' => $dotenv->pop('APP_SECRET_KEY'),
 
     'url_options' => [
         'host' => 'localhost',

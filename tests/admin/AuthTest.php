@@ -1,13 +1,15 @@
 <?php
 
-namespace Website\controllers\admin\auth;
+namespace Website\admin;
 
-use Minz\Tests\IntegrationTestCase;
 use Website\tests;
 
-// phpcs:disable Squiz.Classes.ValidClassName.NotCamelCaps
-class authTest extends IntegrationTestCase
+class AuthTest extends \PHPUnit\Framework\TestCase
 {
+    use \Minz\Tests\InitializerHelper;
+    use \Minz\Tests\ApplicationHelper;
+    use \Minz\Tests\ResponseAsserts;
+
     /**
      * @after
      */
@@ -38,7 +40,7 @@ class authTest extends IntegrationTestCase
     public function testLoginWithFromParameter()
     {
         $request = new \Minz\Request('GET', '/admin/login', [
-            'from' => \urlencode('home#index'),
+            'from' => 'home',
         ]);
 
         $response = self::$application->run($request);
@@ -46,7 +48,7 @@ class authTest extends IntegrationTestCase
         $this->assertResponse($response, 200);
         $variables = $response->output()->variables();
         $this->assertArrayHasKey('from', $variables);
-        $this->assertSame(urlencode('home#index'), $variables['from']);
+        $this->assertSame('home', $variables['from']);
     }
 
     public function testCreateSession()
@@ -82,7 +84,7 @@ class authTest extends IntegrationTestCase
         $request = new \Minz\Request('POST', '/admin/login', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
             'password' => 'secret',
-            'from' => urlencode('home#index'),
+            'from' => urlencode('home'),
         ]);
 
         $response = self::$application->run($request);

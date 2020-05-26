@@ -35,7 +35,7 @@ echo 'Use SEED=' . $faker_seed . " to reproduce this suite.\n";
         },
         'created_at' => function () {
             $faker = \Faker\Factory::create();
-            return $faker->unixTime;
+            return $faker->dateTime->format(\Minz\Model::DATETIME_FORMAT);
         },
         'type' => function () {
             $faker = \Faker\Factory::create();
