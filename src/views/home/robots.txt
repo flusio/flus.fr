@@ -3,4 +3,4 @@ Disallow: /admin/
 
 Sitemap: <?= url_full('sitemap.xml') ?>
 
-Sitemap: <?= url_full('carnet/sitemap.xml') ?>
+Sitemap: <?= url_full_public('carnet/sitemap.xml') ?>

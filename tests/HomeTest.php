@@ -62,4 +62,22 @@ class HomeTest extends \PHPUnit\Framework\TestCase
         $pointer = $response->output()->pointer();
         $this->assertSame('home/funding.phtml', $pointer);
     }
+
+    public function testRobotsRendersCorrectly()
+    {
+        $request = new \Minz\Request('GET', '/robots.txt');
+
+        $response = self::$application->run($request);
+
+        $this->assertResponse($response, 200);
+    }
+
+    public function testSitemapRendersCorrectly()
+    {
+        $request = new \Minz\Request('GET', '/sitemap.xml');
+
+        $response = self::$application->run($request);
+
+        $this->assertResponse($response, 200);
+    }
 }
