@@ -153,25 +153,26 @@ class Payments
             ]);
         }
 
-        try {
-            $payment = models\Payment::init($type, $email, $amount, $address);
+        $payment = models\Payment::init($type, $email, $amount, $address);
 
-            if ($type === 'subscription') {
-                $payment->setProperty('frequency', $frequency);
-            }
+        if ($type === 'subscription') {
+            $payment->frequency = $frequency;
+        }
 
-            if ($username) {
-                $payment->setProperty('username', trim($username));
-            }
+        if ($username) {
+            $payment->username = trim($username);
+        }
 
-            if ($company_vat_number) {
-                $payment->setProperty('company_vat_number', trim($company_vat_number));
-            }
+        if ($company_vat_number) {
+            $payment->company_vat_number = trim($company_vat_number);
+        }
 
-            if ($generate_invoice) {
-                $payment->setProperty('invoice_number', models\Payment::generateInvoiceNumber());
-            }
-        } catch (\Minz\Errors\ModelPropertyError $e) {
+        if ($generate_invoice) {
+            $payment->invoice_number = models\Payment::generateInvoiceNumber();
+        }
+
+        $errors = $payment->validate();
+        if ($errors) {
             return \Minz\Response::badRequest('payments/init.phtml', [
                 'countries' => utils\Countries::listSorted(),
                 'type' => $type,
@@ -181,9 +182,7 @@ class Payments
                 'amount' => $amount,
                 'address' => $address,
                 'generate_invoice' => $generate_invoice,
-                'errors' => [
-                    $e->property() => formatPaymentError($e),
-                ],
+                'errors' => $this->formatPaymentErrors($errors),
             ]);
         }
 
@@ -338,40 +337,44 @@ class Payments
     }
 
     /**
-     * Format a ModelPropertyError as a user-friendly string
+     * @param array $errors
      *
-     * @param \Minz\Errors\ModelPropertyError $error
-     *
-     * @throws \Minz\Errors\ModelPropertyError if the property is not supported
-     *
-     * @return string
+     * @return array
      */
-    private function formatPaymentError($error)
+    private function formatPaymentErrors($errors)
     {
-        $property = $error->property();
-        $code = $error->getCode();
-        if ($property === 'email') {
-            if ($code === \Minz\Errors\ModelPropertyError::PROPERTY_REQUIRED) {
-                return 'L’adresse courriel est obligatoire.';
+        $formatted_errors = [];
+
+        foreach ($errors as $property => $error) {
+            $code = $error['code'];
+
+            if ($property === 'email') {
+                if ($code === \Minz\Model::ERROR_REQUIRED) {
+                    $formatted_error = 'L’adresse courriel est obligatoire.';
+                } else {
+                    $formatted_error = 'L’adresse courriel que vous avez fourni est invalide.';
+                }
+            } elseif ($property === 'amount') {
+                $formatted_error = 'Le montant doit être compris entre 1 et 1000 €.';
+            } elseif ($property === 'address_first_name') {
+                $formatted_error = 'Votre prénom est obligatoire.';
+            } elseif ($property === 'address_last_name') {
+                $formatted_error = 'Votre nom est obligatoire.';
+            } elseif ($property === 'address_address1') {
+                $formatted_error = 'Votre adresse est obligatoire.';
+            } elseif ($property === 'address_postcode') {
+                $formatted_error = 'Votre code postal est obligatoire.';
+            } elseif ($property === 'address_city') {
+                $formatted_error = 'Votre ville est obligatoire.';
+            } elseif ($property === 'address_country') {
+                $formatted_error = 'Le pays que vous avez renseigné est invalide.';
             } else {
-                return 'L’adresse courriel que vous avez fourni est invalide.';
+                $formatted_error = $error; // @codeCoverageIgnore
             }
-        } elseif ($property === 'amount') {
-            return 'Le montant doit être compris entre 1 et 1000 €.';
-        } elseif ($property === 'address_first_name') {
-            return 'Votre prénom est obligatoire.';
-        } elseif ($property === 'address_last_name') {
-            return 'Votre nom est obligatoire.';
-        } elseif ($property === 'address_address1') {
-            return 'Votre adresse est obligatoire.';
-        } elseif ($property === 'address_postcode') {
-            return 'Votre code postal est obligatoire.';
-        } elseif ($property === 'address_city') {
-            return 'Votre ville est obligatoire.';
-        } elseif ($property === 'address_country') {
-            return 'Le pays que vous avez renseigné est invalide.';
-        } else {
-            throw $error;
+
+            $formatted_errors[$property] = $formatted_error;
         }
+
+        return $formatted_errors;
     }
 }
