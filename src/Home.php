@@ -64,4 +64,42 @@ class Home
     {
         return \Minz\Response::ok('home/sitemap.xml');
     }
+
+    public function contact()
+    {
+        return \Minz\Response::ok('home/contact.phtml', [
+            'email' => '',
+            'subject' => '',
+            'content' => '',
+        ]);
+    }
+
+    public function sendContactEmail($request)
+    {
+        $email = $request->param('email');
+        $subject = $request->param('subject');
+        $content = $request->param('content');
+
+        $message = models\Message::init($email, $subject, $content);
+        $errors = $message->validate();
+        if ($errors) {
+            return \Minz\Response::badRequest('home/contact.phtml', [
+                'email' => $email,
+                'subject' => $subject,
+                'content' => $content,
+                'errors' => $errors,
+            ]);
+        }
+
+        // The website input is just a trap for bots, don't fill it!
+        $honeypot = $request->param('website');
+        if (!$honeypot) {
+            $mailer = new mailers\Support();
+            $mailer->sendMessage($message);
+        }
+
+        return \Minz\Response::ok('home/contact.phtml', [
+            'email_sent' => true,
+        ]);
+    }
 }

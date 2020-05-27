@@ -25,6 +25,8 @@ return [
 
         'flus_private_key' => 'sk_test_123',
 
+        'support_email' => 'support@example.com',
+
         // used only in tests
         'number_of_datasets' => $number_of_datasets,
     ],

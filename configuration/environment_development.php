@@ -18,6 +18,8 @@ return [
         'stripe_webhook_secret' => $dotenv->pop('APP_STRIPE_WEBHOOK_SECRET'),
 
         'flus_private_key' => $dotenv->pop('APP_FLUS_PRIVATE_KEY'),
+
+        'support_email' => $dotenv->pop('APP_SUPPORT_EMAIL'),
     ],
 
     'database' => [

@@ -19,6 +19,8 @@ class Application
         $router->addRoute('get', '/credits', 'Home#credits', 'credits');
         $router->addRoute('get', '/mentions-legales', 'Home#legal', 'legal');
         $router->addRoute('get', '/cgv', 'Home#cgv', 'cgv');
+        $router->addRoute('get', '/contact', 'Home#contact', 'contact');
+        $router->addRoute('post', '/contact', 'Home#sendContactEmail', 'send contact email');
         $router->addRoute('get', '/cagnotte', 'Payments#init', 'common pot');
         $router->addRoute('post', '/cagnotte', 'Payments#payCommonPot', 'submit common pot');
         $router->addRoute('get', '/merci', 'Payments#succeeded');

@@ -38,3 +38,15 @@ function format_month($month, $format)
     $date = date_create_from_format('n', $month);
     return strftime($format, $date->getTimestamp());
 }
+
+/**
+ * Format a message into hmtl
+ *
+ * @param string $message
+ *
+ * @return string
+ */
+function format_message($message)
+{
+    return nl2br($message);
+}

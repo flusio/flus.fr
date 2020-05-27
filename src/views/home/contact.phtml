@@ -1,0 +1,141 @@
+<?php
+    $this->layout('base.phtml', [
+        'title' => 'Une question ? Une remarque ? Contactez-moi',
+        'canonical' => url_full('contact'),
+        'description' => 'Vous avez une question, rencontrez un problème ou souhaitez en savoir plus sur le service ? Vous pouvez m’écrire depuis ce formulaire.',
+        'og' => [
+            'type' => 'website',
+            'image' => url_full_static('illustrations/contact.svg'),
+            'twitter_card' => 'summary_large_image',
+        ],
+        'load_form_statics' => true,
+    ]);
+?>
+
+<section class="section">
+    <div class="header">
+        <h1 class="header__title">Une question&nbsp;? Une remarque&nbsp;?</h1>
+    </div>
+
+    <p class="section__intro">
+         Vous avez une question, rencontrez un problème ou souhaitez simplement
+         en savoir plus sur le service ? Vous pouvez m’écrire directement
+         depuis ce formulaire.
+    </p>
+
+    <?php if (isset($email_sent) && $email_sent): ?>
+        <p class="paragraph--featured">
+            Votre message a bien été envoyé. Je vous répondrai le plus
+            rapidement possible, dès que je l’aurai lu.
+        </p>
+    <?php else: ?>
+        <form
+             method="post"
+             action="<?= url('send contact email') ?>"
+             class="form--contact"
+         >
+            <div class="form-group <?= isset($errors['subject']) ? 'form-group--invalid' : '' ?>">
+                <label for="subject">
+                    Sujet
+                </label>
+
+                <p class="form-group__caption">
+                    Concis et précis, cela me permettra de comprendre rapidement ce
+                    dont vous voulez me parler.
+                </p>
+
+                <input
+                    id="subject"
+                    name="subject"
+                    type="text"
+                    value="<?= $subject ?>"
+                    required
+                />
+
+                <?php if (isset($errors['subject'])): ?>
+                    <p class="form-group__error">
+                        <?= $errors['subject'] ?>
+                    </p>
+                <?php endif; ?>
+            </div>
+
+            <div class="form-group <?= isset($errors['content']) ? 'form-group--invalid' : '' ?>">
+                <label for="content">
+                    Votre message
+                </label>
+
+                <textarea id="content" name="content" required><?= $content ?></textarea>
+
+                <?php if (isset($errors['content'])): ?>
+                    <p class="form-group__error">
+                        <?= $errors['content'] ?>
+                    </p>
+                <?php endif; ?>
+            </div>
+
+            <div class="form-group <?= isset($errors['email']) ? 'form-group--invalid' : '' ?>">
+                <label for="email">
+                    Votre adresse courriel
+                </label>
+
+                <p class="form-group__caption">
+                    Je vous répondrai à cette adresse, mais je ne l’utiliserai pas
+                    au-delà de notre échange.
+                </p>
+
+                <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    value="<?= $email ?>"
+                    required
+                />
+
+                <?php if (isset($errors['email'])): ?>
+                    <p class="form-group__error">
+                        <?= $errors['email'] ?>
+                    </p>
+                <?php endif; ?>
+            </div>
+
+            <div class="form-group form-group--website">
+                <label for="website">
+                    Votre site Internet
+                </label>
+
+                <p class="form-group__caption">
+                    En vérité, vous ne devriez sans doute pas remplir ce
+                    champ&nbsp;: il s’agit d’un piège à robots.
+                </p>
+
+                <input
+                    id="website"
+                    name="website"
+                    type="text"
+                    value=""
+                />
+            </div>
+
+            <div class="form__actions">
+                <button type="submit" class="button--primary">
+                    Envoyer votre message
+                </button>
+            </div>
+        </form>
+    <?php endif; ?>
+
+    <p class="section__outro paragraph--center">
+        Vous pouvez également me contacter sur
+        <a href="https://tutut.delire.party/@marien">Mastodon</a> et
+        <a href="https://twitter.com/berumuron">Twitter</a>.
+    </p>
+
+    <img
+        class="illustration illustration--centered contact"
+        alt=""
+        src="<?= url_static('illustrations/contact.svg') ?>"
+        height="300"
+    />
+</section>
+
+<hr />

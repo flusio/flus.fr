@@ -20,6 +20,12 @@
     </url>
 
     <url>
+        <loc><?= url_full('contact') ?></loc>
+        <changefreq>yearly</changefreq>
+        <priority>0.6</priority>
+    </url>
+
+    <url>
         <loc><?= url_full('credits') ?></loc>
         <changefreq>yearly</changefreq>
         <priority>0.5</priority>
