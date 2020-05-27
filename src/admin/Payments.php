@@ -173,7 +173,7 @@ class Payments
 
         $errors = $payment->validate();
         if ($errors) {
-            return \Minz\Response::badRequest('payments/init.phtml', [
+            return \Minz\Response::badRequest('admin/payments/init.phtml', [
                 'countries' => utils\Countries::listSorted(),
                 'type' => $type,
                 'email' => $email,
@@ -253,6 +253,7 @@ class Payments
         $payment = new models\Payment($raw_payment);
         if ($payment->completed_at) {
             return \Minz\Response::badRequest('admin/payments/show.phtml', [
+                'completed_at' => \Minz\Time::now(),
                 'payment' => $payment,
                 'error' => 'Ce paiement a déjà été confirmé… qu’est-ce que vous essayez de faire ?',
             ]);
@@ -308,6 +309,7 @@ class Payments
         $payment = new models\Payment($raw_payment);
         if ($payment->completed_at) {
             return \Minz\Response::badRequest('admin/payments/show.phtml', [
+                'completed_at' => \Minz\Time::now(),
                 'payment' => $payment,
                 'error' => 'Ce paiement a déjà été confirmé… qu’est-ce que vous essayez de faire ?',
             ]);
@@ -315,6 +317,7 @@ class Payments
 
         if ($payment->invoice_number) {
             return \Minz\Response::badRequest('admin/payments/show.phtml', [
+                'completed_at' => \Minz\Time::now(),
                 'payment' => $payment,
                 'error' => 'Ce paiement est associé à une facture et ne peut être supprimé.',
             ]);
