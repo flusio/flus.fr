@@ -17,7 +17,7 @@ class Invoices
      *
      * @return \Minz\Response
      */
-    public function download_pdf($request)
+    public function downloadPdf($request)
     {
         $current_user = utils\currentUser();
         $auth_token = $request->header('PHP_AUTH_USER', '');
@@ -65,7 +65,7 @@ class Invoices
      *
      * @return \Minz\Response
      */
-    public function send_pdf($request)
+    public function sendPdf($request)
     {
         $payment_dao = new models\dao\Payment();
         $payment_id = $request->param('id');

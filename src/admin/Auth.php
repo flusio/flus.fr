@@ -45,7 +45,7 @@ class Auth
      *
      * @return \Minz\Response
      */
-    public function create_session($request)
+    public function createSession($request)
     {
         if (utils\currentUser()) {
             return \Minz\Response::redirect('admin');
@@ -91,7 +91,7 @@ class Auth
      *
      * @return \Minz\Response Always redirect to the home page
      */
-    public function delete_session($request)
+    public function deleteSession($request)
     {
         $csrf = new \Minz\CSRF();
         if ($csrf->validateToken($request->param('csrf')) && utils\currentUser()) {

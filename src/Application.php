@@ -30,24 +30,24 @@ class Application
         $router->addRoute('get', '/payments/:id', 'Payments#show');
         $router->addRoute('get', '/payments/:id/pay', 'Payments#pay');
         $router->addRoute('post', '/payments/subscriptions', 'Payments#paySubscription');
-        $router->addRoute('get', '/invoices/pdf/:id', 'Invoices#download_pdf');
+        $router->addRoute('get', '/invoices/pdf/:id', 'Invoices#downloadPdf');
 
         $router->addRoute('get', '/admin', 'admin/Payments#index', 'admin');
         $router->addRoute('get', '/admin/login', 'admin/Auth#login', 'login');
-        $router->addRoute('post', '/admin/login', 'admin/Auth#create_session', 'create_session');
-        $router->addRoute('post', '/admin/logout', 'admin/Auth#delete_session', 'logout');
+        $router->addRoute('post', '/admin/login', 'admin/Auth#createSession', 'create_session');
+        $router->addRoute('post', '/admin/logout', 'admin/Auth#deleteSession', 'logout');
         $router->addRoute('get', '/admin/payments/new', 'admin/Payments#init', 'new admin payment');
         $router->addRoute('post', '/admin/payments/new', 'admin/Payments#create', 'create admin payment');
         $router->addRoute('get', '/admin/payments/:id', 'admin/Payments#show', 'admin payment');
         $router->addRoute('post', '/admin/payments/:id/complete', 'admin/Payments#complete', 'complete admin payment');
         $router->addRoute('post', '/admin/payments/:id/destroy', 'admin/Payments#destroy', 'destroy admin payment');
-        $router->addRoute('get', '/admin/invoices/pdf/:id', 'Invoices#download_pdf', 'download_pdf_from_admin');
+        $router->addRoute('get', '/admin/invoices/pdf/:id', 'Invoices#downloadPdf', 'download_pdf_from_admin');
 
         $router->addRoute('post', '/stripe/hooks', 'Stripe#hooks');
 
         $router->addRoute('cli', '/system/init', 'System#init');
         $router->addRoute('cli', '/system/migrate', 'System#migrate');
-        $router->addRoute('cli', '/invoices/:id/email', 'Invoices#send_pdf');
+        $router->addRoute('cli', '/invoices/:id/email', 'Invoices#sendPdf');
 
         $this->engine = new \Minz\Engine($router);
         \Minz\Url::setRouter($router);

@@ -31,7 +31,8 @@ class System
         $version = $migrator->lastVersion();
         $saved = @file_put_contents($migrations_version_path, $version);
         if ($saved === false) {
-            return \Minz\Response::text(500, "Cannot save the migrations version file (version: {$version})."); // @codeCoverageIgnore
+            $text = "Cannot save the migrations version file (version: {$version})."; // @codeCoverageIgnore
+            return \Minz\Response::text(500, $text); // @codeCoverageIgnore
         }
 
         return \Minz\Response::text(200, 'The system has been initialized.');
