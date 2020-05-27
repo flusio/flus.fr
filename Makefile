@@ -2,6 +2,22 @@
 
 USER = $(shell id -u):$(shell id -g)
 
+ifndef COVERAGE
+	COVERAGE = --coverage-html ./coverage
+endif
+
+ifdef FILTER
+	PHPUNIT_FILTER = --filter=$(FILTER)
+else
+	PHPUNIT_FILTER =
+endif
+
+ifdef FILE
+	PHPUNIT_FILE = $(FILE)
+else
+	PHPUNIT_FILE = ./tests
+endif
+
 .PHONY: start
 start: ## Start a development server (use Docker)
 	@echo "Running webserver on http://localhost:8000"
@@ -21,7 +37,12 @@ migrate: ## Apply pending migrations
 
 .PHONY: test
 test: bin/phpunit  ## Run the test suite
-	php ./bin/phpunit --bootstrap ./tests/bootstrap.php --testdox ./tests
+	php ./bin/phpunit \
+		$(COVERAGE) --whitelist ./src \
+		--bootstrap ./tests/bootstrap.php \
+		--testdox \
+		$(PHPUNIT_FILTER) \
+		$(PHPUNIT_FILE)
 
 .PHONY: lint
 lint: bin/phpcs  ## Run the linter on the PHP files

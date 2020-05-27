@@ -1,23 +1,21 @@
 <?php
 
-namespace Website\controllers\home;
+namespace Website;
 
-use Minz\Tests\IntegrationTestCase;
-use Website\models;
-use Website\services;
-
-// phpcs:disable Squiz.Classes.ValidClassName.NotCamelCaps
-class paymentsTest extends IntegrationTestCase
+class PaymentsTest extends \PHPUnit\Framework\TestCase
 {
+    use \Minz\Tests\InitializerHelper;
+    use \Minz\Tests\ApplicationHelper;
+    use \Minz\Tests\FactoriesHelper;
+    use \Minz\Tests\TimeHelper;
+    use \Minz\Tests\ResponseAsserts;
+
     public function testInitActionRendersCorrectly()
     {
-        $request = new \Minz\Request('GET', '/cagnotte');
-
-        $response = self::$application->run($request);
+        $response = $this->appRun('GET', '/cagnotte');
 
         $this->assertResponse($response, 200);
-        $pointer = $response->output()->pointer();
-        $this->assertSame('payments/init.phtml', $pointer);
+        $this->assertPointer($response, 'payments/init.phtml');
     }
 
     public function testInitActionShowsAmountOfTheCommonPot()
@@ -25,20 +23,18 @@ class paymentsTest extends IntegrationTestCase
         $faker = \Faker\Factory::create();
         $amount_common_pot = $faker->numberBetween(100, 100000);
         $amount_subscriptions = $faker->numberBetween(100, 100000);
-        self::$factories['payments']->create([
+        $this->create('payments', [
             'type' => 'common_pot',
             'amount' => $amount_common_pot,
             'completed_at' => $faker->dateTime->getTimestamp(),
         ]);
-        self::$factories['payments']->create([
+        $this->create('payments', [
             'type' => 'subscription',
             'amount' => $amount_subscriptions,
             'completed_at' => $faker->dateTime->getTimestamp(),
         ]);
 
-        $request = new \Minz\Request('GET', '/cagnotte');
-
-        $response = self::$application->run($request);
+        $response = $this->appRun('GET', '/cagnotte');
 
         $expected_amount = number_format(($amount_common_pot / 100), 2, ',', '&nbsp') . '&nbsp;€';
         $this->assertResponse($response, 200, $expected_amount);
@@ -49,18 +45,17 @@ class paymentsTest extends IntegrationTestCase
      */
     public function testPayCommonPotRedirectsCorrectly($email, $amount, $address)
     {
-        $request = new \Minz\Request('POST', '/cagnotte', [
+        $response = $this->appRun('POST', '/cagnotte', [
             'email' => $email,
             'amount' => $amount,
             'address' => $address,
             'accept_cgv' => true,
         ]);
 
-        $response = self::$application->run($request);
-
-        $this->assertResponse($response, 302);
-        $location = $response->headers(true)['Location'];
-        $this->assertStringMatchesFormat('/payments/%s/pay', $location);
+        $payment_dao = new models\dao\Payment();
+        $payment_id = $payment_dao->take()['id'];
+        $redirect_to = "/payments/{$payment_id}/pay";
+        $this->assertResponse($response, 302, $redirect_to);
     }
 
     /**
@@ -71,14 +66,12 @@ class paymentsTest extends IntegrationTestCase
         $faker = \Faker\Factory::create();
         $amount = $faker->randomFloat(2, 1.00, 1000.0);
 
-        $request = new \Minz\Request('POST', '/cagnotte', [
+        $response = $this->appRun('POST', '/cagnotte', [
             'email' => $email,
             'amount' => $amount,
             'address' => $address,
             'accept_cgv' => true,
         ]);
-
-        $response = self::$application->run($request);
 
         $this->assertResponse($response, 302);
     }
@@ -90,15 +83,15 @@ class paymentsTest extends IntegrationTestCase
     {
         $payment_dao = new models\dao\Payment();
 
-        $request = new \Minz\Request('POST', '/cagnotte', [
+        $this->assertSame(0, $payment_dao->count());
+
+        $response = $this->appRun('POST', '/cagnotte', [
             'email' => $email,
             'amount' => $amount,
             'address' => $address,
             'accept_cgv' => true,
         ]);
 
-        $this->assertSame(0, $payment_dao->count());
-        $response = self::$application->run($request);
         $this->assertSame(1, $payment_dao->count());
 
         $payment = new models\Payment($payment_dao->take());
@@ -125,14 +118,12 @@ class paymentsTest extends IntegrationTestCase
         $faker = \Faker\Factory::create();
         $address['country'] = $faker->randomElement(\Website\utils\Countries::codes());
 
-        $request = new \Minz\Request('POST', '/cagnotte', [
+        $response = $this->appRun('POST', '/cagnotte', [
             'email' => $email,
             'amount' => $amount,
             'address' => $address,
             'accept_cgv' => true,
         ]);
-
-        $response = self::$application->run($request);
 
         $payment = new models\Payment($payment_dao->take());
         $payment_address = $payment->address();
@@ -143,14 +134,12 @@ class paymentsTest extends IntegrationTestCase
      */
     public function testPayCommonPotWithoutAcceptingCgvReturnsABadRequest($email, $amount, $address)
     {
-        $request = new \Minz\Request('POST', '/cagnotte', [
+        $response = $this->appRun('POST', '/cagnotte', [
             'email' => $email,
             'amount' => $amount,
             'address' => $address,
             'accept_cgv' => false,
         ]);
-
-        $response = self::$application->run($request);
 
         $this->assertResponse(
             $response,
@@ -167,14 +156,12 @@ class paymentsTest extends IntegrationTestCase
         $faker = \Faker\Factory::create();
         $email = $faker->domainName;
 
-        $request = new \Minz\Request('POST', '/cagnotte', [
+        $response = $this->appRun('POST', '/cagnotte', [
             'email' => $email,
             'amount' => $amount,
             'address' => $address,
             'accept_cgv' => true,
         ]);
-
-        $response = self::$application->run($request);
 
         $this->assertResponse(
             $response,
@@ -191,14 +178,12 @@ class paymentsTest extends IntegrationTestCase
         $faker = \Faker\Factory::create();
         $amount = $faker->randomFloat(2, 0.0, 0.99);
 
-        $request = new \Minz\Request('POST', '/cagnotte', [
+        $response = $this->appRun('POST', '/cagnotte', [
             'email' => $email,
             'amount' => $amount,
             'address' => $address,
             'accept_cgv' => true,
         ]);
-
-        $response = self::$application->run($request);
 
         $this->assertResponse(
             $response,
@@ -215,14 +200,12 @@ class paymentsTest extends IntegrationTestCase
         $faker = \Faker\Factory::create();
         $amount = $faker->numberBetween(1001, PHP_INT_MAX / 100);
 
-        $request = new \Minz\Request('POST', '/cagnotte', [
+        $response = $this->appRun('POST', '/cagnotte', [
             'email' => $email,
             'amount' => $amount,
             'address' => $address,
             'accept_cgv' => true,
         ]);
-
-        $response = self::$application->run($request);
 
         $this->assertResponse(
             $response,
@@ -239,14 +222,12 @@ class paymentsTest extends IntegrationTestCase
         $faker = \Faker\Factory::create();
         $amount = $faker->word;
 
-        $request = new \Minz\Request('POST', '/cagnotte', [
+        $response = $this->appRun('POST', '/cagnotte', [
             'email' => $email,
             'amount' => $amount,
             'address' => $address,
             'accept_cgv' => true,
         ]);
-
-        $response = self::$application->run($request);
 
         $this->assertResponse(
             $response,
@@ -260,13 +241,11 @@ class paymentsTest extends IntegrationTestCase
      */
     public function testPayCommonPotWithMissingAmountReturnsABadRequest($email, $amount, $address)
     {
-        $request = new \Minz\Request('POST', '/cagnotte', [
+        $response = $this->appRun('POST', '/cagnotte', [
             'email' => $email,
             'address' => $address,
             'accept_cgv' => true,
         ]);
-
-        $response = self::$application->run($request);
 
         $this->assertResponse(
             $response,
@@ -280,13 +259,11 @@ class paymentsTest extends IntegrationTestCase
      */
     public function testPayCommonPotWithMissingEmailReturnsABadRequest($email, $amount, $address)
     {
-        $request = new \Minz\Request('POST', '/cagnotte', [
+        $response = $this->appRun('POST', '/cagnotte', [
             'amount' => $amount,
             'address' => $address,
             'accept_cgv' => true,
         ]);
-
-        $response = self::$application->run($request);
 
         $this->assertResponse(
             $response,
@@ -302,14 +279,12 @@ class paymentsTest extends IntegrationTestCase
     {
         unset($address['first_name']);
 
-        $request = new \Minz\Request('POST', '/cagnotte', [
+        $response = $this->appRun('POST', '/cagnotte', [
             'email' => $email,
             'amount' => $amount,
             'address' => $address,
             'accept_cgv' => true,
         ]);
-
-        $response = self::$application->run($request);
 
         $this->assertResponse(
             $response,
@@ -325,14 +300,12 @@ class paymentsTest extends IntegrationTestCase
     {
         unset($address['last_name']);
 
-        $request = new \Minz\Request('POST', '/cagnotte', [
+        $response = $this->appRun('POST', '/cagnotte', [
             'email' => $email,
             'amount' => $amount,
             'address' => $address,
             'accept_cgv' => true,
         ]);
-
-        $response = self::$application->run($request);
 
         $this->assertResponse(
             $response,
@@ -348,14 +321,12 @@ class paymentsTest extends IntegrationTestCase
     {
         unset($address['address1']);
 
-        $request = new \Minz\Request('POST', '/cagnotte', [
+        $response = $this->appRun('POST', '/cagnotte', [
             'email' => $email,
             'amount' => $amount,
             'address' => $address,
             'accept_cgv' => true,
         ]);
-
-        $response = self::$application->run($request);
 
         $this->assertResponse(
             $response,
@@ -371,14 +342,12 @@ class paymentsTest extends IntegrationTestCase
     {
         unset($address['postcode']);
 
-        $request = new \Minz\Request('POST', '/cagnotte', [
+        $response = $this->appRun('POST', '/cagnotte', [
             'email' => $email,
             'amount' => $amount,
             'address' => $address,
             'accept_cgv' => true,
         ]);
-
-        $response = self::$application->run($request);
 
         $this->assertResponse(
             $response,
@@ -394,14 +363,12 @@ class paymentsTest extends IntegrationTestCase
     {
         unset($address['city']);
 
-        $request = new \Minz\Request('POST', '/cagnotte', [
+        $response = $this->appRun('POST', '/cagnotte', [
             'email' => $email,
             'amount' => $amount,
             'address' => $address,
             'accept_cgv' => true,
         ]);
-
-        $response = self::$application->run($request);
 
         $this->assertResponse(
             $response,
@@ -413,19 +380,38 @@ class paymentsTest extends IntegrationTestCase
     /**
      * @dataProvider payCommonPotProvider
      */
-    public function testPayCommonPotWithAddressAsSingleParamReturnsABadRequest($email, $amount, $address)
+    public function testPayCommonPotWithInvalidCountryReturnsABadRequest($email, $amount, $address)
     {
-        $faker = \Faker\Factory::create();
-        $address = $faker->address;
+        $address['country'] = 'invalid';
 
-        $request = new \Minz\Request('POST', '/cagnotte', [
+        $response = $this->appRun('POST', '/cagnotte', [
             'email' => $email,
             'amount' => $amount,
             'address' => $address,
             'accept_cgv' => true,
         ]);
 
-        $response = self::$application->run($request);
+        $this->assertResponse(
+            $response,
+            400,
+            'Le pays que vous avez renseigné est invalide.',
+        );
+    }
+
+    /**
+     * @dataProvider payCommonPotProvider
+     */
+    public function testPayCommonPotWithAddressAsSingleParamReturnsABadRequest($email, $amount, $address)
+    {
+        $faker = \Faker\Factory::create();
+        $address = $faker->address;
+
+        $response = $this->appRun('POST', '/cagnotte', [
+            'email' => $email,
+            'amount' => $amount,
+            'address' => $address,
+            'accept_cgv' => true,
+        ]);
 
         $this->assertResponse(
             $response,
@@ -441,9 +427,9 @@ class paymentsTest extends IntegrationTestCase
     {
         $faker = \Faker\Factory::create();
         $now = $faker->dateTime;
-        \Minz\Time::freeze($now);
+        $this->freeze($now);
 
-        $request = new \Minz\Request('POST', '/payments/subscriptions', [
+        $response = $this->appRun('POST', '/payments/subscriptions', [
             'email' => $email,
             'username' => $username,
             'frequency' => $frequency,
@@ -451,8 +437,6 @@ class paymentsTest extends IntegrationTestCase
         ], [
             'PHP_AUTH_USER' => \Minz\Configuration::$application['flus_private_key'],
         ]);
-
-        $response = self::$application->run($request);
 
         $this->assertResponse($response, 200, null, [
             'Content-Type' => 'application/json'
@@ -465,8 +449,6 @@ class paymentsTest extends IntegrationTestCase
         $this->assertNull($payment['completed_at']);
         $this->assertSame($expected_amount, $payment['amount']);
         $this->assertSame($frequency, $payment['frequency']);
-
-        \Minz\Time::unfreeze();
     }
 
     /**
@@ -476,7 +458,9 @@ class paymentsTest extends IntegrationTestCase
     {
         $payment_dao = new models\dao\Payment();
 
-        $request = new \Minz\Request('POST', '/payments/subscriptions', [
+        $this->assertSame(0, $payment_dao->count());
+
+        $response = $this->appRun('POST', '/payments/subscriptions', [
             'email' => $email,
             'username' => $username,
             'frequency' => $frequency,
@@ -485,8 +469,6 @@ class paymentsTest extends IntegrationTestCase
             'PHP_AUTH_USER' => \Minz\Configuration::$application['flus_private_key'],
         ]);
 
-        $this->assertSame(0, $payment_dao->count());
-        $response = self::$application->run($request);
         $this->assertSame(1, $payment_dao->count());
 
         $payment = new models\Payment($payment_dao->take());
@@ -516,7 +498,7 @@ class paymentsTest extends IntegrationTestCase
         $faker = \Faker\Factory::create();
         $address['country'] = $faker->randomElement(\Website\utils\Countries::codes());
 
-        $request = new \Minz\Request('POST', '/payments/subscriptions', [
+        $response = $this->appRun('POST', '/payments/subscriptions', [
             'email' => $email,
             'username' => $username,
             'frequency' => $frequency,
@@ -524,8 +506,6 @@ class paymentsTest extends IntegrationTestCase
         ], [
             'PHP_AUTH_USER' => \Minz\Configuration::$application['flus_private_key'],
         ]);
-
-        $response = self::$application->run($request);
 
         $payment = new models\Payment($payment_dao->take());
         $payment_address = $payment->address();
@@ -541,14 +521,12 @@ class paymentsTest extends IntegrationTestCase
         $frequency,
         $address
     ) {
-        $request = new \Minz\Request('POST', '/payments/subscriptions', [
+        $response = $this->appRun('POST', '/payments/subscriptions', [
             'email' => $email,
             'username' => $username,
             'frequency' => $frequency,
             'address' => $address,
         ]);
-
-        $response = self::$application->run($request);
 
         $this->assertResponse($response, 401);
     }
@@ -561,7 +539,7 @@ class paymentsTest extends IntegrationTestCase
         $faker = \Faker\Factory::create();
         $frequency = $faker->word;
 
-        $request = new \Minz\Request('POST', '/payments/subscriptions', [
+        $response = $this->appRun('POST', '/payments/subscriptions', [
             'email' => $email,
             'username' => $username,
             'frequency' => $frequency,
@@ -570,33 +548,28 @@ class paymentsTest extends IntegrationTestCase
             'PHP_AUTH_USER' => \Minz\Configuration::$application['flus_private_key'],
         ]);
 
-        $response = self::$application->run($request);
-
         $this->assertResponse($response, 400);
     }
 
     public function testPayRendersCorrectly()
     {
-        $payment_id = self::$factories['payments']->create();
-        $request = new \Minz\Request('GET', "/payments/{$payment_id}/pay");
+        $payment_id = $this->create('payments');
 
-        $response = self::$application->run($request);
+        $response = $this->appRun('GET', "/payments/{$payment_id}/pay");
 
         $this->assertResponse($response, 200);
-        $pointer = $response->output()->pointer();
-        $this->assertSame('stripe/redirection.phtml', $pointer);
+        $this->assertPointer($response, 'stripe/redirection.phtml');
     }
 
     public function testPayConfiguresStripe()
     {
         $faker = \Faker\Factory::create();
         $session_id = $faker->regexify('cs_test_[\w\d]{56}');
-        $payment_id = self::$factories['payments']->create([
+        $payment_id = $this->create('payments', [
             'session_id' => $session_id,
         ]);
-        $request = new \Minz\Request('GET', "/payments/{$payment_id}/pay");
 
-        $response = self::$application->run($request);
+        $response = $this->appRun('GET', "/payments/{$payment_id}/pay");
 
         $variables = $response->output()->variables();
         $headers = $response->headers(true);
@@ -622,9 +595,7 @@ class paymentsTest extends IntegrationTestCase
 
     public function testPayWithUnknownIdReturnsANotFound()
     {
-        $request = new \Minz\Request('GET', "/payments/unknown/pay");
-
-        $response = self::$application->run($request);
+        $response = $this->appRun('GET', "/payments/unknown/pay");
 
         $this->assertResponse($response, 404);
     }
@@ -632,12 +603,11 @@ class paymentsTest extends IntegrationTestCase
     public function testPayWithPaidPaymentReturnsBadRequest()
     {
         $faker = \Faker\Factory::create();
-        $payment_id = self::$factories['payments']->create([
+        $payment_id = $this->create('payments', [
             'completed_at' => $faker->dateTime->getTimestamp(),
         ]);
-        $request = new \Minz\Request('GET', "/payments/{$payment_id}/pay");
 
-        $response = self::$application->run($request);
+        $response = $this->appRun('GET', "/payments/{$payment_id}/pay");
 
         $this->assertResponse($response, 400);
     }
@@ -649,23 +619,20 @@ class paymentsTest extends IntegrationTestCase
         $completed_at = $faker->dateTime;
         $amount = $faker->numberBetween(100, 100000);
         $frequency = $faker->randomElement(['month', 'year']);
-
-        $payment_id = self::$factories['payments']->create([
-            'created_at' => $created_at->getTimestamp(),
-            'completed_at' => $completed_at->getTimestamp(),
+        $payment_id = $this->create('payments', [
+            'created_at' => $created_at->format(\Minz\Model::DATETIME_FORMAT),
+            'completed_at' => $completed_at->format(\Minz\Model::DATETIME_FORMAT),
             'amount' => $amount,
             'frequency' => $frequency,
         ]);
-        $request = new \Minz\Request('GET', "/payments/{$payment_id}", [], [
+
+        $response = $this->appRun('GET', "/payments/{$payment_id}", [], [
             'PHP_AUTH_USER' => \Minz\Configuration::$application['flus_private_key'],
         ]);
-
-        $response = self::$application->run($request);
 
         $this->assertResponse($response, 200, null, [
             'Content-Type' => 'application/json'
         ]);
-
         $payment = json_decode($response->render(), true);
         $this->assertSame($payment_id, $payment['id']);
         $this->assertEquals($created_at->getTimestamp(), $payment['created_at']);
@@ -676,11 +643,9 @@ class paymentsTest extends IntegrationTestCase
 
     public function testShowWithUnknownIdReturnsNotFound()
     {
-        $request = new \Minz\Request('GET', '/payments/unknown', [], [
+        $response = $this->appRun('GET', '/payments/unknown', [], [
             'PHP_AUTH_USER' => \Minz\Configuration::$application['flus_private_key'],
         ]);
-
-        $response = self::$application->run($request);
 
         $this->assertResponse($response, 404);
     }
@@ -692,18 +657,30 @@ class paymentsTest extends IntegrationTestCase
         $completed_at = $faker->dateTime;
         $amount = $faker->numberBetween(100, 100000);
         $frequency = $faker->randomElement(['month', 'year']);
-
-        $payment_id = self::$factories['payments']->create([
+        $payment_id = $this->create('payments', [
             'created_at' => $created_at->getTimestamp(),
             'completed_at' => $completed_at->getTimestamp(),
             'amount' => $amount,
             'frequency' => $frequency,
         ]);
-        $request = new \Minz\Request('GET', "/payments/{$payment_id}");
 
-        $response = self::$application->run($request);
+        $response = $this->appRun('GET', "/payments/{$payment_id}");
 
         $this->assertResponse($response, 401);
+    }
+
+    public function testSucceededRendersCorrectly()
+    {
+        $response = $this->appRun('GET', '/merci');
+
+        $this->assertResponse($response, 200, 'Votre paiement a bien été pris en compte');
+    }
+
+    public function testCanceledRendersCorrectly()
+    {
+        $response = $this->appRun('GET', '/annulation');
+
+        $this->assertResponse($response, 200, 'Votre paiement a bien été annulé');
     }
 
     public function payCommonPotProvider()

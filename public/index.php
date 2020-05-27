@@ -4,11 +4,6 @@ $app_path = realpath(__DIR__ . '/..');
 
 include $app_path . '/autoload.php';
 
-$environment = getenv('APP_ENVIRONMENT');
-if (!$environment) {
-    $environment = 'development';
-}
-
 // Get the http information and create a proper Request
 $request_method = strtolower($_SERVER['REQUEST_METHOD']);
 $http_method = $request_method;
@@ -22,7 +17,7 @@ $http_parameters = array_merge(
     ['@input' => @file_get_contents('php://input')]
 );
 
-\Minz\Configuration::load($environment, $app_path);
+\Minz\Configuration::load('dotenv', $app_path);
 \Minz\Environment::initialize();
 
 if (substr($http_uri, 0, 6) === '/admin') {

@@ -15,4 +15,4 @@ before_install:
 
 script:
     - make lint
-    - NUMBER_OF_DATASETS=100 make test
+    - NUMBER_OF_DATASETS=25 make test

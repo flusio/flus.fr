@@ -1,9 +1,9 @@
 CREATE TABLE payments (
     id TEXT PRIMARY KEY NOT NULL,
-    created_at datetime NOT NULL,
+    created_at TEXT NOT NULL,
     type TEXT NOT NULL,
     invoice_number TEXT,
-    completed_at datetime,
+    completed_at TEXT,
     email TEXT NOT NULL,
     amount INTEGER NOT NULL,
     address_first_name TEXT NOT NULL,

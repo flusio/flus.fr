@@ -118,18 +118,10 @@ class Payment extends \Minz\Model
      */
     public static function init($type, $email, $amount, $address)
     {
-        if (!is_numeric($amount)) {
-            throw new \Minz\Errors\ModelPropertyError(
-                'amount',
-                \Minz\Errors\ModelPropertyError::VALUE_INVALID,
-                "`amount` property is invalid ({$amount})."
-            );
-        }
-
         return new self([
             'type' => $type,
             'email' => strtolower(trim($email)),
-            'amount' => intval($amount * 100),
+            'amount' => is_numeric($amount) ? intval($amount * 100) : $amount,
             'address_first_name' => trim($address['first_name']),
             'address_last_name' => trim($address['last_name']),
             'address_address1' => trim($address['address1']),
@@ -229,10 +221,52 @@ class Payment extends \Minz\Model
      */
     public function complete($completed_at)
     {
-        $this->setProperty('completed_at', $completed_at);
+        $this->completed_at = $completed_at;
         if (!$this->invoice_number) {
-            $this->setProperty('invoice_number', self::generateInvoiceNumber());
+            $this->invoice_number = self::generateInvoiceNumber();
         }
+    }
+
+    /**
+     * Validate a model and return formated errors
+     *
+     * @return string[]
+     */
+    public function validate()
+    {
+        $formatted_errors = [];
+
+        foreach (parent::validate() as $property => $error) {
+            $code = $error['code'];
+
+            if ($property === 'email') {
+                if ($code === \Minz\Model::ERROR_REQUIRED) {
+                    $formatted_error = 'L’adresse courriel est obligatoire.';
+                } else {
+                    $formatted_error = 'L’adresse courriel que vous avez fourni est invalide.';
+                }
+            } elseif ($property === 'amount') {
+                $formatted_error = 'Le montant doit être compris entre 1 et 1000 €.';
+            } elseif ($property === 'address_first_name') {
+                $formatted_error = 'Votre prénom est obligatoire.';
+            } elseif ($property === 'address_last_name') {
+                $formatted_error = 'Votre nom est obligatoire.';
+            } elseif ($property === 'address_address1') {
+                $formatted_error = 'Votre adresse est obligatoire.';
+            } elseif ($property === 'address_postcode') {
+                $formatted_error = 'Votre code postal est obligatoire.';
+            } elseif ($property === 'address_city') {
+                $formatted_error = 'Votre ville est obligatoire.';
+            } elseif ($property === 'address_country') {
+                $formatted_error = 'Le pays que vous avez renseigné est invalide.';
+            } else {
+                $formatted_error = $error; // @codeCoverageIgnore
+            }
+
+            $formatted_errors[$property] = $formatted_error;
+        }
+
+        return $formatted_errors;
     }
 
     /**

@@ -42,7 +42,7 @@ class InvoicePDFTest extends TestCase
     {
         $faker = \Faker\Factory::create('fr_FR');
         $vat_number = $faker->vat;
-        $payment->setProperty('company_vat_number', $vat_number);
+        $payment->company_vat_number = $vat_number;
 
         $invoice_pdf = new InvoicePDF($payment);
 
@@ -55,7 +55,7 @@ class InvoicePDFTest extends TestCase
      */
     public function testPdfNotCompletedIsDue($payment)
     {
-        $payment->setProperty('completed_at', null);
+        $payment->completed_at = null;
 
         $invoice_pdf = new InvoicePDF($payment);
 
@@ -98,7 +98,7 @@ class InvoicePDFTest extends TestCase
      */
     public function testPdfWithMonthSubscriptionHasCorrespondingPurchase($payment)
     {
-        $payment->setProperty('frequency', 'month');
+        $payment->frequency = 'month';
 
         $invoice_pdf = new InvoicePDF($payment);
 
@@ -126,7 +126,7 @@ class InvoicePDFTest extends TestCase
      */
     public function testPdfWithYearSubscriptionHasCorrespondingPurchase($payment)
     {
-        $payment->setProperty('frequency', 'year');
+        $payment->frequency = 'year';
 
         $invoice_pdf = new InvoicePDF($payment);
 
@@ -226,7 +226,7 @@ class InvoicePDFTest extends TestCase
             $invoice_number = $completed_at->format('Y-m') . sprintf('-%04d', $faker->randomNumber(4));
 
             $payment = new models\Payment([
-                'created_at' => $faker->dateTime->getTimestamp(),
+                'created_at' => $faker->dateTime->format(\Minz\Model::DATETIME_FORMAT),
                 'type' => 'subscription',
                 'username' => $faker->username,
                 'frequency' => $faker->randomElement(['month', 'year']),
@@ -238,7 +238,7 @@ class InvoicePDFTest extends TestCase
                 'address_postcode' => $faker->postcode,
                 'address_city' => $faker->city,
                 'address_country' => $faker->randomElement(\Website\utils\Countries::codes()),
-                'completed_at' => $completed_at->getTimestamp(),
+                'completed_at' => $completed_at->format(\Minz\Model::DATETIME_FORMAT),
                 'invoice_number' => $invoice_number,
             ]);
 
@@ -257,7 +257,7 @@ class InvoicePDFTest extends TestCase
             $invoice_number = $completed_at->format('Y-m') . sprintf('-%04d', $faker->randomNumber(4));
 
             $payment = new models\Payment([
-                'created_at' => $faker->dateTime->getTimestamp(),
+                'created_at' => $faker->dateTime->format(\Minz\Model::DATETIME_FORMAT),
                 'type' => 'common_pot',
                 'email' => $faker->email,
                 'amount' => $faker->numberBetween(100, 100000),
@@ -267,7 +267,7 @@ class InvoicePDFTest extends TestCase
                 'address_postcode' => $faker->postcode,
                 'address_city' => $faker->city,
                 'address_country' => $faker->randomElement(\Website\utils\Countries::codes()),
-                'completed_at' => $completed_at->getTimestamp(),
+                'completed_at' => $completed_at->format(\Minz\Model::DATETIME_FORMAT),
                 'invoice_number' => $invoice_number,
             ]);
 

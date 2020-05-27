@@ -11,6 +11,8 @@ $temporary_directory = sys_get_temp_dir() . '/flus';
 return [
     'app_name' => 'Website',
 
+    'secret_key' => 'change-me',
+
     'url_options' => [
         'host' => 'localhost',
     ],
@@ -32,7 +34,7 @@ return [
     ],
 
     'mailer' => [
-        'type' => 'mail',
+        'type' => 'test',
         'from' => 'root@localhost',
     ],
 

@@ -28,7 +28,7 @@ class Payment extends \Minz\DatabaseModel
         if ($model->id === null) {
             $values = $model->toValues();
             $values['id'] = bin2hex(random_bytes(16));
-            $values['created_at'] = \Minz\Time::now()->getTimestamp();
+            $values['created_at'] = \Minz\Time::now()->format(\Minz\Model::DATETIME_FORMAT);
             return $this->create($values);
         } else {
             $values = $model->toValues();
@@ -116,7 +116,7 @@ class Payment extends \Minz\DatabaseModel
     public function listByYear($year)
     {
         $sql = 'SELECT * FROM payments '
-             . 'WHERE strftime("%Y", created_at, "unixepoch") = ? '
+             . 'WHERE strftime("%Y", datetime(created_at)) = ? '
              . 'ORDER BY created_at DESC';
         $statement = $this->prepare($sql);
         $result = $statement->execute([$year]);
