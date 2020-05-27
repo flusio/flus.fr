@@ -2,46 +2,11 @@
 
 namespace Website\models;
 
-use PHPUnit\Framework\TestCase;
-
-class PaymentTest extends TestCase
+class PaymentTest extends \PHPUnit\Framework\TestCase
 {
-    protected static $schema;
-
-    /**
-     * @beforeClass
-     */
-    public static function loadSchema()
-    {
-        $app_path = \Minz\Configuration::$app_path;
-        $schema_path = $app_path . '/src/schema.sql';
-        self::$schema = file_get_contents($schema_path);
-    }
-
-    /**
-     * @before
-     */
-    public function initDatabase()
-    {
-        $database = \Minz\Database::get();
-        $database->exec(self::$schema);
-    }
-
-    /**
-     * @after
-     */
-    public function dropDatabase()
-    {
-        \Minz\Database::drop();
-    }
-
-    /**
-     * @after
-     */
-    public function unfreezeTime(): void
-    {
-        \Minz\Time::unfreeze();
-    }
+    use \Minz\Tests\InitializerHelper;
+    use \Minz\Tests\FactoriesHelper;
+    use \Minz\Tests\TimeHelper;
 
     /**
      * @dataProvider propertiesProvider
@@ -50,7 +15,6 @@ class PaymentTest extends TestCase
     {
         $faker = \Faker\Factory::create();
         $completed_at = $faker->dateTime;
-
         $payment = Payment::init($type, $email, $amount, $address);
 
         $payment->complete($completed_at);
@@ -65,8 +29,7 @@ class PaymentTest extends TestCase
     {
         $faker = \Faker\Factory::create();
         $now = $faker->dateTime;
-        \Minz\Time::freeze($now);
-
+        $this->freeze($now);
         $payment = Payment::init($type, $email, $amount, $address);
 
         $payment->complete($now);
@@ -82,13 +45,12 @@ class PaymentTest extends TestCase
     {
         $faker = \Faker\Factory::create();
         $now = $faker->dateTime;
-        \Minz\Time::freeze($now);
+        $this->freeze($now);
 
-        $payment_factory = new \Minz\Tests\DatabaseFactory('payments');
-        $payment_factory->create([
+        $this->create('payments', [
             'invoice_number' => $now->format('Y') . '-01-0001',
         ]);
-        $payment_factory->create([
+        $this->create('payments', [
             'invoice_number' => $now->format('Y') . '-01-0002',
         ]);
 
@@ -107,14 +69,13 @@ class PaymentTest extends TestCase
     {
         $faker = \Faker\Factory::create();
         $now = $faker->dateTime;
-        \Minz\Time::freeze($now);
+        $this->freeze($now);
 
         $previous_year = \Minz\Time::ago(1, 'year');
-        $payment_factory = new \Minz\Tests\DatabaseFactory('payments');
-        $payment_factory->create([
+        $this->create('payments', [
             'invoice_number' => $previous_year->format('Y-m') . '-0001',
         ]);
-        $payment_factory->create([
+        $this->create('payments', [
             'invoice_number' => $previous_year->format('Y-m') . '-0002',
         ]);
 
@@ -133,13 +94,12 @@ class PaymentTest extends TestCase
     {
         $faker = \Faker\Factory::create();
         $now = $faker->dateTime;
-        \Minz\Time::freeze($now);
+        $this->freeze($now);
 
-        $payment_factory = new \Minz\Tests\DatabaseFactory('payments');
-        $payment_factory->create([
+        $this->create('payments', [
             'invoice_number' => null,
         ]);
-        $payment_factory->create([
+        $this->create('payments', [
             'invoice_number' => $now->format('Y') . '-01-0001',
         ]);
 

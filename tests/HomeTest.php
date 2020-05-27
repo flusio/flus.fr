@@ -10,73 +10,54 @@ class HomeTest extends \PHPUnit\Framework\TestCase
 
     public function testIndexRendersCorrectly()
     {
-        $request = new \Minz\Request('GET', '/');
-
-        $response = self::$application->run($request);
+        $response = $this->appRun('GET', '/');
 
         $this->assertResponse($response, 200, 'Flus, média social citoyen');
-        $pointer = $response->output()->pointer();
-        $this->assertSame('home/index.phtml', $pointer);
+        $this->assertPointer($response, 'home/index.phtml');
     }
 
     public function testCreditsRendersCorrectly()
     {
-        $request = new \Minz\Request('GET', '/credits');
-
-        $response = self::$application->run($request);
+        $response = $this->appRun('GET', '/credits');
 
         $this->assertResponse($response, 200, 'Crédits');
-        $pointer = $response->output()->pointer();
-        $this->assertSame('home/credits.phtml', $pointer);
+        $this->assertPointer($response, 'home/credits.phtml');
     }
 
     public function testLegalRendersCorrectly()
     {
-        $request = new \Minz\Request('GET', '/mentions-legales');
-
-        $response = self::$application->run($request);
+        $response = $this->appRun('GET', '/mentions-legales');
 
         $this->assertResponse($response, 200, 'Mentions légales');
-        $pointer = $response->output()->pointer();
-        $this->assertSame('home/legal.phtml', $pointer);
+        $this->assertPointer($response, 'home/legal.phtml');
     }
 
     public function testCgvRendersCorrectly()
     {
-        $request = new \Minz\Request('GET', '/cgv');
-
-        $response = self::$application->run($request);
+        $response = $this->appRun('GET', '/cgv');
 
         $this->assertResponse($response, 200, 'Conditions Générales de Vente');
-        $pointer = $response->output()->pointer();
-        $this->assertSame('home/cgv.phtml', $pointer);
+        $this->assertPointer($response, 'home/cgv.phtml');
     }
 
     public function testFundingRendersCorrectly()
     {
-        $request = new \Minz\Request('GET', '/financement');
-
-        $response = self::$application->run($request);
+        $response = $this->appRun('GET', '/financement');
 
         $this->assertResponse($response, 200);
-        $pointer = $response->output()->pointer();
-        $this->assertSame('home/funding.phtml', $pointer);
+        $this->assertPointer($response, 'home/funding.phtml');
     }
 
     public function testRobotsRendersCorrectly()
     {
-        $request = new \Minz\Request('GET', '/robots.txt');
-
-        $response = self::$application->run($request);
+        $response = $this->appRun('GET', '/robots.txt');
 
         $this->assertResponse($response, 200);
     }
 
     public function testSitemapRendersCorrectly()
     {
-        $request = new \Minz\Request('GET', '/sitemap.xml');
-
-        $response = self::$application->run($request);
+        $response = $this->appRun('GET', '/sitemap.xml');
 
         $this->assertResponse($response, 200);
     }

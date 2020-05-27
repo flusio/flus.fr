@@ -32,11 +32,9 @@ class InvoicesTest extends \PHPUnit\Framework\TestCase
             'invoice_number' => $invoice_number,
         ]);
 
-        $request = new \Minz\Request('GET', '/invoices/pdf/' . $payment_id, [], [
+        $response = $this->appRun('GET', '/invoices/pdf/' . $payment_id, [], [
             'PHP_AUTH_USER' => \Minz\Configuration::$application['flus_private_key'],
         ]);
-
-        $response = self::$application->run($request);
 
         $expected_filename = "facture_{$invoice_number}.pdf";
         $this->assertResponse($response, 200, null, [
@@ -57,9 +55,7 @@ class InvoicesTest extends \PHPUnit\Framework\TestCase
             'invoice_number' => $invoice_number,
         ]);
 
-        $request = new \Minz\Request('GET', '/invoices/pdf/' . $payment_id);
-
-        $response = self::$application->run($request);
+        $response = $this->appRun('GET', '/invoices/pdf/' . $payment_id);
 
         $expected_filename = "facture_{$invoice_number}.pdf";
         $this->assertResponse($response, 200, null, [
@@ -70,11 +66,9 @@ class InvoicesTest extends \PHPUnit\Framework\TestCase
 
     public function testDownloadPdfWithNonExistingPaymentReturnsNotFound()
     {
-        $request = new \Minz\Request('GET', '/invoices/pdf/not_an_existing_id', [], [
+        $response = $this->appRun('GET', '/invoices/pdf/not_an_existing_id', [], [
             'PHP_AUTH_USER' => \Minz\Configuration::$application['flus_private_key'],
         ]);
-
-        $response = self::$application->run($request);
 
         $this->assertResponse($response, 404);
     }
@@ -85,11 +79,9 @@ class InvoicesTest extends \PHPUnit\Framework\TestCase
             'invoice_number' => null,
         ]);
 
-        $request = new \Minz\Request('GET', '/invoices/pdf/' . $payment_id, [], [
+        $response = $this->appRun('GET', '/invoices/pdf/' . $payment_id, [], [
             'PHP_AUTH_USER' => \Minz\Configuration::$application['flus_private_key'],
         ]);
-
-        $response = self::$application->run($request);
 
         $this->assertResponse($response, 404);
     }
@@ -104,9 +96,7 @@ class InvoicesTest extends \PHPUnit\Framework\TestCase
             'invoice_number' => $invoice_number,
         ]);
 
-        $request = new \Minz\Request('GET', '/invoices/pdf/' . $payment_id);
-
-        $response = self::$application->run($request);
+        $response = $this->appRun('GET', '/invoices/pdf/' . $payment_id);
 
         $this->assertResponse($response, 401);
     }
@@ -126,9 +116,7 @@ class InvoicesTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEmailsCount(0);
 
-        $request = new \Minz\Request('CLI', '/invoices/' . $payment_id . '/email');
-
-        $response = self::$application->run($request);
+        $response = $this->appRun('CLI', '/invoices/' . $payment_id . '/email');
 
         $this->assertResponse($response, 200, "La facture {$invoice_number} a été envoyée à l’adresse {$email}.");
         $this->assertEmailsCount(1);
@@ -142,9 +130,7 @@ class InvoicesTest extends \PHPUnit\Framework\TestCase
 
     public function testSendPdfFailsIfNonExistingPayment()
     {
-        $request = new \Minz\Request('CLI', '/invoices/non_existing/email');
-
-        $response = self::$application->run($request);
+        $response = $this->appRun('CLI', '/invoices/non_existing/email');
 
         $this->assertResponse($response, 404, 'Le paiement n’existe pas.');
         $this->assertEmailsCount(0);
@@ -160,9 +146,7 @@ class InvoicesTest extends \PHPUnit\Framework\TestCase
             'invoice_number' => null,
         ]);
 
-        $request = new \Minz\Request('CLI', '/invoices/' . $payment_id . '/email');
-
-        $response = self::$application->run($request);
+        $response = $this->appRun('CLI', '/invoices/' . $payment_id . '/email');
 
         $this->assertResponse($response, 400, 'Ce paiement n’a pas de numéro de facture associé.');
         $this->assertEmailsCount(0);

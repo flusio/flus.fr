@@ -25,9 +25,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
 
         $this->login();
 
-        $request = new \Minz\Request('GET', '/admin');
-
-        $response = self::$application->run($request);
+        $response = $this->appRun('GET', '/admin');
 
         $this->assertResponse($response, 200);
         $this->assertPointer($response, 'admin/payments/index.phtml');
@@ -35,9 +33,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
 
     public function testIndexFailsIfNotConnected()
     {
-        $request = new \Minz\Request('GET', '/admin');
-
-        $response = self::$application->run($request);
+        $response = $this->appRun('GET', '/admin');
 
         $this->assertResponse($response, 302, '/admin/login');
     }
@@ -46,9 +42,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     {
         $this->login();
 
-        $request = new \Minz\Request('GET', '/admin/payments/new');
-
-        $response = self::$application->run($request);
+        $response = $this->appRun('GET', '/admin/payments/new');
 
         $this->assertResponse($response, 200);
         $this->assertPointer($response, 'admin/payments/init.phtml');
@@ -56,9 +50,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
 
     public function testInitFailsIfNotConnected()
     {
-        $request = new \Minz\Request('GET', '/admin/payments/new');
-
-        $response = self::$application->run($request);
+        $response = $this->appRun('GET', '/admin/payments/new');
 
         $this->assertResponse($response, 302, '/admin/login?from=admin%2Fpayments%23init');
     }
@@ -70,15 +62,13 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     {
         $this->login();
 
-        $request = new \Minz\Request('POST', '/admin/payments/new', [
+        $response = $this->appRun('POST', '/admin/payments/new', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
             'type' => $type,
             'email' => $email,
             'amount' => $amount,
             'address' => $address,
         ]);
-
-        $response = self::$application->run($request);
 
         $this->assertResponse($response, 302, '/admin?status=payment_created');
     }
@@ -93,7 +83,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         $faker = \Faker\Factory::create();
         $username = $faker->username;
 
-        $request = new \Minz\Request('POST', '/admin/payments/new', [
+        $response = $this->appRun('POST', '/admin/payments/new', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
             'type' => $type,
             'email' => $email,
@@ -101,8 +91,6 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
             'address' => $address,
             'username' => $username,
         ]);
-
-        $response = self::$application->run($request);
 
         $this->assertResponse($response, 302, '/admin?status=payment_created');
         $payment = new models\Payment($payment_dao->take());
@@ -119,7 +107,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         $faker = \Faker\Factory::create('fr_FR');
         $vat = $faker->vat;
 
-        $request = new \Minz\Request('POST', '/admin/payments/new', [
+        $response = $this->appRun('POST', '/admin/payments/new', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
             'type' => $type,
             'email' => $email,
@@ -127,8 +115,6 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
             'address' => $address,
             'company_vat_number' => $vat,
         ]);
-
-        $response = self::$application->run($request);
 
         $this->assertResponse($response, 302, '/admin?status=payment_created');
         $payment = new models\Payment($payment_dao->take());
@@ -144,7 +130,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         $payment_dao = new models\dao\Payment();
         $faker = \Faker\Factory::create();
 
-        $request = new \Minz\Request('POST', '/admin/payments/new', [
+        $response = $this->appRun('POST', '/admin/payments/new', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
             'type' => $type,
             'email' => $email,
@@ -152,8 +138,6 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
             'address' => $address,
             'generate_invoice' => true,
         ]);
-
-        $response = self::$application->run($request);
 
         $this->assertResponse($response, 302, '/admin?status=payment_created');
         $payment = new models\Payment($payment_dao->take());
@@ -167,15 +151,13 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     {
         $this->login();
 
-        $request = new \Minz\Request('POST', '/admin/payments/new', [
+        $response = $this->appRun('POST', '/admin/payments/new', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
             'type' => 'invalid',
             'email' => $email,
             'amount' => $amount,
             'address' => $address,
         ]);
-
-        $response = self::$application->run($request);
 
         $this->assertResponse($response, 400, 'Le type de paiement est invalide');
     }
@@ -187,15 +169,13 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     {
         $this->login();
 
-        $request = new \Minz\Request('POST', '/admin/payments/new', [
+        $response = $this->appRun('POST', '/admin/payments/new', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
             'type' => $type,
             'email' => 'not an email',
             'amount' => $amount,
             'address' => $address,
         ]);
-
-        $response = self::$application->run($request);
 
         $this->assertResponse($response, 400, 'L’adresse courriel que vous avez fourni est invalide.');
     }
@@ -205,15 +185,13 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
      */
     public function testCreateFailsIfNotConnected($type, $email, $amount, $address)
     {
-        $request = new \Minz\Request('POST', '/admin/payments/new', [
+        $response = $this->appRun('POST', '/admin/payments/new', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
             'type' => $type,
             'email' => $email,
             'amount' => $amount,
             'address' => $address,
         ]);
-
-        $response = self::$application->run($request);
 
         $this->assertResponse($response, 302, '/admin/login?from=admin%2Fpayments%23init');
     }
@@ -225,15 +203,13 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     {
         $this->login();
 
-        $request = new \Minz\Request('POST', '/admin/payments/new', [
+        $response = $this->appRun('POST', '/admin/payments/new', [
             'csrf' => 'not the token',
             'type' => $type,
             'email' => $email,
             'amount' => $amount,
             'address' => $address,
         ]);
-
-        $response = self::$application->run($request);
 
         $this->assertResponse($response, 400, 'Une vérification de sécurité a échoué');
     }
@@ -243,9 +219,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         $this->login();
         $payment_id = $this->create('payments');
 
-        $request = new \Minz\Request('GET', '/admin/payments/' . $payment_id);
-
-        $response = self::$application->run($request);
+        $response = $this->appRun('GET', '/admin/payments/' . $payment_id);
 
         $this->assertResponse($response, 200);
         $this->assertPointer($response, 'admin/payments/show.phtml');
@@ -255,9 +229,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     {
         $this->login();
 
-        $request = new \Minz\Request('GET', '/admin/payments/invalid');
-
-        $response = self::$application->run($request);
+        $response = $this->appRun('GET', '/admin/payments/invalid');
 
         $this->assertResponse($response, 404);
     }
@@ -266,9 +238,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     {
         $payment_id = $this->create('payments');
 
-        $request = new \Minz\Request('GET', '/admin/payments/' . $payment_id);
-
-        $response = self::$application->run($request);
+        $response = $this->appRun('GET', '/admin/payments/' . $payment_id);
 
         $this->assertResponse($response, 302, '/admin/login?from=admin%2Fpayments%23index');
     }
@@ -283,12 +253,10 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         ]);
         $completed_at = $faker->date;
 
-        $request = new \Minz\Request('POST', '/admin/payments/' . $payment_id . '/complete', [
+        $response = $this->appRun('POST', '/admin/payments/' . $payment_id . '/complete', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
             'completed_at' => $completed_at,
         ]);
-
-        $response = self::$application->run($request);
 
         $this->assertResponse($response, 302, '/admin?status=payment_completed');
         $payment = new models\Payment($payment_dao->find($payment_id));
@@ -301,12 +269,10 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         $faker = \Faker\Factory::create();
         $this->login();
 
-        $request = new \Minz\Request('POST', '/admin/payments/invalid/complete', [
+        $response = $this->appRun('POST', '/admin/payments/invalid/complete', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
             'completed_at' => $faker->date,
         ]);
-
-        $response = self::$application->run($request);
 
         $this->assertResponse($response, 404);
     }
@@ -321,12 +287,10 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
             'completed_at' => $initial_completed_at->format(\Minz\Model::DATETIME_FORMAT),
         ]);
 
-        $request = new \Minz\Request('POST', '/admin/payments/' . $payment_id . '/complete', [
+        $response = $this->appRun('POST', '/admin/payments/' . $payment_id . '/complete', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
             'completed_at' => $faker->dateTime,
         ]);
-
-        $response = self::$application->run($request);
 
         $this->assertResponse($response, 400, 'Ce paiement a déjà été confirmé');
         $payment = new models\Payment($payment_dao->find($payment_id));
@@ -341,12 +305,10 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
             'completed_at' => null,
         ]);
 
-        $request = new \Minz\Request('POST', '/admin/payments/' . $payment_id . '/complete', [
+        $response = $this->appRun('POST', '/admin/payments/' . $payment_id . '/complete', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
             'completed_at' => $faker->date,
         ]);
-
-        $response = self::$application->run($request);
 
         $this->assertResponse($response, 302, '/admin/login?from=admin%2Fpayments%23index');
         $payment = new models\Payment($payment_dao->find($payment_id));
@@ -362,12 +324,10 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
             'completed_at' => null,
         ]);
 
-        $request = new \Minz\Request('POST', '/admin/payments/' . $payment_id . '/complete', [
+        $response = $this->appRun('POST', '/admin/payments/' . $payment_id . '/complete', [
             'csrf' => 'not the token',
             'completed_at' => $faker->date,
         ]);
-
-        $response = self::$application->run($request);
 
         $this->assertResponse($response, 400, 'Une vérification de sécurité a échoué');
         $payment = new models\Payment($payment_dao->find($payment_id));
@@ -383,11 +343,9 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
             'invoice_number' => null,
         ]);
 
-        $request = new \Minz\Request('POST', '/admin/payments/' . $payment_id . '/destroy', [
+        $response = $this->appRun('POST', '/admin/payments/' . $payment_id . '/destroy', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
         ]);
-
-        $response = self::$application->run($request);
 
         $this->assertResponse($response, 302, '/admin?status=payment_deleted');
         $db_payment = $payment_dao->find($payment_id);
@@ -398,11 +356,9 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     {
         $this->login();
 
-        $request = new \Minz\Request('POST', '/admin/payments/invalid/destroy', [
+        $response = $this->appRun('POST', '/admin/payments/invalid/destroy', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
         ]);
-
-        $response = self::$application->run($request);
 
         $this->assertResponse($response, 404);
     }
@@ -415,11 +371,9 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
             'invoice_number' => null,
         ]);
 
-        $request = new \Minz\Request('POST', '/admin/payments/' . $payment_id . '/destroy', [
+        $response = $this->appRun('POST', '/admin/payments/' . $payment_id . '/destroy', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
         ]);
-
-        $response = self::$application->run($request);
 
         $this->assertResponse($response, 302, '/admin/login?from=admin%2Fpayments%23index');
         $db_payment = $payment_dao->find($payment_id);
@@ -435,11 +389,9 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
             'invoice_number' => null,
         ]);
 
-        $request = new \Minz\Request('POST', '/admin/payments/' . $payment_id . '/destroy', [
+        $response = $this->appRun('POST', '/admin/payments/' . $payment_id . '/destroy', [
             'csrf' => 'not the token',
         ]);
-
-        $response = self::$application->run($request);
 
         $this->assertResponse($response, 400, 'Une vérification de sécurité a échoué');
         $db_payment = $payment_dao->find($payment_id);
@@ -456,11 +408,9 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
             'invoice_number' => null,
         ]);
 
-        $request = new \Minz\Request('POST', '/admin/payments/' . $payment_id . '/destroy', [
+        $response = $this->appRun('POST', '/admin/payments/' . $payment_id . '/destroy', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
         ]);
-
-        $response = self::$application->run($request);
 
         $this->assertResponse($response, 400, 'Ce paiement a déjà été confirmé');
         $db_payment = $payment_dao->find($payment_id);
@@ -478,11 +428,9 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
             'invoice_number' => $invoice_number,
         ]);
 
-        $request = new \Minz\Request('POST', '/admin/payments/' . $payment_id . '/destroy', [
+        $response = $this->appRun('POST', '/admin/payments/' . $payment_id . '/destroy', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
         ]);
-
-        $response = self::$application->run($request);
 
         $this->assertResponse($response, 400, 'Ce paiement est associé à une facture');
         $db_payment = $payment_dao->find($payment_id);
