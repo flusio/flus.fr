@@ -182,7 +182,7 @@ class Payments
                 'amount' => $amount,
                 'address' => $address,
                 'generate_invoice' => $generate_invoice,
-                'errors' => $this->formatPaymentErrors($errors),
+                'errors' => $errors,
             ]);
         }
 
@@ -334,47 +334,5 @@ class Payments
         return \Minz\Response::redirect('admin', [
             'status' => 'payment_deleted',
         ]);
-    }
-
-    /**
-     * @param array $errors
-     *
-     * @return array
-     */
-    private function formatPaymentErrors($errors)
-    {
-        $formatted_errors = [];
-
-        foreach ($errors as $property => $error) {
-            $code = $error['code'];
-
-            if ($property === 'email') {
-                if ($code === \Minz\Model::ERROR_REQUIRED) {
-                    $formatted_error = 'L’adresse courriel est obligatoire.';
-                } else {
-                    $formatted_error = 'L’adresse courriel que vous avez fourni est invalide.';
-                }
-            } elseif ($property === 'amount') {
-                $formatted_error = 'Le montant doit être compris entre 1 et 1000 €.';
-            } elseif ($property === 'address_first_name') {
-                $formatted_error = 'Votre prénom est obligatoire.';
-            } elseif ($property === 'address_last_name') {
-                $formatted_error = 'Votre nom est obligatoire.';
-            } elseif ($property === 'address_address1') {
-                $formatted_error = 'Votre adresse est obligatoire.';
-            } elseif ($property === 'address_postcode') {
-                $formatted_error = 'Votre code postal est obligatoire.';
-            } elseif ($property === 'address_city') {
-                $formatted_error = 'Votre ville est obligatoire.';
-            } elseif ($property === 'address_country') {
-                $formatted_error = 'Le pays que vous avez renseigné est invalide.';
-            } else {
-                $formatted_error = $error; // @codeCoverageIgnore
-            }
-
-            $formatted_errors[$property] = $formatted_error;
-        }
-
-        return $formatted_errors;
     }
 }
