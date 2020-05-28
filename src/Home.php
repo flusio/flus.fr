@@ -65,11 +65,11 @@ class Home
         return \Minz\Response::ok('home/sitemap.xml');
     }
 
-    public function contact()
+    public function contact($request)
     {
         return \Minz\Response::ok('home/contact.phtml', [
             'email' => '',
-            'subject' => '',
+            'subject' => $request->param('subject', ''),
             'content' => '',
         ]);
     }

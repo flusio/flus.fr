@@ -51,7 +51,10 @@
     <p>
         Cette section traite de la gestion des données personnelles du site
         <?= url_full('home') ?>. Pour toute question ou réclamation, vous
-        pouvez <a href="<?= url('contact') ?>">me contacter par message</a>.
+        pouvez
+        <a href="<?= url('contact', ['subject' => 'Question relative aux données personnelles']) ?>">
+            me contacter par message
+        </a>.
     </p>
 
     <p>
