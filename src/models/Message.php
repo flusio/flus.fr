@@ -45,17 +45,6 @@ class Message extends \Minz\Model
     }
 
     /**
-     * @param array $values
-     *
-     * @throws \Minz\Errors\ModelPropertyError if a value is invalid
-     */
-    public function __construct($values)
-    {
-        parent::__construct(self::PROPERTIES);
-        $this->fromValues($values);
-    }
-
-    /**
      * Validate a model and return formated errors
      *
      * @return string[]

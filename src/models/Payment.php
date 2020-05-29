@@ -132,17 +132,6 @@ class Payment extends \Minz\Model
     }
 
     /**
-     * @param array $values
-     *
-     * @throws \Minz\Errors\ModelPropertyError if a value is invalid
-     */
-    public function __construct($values)
-    {
-        parent::__construct(self::PROPERTIES);
-        $this->fromValues($values);
-    }
-
-    /**
      * Return the address information as an array
      *
      * @return array
