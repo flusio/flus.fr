@@ -1,0 +1,6 @@
+Bonjour,
+
+Votre message intitulé « <?= $subject ?> » a bien été envoyé. Je vous répondrai
+aussi vite que possible !
+
+Marien

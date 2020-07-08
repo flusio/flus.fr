@@ -96,6 +96,9 @@ class Home
         if (!$honeypot) {
             $mailer = new mailers\Support();
             $mailer->sendMessage($message);
+
+            $mailer = new mailers\Support();
+            $mailer->sendNotification($message);
         }
 
         return \Minz\Response::ok('home/contact.phtml', [
