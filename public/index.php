@@ -30,18 +30,24 @@ $request = new \Minz\Request($http_method, $http_uri, $http_parameters, $_SERVER
 $application = new \Website\Application();
 $response = $application->run($request);
 
-// make sure to clear Stripe cookies
-if (\Minz\Configuration::$environment === 'production') {
-    $host = \Minz\Configuration::$url_options['host'];
-    setcookie('__stripe_mid', '', time() - 3600, '/', '.' . $host);
-    setcookie('__stripe_sid', '', time() - 3600, '/', '.' . $host);
-} else {
-    setcookie('__stripe_mid', '', time() - 3600);
-    setcookie('__stripe_sid', '', time() - 3600);
-}
+$response->removeCookie('__stripe_mid', [
+    'secure' => false,
+    'httponly' => false,
+    'samesite' => 'Lax',
+]);
+$response->removeCookie('__stripe_sid', [
+    'secure' => false,
+    'httponly' => false,
+    'samesite' => 'Lax',
+]);
 
 // Generate the HTTP headers and output
 http_response_code($response->code());
+
+foreach ($response->cookies() as $cookie) {
+    setcookie($cookie['name'], $cookie['value'], $cookie['options']);
+}
+
 foreach ($response->headers() as $header) {
     header($header);
 }
