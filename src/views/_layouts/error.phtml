@@ -24,16 +24,16 @@
             <main class="layout__content" id="contenu">
                 <?= $this->safe('content') ?>
 
-                <?php if ($environment !== 'production' && $error): ?>
-                    <pre class="error-box"><?= (string)$error ?></pre>
-                <?php endif; ?>
-
                 <img
                     class="illustration illustration--centered not-found"
                     alt=""
                     src="<?= url_static('illustrations/not-found.svg') ?>"
                     height="250"
                 />
+
+                <?php if ($environment !== 'production' && $error): ?>
+                    <pre class="error-box"><?= (string)$error ?></pre>
+                <?php endif; ?>
             </main>
         </div>
     </body>
