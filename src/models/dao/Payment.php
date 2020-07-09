@@ -119,16 +119,7 @@ class Payment extends \Minz\DatabaseModel
              . 'WHERE strftime("%Y", datetime(created_at)) = ? '
              . 'ORDER BY created_at DESC';
         $statement = $this->prepare($sql);
-        $result = $statement->execute([$year]);
-        if (!$result) {
-            throw self::sqlStatementError($statement);
-        }
-
-        $result = $statement->fetchAll();
-        if ($result !== false) {
-            return $result;
-        } else {
-            throw self::sqlStatementError($statement);
-        }
+        $statement->execute([$year]);
+        return $statement->fetchAll();
     }
 }
