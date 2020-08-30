@@ -19,7 +19,7 @@
     <ul class="revenues">
         <li class="revenues__item">
             <div class="revenues__amount">
-                <?= $subscriptions_amount ?>&nbsp;€
+                <?= $this->safe('subscriptions_amount') ?>&nbsp;€
             </div>
             <div class="revenues__label">
                 abonnements
@@ -28,7 +28,7 @@
 
         <li class="revenues__item">
             <div class="revenues__amount">
-                <?= $common_pot_amount ?>&nbsp;€<br />
+                <?= $this->safe('common_pot_amount') ?>&nbsp;€<br />
             </div>
             <div class="revenues__label">
                 en cagnotte
