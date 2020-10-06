@@ -29,10 +29,12 @@ class Application
         $router->addRoute('get', '/robots.txt', 'Home#robots', 'robots.txt');
         $router->addRoute('get', '/sitemap.xml', 'Home#sitemap', 'sitemap.xml');
 
-        $router->addRoute('get', '/payments/:id', 'Payments#show');
         $router->addRoute('get', '/payments/:id/pay', 'Payments#pay');
-        $router->addRoute('post', '/payments/subscriptions', 'Payments#paySubscription');
-        $router->addRoute('get', '/invoices/pdf/:id', 'Invoices#downloadPdf');
+
+        $router->addRoute('get', '/api/payments/:id', 'api/Payments#show');
+        $router->addRoute('post', '/api/payments/subscriptions', 'api/Payments#paySubscription');
+
+        $router->addRoute('get', '/api/invoices/pdf/:id', 'api/Invoices#downloadPdf');
 
         $router->addRoute('get', '/admin', 'admin/Payments#index', 'admin');
         $router->addRoute('get', '/admin/login', 'admin/Auth#login', 'login');
@@ -43,7 +45,7 @@ class Application
         $router->addRoute('get', '/admin/payments/:id', 'admin/Payments#show', 'admin payment');
         $router->addRoute('post', '/admin/payments/:id/complete', 'admin/Payments#complete', 'complete admin payment');
         $router->addRoute('post', '/admin/payments/:id/destroy', 'admin/Payments#destroy', 'destroy admin payment');
-        $router->addRoute('get', '/admin/invoices/pdf/:id', 'Invoices#downloadPdf', 'download_pdf_from_admin');
+        $router->addRoute('get', '/admin/invoices/pdf/:id', 'api/Invoices#downloadPdf', 'download_pdf_from_admin');
 
         $router->addRoute('post', '/stripe/hooks', 'Stripe#hooks');
 
@@ -51,6 +53,11 @@ class Application
         $router->addRoute('cli', '/system/migrate', 'System#migrate');
         $router->addRoute('cli', '/system/rollback', 'System#rollback');
         $router->addRoute('cli', '/invoices/:id/email', 'Invoices#sendPdf');
+
+        // TODO The following routes are deprecated and will be removed in the future.
+        $router->addRoute('get', '/payments/:id', 'api/Payments#show');
+        $router->addRoute('post', '/payments/subscriptions', 'api/Payments#paySubscription');
+        $router->addRoute('get', '/invoices/pdf/:id', 'api/Invoices#downloadPdf');
 
         $this->engine = new \Minz\Engine($router);
         \Minz\Url::setRouter($router);

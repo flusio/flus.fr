@@ -5,7 +5,6 @@ namespace Website;
 class InvoicesTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\FakerHelper;
-    use \tests\LoginHelper;
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\FactoriesHelper;
@@ -21,85 +20,6 @@ class InvoicesTest extends \PHPUnit\Framework\TestCase
         foreach ($files as $file) {
             @unlink($file);
         }
-    }
-
-    /**
-     * @dataProvider completedParametersProvider
-     */
-    public function testDownloadPdfRendersAPdf($completed_at, $invoice_number)
-    {
-        $payment_id = $this->create('payment', [
-            'completed_at' => $completed_at->format(\Minz\Model::DATETIME_FORMAT),
-            'invoice_number' => $invoice_number,
-        ]);
-
-        $response = $this->appRun('GET', '/invoices/pdf/' . $payment_id, [], [
-            'PHP_AUTH_USER' => \Minz\Configuration::$application['flus_private_key'],
-        ]);
-
-        $expected_filename = "facture_{$invoice_number}.pdf";
-        $this->assertResponse($response, 200, null, [
-            'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'attachment; filename="' . $expected_filename . '"',
-        ]);
-    }
-
-    /**
-     * @dataProvider completedParametersProvider
-     */
-    public function testDownloadPdfWithAuthenticatedUserRendersAPdf($completed_at, $invoice_number)
-    {
-        $this->login();
-
-        $payment_id = $this->create('payment', [
-            'completed_at' => $completed_at->format(\Minz\Model::DATETIME_FORMAT),
-            'invoice_number' => $invoice_number,
-        ]);
-
-        $response = $this->appRun('GET', '/invoices/pdf/' . $payment_id);
-
-        $expected_filename = "facture_{$invoice_number}.pdf";
-        $this->assertResponse($response, 200, null, [
-            'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'attachment; filename="' . $expected_filename . '"',
-        ]);
-    }
-
-    public function testDownloadPdfWithNonExistingPaymentReturnsNotFound()
-    {
-        $response = $this->appRun('GET', '/invoices/pdf/not_an_existing_id', [], [
-            'PHP_AUTH_USER' => \Minz\Configuration::$application['flus_private_key'],
-        ]);
-
-        $this->assertResponse($response, 404);
-    }
-
-    public function testDownloadPdfWithPaymentWithNoInvoiceNumberReturnsNotFound()
-    {
-        $payment_id = $this->create('payment', [
-            'invoice_number' => null,
-        ]);
-
-        $response = $this->appRun('GET', '/invoices/pdf/' . $payment_id, [], [
-            'PHP_AUTH_USER' => \Minz\Configuration::$application['flus_private_key'],
-        ]);
-
-        $this->assertResponse($response, 404);
-    }
-
-    /**
-     * @dataProvider completedParametersProvider
-     */
-    public function testDownloadPdfWithMissingAuthenticationReturnsUnauthorized($completed_at, $invoice_number)
-    {
-        $payment_id = $this->create('payment', [
-            'completed_at' => $completed_at->format(\Minz\Model::DATETIME_FORMAT),
-            'invoice_number' => $invoice_number,
-        ]);
-
-        $response = $this->appRun('GET', '/invoices/pdf/' . $payment_id);
-
-        $this->assertResponse($response, 401);
     }
 
     /**
