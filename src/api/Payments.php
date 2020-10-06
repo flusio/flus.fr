@@ -61,8 +61,7 @@ class Payments
 
         $errors = $payment->validate();
         if ($errors) {
-            $messages = array_column($errors, 'description');
-            $output = new \Minz\Output\Text(implode(' ', $messages));
+            $output = new \Minz\Output\Text(implode(' ', $errors));
             return new \Minz\Response(400, $output);
         }
 

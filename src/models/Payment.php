@@ -238,7 +238,7 @@ class Payment extends \Minz\Model
                 if ($code === \Minz\Model::ERROR_REQUIRED) {
                     $formatted_error = 'L’adresse courriel est obligatoire.';
                 } else {
-                    $formatted_error = 'L’adresse courriel que vous avez fourni est invalide.';
+                    $formatted_error = 'L’adresse courriel que vous avez fournie est invalide.';
                 }
             } elseif ($property === 'amount') {
                 $formatted_error = 'Le montant doit être compris entre 1 et 1000 €.';
@@ -255,7 +255,7 @@ class Payment extends \Minz\Model
             } elseif ($property === 'address_country') {
                 $formatted_error = 'Le pays que vous avez renseigné est invalide.';
             } else {
-                $formatted_error = $error; // @codeCoverageIgnore
+                $formatted_error = $error['description']; // @codeCoverageIgnore
             }
 
             $formatted_errors[$property] = $formatted_error;

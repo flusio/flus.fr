@@ -138,7 +138,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
             'PHP_AUTH_USER' => \Minz\Configuration::$application['flus_private_key'],
         ]);
 
-        $this->assertResponse($response, 400);
+        $this->assertResponse($response, 400, '`frequency` property is invalid');
     }
 
     public function testShowRendersCorrectly()

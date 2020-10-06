@@ -175,7 +175,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
             'address' => $address,
         ]);
 
-        $this->assertResponse($response, 400, 'L’adresse courriel que vous avez fourni est invalide.');
+        $this->assertResponse($response, 400, 'L’adresse courriel que vous avez fournie est invalide.');
     }
 
     /**
