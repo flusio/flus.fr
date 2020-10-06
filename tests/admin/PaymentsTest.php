@@ -19,7 +19,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         $created_at = $faker->dateTime;
         $this->freeze($created_at);
 
-        $this->create('payments', [
+        $this->create('payment', [
             'created_at' => $created_at->format(\Minz\Model::DATETIME_FORMAT),
         ]);
 
@@ -217,7 +217,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     public function testShowRendersCorrectly()
     {
         $this->login();
-        $payment_id = $this->create('payments');
+        $payment_id = $this->create('payment');
 
         $response = $this->appRun('GET', '/admin/payments/' . $payment_id);
 
@@ -236,7 +236,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
 
     public function testShowFailsIfNotConnected()
     {
-        $payment_id = $this->create('payments');
+        $payment_id = $this->create('payment');
 
         $response = $this->appRun('GET', '/admin/payments/' . $payment_id);
 
@@ -248,7 +248,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         $payment_dao = new models\dao\Payment();
         $faker = \Faker\Factory::create();
         $this->login();
-        $payment_id = $this->create('payments', [
+        $payment_id = $this->create('payment', [
             'completed_at' => null,
         ]);
         $completed_at = $faker->date;
@@ -283,7 +283,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         $faker = \Faker\Factory::create();
         $this->login();
         $initial_completed_at = $faker->dateTime;
-        $payment_id = $this->create('payments', [
+        $payment_id = $this->create('payment', [
             'completed_at' => $initial_completed_at->format(\Minz\Model::DATETIME_FORMAT),
         ]);
 
@@ -301,7 +301,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     {
         $payment_dao = new models\dao\Payment();
         $faker = \Faker\Factory::create();
-        $payment_id = $this->create('payments', [
+        $payment_id = $this->create('payment', [
             'completed_at' => null,
         ]);
 
@@ -320,7 +320,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         $payment_dao = new models\dao\Payment();
         $faker = \Faker\Factory::create();
         $this->login();
-        $payment_id = $this->create('payments', [
+        $payment_id = $this->create('payment', [
             'completed_at' => null,
         ]);
 
@@ -338,7 +338,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     {
         $payment_dao = new models\dao\Payment();
         $this->login();
-        $payment_id = $this->create('payments', [
+        $payment_id = $this->create('payment', [
             'completed_at' => null,
             'invoice_number' => null,
         ]);
@@ -366,7 +366,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     public function testDestroyFailsIfNotConnected()
     {
         $payment_dao = new models\dao\Payment();
-        $payment_id = $this->create('payments', [
+        $payment_id = $this->create('payment', [
             'completed_at' => null,
             'invoice_number' => null,
         ]);
@@ -384,7 +384,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     {
         $payment_dao = new models\dao\Payment();
         $this->login();
-        $payment_id = $this->create('payments', [
+        $payment_id = $this->create('payment', [
             'completed_at' => null,
             'invoice_number' => null,
         ]);
@@ -403,7 +403,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         $faker = \Faker\Factory::create();
         $payment_dao = new models\dao\Payment();
         $this->login();
-        $payment_id = $this->create('payments', [
+        $payment_id = $this->create('payment', [
             'completed_at' => $faker->dateTime->format(\Minz\Model::DATETIME_FORMAT),
             'invoice_number' => null,
         ]);
@@ -423,7 +423,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         $payment_dao = new models\dao\Payment();
         $this->login();
         $invoice_number = $faker->dateTime->format('Y-m') . sprintf('-%04d', $faker->randomNumber(4));
-        $payment_id = $this->create('payments', [
+        $payment_id = $this->create('payment', [
             'completed_at' => null,
             'invoice_number' => $invoice_number,
         ]);

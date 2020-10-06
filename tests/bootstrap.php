@@ -26,50 +26,40 @@ echo 'Use SEED=' . $faker_seed . " to reproduce this suite.\n";
 
 // Initialize factories
 \Minz\Tests\DatabaseFactory::addFactory(
-    'payments',
+    'payment',
     '\Website\models\dao\Payment',
     [
         'id' => function () {
             return bin2hex(random_bytes(16));
         },
-        'created_at' => function () {
-            $faker = \Faker\Factory::create();
+        'created_at' => function () use ($faker) {
             return $faker->dateTime->format(\Minz\Model::DATETIME_FORMAT);
         },
-        'type' => function () {
-            $faker = \Faker\Factory::create();
+        'type' => function () use ($faker) {
             return $faker->randomElement(['common_pot', 'subscription']);
         },
-        'email' => function () {
-            $faker = \Faker\Factory::create();
+        'email' => function () use ($faker) {
             return $faker->email;
         },
-        'amount' => function () {
-            $faker = \Faker\Factory::create();
+        'amount' => function () use ($faker) {
             return $faker->numberBetween(100, 100000);
         },
-        'address_first_name' => function () {
-            $faker = \Faker\Factory::create();
+        'address_first_name' => function () use ($faker) {
             return $faker->firstName;
         },
-        'address_last_name' => function () {
-            $faker = \Faker\Factory::create();
+        'address_last_name' => function () use ($faker) {
             return $faker->lastName;
         },
-        'address_address1' => function () {
-            $faker = \Faker\Factory::create();
+        'address_address1' => function () use ($faker) {
             return $faker->streetAddress;
         },
-        'address_postcode' => function () {
-            $faker = \Faker\Factory::create();
+        'address_postcode' => function () use ($faker) {
             return $faker->postcode;
         },
-        'address_city' => function () {
-            $faker = \Faker\Factory::create();
+        'address_city' => function () use ($faker) {
             return $faker->city;
         },
-        'address_country' => function () {
-            $faker = \Faker\Factory::create();
+        'address_country' => function () use ($faker) {
             return $faker->randomElement(\Website\utils\Countries::codes());
         },
     ]

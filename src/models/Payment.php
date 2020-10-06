@@ -2,6 +2,8 @@
 
 namespace Website\models;
 
+use Website\utils;
+
 /**
  * A Payment represents a payment by a customer. It allows easy manipulations
  * from Stripe service to the database.
@@ -35,7 +37,7 @@ class Payment extends \Minz\Model
         'email' => [
             'type' => 'string',
             'required' => true,
-            'validator' => '\Website\models\Payment::validateEmail',
+            'validator' => '\Website\utils\Email::validate',
         ],
 
         'amount' => [
@@ -120,7 +122,7 @@ class Payment extends \Minz\Model
     {
         return new self([
             'type' => $type,
-            'email' => strtolower(trim($email)),
+            'email' => utils\Email::sanitize($email),
             'amount' => is_numeric($amount) ? intval($amount * 100) : $amount,
             'address_first_name' => trim($address['first_name']),
             'address_last_name' => trim($address['last_name']),
@@ -307,16 +309,6 @@ class Payment extends \Minz\Model
     public static function validateType($type)
     {
         return $type === 'common_pot' || $type === 'subscription';
-    }
-
-    /**
-     * @param string $email
-     *
-     * @return boolean Returns true if the value is a valid email, false otherwise
-     */
-    public static function validateEmail($email)
-    {
-        return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
     }
 
     /**

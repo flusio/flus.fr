@@ -27,7 +27,7 @@ class InvoicesTest extends \PHPUnit\Framework\TestCase
      */
     public function testDownloadPdfRendersAPdf($completed_at, $invoice_number)
     {
-        $payment_id = $this->create('payments', [
+        $payment_id = $this->create('payment', [
             'completed_at' => $completed_at->format(\Minz\Model::DATETIME_FORMAT),
             'invoice_number' => $invoice_number,
         ]);
@@ -50,7 +50,7 @@ class InvoicesTest extends \PHPUnit\Framework\TestCase
     {
         $this->login();
 
-        $payment_id = $this->create('payments', [
+        $payment_id = $this->create('payment', [
             'completed_at' => $completed_at->format(\Minz\Model::DATETIME_FORMAT),
             'invoice_number' => $invoice_number,
         ]);
@@ -75,7 +75,7 @@ class InvoicesTest extends \PHPUnit\Framework\TestCase
 
     public function testDownloadPdfWithPaymentWithNoInvoiceNumberReturnsNotFound()
     {
-        $payment_id = $this->create('payments', [
+        $payment_id = $this->create('payment', [
             'invoice_number' => null,
         ]);
 
@@ -91,7 +91,7 @@ class InvoicesTest extends \PHPUnit\Framework\TestCase
      */
     public function testDownloadPdfWithMissingAuthenticationReturnsUnauthorized($completed_at, $invoice_number)
     {
-        $payment_id = $this->create('payments', [
+        $payment_id = $this->create('payment', [
             'completed_at' => $completed_at->format(\Minz\Model::DATETIME_FORMAT),
             'invoice_number' => $invoice_number,
         ]);
@@ -108,7 +108,7 @@ class InvoicesTest extends \PHPUnit\Framework\TestCase
     {
         $faker = \Faker\Factory::create();
         $email = $faker->email;
-        $payment_id = $this->create('payments', [
+        $payment_id = $this->create('payment', [
             'completed_at' => $completed_at->format(\Minz\Model::DATETIME_FORMAT),
             'invoice_number' => $invoice_number,
             'email' => $email,
@@ -141,7 +141,7 @@ class InvoicesTest extends \PHPUnit\Framework\TestCase
      */
     public function testSendPdfFailsIfNoInvoiceNumber($completed_at, $invoice_number)
     {
-        $payment_id = $this->create('payments', [
+        $payment_id = $this->create('payment', [
             'completed_at' => $completed_at->format(\Minz\Model::DATETIME_FORMAT),
             'invoice_number' => null,
         ]);

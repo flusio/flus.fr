@@ -23,12 +23,12 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         $faker = \Faker\Factory::create();
         $amount_common_pot = $faker->numberBetween(100, 100000);
         $amount_subscriptions = $faker->numberBetween(100, 100000);
-        $this->create('payments', [
+        $this->create('payment', [
             'type' => 'common_pot',
             'amount' => $amount_common_pot,
             'completed_at' => $faker->dateTime->getTimestamp(),
         ]);
-        $this->create('payments', [
+        $this->create('payment', [
             'type' => 'subscription',
             'amount' => $amount_subscriptions,
             'completed_at' => $faker->dateTime->getTimestamp(),
@@ -553,7 +553,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
 
     public function testPayRendersCorrectly()
     {
-        $payment_id = $this->create('payments');
+        $payment_id = $this->create('payment');
 
         $response = $this->appRun('GET', "/payments/{$payment_id}/pay");
 
@@ -565,7 +565,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     {
         $faker = \Faker\Factory::create();
         $session_id = $faker->regexify('cs_test_[\w\d]{56}');
-        $payment_id = $this->create('payments', [
+        $payment_id = $this->create('payment', [
             'session_id' => $session_id,
         ]);
 
@@ -603,7 +603,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     public function testPayWithPaidPaymentReturnsBadRequest()
     {
         $faker = \Faker\Factory::create();
-        $payment_id = $this->create('payments', [
+        $payment_id = $this->create('payment', [
             'completed_at' => $faker->dateTime->getTimestamp(),
         ]);
 
@@ -619,7 +619,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         $completed_at = $faker->dateTime;
         $amount = $faker->numberBetween(100, 100000);
         $frequency = $faker->randomElement(['month', 'year']);
-        $payment_id = $this->create('payments', [
+        $payment_id = $this->create('payment', [
             'created_at' => $created_at->format(\Minz\Model::DATETIME_FORMAT),
             'completed_at' => $completed_at->format(\Minz\Model::DATETIME_FORMAT),
             'amount' => $amount,
@@ -657,7 +657,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         $completed_at = $faker->dateTime;
         $amount = $faker->numberBetween(100, 100000);
         $frequency = $faker->randomElement(['month', 'year']);
-        $payment_id = $this->create('payments', [
+        $payment_id = $this->create('payment', [
             'created_at' => $created_at->getTimestamp(),
             'completed_at' => $completed_at->getTimestamp(),
             'amount' => $amount,

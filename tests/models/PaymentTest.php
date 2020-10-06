@@ -47,10 +47,10 @@ class PaymentTest extends \PHPUnit\Framework\TestCase
         $now = $faker->dateTime;
         $this->freeze($now);
 
-        $this->create('payments', [
+        $this->create('payment', [
             'invoice_number' => $now->format('Y') . '-01-0001',
         ]);
-        $this->create('payments', [
+        $this->create('payment', [
             'invoice_number' => $now->format('Y') . '-01-0002',
         ]);
 
@@ -72,10 +72,10 @@ class PaymentTest extends \PHPUnit\Framework\TestCase
         $this->freeze($now);
 
         $previous_year = \Minz\Time::ago(1, 'year');
-        $this->create('payments', [
+        $this->create('payment', [
             'invoice_number' => $previous_year->format('Y-m') . '-0001',
         ]);
-        $this->create('payments', [
+        $this->create('payment', [
             'invoice_number' => $previous_year->format('Y-m') . '-0002',
         ]);
 
@@ -96,10 +96,10 @@ class PaymentTest extends \PHPUnit\Framework\TestCase
         $now = $faker->dateTime;
         $this->freeze($now);
 
-        $this->create('payments', [
+        $this->create('payment', [
             'invoice_number' => null,
         ]);
-        $this->create('payments', [
+        $this->create('payment', [
             'invoice_number' => $now->format('Y') . '-01-0001',
         ]);
 
