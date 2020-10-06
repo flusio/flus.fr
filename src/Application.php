@@ -31,6 +31,8 @@ class Application
 
         $router->addRoute('get', '/payments/:id/pay', 'Payments#pay');
 
+        $router->addRoute('get', '/api/account', 'api/Accounts#show');
+
         $router->addRoute('get', '/api/payments/:id', 'api/Payments#show');
         $router->addRoute('post', '/api/payments/subscriptions', 'api/Payments#paySubscription');
 
