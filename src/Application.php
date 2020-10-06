@@ -49,10 +49,10 @@ class Application
 
         $router->addRoute('post', '/stripe/hooks', 'Stripe#hooks');
 
-        $router->addRoute('cli', '/system/init', 'System#init');
-        $router->addRoute('cli', '/system/migrate', 'System#migrate');
-        $router->addRoute('cli', '/system/rollback', 'System#rollback');
-        $router->addRoute('cli', '/invoices/:id/email', 'Invoices#sendPdf');
+        $router->addRoute('cli', '/system/init', 'cli/System#init');
+        $router->addRoute('cli', '/system/migrate', 'cli/System#migrate');
+        $router->addRoute('cli', '/system/rollback', 'cli/System#rollback');
+        $router->addRoute('cli', '/invoices/:id/email', 'cli/Invoices#sendPdf');
 
         // TODO The following routes are deprecated and will be removed in the future.
         $router->addRoute('get', '/payments/:id', 'api/Payments#show');

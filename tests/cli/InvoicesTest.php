@@ -1,6 +1,6 @@
 <?php
 
-namespace Website;
+namespace Website\cli;
 
 class InvoicesTest extends \PHPUnit\Framework\TestCase
 {

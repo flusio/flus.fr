@@ -1,6 +1,10 @@
 <?php
 
-namespace Website;
+namespace Website\cli;
+
+use Website\mailers;
+use Website\models;
+use Website\services;
 
 class Invoices
 {
@@ -10,8 +14,6 @@ class Invoices
      * Parameter is:
      *
      * - `id`, the id of the payment
-     *
-     * This request is only accessible through CLI
      *
      * @param \Minz\Request $request
      *
