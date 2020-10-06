@@ -94,6 +94,14 @@ class Account extends \Minz\Model
     }
 
     /**
+     * @param string $expired_at
+     */
+    public function setExpiredAt($expired_at)
+    {
+        $this->expired_at = date_create_from_format(\Minz\Model::DATETIME_FORMAT, $expired_at);
+    }
+
+    /**
      * Return the address information as an array
      *
      * @return array
