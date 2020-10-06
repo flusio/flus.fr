@@ -17,7 +17,10 @@ class Payment extends \Minz\Model
     public const MAX_AMOUNT = 1000 * 100;
 
     public const PROPERTIES = [
-        'id' => 'string',
+        'id' => [
+            'type' => 'string',
+            'required' => true,
+        ],
 
         'created_at' => 'datetime',
 
@@ -121,6 +124,7 @@ class Payment extends \Minz\Model
     public static function init($type, $email, $amount, $address)
     {
         return new self([
+            'id' => bin2hex(random_bytes(16)),
             'type' => $type,
             'email' => utils\Email::sanitize($email),
             'amount' => is_numeric($amount) ? intval($amount * 100) : $amount,

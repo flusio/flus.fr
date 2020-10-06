@@ -10,31 +10,12 @@ use Website\models;
  */
 class Payment extends \Minz\DatabaseModel
 {
+    use SaveHelper;
+
     public function __construct()
     {
         $properties = array_keys(models\Payment::PROPERTIES);
         parent::__construct('payments', 'id', $properties);
-    }
-
-    /**
-     * Create a payment if it doesn't exist, or update an existing one
-     *
-     * @param \Website\models\Payment $model
-     *
-     * @return integer|boolean Return the id on creation, or true on update.
-     */
-    public function save($model)
-    {
-        if ($model->id === null) {
-            $values = $model->toValues();
-            $values['id'] = bin2hex(random_bytes(16));
-            $values['created_at'] = \Minz\Time::now()->format(\Minz\Model::DATETIME_FORMAT);
-            return $this->create($values);
-        } else {
-            $values = $model->toValues();
-            $this->update($model->id, $values);
-            return true;
-        }
     }
 
     /**
