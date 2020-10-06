@@ -60,6 +60,10 @@ lint: bin/phpcs  ## Run the linter on the PHP files
 lint-fix: bin/phpcbf ## Fix the errors raised by the linter
 	php ./bin/phpcbf --standard=PSR12 ./src ./tests
 
+.PHONY: tree
+tree:  ## Display the structure of the application
+	tree -I 'Minz|Faker|stripe-php|fpdf|coverage' --dirsfirst -CA
+
 .PHONY: help
 help:
 	@grep -h -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
