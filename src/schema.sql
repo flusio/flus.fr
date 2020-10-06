@@ -18,3 +18,10 @@ CREATE TABLE payments (
     frequency TEXT,
     company_vat_number TEXT
 );
+
+CREATE TABLE tokens (
+    token TEXT PRIMARY KEY,
+    created_at TEXT NOT NULL,
+    expired_at TEXT NOT NULL,
+    invalidated_at TEXT
+);
