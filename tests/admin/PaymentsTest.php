@@ -6,6 +6,7 @@ use Website\models;
 
 class PaymentsTest extends \PHPUnit\Framework\TestCase
 {
+    use \tests\FakerHelper;
     use \tests\LoginHelper;
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\ApplicationHelper;
@@ -15,8 +16,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
 
     public function testIndexRendersCorrectly()
     {
-        $faker = \Faker\Factory::create();
-        $created_at = $faker->dateTime;
+        $created_at = $this->fake('dateTime');
         $this->freeze($created_at);
 
         $this->create('payment', [
@@ -80,8 +80,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     {
         $this->login();
         $payment_dao = new models\dao\Payment();
-        $faker = \Faker\Factory::create();
-        $username = $faker->username;
+        $username = $this->fake('username');
 
         $response = $this->appRun('POST', '/admin/payments/new', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
@@ -128,7 +127,6 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     {
         $this->login();
         $payment_dao = new models\dao\Payment();
-        $faker = \Faker\Factory::create();
 
         $response = $this->appRun('POST', '/admin/payments/new', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
@@ -246,12 +244,11 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     public function testCompleteRendersCorrectly()
     {
         $payment_dao = new models\dao\Payment();
-        $faker = \Faker\Factory::create();
         $this->login();
         $payment_id = $this->create('payment', [
             'completed_at' => null,
         ]);
-        $completed_at = $faker->date;
+        $completed_at = $this->fake('date');
 
         $response = $this->appRun('POST', '/admin/payments/' . $payment_id . '/complete', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
@@ -266,12 +263,11 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     public function testCompleteFailsIfInvalidId()
     {
         $payment_dao = new models\dao\Payment();
-        $faker = \Faker\Factory::create();
         $this->login();
 
         $response = $this->appRun('POST', '/admin/payments/invalid/complete', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
-            'completed_at' => $faker->date,
+            'completed_at' => $this->fake('date'),
         ]);
 
         $this->assertResponse($response, 404);
@@ -280,16 +276,15 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     public function testCompleteFailsIfAlreadyCompleted()
     {
         $payment_dao = new models\dao\Payment();
-        $faker = \Faker\Factory::create();
         $this->login();
-        $initial_completed_at = $faker->dateTime;
+        $initial_completed_at = $this->fake('dateTime');
         $payment_id = $this->create('payment', [
             'completed_at' => $initial_completed_at->format(\Minz\Model::DATETIME_FORMAT),
         ]);
 
         $response = $this->appRun('POST', '/admin/payments/' . $payment_id . '/complete', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
-            'completed_at' => $faker->dateTime,
+            'completed_at' => $this->fake('dateTime'),
         ]);
 
         $this->assertResponse($response, 400, 'Ce paiement a déjà été confirmé');
@@ -300,14 +295,13 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     public function testCompleteFailsIfNotConnected()
     {
         $payment_dao = new models\dao\Payment();
-        $faker = \Faker\Factory::create();
         $payment_id = $this->create('payment', [
             'completed_at' => null,
         ]);
 
         $response = $this->appRun('POST', '/admin/payments/' . $payment_id . '/complete', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
-            'completed_at' => $faker->date,
+            'completed_at' => $this->fake('date'),
         ]);
 
         $this->assertResponse($response, 302, '/admin/login?from=admin%2Fpayments%23index');
@@ -318,7 +312,6 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     public function testCompleteFailsIfCsrfIsInvalid()
     {
         $payment_dao = new models\dao\Payment();
-        $faker = \Faker\Factory::create();
         $this->login();
         $payment_id = $this->create('payment', [
             'completed_at' => null,
@@ -326,7 +319,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('POST', '/admin/payments/' . $payment_id . '/complete', [
             'csrf' => 'not the token',
-            'completed_at' => $faker->date,
+            'completed_at' => $this->fake('date'),
         ]);
 
         $this->assertResponse($response, 400, 'Une vérification de sécurité a échoué');
@@ -400,11 +393,10 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
 
     public function testDestroyFailsIfCompletedAtIsNotNull()
     {
-        $faker = \Faker\Factory::create();
         $payment_dao = new models\dao\Payment();
         $this->login();
         $payment_id = $this->create('payment', [
-            'completed_at' => $faker->dateTime->format(\Minz\Model::DATETIME_FORMAT),
+            'completed_at' => $this->fake('dateTime')->format(\Minz\Model::DATETIME_FORMAT),
             'invoice_number' => null,
         ]);
 
@@ -419,10 +411,9 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
 
     public function testDestroyFailsIfInvoiceNumberIsNotNull()
     {
-        $faker = \Faker\Factory::create();
         $payment_dao = new models\dao\Payment();
         $this->login();
-        $invoice_number = $faker->dateTime->format('Y-m') . sprintf('-%04d', $faker->randomNumber(4));
+        $invoice_number = $this->fake('dateTime')->format('Y-m') . sprintf('-%04d', $this->fake('randomNumber', 4));
         $payment_id = $this->create('payment', [
             'completed_at' => null,
             'invoice_number' => $invoice_number,

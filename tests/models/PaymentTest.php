@@ -4,6 +4,7 @@ namespace Website\models;
 
 class PaymentTest extends \PHPUnit\Framework\TestCase
 {
+    use \tests\FakerHelper;
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\TimeHelper;
@@ -13,8 +14,7 @@ class PaymentTest extends \PHPUnit\Framework\TestCase
      */
     public function testComplete($type, $email, $amount, $address)
     {
-        $faker = \Faker\Factory::create();
-        $completed_at = $faker->dateTime;
+        $completed_at = $this->fake('dateTime');
         $payment = Payment::init($type, $email, $amount, $address);
 
         $payment->complete($completed_at);
@@ -27,8 +27,7 @@ class PaymentTest extends \PHPUnit\Framework\TestCase
      */
     public function testCompleteSetsInvoiceNumber($type, $email, $amount, $address)
     {
-        $faker = \Faker\Factory::create();
-        $now = $faker->dateTime;
+        $now = $this->fake('dateTime');
         $this->freeze($now);
         $payment = Payment::init($type, $email, $amount, $address);
 
@@ -43,8 +42,7 @@ class PaymentTest extends \PHPUnit\Framework\TestCase
      */
     public function testCompleteIncrementsInvoiceNumberOverMonths($type, $email, $amount, $address)
     {
-        $faker = \Faker\Factory::create();
-        $now = $faker->dateTime;
+        $now = $this->fake('dateTime');
         $this->freeze($now);
 
         $this->create('payment', [
@@ -67,8 +65,7 @@ class PaymentTest extends \PHPUnit\Framework\TestCase
      */
     public function testCompleteResetsInvoiceNumberOverYears($type, $email, $amount, $address)
     {
-        $faker = \Faker\Factory::create();
-        $now = $faker->dateTime;
+        $now = $this->fake('dateTime');
         $this->freeze($now);
 
         $previous_year = \Minz\Time::ago(1, 'year');
@@ -92,8 +89,7 @@ class PaymentTest extends \PHPUnit\Framework\TestCase
      */
     public function testCompleteIgnoresNullInvoiceNumbers($type, $email, $amount, $address)
     {
-        $faker = \Faker\Factory::create();
-        $now = $faker->dateTime;
+        $now = $this->fake('dateTime');
         $this->freeze($now);
 
         $this->create('payment', [

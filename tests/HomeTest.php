@@ -4,6 +4,7 @@ namespace Website;
 
 class HomeTest extends \PHPUnit\Framework\TestCase
 {
+    use \tests\FakerHelper;
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\ResponseAsserts;
@@ -73,10 +74,9 @@ class HomeTest extends \PHPUnit\Framework\TestCase
 
     public function testSendContactEmailSendsTwoEmails()
     {
-        $faker = \Faker\Factory::create();
-        $email = $faker->email;
-        $subject = $faker->sentence;
-        $content = implode("\n", $faker->paragraphs);
+        $email = $this->fake('email');
+        $subject = $this->fake('sentence');
+        $content = implode("\n", $this->fake('paragraphs'));
 
         $this->assertEmailsCount(0);
 
@@ -105,11 +105,9 @@ class HomeTest extends \PHPUnit\Framework\TestCase
 
     public function testSendContactEmailFailsIfEmailIsMissing()
     {
-        $faker = \Faker\Factory::create();
-
         $response = $this->appRun('POST', '/contact', [
-            'subject' => $faker->sentence,
-            'content' => implode("\n", $faker->paragraphs),
+            'subject' => $this->fake('sentence'),
+            'content' => implode("\n", $this->fake('paragraphs')),
         ]);
 
         $this->assertResponse($response, 400, 'L’adresse courriel est obligatoire.');
@@ -119,12 +117,10 @@ class HomeTest extends \PHPUnit\Framework\TestCase
 
     public function testSendContactEmailFailsIfEmailIsInvalid()
     {
-        $faker = \Faker\Factory::create();
-
         $response = $this->appRun('POST', '/contact', [
-            'email' => $faker->word,
-            'subject' => $faker->sentence,
-            'content' => implode("\n", $faker->paragraphs),
+            'email' => $this->fake('word'),
+            'subject' => $this->fake('sentence'),
+            'content' => implode("\n", $this->fake('paragraphs')),
         ]);
 
         $this->assertResponse($response, 400, 'L’adresse courriel que vous avez fournie est invalide.');
@@ -134,11 +130,9 @@ class HomeTest extends \PHPUnit\Framework\TestCase
 
     public function testSendContactEmailFailsIfSubjectIsMissing()
     {
-        $faker = \Faker\Factory::create();
-
         $response = $this->appRun('POST', '/contact', [
-            'email' => $faker->email,
-            'content' => implode("\n", $faker->paragraphs),
+            'email' => $this->fake('email'),
+            'content' => implode("\n", $this->fake('paragraphs')),
         ]);
 
         $this->assertResponse($response, 400, 'Le sujet est obligatoire');
@@ -148,11 +142,9 @@ class HomeTest extends \PHPUnit\Framework\TestCase
 
     public function testSendContactEmailFailsIfContentIsMissing()
     {
-        $faker = \Faker\Factory::create();
-
         $response = $this->appRun('POST', '/contact', [
-            'email' => $faker->email,
-            'subject' => $faker->sentence,
+            'email' => $this->fake('email'),
+            'subject' => $this->fake('sentence'),
         ]);
 
         $this->assertResponse($response, 400, 'Le message est obligatoire');
@@ -164,13 +156,11 @@ class HomeTest extends \PHPUnit\Framework\TestCase
     {
         // The website parameter MUST NOT be sent: it’s a trap for the bots.
         // The field is hidden with CSS so people don't fill it.
-        $faker = \Faker\Factory::create();
-
         $response = $this->appRun('POST', '/contact', [
-            'email' => $faker->email,
-            'subject' => $faker->sentence,
-            'content' => implode("\n", $faker->paragraphs),
-            'website' => $faker->url,
+            'email' => $this->fake('email'),
+            'subject' => $this->fake('sentence'),
+            'content' => implode("\n", $this->fake('paragraphs')),
+            'website' => $this->fake('url'),
         ]);
 
         $this->assertResponse($response, 200, 'Votre message a bien été envoyé.');

@@ -4,6 +4,7 @@ namespace Website;
 
 class PaymentsTest extends \PHPUnit\Framework\TestCase
 {
+    use \tests\FakerHelper;
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\FactoriesHelper;
@@ -20,18 +21,17 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
 
     public function testInitActionShowsAmountOfTheCommonPot()
     {
-        $faker = \Faker\Factory::create();
-        $amount_common_pot = $faker->numberBetween(100, 100000);
-        $amount_subscriptions = $faker->numberBetween(100, 100000);
+        $amount_common_pot = $this->fake('numberBetween', 100, 100000);
+        $amount_subscriptions = $this->fake('numberBetween', 100, 100000);
         $this->create('payment', [
             'type' => 'common_pot',
             'amount' => $amount_common_pot,
-            'completed_at' => $faker->dateTime->getTimestamp(),
+            'completed_at' => $this->fake('dateTime')->getTimestamp(),
         ]);
         $this->create('payment', [
             'type' => 'subscription',
             'amount' => $amount_subscriptions,
-            'completed_at' => $faker->dateTime->getTimestamp(),
+            'completed_at' => $this->fake('dateTime')->getTimestamp(),
         ]);
 
         $response = $this->appRun('GET', '/cagnotte');
@@ -63,8 +63,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
      */
     public function testPayCommonPotAcceptsFloatAmounts($email, $amount, $address)
     {
-        $faker = \Faker\Factory::create();
-        $amount = $faker->randomFloat(2, 1.00, 1000.0);
+        $amount = $this->fake('randomFloat', 2, 1.00, 1000.0);
 
         $response = $this->appRun('POST', '/cagnotte', [
             'email' => $email,
@@ -115,8 +114,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     public function testPayCommonPotAcceptsCountry($email, $amount, $address)
     {
         $payment_dao = new models\dao\Payment();
-        $faker = \Faker\Factory::create();
-        $address['country'] = $faker->randomElement(\Website\utils\Countries::codes());
+        $address['country'] = $this->fake('randomElement', \Website\utils\Countries::codes());
 
         $response = $this->appRun('POST', '/cagnotte', [
             'email' => $email,
@@ -153,8 +151,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
      */
     public function testPayCommonPotWithWrongEmailReturnsABadRequest($email, $amount, $address)
     {
-        $faker = \Faker\Factory::create();
-        $email = $faker->domainName;
+        $email = $this->fake('domainName');
 
         $response = $this->appRun('POST', '/cagnotte', [
             'email' => $email,
@@ -175,8 +172,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
      */
     public function testPayCommonPotWithAmountLessThan1ReturnsABadRequest($email, $amount, $address)
     {
-        $faker = \Faker\Factory::create();
-        $amount = $faker->randomFloat(2, 0.0, 0.99);
+        $amount = $this->fake('randomFloat', 2, 0.0, 0.99);
 
         $response = $this->appRun('POST', '/cagnotte', [
             'email' => $email,
@@ -197,8 +193,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
      */
     public function testPayCommonPotWithAmountMoreThan1000ReturnsABadRequest($email, $amount, $address)
     {
-        $faker = \Faker\Factory::create();
-        $amount = $faker->numberBetween(1001, PHP_INT_MAX / 100);
+        $amount = $this->fake('numberBetween', 1001, PHP_INT_MAX / 100);
 
         $response = $this->appRun('POST', '/cagnotte', [
             'email' => $email,
@@ -219,8 +214,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
      */
     public function testPayCommonPotWithAmountAsStringReturnsABadRequest($email, $amount, $address)
     {
-        $faker = \Faker\Factory::create();
-        $amount = $faker->word;
+        $amount = $this->fake('word');
 
         $response = $this->appRun('POST', '/cagnotte', [
             'email' => $email,
@@ -403,8 +397,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
      */
     public function testPayCommonPotWithAddressAsSingleParamReturnsABadRequest($email, $amount, $address)
     {
-        $faker = \Faker\Factory::create();
-        $address = $faker->address;
+        $address = $this->fake('address');
 
         $response = $this->appRun('POST', '/cagnotte', [
             'email' => $email,
@@ -425,8 +418,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
      */
     public function testPaySubscriptionRendersCorrectly($email, $username, $frequency, $address)
     {
-        $faker = \Faker\Factory::create();
-        $now = $faker->dateTime;
+        $now = $this->fake('dateTime');
         $this->freeze($now);
 
         $response = $this->appRun('POST', '/payments/subscriptions', [
@@ -495,8 +487,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     public function testPaySubscriptionAcceptsCountry($email, $username, $frequency, $address)
     {
         $payment_dao = new models\dao\Payment();
-        $faker = \Faker\Factory::create();
-        $address['country'] = $faker->randomElement(\Website\utils\Countries::codes());
+        $address['country'] = $this->fake('randomElement', \Website\utils\Countries::codes());
 
         $response = $this->appRun('POST', '/payments/subscriptions', [
             'email' => $email,
@@ -536,8 +527,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
      */
     public function testPaySubscriptionWithWrongFrequencyReturnsBadRequest($email, $username, $frequency, $address)
     {
-        $faker = \Faker\Factory::create();
-        $frequency = $faker->word;
+        $frequency = $this->fake('word');
 
         $response = $this->appRun('POST', '/payments/subscriptions', [
             'email' => $email,
@@ -563,8 +553,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
 
     public function testPayConfiguresStripe()
     {
-        $faker = \Faker\Factory::create();
-        $session_id = $faker->regexify('cs_test_[\w\d]{56}');
+        $session_id = $this->fake('regexify', 'cs_test_[\w\d]{56}');
         $payment_id = $this->create('payment', [
             'session_id' => $session_id,
         ]);
@@ -602,9 +591,8 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
 
     public function testPayWithPaidPaymentReturnsBadRequest()
     {
-        $faker = \Faker\Factory::create();
         $payment_id = $this->create('payment', [
-            'completed_at' => $faker->dateTime->getTimestamp(),
+            'completed_at' => $this->fake('dateTime')->getTimestamp(),
         ]);
 
         $response = $this->appRun('GET', "/payments/{$payment_id}/pay");
@@ -614,11 +602,10 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
 
     public function testShowRendersCorrectly()
     {
-        $faker = \Faker\Factory::create();
-        $created_at = $faker->dateTime;
-        $completed_at = $faker->dateTime;
-        $amount = $faker->numberBetween(100, 100000);
-        $frequency = $faker->randomElement(['month', 'year']);
+        $created_at = $this->fake('dateTime');
+        $completed_at = $this->fake('dateTime');
+        $amount = $this->fake('numberBetween', 100, 100000);
+        $frequency = $this->fake('randomElement', ['month', 'year']);
         $payment_id = $this->create('payment', [
             'created_at' => $created_at->format(\Minz\Model::DATETIME_FORMAT),
             'completed_at' => $completed_at->format(\Minz\Model::DATETIME_FORMAT),
@@ -652,11 +639,10 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
 
     public function testShowWithMissingAuthenticationReturnsUnauthorized()
     {
-        $faker = \Faker\Factory::create();
-        $created_at = $faker->dateTime;
-        $completed_at = $faker->dateTime;
-        $amount = $faker->numberBetween(100, 100000);
-        $frequency = $faker->randomElement(['month', 'year']);
+        $created_at = $this->fake('dateTime');
+        $completed_at = $this->fake('dateTime');
+        $amount = $this->fake('numberBetween', 100, 100000);
+        $frequency = $this->fake('randomElement', ['month', 'year']);
         $payment_id = $this->create('payment', [
             'created_at' => $created_at->getTimestamp(),
             'completed_at' => $completed_at->getTimestamp(),

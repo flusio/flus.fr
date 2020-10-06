@@ -4,6 +4,7 @@ namespace Website;
 
 class InvoicesTest extends \PHPUnit\Framework\TestCase
 {
+    use \tests\FakerHelper;
     use \tests\LoginHelper;
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\ApplicationHelper;
@@ -106,8 +107,7 @@ class InvoicesTest extends \PHPUnit\Framework\TestCase
      */
     public function testSendPdfSucceedsAndSendsAnEmail($completed_at, $invoice_number)
     {
-        $faker = \Faker\Factory::create();
-        $email = $faker->email;
+        $email = $this->fake('email');
         $payment_id = $this->create('payment', [
             'completed_at' => $completed_at->format(\Minz\Model::DATETIME_FORMAT),
             'invoice_number' => $invoice_number,
