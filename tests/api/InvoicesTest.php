@@ -47,7 +47,7 @@ class InvoicesTest extends \PHPUnit\Framework\TestCase
      */
     public function testDownloadPdfWithAuthenticatedUserRendersAPdf($completed_at, $invoice_number)
     {
-        $this->login();
+        $this->loginAdmin();
 
         $payment_id = $this->create('payment', [
             'completed_at' => $completed_at->format(\Minz\Model::DATETIME_FORMAT),

@@ -23,10 +23,10 @@ class Invoices
      */
     public function downloadPdf($request)
     {
-        $current_user = utils\currentUser();
+        $is_admin = utils\CurrentUser::isAdmin();
         $auth_token = $request->header('PHP_AUTH_USER', '');
         $private_key = \Minz\Configuration::$application['flus_private_key'];
-        if (!$current_user && !hash_equals($private_key, $auth_token)) {
+        if (!$is_admin && !hash_equals($private_key, $auth_token)) {
             return \Minz\Response::unauthorized();
         }
 

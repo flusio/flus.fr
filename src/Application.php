@@ -9,7 +9,6 @@ class Application
 
     public function __construct()
     {
-        include_once('utils/application.php');
         include_once('utils/view_helpers.php');
 
         // Initialize the routes
@@ -74,7 +73,7 @@ class Application
             'errors' => [],
             'error' => null,
             'load_form_statics' => false,
-            'current_user' => utils\currentUser(),
+            'current_user' => utils\CurrentUser::get(),
         ]);
 
         return $this->engine->run($request, [

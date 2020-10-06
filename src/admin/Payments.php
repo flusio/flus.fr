@@ -14,8 +14,7 @@ class Payments
      */
     public function index()
     {
-        $current_user = utils\currentUser();
-        if (!$current_user) {
+        if (!utils\CurrentUser::isAdmin()) {
             return \Minz\Response::redirect('login');
         }
 
@@ -42,8 +41,7 @@ class Payments
      */
     public function init()
     {
-        $current_user = utils\currentUser();
-        if (!$current_user) {
+        if (!utils\CurrentUser::isAdmin()) {
             return \Minz\Response::redirect('login', ['from' => 'admin/payments#init']);
         }
 
@@ -92,8 +90,7 @@ class Payments
      */
     public function create($request)
     {
-        $current_user = utils\currentUser();
-        if (!$current_user) {
+        if (!utils\CurrentUser::isAdmin()) {
             return \Minz\Response::redirect('login', ['from' => 'admin/payments#init']);
         }
 
@@ -205,8 +202,7 @@ class Payments
      */
     public function show($request)
     {
-        $current_user = utils\currentUser();
-        if (!$current_user) {
+        if (!utils\CurrentUser::isAdmin()) {
             return \Minz\Response::redirect('login', ['from' => 'admin/payments#index']);
         }
 
@@ -238,8 +234,7 @@ class Payments
      */
     public function complete($request)
     {
-        $current_user = utils\currentUser();
-        if (!$current_user) {
+        if (!utils\CurrentUser::isAdmin()) {
             return \Minz\Response::redirect('login', ['from' => 'admin/payments#index']);
         }
 
@@ -294,8 +289,7 @@ class Payments
      */
     public function destroy($request)
     {
-        $current_user = utils\currentUser();
-        if (!$current_user) {
+        if (!utils\CurrentUser::isAdmin()) {
             return \Minz\Response::redirect('login', ['from' => 'admin/payments#index']);
         }
 

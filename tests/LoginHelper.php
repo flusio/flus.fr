@@ -11,11 +11,11 @@ namespace tests;
 trait LoginHelper
 {
     /**
-     * Simulate a user who logs in.
+     * Simulate an admin who logs in.
      */
-    public function login()
+    public function loginAdmin()
     {
-        $_SESSION['connected'] = true;
+        \Website\utils\CurrentUser::logAdminIn();
     }
 
     /**
@@ -26,6 +26,6 @@ trait LoginHelper
      */
     public function logout()
     {
-        session_unset();
+        \Website\utils\CurrentUser::logOut();
     }
 }

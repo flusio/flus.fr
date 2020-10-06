@@ -23,7 +23,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
             'created_at' => $created_at->format(\Minz\Model::DATETIME_FORMAT),
         ]);
 
-        $this->login();
+        $this->loginAdmin();
 
         $response = $this->appRun('GET', '/admin');
 
@@ -40,7 +40,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
 
     public function testInitRendersCorrectly()
     {
-        $this->login();
+        $this->loginAdmin();
 
         $response = $this->appRun('GET', '/admin/payments/new');
 
@@ -60,7 +60,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
      */
     public function testCreateRedirectsCorrectly($type, $email, $amount, $address)
     {
-        $this->login();
+        $this->loginAdmin();
 
         $response = $this->appRun('POST', '/admin/payments/new', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
@@ -78,7 +78,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
      */
     public function testCreateTakesAUsername($type, $email, $amount, $address)
     {
-        $this->login();
+        $this->loginAdmin();
         $payment_dao = new models\dao\Payment();
         $username = $this->fake('username');
 
@@ -101,7 +101,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
      */
     public function testCreateTakesACompanyVatNumber($type, $email, $amount, $address)
     {
-        $this->login();
+        $this->loginAdmin();
         $payment_dao = new models\dao\Payment();
         $faker = \Faker\Factory::create('fr_FR');
         $vat = $faker->vat;
@@ -125,7 +125,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
      */
     public function testCreateCanGenerateAnInvoiceNumber($type, $email, $amount, $address)
     {
-        $this->login();
+        $this->loginAdmin();
         $payment_dao = new models\dao\Payment();
 
         $response = $this->appRun('POST', '/admin/payments/new', [
@@ -147,7 +147,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
      */
     public function testCreateFailsIfTypeIsInvalid($type, $email, $amount, $address)
     {
-        $this->login();
+        $this->loginAdmin();
 
         $response = $this->appRun('POST', '/admin/payments/new', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
@@ -165,7 +165,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
      */
     public function testCreateFailsIfEmailIsInvalid($type, $email, $amount, $address)
     {
-        $this->login();
+        $this->loginAdmin();
 
         $response = $this->appRun('POST', '/admin/payments/new', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
@@ -199,7 +199,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
      */
     public function testCreateFailsIfCsrfIsInvalid($type, $email, $amount, $address)
     {
-        $this->login();
+        $this->loginAdmin();
 
         $response = $this->appRun('POST', '/admin/payments/new', [
             'csrf' => 'not the token',
@@ -214,7 +214,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
 
     public function testShowRendersCorrectly()
     {
-        $this->login();
+        $this->loginAdmin();
         $payment_id = $this->create('payment');
 
         $response = $this->appRun('GET', '/admin/payments/' . $payment_id);
@@ -225,7 +225,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
 
     public function testShowFailsIfInvalidId()
     {
-        $this->login();
+        $this->loginAdmin();
 
         $response = $this->appRun('GET', '/admin/payments/invalid');
 
@@ -244,7 +244,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     public function testCompleteRendersCorrectly()
     {
         $payment_dao = new models\dao\Payment();
-        $this->login();
+        $this->loginAdmin();
         $payment_id = $this->create('payment', [
             'completed_at' => null,
         ]);
@@ -263,7 +263,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     public function testCompleteFailsIfInvalidId()
     {
         $payment_dao = new models\dao\Payment();
-        $this->login();
+        $this->loginAdmin();
 
         $response = $this->appRun('POST', '/admin/payments/invalid/complete', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
@@ -276,7 +276,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     public function testCompleteFailsIfAlreadyCompleted()
     {
         $payment_dao = new models\dao\Payment();
-        $this->login();
+        $this->loginAdmin();
         $initial_completed_at = $this->fake('dateTime');
         $payment_id = $this->create('payment', [
             'completed_at' => $initial_completed_at->format(\Minz\Model::DATETIME_FORMAT),
@@ -312,7 +312,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     public function testCompleteFailsIfCsrfIsInvalid()
     {
         $payment_dao = new models\dao\Payment();
-        $this->login();
+        $this->loginAdmin();
         $payment_id = $this->create('payment', [
             'completed_at' => null,
         ]);
@@ -330,7 +330,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     public function testDestroyRendersCorrectly()
     {
         $payment_dao = new models\dao\Payment();
-        $this->login();
+        $this->loginAdmin();
         $payment_id = $this->create('payment', [
             'completed_at' => null,
             'invoice_number' => null,
@@ -347,7 +347,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
 
     public function testDestroyFailsIfInvalidId()
     {
-        $this->login();
+        $this->loginAdmin();
 
         $response = $this->appRun('POST', '/admin/payments/invalid/destroy', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
@@ -376,7 +376,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     public function testDestroyFailsIfCsrfIsInvalid()
     {
         $payment_dao = new models\dao\Payment();
-        $this->login();
+        $this->loginAdmin();
         $payment_id = $this->create('payment', [
             'completed_at' => null,
             'invoice_number' => null,
@@ -394,7 +394,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     public function testDestroyFailsIfCompletedAtIsNotNull()
     {
         $payment_dao = new models\dao\Payment();
-        $this->login();
+        $this->loginAdmin();
         $payment_id = $this->create('payment', [
             'completed_at' => $this->fake('dateTime')->format(\Minz\Model::DATETIME_FORMAT),
             'invoice_number' => null,
@@ -412,7 +412,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     public function testDestroyFailsIfInvoiceNumberIsNotNull()
     {
         $payment_dao = new models\dao\Payment();
-        $this->login();
+        $this->loginAdmin();
         $invoice_number = $this->fake('dateTime')->format('Y-m') . sprintf('-%04d', $this->fake('randomNumber', 4));
         $payment_id = $this->create('payment', [
             'completed_at' => null,

@@ -20,7 +20,7 @@ class Auth
      */
     public function login($request)
     {
-        if (utils\currentUser()) {
+        if (utils\CurrentUser::isAdmin()) {
             return \Minz\Response::redirect('admin');
         }
 
@@ -47,7 +47,7 @@ class Auth
      */
     public function createSession($request)
     {
-        if (utils\currentUser()) {
+        if (utils\CurrentUser::isAdmin()) {
             return \Minz\Response::redirect('admin');
         }
 
@@ -64,7 +64,7 @@ class Auth
 
         $hash = \Minz\Configuration::$application['admin_secret'];
         if (\password_verify($password, $hash)) {
-            $_SESSION['connected'] = true;
+            utils\CurrentUser::logAdminIn();
 
             if ($from) {
                 $location = urldecode($from);
@@ -94,8 +94,8 @@ class Auth
     public function deleteSession($request)
     {
         $csrf = new \Minz\CSRF();
-        if ($csrf->validateToken($request->param('csrf')) && utils\currentUser()) {
-            session_unset();
+        if ($csrf->validateToken($request->param('csrf')) && utils\CurrentUser::isAdmin()) {
+            utils\CurrentUser::logOut();
         }
 
         return \Minz\Response::redirect('home');

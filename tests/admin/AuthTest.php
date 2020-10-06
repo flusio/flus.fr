@@ -18,7 +18,7 @@ class AuthTest extends \PHPUnit\Framework\TestCase
 
     public function testLoginWhenConnected()
     {
-        $this->login();
+        $this->loginAdmin();
 
         $response = $this->appRun('GET', '/admin/login');
 
@@ -45,12 +45,12 @@ class AuthTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, '/admin?status=connected');
-        $this->assertTrue($_SESSION['connected']);
+        $this->assertSame('the administrator', $_SESSION['account_id']);
     }
 
     public function testCreateSessionWhenConnected()
     {
-        $this->login();
+        $this->loginAdmin();
 
         $response = $this->appRun('POST', '/admin/login', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
@@ -69,7 +69,7 @@ class AuthTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, '/?status=connected');
-        $this->assertTrue($_SESSION['connected']);
+        $this->assertSame('the administrator', $_SESSION['account_id']);
     }
 
     public function testCreateSessionFailsIfCsrfIsWrong()
@@ -80,7 +80,7 @@ class AuthTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 400, 'Une vérification de sécurité a échoué');
-        $this->assertArrayNotHasKey('connected', $_SESSION);
+        $this->assertArrayNotHasKey('account_id', $_SESSION);
     }
 
     public function testCreateSessionFailsIfPasswordIsInvalid()
@@ -91,19 +91,19 @@ class AuthTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 400);
-        $this->assertArrayNotHasKey('connected', $_SESSION, 'Le mot de passe semble invalide');
+        $this->assertArrayNotHasKey('account_id', $_SESSION, 'Le mot de passe semble invalide');
     }
 
     public function testDeleteSession()
     {
-        $this->login();
+        $this->loginAdmin();
 
         $response = $this->appRun('POST', '/admin/logout', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
         ]);
 
         $this->assertResponse($response, 302, '/');
-        $this->assertArrayNotHasKey('connected', $_SESSION);
+        $this->assertArrayNotHasKey('account_id', $_SESSION);
     }
 
     public function testDeleteSessionWhenUnconnected()
@@ -117,13 +117,13 @@ class AuthTest extends \PHPUnit\Framework\TestCase
 
     public function testDeleteSessionFailsIfCsrfIsWrong()
     {
-        $this->login();
+        $this->loginAdmin();
 
         $response = $this->appRun('POST', '/admin/logout', [
             'csrf' => 'not the token',
         ]);
 
         $this->assertResponse($response, 302, '/');
-        $this->assertArrayHasKey('connected', $_SESSION);
+        $this->assertSame('the administrator', $_SESSION['account_id']);
     }
 }
