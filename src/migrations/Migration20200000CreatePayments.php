@@ -7,7 +7,8 @@ class Migration20200000CreatePayments
     public function migrate()
     {
         $database = \Minz\Database::get();
-        $sql = <<<'SQL'
+
+        $database->exec(<<<'SQL'
             CREATE TABLE payments (
                 id TEXT PRIMARY KEY NOT NULL,
                 created_at DATETIME NOT NULL,
@@ -26,15 +27,18 @@ class Migration20200000CreatePayments
                 username TEXT,
                 frequency TEXT
             );
-            SQL;
-        $result = $database->exec($sql);
+        SQL);
 
-        if ($result === false) {
-            $error_info = $database->errorInfo();
-            throw new \Minz\Errors\DatabaseModelError(
-                "Error in SQL statement: {$error_info[2]} ({$error_info[0]})."
-            );
-        }
+        return true;
+    }
+
+    public function rollback()
+    {
+        $database = \Minz\Database::get();
+
+        $database->exec(<<<'SQL'
+            DROP TABLE payments;
+        SQL);
 
         return true;
     }

@@ -49,6 +49,7 @@ class Application
 
         $router->addRoute('cli', '/system/init', 'System#init');
         $router->addRoute('cli', '/system/migrate', 'System#migrate');
+        $router->addRoute('cli', '/system/rollback', 'System#rollback');
         $router->addRoute('cli', '/invoices/:id/email', 'Invoices#sendPdf');
 
         $this->engine = new \Minz\Engine($router);

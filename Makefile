@@ -35,6 +35,14 @@ init: ## Initialize the application
 migrate: ## Apply pending migrations
 	php ./cli --request /system/migrate
 
+.PHONY: rollback
+rollback: ## Reverse the last migration
+ifdef STEPS
+	php ./cli --request /system/rollback -psteps=$(STEPS)
+else
+	php ./cli --request /system/rollback
+endif
+
 .PHONY: test
 test: bin/phpunit  ## Run the test suite
 	php ./bin/phpunit \
