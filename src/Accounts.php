@@ -9,7 +9,7 @@ namespace Website;
 class Accounts
 {
     /**
-     * @response 400
+     * @response 401
      *     if the user is not connected
      * @response 200
      *     on success
@@ -37,8 +37,10 @@ class Accounts
      * @request_param string account_id
      * @request_param string access_token
      *
+     * @response 404
+     *     if the account_id does not exist
      * @response 400
-     *     if the credentials are invalid
+     *     if the access_token is invalid
      * @response 302 /account
      *     on success
      *
@@ -48,15 +50,11 @@ class Accounts
      */
     public function login($request)
     {
-        $user = utils\CurrentUser::get();
-        if ($user && !utils\CurrentUser::isAdmin()) {
-            return \Minz\Response::redirect('account');
-        }
-
         $account_id = $request->param('account_id');
         $access_token = $request->param('access_token');
-
         $account_dao = new models\dao\Account();
+        $token_dao = new models\dao\Token();
+
         $db_account = $account_dao->find($account_id);
         if (!$db_account) {
             return \Minz\Response::notFound('not_found.phtml');
@@ -68,6 +66,9 @@ class Accounts
         }
 
         utils\CurrentUser::logUserIn($account->id);
+
+        $token_dao->delete($account->access_token);
+
         return \Minz\Response::redirect('account');
     }
 }

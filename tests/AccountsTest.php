@@ -52,6 +52,28 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($account_id, $user['account_id']);
     }
 
+    public function testLoginDeletesTheAccessToken()
+    {
+        $token_dao = new models\dao\Token();
+        $account_dao = new models\dao\Account();
+        $expired_at = \Minz\Time::fromNow(30, 'days');
+        $token = $this->create('token', [
+            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+        $account_id = $this->create('account', [
+            'access_token' => $token,
+        ]);
+
+        $response = $this->appRun('GET', '/account/login', [
+            'account_id' => $account_id,
+            'access_token' => $token,
+        ]);
+
+        $account = new models\Account($account_dao->find($account_id));
+        $this->assertNull($account->access_token);
+        $this->assertFalse($token_dao->exists($token));
+    }
+
     public function testLoginRedirectsIfAlreadyConnected()
     {
         $expired_at = \Minz\Time::fromNow(30, 'days');
