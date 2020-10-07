@@ -30,6 +30,8 @@ class Application
 
         $router->addRoute('get', '/account', 'Accounts#show', 'account');
         $router->addRoute('get', '/account/login', 'Accounts#login', 'account login');
+        $router->addRoute('get', '/account/address', 'Accounts#address', 'account address');
+        $router->addRoute('post', '/account/address', 'Accounts#updateAddress', 'account update address');
         $router->addRoute('get', '/account/invoices/pdf/:id', 'api/Invoices#downloadPdf', 'account download pdf');
 
         $router->addRoute('get', '/payments/:id/pay', 'Payments#pay');

@@ -236,4 +236,240 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $user = utils\CurrentUser::get();
         $this->assertNull($user);
     }
+
+    public function testAddressRendersCorrectly()
+    {
+        $this->loginUser();
+
+        $response = $this->appRun('GET', '/account/address');
+
+        $this->assertResponse($response, 200);
+        $this->assertPointer($response, 'accounts/address.phtml');
+    }
+
+    public function testAddressFailsIfNotConnected()
+    {
+        $response = $this->appRun('GET', '/account/address');
+
+        $this->assertResponse($response, 401);
+    }
+
+    /**
+     * @dataProvider updateAddressProvider
+     */
+    public function testUpdateAddressChangesAddressAndRedirects($email, $address)
+    {
+        $user = $this->loginUser();
+        $account_dao = new models\dao\Account();
+
+        $response = $this->appRun('POST', '/account/address', [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'email' => $email,
+            'address' => $address,
+        ]);
+
+        $this->assertResponse($response, 302, '/account');
+        $account = new models\Account($account_dao->find($user['account_id']));
+        $this->assertSame($email, $account->email);
+        $this->assertSame($address['first_name'], $account->address_first_name);
+        $this->assertSame($address['last_name'], $account->address_last_name);
+        $this->assertSame($address['address1'], $account->address_address1);
+        $this->assertSame($address['postcode'], $account->address_postcode);
+        $this->assertSame($address['city'], $account->address_city);
+    }
+
+    /**
+     * @dataProvider updateAddressProvider
+     */
+    public function testUpdateAddressFailsIfNotConnected($email, $address)
+    {
+        $response = $this->appRun('POST', '/account/address', [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'email' => $email,
+            'address' => $address,
+        ]);
+
+        $this->assertResponse($response, 401);
+    }
+
+    /**
+     * @dataProvider updateAddressProvider
+     */
+    public function testUpdateAddressFailsIfCsrfIsInvalid($email, $address)
+    {
+        $user = $this->loginUser();
+        $account_dao = new models\dao\Account();
+
+        $response = $this->appRun('POST', '/account/address', [
+            'csrf' => 'not the token',
+            'email' => $email,
+            'address' => $address,
+        ]);
+
+        $this->assertResponse($response, 400, 'Une vérification de sécurité a échoué');
+    }
+
+    /**
+     * @dataProvider updateAddressProvider
+     */
+    public function testUpdateAddressFailsWithInvalidEmail($email, $address)
+    {
+        $user = $this->loginUser();
+        $account_dao = new models\dao\Account();
+        $email = $this->fake('domainName');
+
+        $response = $this->appRun('POST', '/account/address', [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'email' => $email,
+            'address' => $address,
+        ]);
+
+        $this->assertResponse($response, 400, 'L’adresse courriel que vous avez fournie est invalide');
+        $account = new models\Account($account_dao->find($user['account_id']));
+        $this->assertNotSame($email, $account->email);
+    }
+
+    /**
+     * @dataProvider updateAddressProvider
+     */
+    public function testUpdateAddressFailsWithMissingEmail($email, $address)
+    {
+        $user = $this->loginUser();
+        $account_dao = new models\dao\Account();
+
+        $response = $this->appRun('POST', '/account/address', [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'address' => $address,
+        ]);
+
+        $this->assertResponse($response, 400, 'L’adresse courriel est obligatoire');
+    }
+
+    /**
+     * @dataProvider updateAddressProvider
+     */
+    public function testUpdateAddressFailsWithMissingFirstName($email, $address)
+    {
+        $user = $this->loginUser();
+        $account_dao = new models\dao\Account();
+        unset($address['first_name']);
+
+        $response = $this->appRun('POST', '/account/address', [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'email' => $email,
+            'address' => $address,
+        ]);
+
+        $this->assertResponse($response, 400, 'Votre prénom est obligatoire');
+    }
+
+    /**
+     * @dataProvider updateAddressProvider
+     */
+    public function testUpdateAddressFailsWithMissingLastName($email, $address)
+    {
+        $user = $this->loginUser();
+        $account_dao = new models\dao\Account();
+        unset($address['last_name']);
+
+        $response = $this->appRun('POST', '/account/address', [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'email' => $email,
+            'address' => $address,
+        ]);
+
+        $this->assertResponse($response, 400, 'Votre nom est obligatoire');
+    }
+
+    /**
+     * @dataProvider updateAddressProvider
+     */
+    public function testUpdateAddressFailsWithMissingAddress1($email, $address)
+    {
+        $user = $this->loginUser();
+        $account_dao = new models\dao\Account();
+        unset($address['address1']);
+
+        $response = $this->appRun('POST', '/account/address', [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'email' => $email,
+            'address' => $address,
+        ]);
+
+        $this->assertResponse($response, 400, 'Votre adresse est obligatoire');
+    }
+
+    /**
+     * @dataProvider updateAddressProvider
+     */
+    public function testUpdateAddressFailsWithMissingPostcode($email, $address)
+    {
+        $user = $this->loginUser();
+        $account_dao = new models\dao\Account();
+        unset($address['postcode']);
+
+        $response = $this->appRun('POST', '/account/address', [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'email' => $email,
+            'address' => $address,
+        ]);
+
+        $this->assertResponse($response, 400, 'Votre code postal est obligatoire');
+    }
+
+    /**
+     * @dataProvider updateAddressProvider
+     */
+    public function testUpdateAddressFailsWithMissingCity($email, $address)
+    {
+        $user = $this->loginUser();
+        $account_dao = new models\dao\Account();
+        unset($address['city']);
+
+        $response = $this->appRun('POST', '/account/address', [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'email' => $email,
+            'address' => $address,
+        ]);
+
+        $this->assertResponse($response, 400, 'Votre ville est obligatoire');
+    }
+
+    /**
+     * @dataProvider updateAddressProvider
+     */
+    public function testUpdateAddressFailsWithInvalidCountry($email, $address)
+    {
+        $user = $this->loginUser();
+        $account_dao = new models\dao\Account();
+        $address['country'] = 'invalid';
+
+        $response = $this->appRun('POST', '/account/address', [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'email' => $email,
+            'address' => $address,
+        ]);
+
+        $this->assertResponse($response, 400, 'Le pays que vous avez renseigné est invalide.');
+    }
+
+    public function updateAddressProvider()
+    {
+        $faker = \Faker\Factory::create();
+        $datasets = [];
+        foreach (range(1, \Minz\Configuration::$application['number_of_datasets']) as $n) {
+            $datasets[] = [
+                $faker->email,
+                [
+                    'first_name' => $faker->firstName,
+                    'last_name' => $faker->lastName,
+                    'address1' => $faker->streetAddress,
+                    'postcode' => $faker->postcode,
+                    'city' => $faker->city,
+                ],
+            ];
+        }
+
+        return $datasets;
+    }
 }

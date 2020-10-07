@@ -189,17 +189,20 @@ legend {
 /**
  * Custom styles
  */
-.form--common-pot .columns__item {
+.form--common-pot .columns__item,
+.form--address .columns__item {
     padding: 0;
 }
 
 @media (min-width: 48em) {
-    .form--common-pot .columns__item + .columns__item {
+    .form--common-pot .columns__item + .columns__item,
+    .form--address .columns__item + .columns__item {
         margin-left: var(--space-medium);
     }
 }
 
-.form--common-pot .columns__item--postcode {
+.form--common-pot .columns__item--postcode,
+.form--address .columns__item--postcode {
     max-width: 8em;
 }
 

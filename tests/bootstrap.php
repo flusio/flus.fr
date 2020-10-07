@@ -100,5 +100,8 @@ echo 'Use SEED=' . $faker_seed . " to reproduce this suite.\n";
         'reminder' => function () use ($faker) {
             return (int)$faker->boolean;
         },
+        'address_country' => function () use ($faker) {
+            return $faker->randomElement(\Website\utils\Countries::codes());
+        },
     ]
 );

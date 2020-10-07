@@ -124,6 +124,21 @@ a:focus {
     color: var(--color-link);
 }
 
+.call-to-action {
+    display: inline-block;
+    padding: var(--space-small) var(--space-medium);
+
+    text-decoration: none;
+
+    border: .1em solid var(--color-text);
+    border-radius: 1em;
+}
+
+.call-to-action:hover,
+.call-to-action:focus {
+    border-color: inherit;
+}
+
 .header {
     margin-bottom: var(--space-large);
 
@@ -164,6 +179,12 @@ a:focus {
 
 .paragraph--center {
     text-align: center;
+}
+
+.paragraph--limit {
+    max-width: 50ch;
+    margin-right: auto;
+    margin-left: auto;
 }
 
 img {
@@ -226,6 +247,11 @@ hr::after {
     .columns--center {
         align-items: center;
     }
+}
+
+.columns--spaced {
+    margin-top: var(--space-large);
+    margin-bottom: var(--space-large);
 }
 
 .columns--background {

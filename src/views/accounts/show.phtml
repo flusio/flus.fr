@@ -1,7 +1,6 @@
 <?php
     $this->layout('account.phtml', [
         'title' => 'Votre abonnement à Flus',
-        'email' => $account->email,
     ]);
 ?>
 
@@ -13,6 +12,8 @@
     </div>
 
     <p class="section__intro">
+        <?= $this->protect($account->email) ?><br />
+
         <?php if ($account->isFree()): ?>
             Vous bénéficiez d’un abonnement gratuit, veinard‧e.
         <?php elseif ($account->hasExpired()): ?>
@@ -24,7 +25,19 @@
         <?php endif; ?>
     </p>
 
-    <div class="columns columns--center columns--background">
+    <?php if ($no_address): ?>
+        <p class="paragraph--center paragraph--limit">
+            Vous devez avant tout indiquer votre adresse postale.
+        </p>
+
+        <p class="paragraph--center">
+            <a class="call-to-action" href="<?= url('account address') ?>">
+                Indiquer votre adresse
+            </a>
+        </p>
+    <?php endif; ?>
+
+    <div class="columns columns--center columns--spaced columns--background">
         <div class="columns__item columns__item--center">
             <p>
                 <a href="https://flus.io/">

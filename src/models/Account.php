@@ -72,6 +72,7 @@ class Account extends \Minz\Model
 
         'address_country' => [
             'type' => 'string',
+            'required' => true,
             'validator' => '\Website\utils\Countries::isSupported',
         ],
     ];
@@ -90,6 +91,7 @@ class Account extends \Minz\Model
             'email' => utils\Email::sanitize($email),
             'expired_at' => \Minz\Time::fromNow(1, 'month'),
             'reminder' => false,
+            'address_country' => 'FR',
         ]);
     }
 
@@ -142,6 +144,19 @@ class Account extends \Minz\Model
     }
 
     /**
+     * @param array $address
+     */
+    public function setAddress($address)
+    {
+        $this->address_first_name = trim($address['first_name']);
+        $this->address_last_name = trim($address['last_name']);
+        $this->address_address1 = trim($address['address1']);
+        $this->address_postcode = trim($address['postcode']);
+        $this->address_city = trim($address['city']);
+        $this->address_country = trim($address['country']);
+    }
+
+    /**
      * Return whether the account has a free subscription or not
      *
      * @return boolean
@@ -189,8 +204,12 @@ class Account extends \Minz\Model
         foreach (parent::validate() as $property => $error) {
             $code = $error['code'];
 
-            if ($property === 'email' && $code === \Minz\Model::ERROR_VALUE_INVALID) {
+            if ($property === 'email' && $code === \Minz\Model::ERROR_REQUIRED) {
+                $formatted_error = 'L’adresse courriel est obligatoire.';
+            } elseif ($property === 'email') {
                 $formatted_error = 'L’adresse courriel que vous avez fournie est invalide.';
+            } elseif ($property === 'address_country') {
+                $formatted_error = 'Le pays que vous avez renseigné est invalide.';
             } else {
                 $formatted_error = $error['description']; // @codeCoverageIgnore
             }
