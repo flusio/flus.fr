@@ -35,6 +35,7 @@ class Application
 
         $router->addRoute('get', '/api/account', 'api/Accounts#show');
         $router->addRoute('get', '/api/account/login-url', 'api/Accounts#loginUrl');
+        $router->addRoute('get', '/api/account/expired-at', 'api/Accounts#expiredAt');
 
         $router->addRoute('get', '/api/payments/:id', 'api/Payments#show');
         $router->addRoute('post', '/api/payments/subscriptions', 'api/Payments#paySubscription');
