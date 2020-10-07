@@ -68,4 +68,56 @@ class Accounts
         $response->setHeader('Content-Type', 'application/json');
         return $response;
     }
+
+    /**
+     * @request_header string PHP_AUTH_USER
+     * @request_param string account_id
+     *
+     * @response 401
+     *     if the auth header is invalid
+     * @response 404
+     *     if the account_id doesn't exist
+     * @response 200
+     *     on success
+     *
+     * @param \Minz\Request $request
+     *
+     * @return \Minz\Response
+     */
+    public function loginUrl($request)
+    {
+        $auth_token = $request->header('PHP_AUTH_USER', '');
+        $private_key = \Minz\Configuration::$application['flus_private_key'];
+        if (!hash_equals($private_key, $auth_token)) {
+            return \Minz\Response::unauthorized();
+        }
+
+        $account_id = $request->param('account_id');
+        $account_dao = new models\dao\Account();
+        $token_dao = new models\dao\Token();
+
+        $db_account = $account_dao->find($account_id);
+        if (!$db_account) {
+            return \Minz\Response::notFound();
+        }
+
+        $account = new models\Account($db_account);
+        $token = models\Token::init(10, 'minutes');
+        $account->access_token = $token->token;
+        $token_dao->save($token);
+        $account_dao->save($account);
+
+        $login_url = \Minz\Url::absoluteFor('account login', [
+            'account_id' => $account->id,
+            'access_token' => $account->access_token,
+        ]);
+        $json_output = json_encode([
+            'url' => $login_url,
+        ]);
+
+        $output = new \Minz\Output\Text($json_output);
+        $response = new \Minz\Response(200, $output);
+        $response->setHeader('Content-Type', 'application/json');
+        return $response;
+    }
 }

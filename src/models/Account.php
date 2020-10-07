@@ -102,6 +102,29 @@ class Account extends \Minz\Model
     }
 
     /**
+     * @param string $access_token
+     *
+     * @return boolean True if the given token is valid, false else
+     */
+    public function checkAccess($access_token)
+    {
+        if (!$this->access_token || !$access_token) {
+            return false;
+        }
+
+        $equals = hash_equals($this->access_token, $access_token);
+        if (!$equals) {
+            return false;
+        }
+
+        $token_dao = new dao\Token();
+        $db_token = $token_dao->find($this->access_token);
+        $token = new Token($db_token);
+
+        return $token->isValid();
+    }
+
+    /**
      * Return the address information as an array
      *
      * @return array

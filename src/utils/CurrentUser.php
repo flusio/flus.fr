@@ -13,6 +13,18 @@ class CurrentUser
         $_SESSION['account_id'] = 'the administrator';
     }
 
+    /**
+     * @param string $account_id
+     */
+    public static function logUserIn($account_id)
+    {
+        if ($account_id === 'the administrator') {
+            return; // should be useless, just additional security
+        }
+
+        $_SESSION['account_id'] = $account_id;
+    }
+
     public static function logOut()
     {
         unset($_SESSION['account_id']);

@@ -28,9 +28,13 @@ class Application
         $router->addRoute('get', '/robots.txt', 'Home#robots', 'robots.txt');
         $router->addRoute('get', '/sitemap.xml', 'Home#sitemap', 'sitemap.xml');
 
+        $router->addRoute('get', '/account', 'Accounts#show', 'account');
+        $router->addRoute('get', '/account/login', 'Accounts#login', 'account login');
+
         $router->addRoute('get', '/payments/:id/pay', 'Payments#pay');
 
         $router->addRoute('get', '/api/account', 'api/Accounts#show');
+        $router->addRoute('get', '/api/account/login-url', 'api/Accounts#loginUrl');
 
         $router->addRoute('get', '/api/payments/:id', 'api/Payments#show');
         $router->addRoute('post', '/api/payments/subscriptions', 'api/Payments#paySubscription');
