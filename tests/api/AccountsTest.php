@@ -10,6 +10,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\FactoriesHelper;
+    use \Minz\Tests\TimeHelper;
     use \Minz\Tests\ResponseAsserts;
 
     /**
@@ -106,6 +107,76 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 400, 'L’adresse courriel que vous avez fournie est invalide.');
+    }
+
+    public function testLoginUrlSetsAccessTokenReturnsAUrl()
+    {
+        $this->freeze($this->fake('unixTime'));
+        $account_dao = new models\dao\Account();
+        $token_dao = new models\dao\Token();
+        $account_id = $this->create('account', [
+            'access_token' => null,
+        ]);
+
+        $response = $this->appRun('GET', '/api/account/login-url', [
+            'account_id' => $account_id,
+        ], [
+            'PHP_AUTH_USER' => \Minz\Configuration::$application['flus_private_key'],
+        ]);
+
+        $this->assertResponse($response, 200, null, [
+            'Content-Type' => 'application/json'
+        ]);
+
+        $account = new models\Account($account_dao->find($account_id));
+        $token = new models\Token($token_dao->find($account->access_token));
+        $this->assertTrue($token->isValid());
+        $this->assertTrue($token->expiresIn(10, 'minutes'));
+
+        $expected_url = \Minz\Url::absoluteFor('account login', [
+            'account_id' => $account->id,
+            'access_token' => $token->token,
+        ]);
+        $output = json_decode($response->render(), true);
+        $this->assertSame($expected_url, $output['url']);
+    }
+
+    public function testLoginUrlFailsIfMissingAuth()
+    {
+        $this->freeze($this->fake('unixTime'));
+        $account_dao = new models\dao\Account();
+        $token_dao = new models\dao\Token();
+        $account_id = $this->create('account', [
+            'access_token' => null,
+        ]);
+
+        $response = $this->appRun('GET', '/api/account/login-url', [
+            'account_id' => $account_id,
+        ]);
+
+        $this->assertResponse($response, 401);
+        $account = new models\Account($account_dao->find($account_id));
+        $this->assertNull($account->access_token);
+    }
+
+    public function testLoginUrlFailsIfAccountIsInvalid()
+    {
+        $this->freeze($this->fake('unixTime'));
+        $account_dao = new models\dao\Account();
+        $token_dao = new models\dao\Token();
+        $account_id = $this->create('account', [
+            'access_token' => null,
+        ]);
+
+        $response = $this->appRun('GET', '/api/account/login-url', [
+            'account_id' => 'not the id',
+        ], [
+            'PHP_AUTH_USER' => \Minz\Configuration::$application['flus_private_key'],
+        ]);
+
+        $this->assertResponse($response, 404);
+        $account = new models\Account($account_dao->find($account_id));
+        $this->assertNull($account->access_token);
     }
 
     public function showParamsProvider()
