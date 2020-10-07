@@ -1,0 +1,16 @@
+<?php
+    $this->layout('error.phtml', [
+        'title' => 'Authentification nécessaire',
+        'error' => $error,
+    ]);
+?>
+
+<h1>
+    Désolé, mais vous n’êtes pas connecté‧e…
+</h1>
+
+<p>
+    <a href="<?= url('home') ?>">
+        Revenir à la page d’accueil
+    </a>
+</p>

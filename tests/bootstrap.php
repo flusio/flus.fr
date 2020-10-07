@@ -67,7 +67,7 @@ echo 'Use SEED=' . $faker_seed . " to reproduce this suite.\n";
 
 \Minz\Tests\DatabaseFactory::addFactory(
     'token',
-    '\flusio\models\dao\Token',
+    '\Website\models\dao\Token',
     [
         'created_at' => function () use ($faker) {
             return $faker->iso8601;
