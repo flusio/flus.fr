@@ -59,6 +59,9 @@ class Application
         $router->addRoute('cli', '/system/migrate', 'cli/System#migrate');
         $router->addRoute('cli', '/system/rollback', 'cli/System#rollback');
         $router->addRoute('cli', '/invoices/:id/email', 'cli/Invoices#sendPdf');
+        $router->addRoute('cli', '/accounts', 'cli/Accounts#index');
+        $router->addRoute('cli', '/accounts/create', 'cli/Accounts#create');
+        $router->addRoute('cli', '/accounts/login-url', 'cli/Accounts#loginUrl');
 
         // TODO The following routes are deprecated and will be removed in the future.
         $router->addRoute('get', '/payments/:id', 'api/Payments#show');
