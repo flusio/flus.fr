@@ -20,7 +20,10 @@ $http_parameters = array_merge(
 \Minz\Configuration::load('dotenv', $app_path);
 \Minz\Environment::initialize();
 
-if (substr($http_uri, 0, 6) === '/admin') {
+if (
+    substr($http_uri, 0, 6) === '/admin' ||
+    substr($http_uri, 0, 8) === '/account'
+) {
     \Minz\Environment::startSession();
 }
 
