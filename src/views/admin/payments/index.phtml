@@ -24,8 +24,10 @@
                     </td>
 
                     <td>
-                        <?php if ($payment->type === 'subscription'): ?>
-                            Abonnement
+                        <?php if ($payment->type === 'subscription' && $payment->frequency === 'month'): ?>
+                            Abonnement mois
+                        <?php elseif ($payment->type === 'subscription' && $payment->frequency === 'year'): ?>
+                            Abonnement année
                         <?php elseif ($payment->type === 'common_pot'): ?>
                             Cagnotte
                         <?php else: ?>

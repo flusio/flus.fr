@@ -45,13 +45,35 @@ class InvoicesTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider completedParametersProvider
      */
-    public function testDownloadPdfWithAuthenticatedUserRendersAPdf($completed_at, $invoice_number)
+    public function testDownloadPdfWithAuthenticatedAdminRendersAPdf($completed_at, $invoice_number)
     {
         $this->loginAdmin();
 
         $payment_id = $this->create('payment', [
             'completed_at' => $completed_at->format(\Minz\Model::DATETIME_FORMAT),
             'invoice_number' => $invoice_number,
+        ]);
+
+        $response = $this->appRun('GET', '/invoices/pdf/' . $payment_id);
+
+        $expected_filename = "facture_{$invoice_number}.pdf";
+        $this->assertResponse($response, 200, null, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="' . $expected_filename . '"',
+        ]);
+    }
+
+    /**
+     * @dataProvider completedParametersProvider
+     */
+    public function testDownloadPdfWithAuthenticatedUserRendersAPdf($completed_at, $invoice_number)
+    {
+        $user = $this->loginUser();
+
+        $payment_id = $this->create('payment', [
+            'completed_at' => $completed_at->format(\Minz\Model::DATETIME_FORMAT),
+            'invoice_number' => $invoice_number,
+            'account_id' => $user['account_id'],
         ]);
 
         $response = $this->appRun('GET', '/invoices/pdf/' . $payment_id);
@@ -93,6 +115,24 @@ class InvoicesTest extends \PHPUnit\Framework\TestCase
         $payment_id = $this->create('payment', [
             'completed_at' => $completed_at->format(\Minz\Model::DATETIME_FORMAT),
             'invoice_number' => $invoice_number,
+        ]);
+
+        $response = $this->appRun('GET', '/invoices/pdf/' . $payment_id);
+
+        $this->assertResponse($response, 401);
+    }
+
+    /**
+     * @dataProvider completedParametersProvider
+     */
+    public function testDownloadPdfWithAuthenticatedNotOwningUserReturnsUnauthorized($completed_at, $invoice_number)
+    {
+        $user = $this->loginUser();
+        $account_id = $this->create('account');
+        $payment_id = $this->create('payment', [
+            'completed_at' => $completed_at->format(\Minz\Model::DATETIME_FORMAT),
+            'invoice_number' => $invoice_number,
+            'account_id' => $account_id,
         ]);
 
         $response = $this->appRun('GET', '/invoices/pdf/' . $payment_id);

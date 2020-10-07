@@ -162,6 +162,22 @@ class Account extends \Minz\Model
     }
 
     /**
+     * Return the list of payments associated to this account
+     *
+     * @return \Website\models\Payment[]
+     */
+    public function payments()
+    {
+        $payment_dao = new dao\Payment();
+        $db_payments = $payment_dao->listBy([
+            'account_id' => $this->id,
+        ]);
+        return array_map(function ($db_payment) {
+            return new Payment($db_payment);
+        }, $db_payments);
+    }
+
+    /**
      * Validate a model and return formated errors
      *
      * @return string[]

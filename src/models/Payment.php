@@ -104,6 +104,10 @@ class Payment extends \Minz\Model
             'type' => 'string',
             'validator' => '\Website\models\Payment::validateVatNumber',
         ],
+
+        'account_id' => [
+            'type' => 'string',
+        ],
     ];
 
     /**

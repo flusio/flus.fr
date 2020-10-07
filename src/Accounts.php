@@ -30,6 +30,7 @@ class Accounts
         $account = new models\Account($db_account);
         return \Minz\Response::ok('accounts/show.phtml', [
             'account' => $account,
+            'payments' => $account->payments(),
         ]);
     }
 
