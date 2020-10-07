@@ -1,1 +1,47 @@
-<?= $account->email ?>
+<?php
+    $this->layout('account.phtml', [
+        'title' => 'Votre abonnement à Flus',
+        'email' => $account->email,
+    ]);
+?>
+
+<section class="section">
+    <div class="header">
+        <h1 class="header__title">
+            Votre abonnement à Flus
+        </h1>
+    </div>
+
+    <p class="section__intro">
+        <?php if ($account->isFree()): ?>
+            Vous bénéficiez d’un abonnement gratuit, veinard‧e.
+        <?php elseif ($account->hasExpired()): ?>
+            <strong>
+                Votre abonnement a expiré le <?= format_date($account->expired_at, '%d %B %Y') ?>.
+            </strong>
+        <?php else: ?>
+            Votre abonnement expirera le <strong><?= format_date($account->expired_at, '%d %B %Y') ?>.</strong>
+        <?php endif; ?>
+    </p>
+
+    <div class="columns columns--center columns--background">
+        <div class="columns__item columns__item--center">
+            <p>
+                <a href="https://flus.io/">
+                    <img alt="" src="<?= url_static('freshrss.svg') ?>" width="70"/><br />
+                    Accéder à Flus 1
+                </a>
+            </p>
+        </div>
+
+        <div class="columns__item columns__item--center">
+            <p class="paragraph--secondary">
+                <a href="https://app.flus.fr/">
+                    <img alt="" src="<?= url_static('flus.svg') ?>" width="75"/><br />
+                    Accéder à Flus 2
+                </a><br />
+                <small>(inscriptions fermées)</small>
+            </p>
+        </div>
+    </div>
+</section>

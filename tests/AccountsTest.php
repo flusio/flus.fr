@@ -10,6 +10,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\ResponseAsserts;
     use \Minz\Tests\FactoriesHelper;
+    use \Minz\Tests\TimeHelper;
 
     public function testShowRendersCorrectly()
     {
@@ -22,6 +23,44 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponse($response, 200, $email);
         $this->assertPointer($response, 'accounts/show.phtml');
+    }
+
+    public function testShowRendersFutureExpiration()
+    {
+        $this->freeze($this->fake('dateTime'));
+        $expired_at = \Minz\Time::fromNow($this->fake('randomDigitNotNull'), 'days');
+        $this->loginUser([
+            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+
+        $response = $this->appRun('GET', '/account');
+
+        $this->assertResponse($response, 200, 'Votre abonnement expirera le');
+    }
+
+    public function testShowRendersPriorExpiration()
+    {
+        $this->freeze($this->fake('dateTime'));
+        $expired_at = \Minz\Time::ago($this->fake('randomDigitNotNull'), 'days');
+        $this->loginUser([
+            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+
+        $response = $this->appRun('GET', '/account');
+
+        $this->assertResponse($response, 200, 'Votre abonnement a expiré le');
+    }
+
+    public function testShowRendersIfNoExpiration()
+    {
+        $expired_at = new \DateTime('1970-01-01');
+        $this->loginUser([
+            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+
+        $response = $this->appRun('GET', '/account');
+
+        $this->assertResponse($response, 200, 'Vous bénéficiez d’un abonnement gratuit');
     }
 
     public function testShowFailsIfNotConnected()

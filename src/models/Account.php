@@ -142,6 +142,26 @@ class Account extends \Minz\Model
     }
 
     /**
+     * Return whether the account has a free subscription or not
+     *
+     * @return boolean
+     */
+    public function isFree()
+    {
+        return $this->expired_at->getTimestamp() === 0;
+    }
+
+    /**
+     * Return whether the subscription has expired or not
+     *
+     * @return boolean
+     */
+    public function hasExpired()
+    {
+        return !$this->isFree() && $this->expired_at <= \Minz\Time::now();
+    }
+
+    /**
      * Validate a model and return formated errors
      *
      * @return string[]
