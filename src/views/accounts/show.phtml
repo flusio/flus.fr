@@ -44,4 +44,58 @@
             </p>
         </div>
     </div>
+
+    <hr />
+
+    <div class="header">
+        <h2 class="header__title">
+            Vos paiements passés
+        </h2>
+    </div>
+
+    <?php if ($payments): ?>
+        <table>
+            <tbody>
+                <?php foreach ($payments as $payment): ?>
+                    <tr <?= !$payment->completed_at ? 'class="row--ghost"' : ''?> >
+                        <td class="cell--right">
+                            <?= format_amount($payment->amount) ?>
+                        </td>
+
+                        <td>
+                            <?php if ($payment->type === 'subscription' && $payment->frequency === 'month'): ?>
+                                Abonnement mois
+                            <?php elseif ($payment->type === 'subscription' && $payment->frequency === 'year'): ?>
+                                Abonnement année
+                            <?php elseif ($payment->type === 'common_pot'): ?>
+                                Cagnotte
+                            <?php else: ?>
+                                Heu… non
+                            <?php endif; ?>
+                        </td>
+
+                        <td>
+                            <?php if ($payment->completed_at): ?>
+                                <?= format_date($payment->completed_at, '%d %b %Y') ?>
+                            <?php else: ?>
+                                non payée
+                            <?php endif; ?>
+                        </td>
+
+                        <td>
+                            <?php if ($payment->invoice_number): ?>
+                                <a href="<?= url('account download pdf', ['id' => $payment->id]) ?>">
+                                    <?= $payment->invoice_number ?>
+                                </a>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    <?php else: ?>
+        <p class="paragraph--center paragraph--secondary">
+            Il n’y a aucun paiement à afficher.
+        </p>
+    <?php endif; ?>
 </section>

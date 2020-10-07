@@ -23,23 +23,25 @@ class Invoices
      */
     public function downloadPdf($request)
     {
-        $is_admin = utils\CurrentUser::isAdmin();
-        $auth_token = $request->header('PHP_AUTH_USER', '');
-        $private_key = \Minz\Configuration::$application['flus_private_key'];
-        if (!$is_admin && !hash_equals($private_key, $auth_token)) {
-            return \Minz\Response::unauthorized();
-        }
-
         $payment_dao = new models\dao\Payment();
         $payment_id = $request->param('id');
-        $raw_payment = $payment_dao->find($payment_id);
-        if (!$raw_payment) {
+        $db_payment = $payment_dao->find($payment_id);
+        if (!$db_payment) {
             return \Minz\Response::notFound();
         }
 
-        $payment = new models\Payment($raw_payment);
+        $payment = new models\Payment($db_payment);
         if (!$payment->invoice_number) {
             return \Minz\Response::notFound();
+        }
+
+        $is_admin = utils\CurrentUser::isAdmin();
+        $user = utils\CurrentUser::get();
+        $account_owns = $user && $user['account_id'] === $payment->account_id;
+        $auth_token = $request->header('PHP_AUTH_USER', '');
+        $private_key = \Minz\Configuration::$application['flus_private_key'];
+        if (!$is_admin && !$account_owns && !hash_equals($private_key, $auth_token)) {
+            return \Minz\Response::unauthorized();
         }
 
         $invoices_path = \Minz\Configuration::$data_path . '/invoices';
