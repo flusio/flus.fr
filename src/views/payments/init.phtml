@@ -302,24 +302,24 @@
 
         <div class="form-group form-group--cgv <?= isset($errors['cgv']) ? 'form-group--invalid' : '' ?>">
             <p class="form-group__caption">
-                Avant d’aller plus loin, vous devriez prendre le temps de
+                Vous devriez prendre le temps de
                 <a href="<?= url('cgv') ?>" target="_blank" rel="noopener noreferrer nofollow">
-                    lire les Conditions Générales de Vente (<abbr>CGV</abbr>)</a>
-                pour vous assurer que celles-ci vous conviennent. Vous serez
-                ensuite redirigé·e vers <a href="https://stripe.com/fr">Stripe</a>
+                    lire les Conditions Générales de Vente</a>
+                pour vous assurer que celles-ci vous conviennent.
+                Vous serez ensuite redirigé·e vers
+                <a href="https://stripe.com/fr" target="_blank" rel="noopener noreferrer nofollow">Stripe</a>
                 pour le paiement.
             </p>
 
-            <label for="cgv">
-                <input
-                    id="cgv"
-                    name="accept_cgv"
-                    type="checkbox"
-                    required
-                />
+            <input
+                id="cgv"
+                name="accept_cgv"
+                type="checkbox"
+                required
+            />
 
-                Accepter les Conditions Générales de Vente et le traitement de vos
-                données par la société Stripe.
+            <label for="cgv">
+                Accepter les Conditions Générales de Vente
             </label>
 
             <?php if (isset($errors['cgv'])): ?>

@@ -84,6 +84,104 @@ textarea:focus {
     outline: none;
 }
 
+input[type="radio"],
+input[type="checkbox"] {
+    position: absolute;
+
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+
+    width: 1px;
+    height: 1px;
+}
+
+input[type="radio"] + label,
+input[type="checkbox"] + label {
+    position: relative;
+
+    display: inline-flex;
+    margin-bottom: 0;
+
+    align-items: center;
+}
+
+input[type="radio"] + label::before,
+input[type="checkbox"] + label::before {
+    content: ' ';
+
+    position: relative;
+
+    width: 2.5rem;
+    height: 2.5rem;
+    margin-right: var(--space-small);
+
+    flex-shrink: 0;
+
+    background-color: var(--color-grey-3);
+    border: 0.25rem solid var(--color-grey-1);
+    border-radius: 50%;
+
+    transition:
+        border-color 0.2s ease-in-out,
+        background-color 0.2s ease-in-out;
+}
+
+input[type="checkbox"] + label::before {
+    border-radius: 0.5rem;
+}
+
+input[type="radio"]:checked + label::before,
+input[type="checkbox"]:checked + label::before {
+    background-color: var(--color-turquoise-1);
+    border-color: var(--color-black);
+}
+
+input[type="radio"]:focus + label::before,
+input[type="checkbox"]:focus + label::before {
+    box-shadow: 0 0 0px 1px var(--color-purple-1);
+}
+
+input[type="radio"] + label::after {
+    content: ' ';
+
+    position: absolute;
+
+    width: 1.5rem;
+    height: 1.5rem;
+    margin-left: 0.5rem;
+
+    background-color: var(--color-black);
+    border-radius: 50%;
+
+    opacity: 0;
+
+    transition: opacity 0.2s ease-in-out;
+}
+
+input[type="checkbox"] + label::after {
+    content: '';
+
+    position: absolute;
+
+    width: 1.5rem;
+    height: 0.75rem;
+    margin-top: -0.3rem;
+    margin-left: 0.5rem;
+
+    border-bottom: 0.25rem solid var(--color-text);
+    border-left: 0.25rem solid var(--color-text);
+
+    transform: rotate(-45deg);
+    opacity: 0;
+
+    transition: opacity 0.2s ease-in-out;
+}
+
+input[type="radio"]:checked + label::after,
+input[type="checkbox"]:checked + label::after {
+    opacity: 1;
+}
+
 select {
     width: 50%;
     height: 2.5em;
@@ -206,10 +304,16 @@ legend {
     max-width: 8em;
 }
 
-.form--common-pot .form-group--cgv {
+.form-group--cgv {
     padding: var(--space-medium);
+
+    background-color: var(--color-purple-3);
+    border-radius: 0.75rem;
 }
 
+/**
+ * Amount selector on the "cagnotte" page
+ */
 .amount-selector {
     margin-top: var(--space-large);
     margin-bottom: var(--space-large);

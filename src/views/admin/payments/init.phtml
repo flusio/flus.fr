@@ -25,13 +25,13 @@
         <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
 
         <fieldset
-            class="form-group <?= isset($errors['email']) ? 'form-group--invalid' : '' ?>"
+            class="form-group <?= isset($errors['type']) ? 'form-group--invalid' : '' ?>"
             data-controller="payment-type-selector"
             data-payment-type-selector-initial-type="<?= $type ?>"
         >
             <legend>Type de paiement</legend>
 
-            <label for="type_common_pot">
+            <div class="form-group">
                 <input
                     id="type_common_pot"
                     type="radio"
@@ -43,10 +43,12 @@
                     data-target="payment-type-selector.input"
                 />
 
-                Cagnotte
-            </label>
+                <label for="type_common_pot">
+                    Cagnotte
+                </label>
+            </div>
 
-            <label for="type_subscription_month">
+            <div class="form-group">
                 <input
                     id="type_subscription_month"
                     type="radio"
@@ -58,10 +60,12 @@
                     data-target="payment-type-selector.input"
                 />
 
-                Abonnement 1 mois
-            </label>
+                <label for="type_subscription_month">
+                    Abonnement 1 mois
+                </label>
+            </div>
 
-            <label for="type_subscription_year">
+            <div class="form-group">
                 <input
                     id="type_subscription_year"
                     type="radio"
@@ -73,8 +77,10 @@
                     data-target="payment-type-selector.input"
                 />
 
-                Abonnement 1 an
-            </label>
+                <label for="type_subscription_year">
+                    Abonnement 1 an
+                </label>
+            </div>
 
             <?php if (isset($errors['type'])): ?>
                 <p class="form-group__error">
@@ -311,14 +317,14 @@
         </fieldset>
 
         <div class="form-group">
-            <label for="generate-invoice">
-                <input
-                    id="generate-invoice"
-                    name="generate_invoice"
-                    type="checkbox"
-                    <?= $generate_invoice ? 'checked' : '' ?>
-                />
+            <input
+                id="generate-invoice"
+                name="generate_invoice"
+                type="checkbox"
+                <?= $generate_invoice ? 'checked' : '' ?>
+            />
 
+            <label for="generate-invoice">
                 Générer une facture
             </label>
         </div>
