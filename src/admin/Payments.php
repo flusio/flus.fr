@@ -208,31 +208,29 @@ class Payments
 
         $payment_dao = new models\dao\Payment();
         $payment_id = $request->param('id');
-        $raw_payment = $payment_dao->find($payment_id);
-        if (!$raw_payment) {
+        $db_payment = $payment_dao->find($payment_id);
+        if (!$db_payment) {
             return \Minz\Response::notFound('not_found.phtml');
         }
 
-        $payment = new models\Payment($raw_payment);
+        $payment = new models\Payment($db_payment);
         return \Minz\Response::ok('admin/payments/show.phtml', [
-            'completed_at' => \Minz\Time::now(),
             'payment' => $payment,
         ]);
     }
 
     /**
-     * Complete a payment
+     * Confirm a payment as paid
      *
      * Parameters are:
      *
      * - `id` of the Payment
-     * - `completed_at`
      *
      * @param \Minz\Request $request
      *
      * @return \Minz\Response
      */
-    public function complete($request)
+    public function confirm($request)
     {
         if (!utils\CurrentUser::isAdmin()) {
             return \Minz\Response::redirect('login', ['from' => 'admin/payments#index']);
@@ -240,39 +238,34 @@ class Payments
 
         $payment_dao = new models\dao\Payment();
         $payment_id = $request->param('id');
-        $raw_payment = $payment_dao->find($payment_id);
-        if (!$raw_payment) {
+        $db_payment = $payment_dao->find($payment_id);
+        if (!$db_payment) {
             return \Minz\Response::notFound('not_found.phtml');
         }
 
-        $payment = new models\Payment($raw_payment);
-        if ($payment->completed_at) {
+        $payment = new models\Payment($db_payment);
+        if ($payment->is_paid) {
             return \Minz\Response::badRequest('admin/payments/show.phtml', [
-                'completed_at' => \Minz\Time::now(),
                 'payment' => $payment,
-                'error' => 'Ce paiement a déjà été confirmé… qu’est-ce que vous essayez de faire ?',
+                'error' => 'Ce paiement a déjà été payé… qu’est-ce que vous essayez de faire ?',
             ]);
         }
-
-        $completed_at = $request->param('completed_at');
-        $completed_at = date_create_from_format('Y-m-d', $completed_at);
 
         $csrf = new \Minz\CSRF();
         if (!$csrf->validateToken($request->param('csrf'))) {
             return \Minz\Response::badRequest('admin/payments/show.phtml', [
-                'completed_at' => $completed_at,
                 'payment' => $payment,
                 'error' => 'Une vérification de sécurité a échoué, veuillez réessayer de soumettre le formulaire.',
             ]);
         }
 
-        $payment->complete($completed_at);
+        $payment->is_paid = true;
         $payment_dao->save($payment);
 
         @unlink($payment->invoiceFilepath());
 
         return \Minz\Response::redirect('admin', [
-            'status' => 'payment_completed',
+            'status' => 'payment_confirmed',
         ]);
     }
 
@@ -301,11 +294,11 @@ class Payments
         }
 
         $payment = new models\Payment($raw_payment);
-        if ($payment->completed_at) {
+        if ($payment->is_paid) {
             return \Minz\Response::badRequest('admin/payments/show.phtml', [
                 'completed_at' => \Minz\Time::now(),
                 'payment' => $payment,
-                'error' => 'Ce paiement a déjà été confirmé… qu’est-ce que vous essayez de faire ?',
+                'error' => 'Ce paiement a déjà été payé… qu’est-ce que vous essayez de faire ?',
             ]);
         }
 

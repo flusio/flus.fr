@@ -287,6 +287,12 @@ legend {
 /**
  * Custom styles
  */
+.form--renew {
+    max-width: 50ch;
+    margin-right: auto;
+    margin-left: auto;
+}
+
 .form--common-pot .columns__item,
 .form--address .columns__item {
     padding: 0;
@@ -374,6 +380,67 @@ legend {
 
     background-color: var(--color-grey-3);
     border-color: var(--color-grey-2);
+}
+
+/**
+ * Frequency selector on the subscription renewing page
+ */
+.frequency-selector {
+    display: flex;
+    margin-bottom: var(--space-large);
+
+    justify-content: center;
+    align-items: center;
+}
+
+.frequency-selector__item {
+    margin-right: var(--space-medium);
+    margin-left: var(--space-medium);
+
+    text-align: center;
+}
+
+.frequency-selector__label {
+    padding: var(--space-medium);
+
+    flex-direction: column;
+
+    font-size: var(--size-large);
+
+    background-color: var(--color-white);
+    border: .25rem solid var(--color-grey-2);
+    border-radius: 2rem;
+    box-shadow: 1px 1px 2px 2px var(--color-grey-3);
+
+    transition:
+        background-color .2s ease-in-out,
+        border-color .2s ease-in-out;
+}
+
+.frequency-selector__radio:checked + .frequency-selector__label {
+    background-color: var(--color-turquoise-1);
+    border-color: var(--color-turquoise-2);
+}
+
+.frequency-selector__radio + .frequency-selector__label::before {
+    margin-right: 0;
+    margin-bottom: var(--space-small);
+}
+
+.frequency-selector__radio + .frequency-selector__label::after {
+    margin-top: 0.5rem;
+    margin-left: 0;
+}
+
+.frequency-selector__frequency {
+    display: block;
+
+    font-size: var(--size-large);
+    font-weight: bold;
+}
+
+.frequency-selector__price {
+    font-style: italic;
 }
 
 /* This is a honeypot input, it must not be filled! */

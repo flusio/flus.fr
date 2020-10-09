@@ -16,8 +16,8 @@ class Migration2020100602CreateAccounts
                 email TEXT NOT NULL UNIQUE,
                 access_token TEXT,
 
-                preferred_frequency TEXT,
-                preferred_payment_type TEXT,
+                preferred_frequency TEXT NOT NULL DEFAULT 'month',
+                preferred_payment_type TEXT NOT NULL DEFAULT 'card',
                 reminder BOOLEAN NOT NULL DEFAULT false,
 
                 address_first_name TEXT,

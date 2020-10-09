@@ -1,0 +1,134 @@
+<?php
+    $this->layout('account.phtml', [
+        'title' => 'Renouveler votre abonnement',
+    ]);
+?>
+
+<section class="section">
+    <div class="header">
+        <h1 class="header__title">
+            Renouveler votre abonnement
+        </h1>
+    </div>
+
+    <p class="section__intro">
+        <?php if (!$account->isFree() && !$account->hasExpired()): ?>
+            Votre abonnement expirera le <strong><?= format_date($account->expired_at, '%d %B %Y') ?>.</strong>
+            Vous pouvez le renouveler dès maintenant, la période de
+            renouvellement s’ajoutera à votre abonnement courant.
+        <?php endif; ?>
+    </p>
+
+    <form method="post" action="<?= url('subscription renew') ?>" class="form--renew">
+        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+
+        <?php if ($error): ?>
+            <p class="form__error">
+                <?= $error ?>
+            </p>
+        <?php endif; ?>
+
+        <div class="form-group frequency-selector">
+            <div class="frequency-selector__item">
+                <input
+                    id="frequency-month"
+                    class="frequency-selector__radio"
+                    type="radio"
+                    name="frequency"
+                    value="month"
+                    <?= $account->preferred_frequency === 'month' ? 'checked' : '' ?>
+                />
+
+                <label
+                    for="frequency-month"
+                    class="frequency-selector__label"
+                >
+                    <span class="frequency-selector__frequency">
+                        1 mois
+                    </span>
+                    <span class="frequency-selector__price">
+                        soit 3 €
+                    </span>
+                </label>
+            </div>
+
+            <div class="frequency-selector__item">
+                <input
+                    id="frequency-year"
+                    class="frequency-selector__radio"
+                    type="radio"
+                    name="frequency"
+                    value="year"
+                    <?= $account->preferred_frequency === 'year' ? 'checked' : '' ?>
+                />
+
+                <label
+                    for="frequency-year"
+                    class="frequency-selector__label"
+                >
+                    <span class="frequency-selector__frequency">
+                        1 an
+                    </span>
+                    <span class="frequency-selector__price">
+                        soit 30 €
+                    </span>
+                </label>
+            </div>
+
+            <?php if (isset($errors['frequency'])): ?>
+                <p class="form-group__error">
+                    <?= $errors['frequency'] ?>
+                </p>
+            <?php endif; ?>
+        </div>
+
+        <p class="paragraph--center paragraph--limit paragraph--secondary">
+            <i>
+                Facturé au <?= $this->protect($account->address_address1) ?>,
+                <?= $this->protect($account->address_city) ?>.
+                <a href="<?= url('account address') ?>">Modifier&nbsp;?</a>
+            </i>
+        </p>
+
+        <div class="form-group form-group--cgv <?= isset($errors['cgv']) ? 'form-group--invalid' : '' ?>">
+            <p class="form-group__caption">
+                Vous devriez prendre le temps de
+                <a href="<?= url('cgv') ?>" target="_blank" rel="noopener noreferrer nofollow">
+                    lire les Conditions Générales de Vente</a>
+                pour vous assurer que celles-ci vous conviennent.<br/>
+                Vous serez ensuite redirigé·e vers
+                <a href="https://stripe.com/fr" target="_blank" rel="noopener noreferrer nofollow">Stripe</a>
+                pour le paiement.
+            </p>
+
+            <input
+                id="cgv"
+                name="accept_cgv"
+                type="checkbox"
+                required
+            />
+
+            <label for="cgv">
+                Accepter les Conditions Générales de Vente
+            </label>
+
+            <?php if (isset($errors['cgv'])): ?>
+                <p class="form-group__error">
+                    <?= $errors['cgv'] ?>
+                </p>
+            <?php endif; ?>
+        </div>
+
+        <div class="form__actions">
+            <button type="submit" class="button--primary">
+                Renouveler
+            </button>
+        </div>
+
+        <p class="paragraph--center">
+            <a href="<?= url('account') ?>">
+                Retour à votre abonnement
+            </a>
+        </p>
+    </form>
+</section>

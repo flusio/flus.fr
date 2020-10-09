@@ -18,32 +18,19 @@
         </p>
     <?php endif; ?>
 
-    <?php if ($payment->completed_at): ?>
+    <?php if ($payment->is_paid): ?>
         <p class="paragraph--featured">
-            Ce paiement a été confirmé.
+            Ce paiement a été payé.
         </p>
     <?php else: ?>
         <p class="paragraph--featured">
-            Ce paiement n’a pas été encore été confirmé.
+            Ce paiement n’a pas été encore été payé.
         </p>
 
         <div class="columns columns--center">
             <div class="columns__item">
-                <form method="post" action="<?= url('complete admin payment', ['id' => $payment->id]) ?>" >
+                <form method="post" action="<?= url('confirm admin payment', ['id' => $payment->id]) ?>" >
                     <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-
-                    <div class="form-group">
-                        <label for="completed-at">
-                            Payé le
-                        </label>
-
-                        <input
-                            id="completed-at"
-                            name="completed_at"
-                            type="date"
-                            value="<?= format_date($completed_at, '%Y-%m-%d') ?>"
-                        />
-                    </div>
 
                     <div class="form__actions">
                         <button type="submit" class="button--primary">

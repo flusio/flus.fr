@@ -37,11 +37,13 @@ class Account extends \Minz\Model
 
         'preferred_frequency' => [
             'type' => 'string',
+            'required' => true,
             'validator' => '\Website\models\Account::validateFrequency',
         ],
 
         'preferred_payment_type' => [
             'type' => 'string',
+            'required' => true,
             'validator' => '\Website\models\Account::validatePaymentType',
         ],
 
@@ -90,6 +92,8 @@ class Account extends \Minz\Model
             'id' => bin2hex(random_bytes(16)),
             'email' => utils\Email::sanitize($email),
             'expired_at' => \Minz\Time::fromNow(1, 'month'),
+            'preferred_frequency' => 'month',
+            'preferred_payment_type' => 'card',
             'reminder' => false,
             'address_country' => 'FR',
         ]);
@@ -101,6 +105,29 @@ class Account extends \Minz\Model
     public function setExpiredAt($expired_at)
     {
         $this->expired_at = date_create_from_format(\Minz\Model::DATETIME_FORMAT, $expired_at);
+    }
+
+    /**
+     * Extend the subscription period by the given frequency
+     *
+     * @param string $frequency (`month` or `year`)
+     */
+    public function extendSubscription($frequency)
+    {
+        if ($this->isFree()) {
+            // Free accounts don't need to be extended
+            return;
+        }
+
+        $today = \Minz\Time::now();
+        $new_expired_at = max($today, $this->expired_at);
+        if ($frequency === 'year') {
+            $new_expired_at->modify('+1 year');
+        } else {
+            $new_expired_at->modify('+1 month');
+        }
+
+        $this->expired_at = $new_expired_at;
     }
 
     /**

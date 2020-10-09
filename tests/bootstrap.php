@@ -35,6 +35,9 @@ echo 'Use SEED=' . $faker_seed . " to reproduce this suite.\n";
         'created_at' => function () use ($faker) {
             return $faker->dateTime->format(\Minz\Model::DATETIME_FORMAT);
         },
+        'is_paid' => function () use ($faker) {
+            return (int)$faker->boolean;
+        },
         'type' => function () use ($faker) {
             return $faker->randomElement(['common_pot', 'subscription']);
         },
@@ -93,6 +96,12 @@ echo 'Use SEED=' . $faker_seed . " to reproduce this suite.\n";
         },
         'expired_at' => function () use ($faker) {
             return $faker->dateTime->format(\Minz\Model::DATETIME_FORMAT);
+        },
+        'preferred_frequency' => function () use ($faker) {
+            return $faker->randomElement(['month', 'year']);
+        },
+        'preferred_payment_type' => function () use ($faker) {
+            return $faker->randomElement(['common_pot', 'card']);
         },
         'email' => function () use ($faker) {
             return $faker->email;

@@ -16,6 +16,7 @@ class PaymentTest extends \PHPUnit\Framework\TestCase
     {
         $completed_at = $this->fake('dateTime');
         $payment = Payment::init($type, $email, $amount, $address);
+        $payment->is_paid = true;
 
         $payment->complete($completed_at);
 
@@ -30,6 +31,7 @@ class PaymentTest extends \PHPUnit\Framework\TestCase
         $now = $this->fake('dateTime');
         $this->freeze($now);
         $payment = Payment::init($type, $email, $amount, $address);
+        $payment->is_paid = true;
 
         $payment->complete($now);
 
@@ -53,6 +55,7 @@ class PaymentTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $payment = Payment::init($type, $email, $amount, $address);
+        $payment->is_paid = true;
 
         $payment->complete($now);
 
@@ -77,6 +80,7 @@ class PaymentTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $payment = Payment::init($type, $email, $amount, $address);
+        $payment->is_paid = true;
 
         $payment->complete($now);
 
@@ -100,11 +104,26 @@ class PaymentTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $payment = Payment::init($type, $email, $amount, $address);
+        $payment->is_paid = true;
 
         $payment->complete($now);
 
         $expected_invoice_number = $now->format('Y-m') . '-0002';
         $this->assertSame($expected_invoice_number, $payment->invoice_number);
+    }
+
+    /**
+     * @dataProvider propertiesProvider
+     */
+    public function testCompleteDoesNothingIfNotIsPaid($type, $email, $amount, $address)
+    {
+        $completed_at = $this->fake('dateTime');
+        $payment = Payment::init($type, $email, $amount, $address);
+        $payment->is_paid = false;
+
+        $payment->complete($completed_at);
+
+        $this->assertNull($payment->completed_at);
     }
 
     public function propertiesProvider()

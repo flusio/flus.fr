@@ -35,6 +35,18 @@
                 Indiquer votre adresse
             </a>
         </p>
+    <?php elseif (!$account->isFree()): ?>
+        <p class="paragraph--center">
+            <?php if ($account->hasExpired()): ?>
+                <a class="call-to-action" href="<?= url('subscription init') ?>">
+                    Renouveler votre abonnement
+                </a>
+            <?php else: ?>
+                <a href="<?= url('subscription init') ?>">
+                    Renouveler votre abonnement
+                </a>
+            <?php endif; ?>
+        </p>
     <?php endif; ?>
 
     <div class="columns columns--center columns--spaced columns--background">
