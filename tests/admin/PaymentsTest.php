@@ -243,111 +243,82 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 302, '/admin/login?from=admin%2Fpayments%23index');
     }
 
-    public function testCompleteRendersCorrectly()
+    public function testConfirmRendersCorrectly()
     {
         $payment_dao = new models\dao\Payment();
         $this->loginAdmin();
         $payment_id = $this->create('payment', [
-            'completed_at' => null,
+            'is_paid' => false,
         ]);
-        $completed_at = $this->fake('date');
 
-        $response = $this->appRun('POST', '/admin/payments/' . $payment_id . '/complete', [
+        $response = $this->appRun('POST', "/admin/payments/{$payment_id}/confirm", [
             'csrf' => (new \Minz\CSRF())->generateToken(),
-            'completed_at' => $completed_at,
         ]);
 
-        $this->assertResponse($response, 302, '/admin?status=payment_completed');
+        $this->assertResponse($response, 302, '/admin?status=payment_confirmed');
         $payment = new models\Payment($payment_dao->find($payment_id));
-        $this->assertSame($completed_at, $payment->completed_at->format('Y-m-d'));
-    }
-
-    public function testCompleteByPassIsPaidAtFalse()
-    {
-        $payment_dao = new models\dao\Payment();
-        $this->loginAdmin();
-        $payment_id = $this->create('payment', [
-            'completed_at' => null,
-            'is_paid' => 0,
-        ]);
-        $completed_at = $this->fake('date');
-
-        $response = $this->appRun('POST', '/admin/payments/' . $payment_id . '/complete', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
-            'completed_at' => $completed_at,
-        ]);
-
-        $this->assertResponse($response, 302, '/admin?status=payment_completed');
-        $payment = new models\Payment($payment_dao->find($payment_id));
-        $this->assertSame($completed_at, $payment->completed_at->format('Y-m-d'));
         $this->assertTrue($payment->is_paid);
     }
 
-    public function testCompleteFailsIfInvalidId()
+    public function testConfirmFailsIfInvalidId()
     {
-        $payment_dao = new models\dao\Payment();
         $this->loginAdmin();
+        $payment_id = $this->create('payment', [
+            'is_paid' => false,
+        ]);
 
-        $response = $this->appRun('POST', '/admin/payments/invalid/complete', [
+        $response = $this->appRun('POST', "/admin/payments/not-an-id/confirm", [
             'csrf' => (new \Minz\CSRF())->generateToken(),
-            'completed_at' => $this->fake('date'),
         ]);
 
         $this->assertResponse($response, 404);
     }
 
-    public function testCompleteFailsIfAlreadyCompleted()
+    public function testConfirmFailsIfAlreadyPaid()
     {
-        $payment_dao = new models\dao\Payment();
         $this->loginAdmin();
-        $initial_completed_at = $this->fake('dateTime');
         $payment_id = $this->create('payment', [
-            'completed_at' => $initial_completed_at->format(\Minz\Model::DATETIME_FORMAT),
+            'is_paid' => true,
         ]);
 
-        $response = $this->appRun('POST', '/admin/payments/' . $payment_id . '/complete', [
+        $response = $this->appRun('POST', "/admin/payments/{$payment_id}/confirm", [
             'csrf' => (new \Minz\CSRF())->generateToken(),
-            'completed_at' => $this->fake('dateTime'),
         ]);
 
-        $this->assertResponse($response, 400, 'Ce paiement a déjà été confirmé');
-        $payment = new models\Payment($payment_dao->find($payment_id));
-        $this->assertEquals($initial_completed_at, $payment->completed_at);
+        $this->assertResponse($response, 400, 'Ce paiement a déjà été payé');
     }
 
-    public function testCompleteFailsIfNotConnected()
+    public function testConfirmFailsIfNotConnected()
     {
         $payment_dao = new models\dao\Payment();
         $payment_id = $this->create('payment', [
-            'completed_at' => null,
+            'is_paid' => false,
         ]);
 
-        $response = $this->appRun('POST', '/admin/payments/' . $payment_id . '/complete', [
+        $response = $this->appRun('POST', "/admin/payments/{$payment_id}/confirm", [
             'csrf' => (new \Minz\CSRF())->generateToken(),
-            'completed_at' => $this->fake('date'),
         ]);
 
         $this->assertResponse($response, 302, '/admin/login?from=admin%2Fpayments%23index');
         $payment = new models\Payment($payment_dao->find($payment_id));
-        $this->assertNull($payment->completed_at);
+        $this->assertFalse($payment->is_paid);
     }
 
-    public function testCompleteFailsIfCsrfIsInvalid()
+    public function testConfirmFailsIfCsrfIsInvalid()
     {
         $payment_dao = new models\dao\Payment();
         $this->loginAdmin();
         $payment_id = $this->create('payment', [
-            'completed_at' => null,
+            'is_paid' => false,
         ]);
 
-        $response = $this->appRun('POST', '/admin/payments/' . $payment_id . '/complete', [
+        $response = $this->appRun('POST', "/admin/payments/{$payment_id}/confirm", [
             'csrf' => 'not the token',
-            'completed_at' => $this->fake('date'),
         ]);
 
         $this->assertResponse($response, 400, 'Une vérification de sécurité a échoué');
         $payment = new models\Payment($payment_dao->find($payment_id));
-        $this->assertNull($payment->completed_at);
+        $this->assertFalse($payment->is_paid);
     }
 
     public function testDestroyRendersCorrectly()
@@ -355,7 +326,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         $payment_dao = new models\dao\Payment();
         $this->loginAdmin();
         $payment_id = $this->create('payment', [
-            'completed_at' => null,
+            'is_paid' => false,
             'invoice_number' => null,
         ]);
 
@@ -383,7 +354,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     {
         $payment_dao = new models\dao\Payment();
         $payment_id = $this->create('payment', [
-            'completed_at' => null,
+            'is_paid' => false,
             'invoice_number' => null,
         ]);
 
@@ -401,7 +372,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         $payment_dao = new models\dao\Payment();
         $this->loginAdmin();
         $payment_id = $this->create('payment', [
-            'completed_at' => null,
+            'is_paid' => false,
             'invoice_number' => null,
         ]);
 
@@ -414,12 +385,12 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($db_payment);
     }
 
-    public function testDestroyFailsIfCompletedAtIsNotNull()
+    public function testDestroyFailsIfIsPaidIsTrue()
     {
         $payment_dao = new models\dao\Payment();
         $this->loginAdmin();
         $payment_id = $this->create('payment', [
-            'completed_at' => $this->fake('dateTime')->format(\Minz\Model::DATETIME_FORMAT),
+            'is_paid' => true,
             'invoice_number' => null,
         ]);
 
@@ -427,7 +398,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
             'csrf' => (new \Minz\CSRF())->generateToken(),
         ]);
 
-        $this->assertResponse($response, 400, 'Ce paiement a déjà été confirmé');
+        $this->assertResponse($response, 400, 'Ce paiement a déjà été payé');
         $db_payment = $payment_dao->find($payment_id);
         $this->assertNotNull($db_payment);
     }
@@ -438,7 +409,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         $this->loginAdmin();
         $invoice_number = $this->fake('dateTime')->format('Y-m') . sprintf('-%04d', $this->fake('randomNumber', 4));
         $payment_id = $this->create('payment', [
-            'completed_at' => null,
+            'is_paid' => false,
             'invoice_number' => $invoice_number,
         ]);
 
