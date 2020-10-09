@@ -125,6 +125,32 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider renewParamsProvider
      */
+    public function testRenewSavesPreferredFrequency($address, $frequency)
+    {
+        $frequency = 'year';
+        $user = $this->loginUser([
+            'address_first_name' => $address['first_name'],
+            'address_last_name' => $address['last_name'],
+            'address_address1' => $address['address1'],
+            'address_postcode' => $address['postcode'],
+            'address_city' => $address['city'],
+            'preferred_frequency' => 'month',
+        ]);
+
+        $response = $this->appRun('POST', '/account/renew', [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'account_id' => $user['account_id'],
+            'frequency' => $frequency,
+        ]);
+
+        $account_dao = new models\dao\Account();
+        $account = new models\Account($account_dao->find($user['account_id']));
+        $this->assertSame('year', $account->preferred_frequency);
+    }
+
+    /**
+     * @dataProvider renewParamsProvider
+     */
     public function testRenewRedirectsIfNoAddress($address, $frequency)
     {
         $user = $this->loginUser();

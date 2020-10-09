@@ -36,7 +36,7 @@
                     type="radio"
                     name="frequency"
                     value="month"
-                    checked
+                    <?= $account->preferred_frequency === 'month' ? 'checked' : '' ?>
                 />
 
                 <label
@@ -59,6 +59,7 @@
                     type="radio"
                     name="frequency"
                     value="year"
+                    <?= $account->preferred_frequency === 'year' ? 'checked' : '' ?>
                 />
 
                 <label

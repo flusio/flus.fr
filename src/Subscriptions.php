@@ -111,6 +111,9 @@ class Subscriptions
         $payment->session_id = $stripe_session->id;
         $payment_id = $payment_dao->save($payment);
 
+        $account->preferred_frequency = $payment->frequency;
+        $account_dao->save($account);
+
         return \Minz\Response::redirect('Payments#pay', [
             'id' => $payment_id,
         ]);

@@ -37,11 +37,13 @@ class Account extends \Minz\Model
 
         'preferred_frequency' => [
             'type' => 'string',
+            'required' => true,
             'validator' => '\Website\models\Account::validateFrequency',
         ],
 
         'preferred_payment_type' => [
             'type' => 'string',
+            'required' => true,
             'validator' => '\Website\models\Account::validatePaymentType',
         ],
 
@@ -90,6 +92,8 @@ class Account extends \Minz\Model
             'id' => bin2hex(random_bytes(16)),
             'email' => utils\Email::sanitize($email),
             'expired_at' => \Minz\Time::fromNow(1, 'month'),
+            'preferred_frequency' => 'month',
+            'preferred_payment_type' => 'card',
             'reminder' => false,
             'address_country' => 'FR',
         ]);
