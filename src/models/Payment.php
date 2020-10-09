@@ -121,8 +121,6 @@ class Payment extends \Minz\Model
      * @param integer|float $amount
      * @param array $address
      *
-     * @throws \Minz\Errors\ModelPropertyError if a value is invalid
-     *
      * @return \Website\models\Payment
      */
     public static function init($type, $email, $amount, $address)
@@ -139,6 +137,51 @@ class Payment extends \Minz\Model
             'address_city' => trim($address['city']),
             'address_country' => trim($address['country']),
         ]);
+    }
+
+    /**
+     * Init a subscription payment from an account.
+     *
+     * @param \Website\models\Account $account
+     * @param string $frequency (`month` or `year`)
+     *
+     * @return \Website\models\Payment
+     */
+    public static function initFromAccount($account, $frequency)
+    {
+        $frequency = strtolower(trim($frequency));
+        $amount = 0;
+        if ($frequency === 'month') {
+            $amount = 3;
+        } elseif ($frequency === 'year') {
+            $amount = 30;
+        }
+
+        $payment = self::init('subscription', $account->email, $amount, $account->address());
+        $payment->frequency = $frequency;
+        $payment->account_id = $account->id;
+
+        return $payment;
+    }
+
+    /**
+     * Return the account associated to the payment if any
+     *
+     * @return \Website\models\Account|null
+     */
+    public function account()
+    {
+        if (!$this->account_id) {
+            return null;
+        }
+
+        $account_dao = new dao\Account();
+        $db_account = $account_dao->find($this->account_id);
+        if (!$db_account) {
+            return null;
+        }
+
+        return new Account($db_account);
     }
 
     /**
@@ -258,6 +301,8 @@ class Payment extends \Minz\Model
                 $formatted_error = 'Votre ville est obligatoire.';
             } elseif ($property === 'address_country') {
                 $formatted_error = 'Le pays que vous avez renseigné est invalide.';
+            } elseif ($property === 'frequency') {
+                $formatted_error = 'Vous devez choisir l’une des deux périodes proposées.';
             } else {
                 $formatted_error = $error['description']; // @codeCoverageIgnore
             }
