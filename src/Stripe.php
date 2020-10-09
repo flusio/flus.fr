@@ -44,19 +44,7 @@ class Stripe
 
             $payment = new models\Payment($db_payment);
             $payment->is_paid = true;
-            $payment->complete(\Minz\Time::now());
             $payment_dao->save($payment);
-
-            $invoice_pdf_service = new services\InvoicePDF($payment);
-            $invoice_pdf_service->createPDF($payment->invoiceFilepath());
-
-            $invoice_mailer = new mailers\Invoices();
-            $result = $invoice_mailer->sendInvoice($payment->email, $payment->invoiceFilepath());
-            if (!$result) {
-                \Minz\Log::error(
-                    "Invoice {$payment->invoice_number} failed to be sent by email."
-                );
-            }
         }
 
         return \Minz\Response::ok();

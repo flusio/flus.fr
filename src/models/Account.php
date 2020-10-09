@@ -104,6 +104,29 @@ class Account extends \Minz\Model
     }
 
     /**
+     * Extend the subscription period by the given frequency
+     *
+     * @param string $frequency (`month` or `year`)
+     */
+    public function extendSubscription($frequency)
+    {
+        if ($this->isFree()) {
+            // Free accounts don't need to be extended
+            return;
+        }
+
+        $today = \Minz\Time::now();
+        $new_expired_at = max($today, $this->expired_at);
+        if ($frequency === 'year') {
+            $new_expired_at->modify('+1 year');
+        } else {
+            $new_expired_at->modify('+1 month');
+        }
+
+        $this->expired_at = $new_expired_at;
+    }
+
+    /**
      * @param string $access_token
      *
      * @return boolean True if the given token is valid, false else
