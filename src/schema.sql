@@ -30,6 +30,7 @@ CREATE TABLE payments (
     id TEXT PRIMARY KEY NOT NULL,
     created_at TEXT NOT NULL,
     completed_at TEXT,
+    is_paid BOOLEAN NOT NULL DEFAULT false,
     type TEXT NOT NULL,
 
     invoice_number TEXT,

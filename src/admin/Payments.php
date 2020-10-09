@@ -266,6 +266,7 @@ class Payments
             ]);
         }
 
+        $payment->is_paid = true;
         $payment->complete($completed_at);
         $payment_dao->save($payment);
 

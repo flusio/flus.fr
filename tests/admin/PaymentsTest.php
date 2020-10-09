@@ -140,6 +140,8 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 302, '/admin?status=payment_created');
         $payment = new models\Payment($payment_dao->take());
         $this->assertNotNull($payment->invoice_number);
+        $this->assertNull($payment->completed_at);
+        $this->assertFalse($payment->is_paid);
     }
 
     /**
@@ -258,6 +260,27 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 302, '/admin?status=payment_completed');
         $payment = new models\Payment($payment_dao->find($payment_id));
         $this->assertSame($completed_at, $payment->completed_at->format('Y-m-d'));
+    }
+
+    public function testCompleteByPassIsPaidAtFalse()
+    {
+        $payment_dao = new models\dao\Payment();
+        $this->loginAdmin();
+        $payment_id = $this->create('payment', [
+            'completed_at' => null,
+            'is_paid' => 0,
+        ]);
+        $completed_at = $this->fake('date');
+
+        $response = $this->appRun('POST', '/admin/payments/' . $payment_id . '/complete', [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'completed_at' => $completed_at,
+        ]);
+
+        $this->assertResponse($response, 302, '/admin?status=payment_completed');
+        $payment = new models\Payment($payment_dao->find($payment_id));
+        $this->assertSame($completed_at, $payment->completed_at->format('Y-m-d'));
+        $this->assertTrue($payment->is_paid);
     }
 
     public function testCompleteFailsIfInvalidId()

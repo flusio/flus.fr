@@ -33,16 +33,17 @@ class Stripe
             $session = $event->data->object;
 
             $payment_dao = new \Website\models\dao\Payment();
-            $raw_payment = $payment_dao->findBy([
+            $db_payment = $payment_dao->findBy([
                 'payment_intent_id' => $session->payment_intent,
             ]);
 
-            if (!$raw_payment) {
+            if (!$db_payment) {
                 \Minz\Log::warning("Payment {$session->payment_intent} completed, not in database.");
                 return \Minz\Response::ok();
             }
 
-            $payment = new models\Payment($raw_payment);
+            $payment = new models\Payment($db_payment);
+            $payment->is_paid = true;
             $payment->complete(\Minz\Time::now());
             $payment_dao->save($payment);
 

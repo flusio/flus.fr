@@ -26,6 +26,11 @@ class Payment extends \Minz\Model
 
         'completed_at' => 'datetime',
 
+        'is_paid' => [
+            'type' => 'boolean',
+            'required' => true,
+        ],
+
         'invoice_number' => [
             'type' => 'string',
             'validator' => '\Website\models\Payment::validateInvoiceNumber',
@@ -136,6 +141,7 @@ class Payment extends \Minz\Model
             'address_postcode' => trim($address['postcode']),
             'address_city' => trim($address['city']),
             'address_country' => trim($address['country']),
+            'is_paid' => false,
         ]);
     }
 
@@ -263,9 +269,11 @@ class Payment extends \Minz\Model
      */
     public function complete($completed_at)
     {
-        $this->completed_at = $completed_at;
-        if (!$this->invoice_number) {
-            $this->invoice_number = self::generateInvoiceNumber();
+        if ($this->is_paid) {
+            $this->completed_at = $completed_at;
+            if (!$this->invoice_number) {
+                $this->invoice_number = self::generateInvoiceNumber();
+            }
         }
     }
 

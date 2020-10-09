@@ -35,6 +35,9 @@ echo 'Use SEED=' . $faker_seed . " to reproduce this suite.\n";
         'created_at' => function () use ($faker) {
             return $faker->dateTime->format(\Minz\Model::DATETIME_FORMAT);
         },
+        'is_paid' => function () use ($faker) {
+            return (int)$faker->boolean;
+        },
         'type' => function () use ($faker) {
             return $faker->randomElement(['common_pot', 'subscription']);
         },
