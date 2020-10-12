@@ -57,6 +57,8 @@ class Application
         $router->addRoute('get', '/admin/payments/:id', 'admin/Payments#show', 'admin payment');
         $router->addRoute('post', '/admin/payments/:id/confirm', 'admin/Payments#confirm', 'confirm admin payment');
         $router->addRoute('post', '/admin/payments/:id/destroy', 'admin/Payments#destroy', 'destroy admin payment');
+        $router->addRoute('get', '/admin/accounts', 'admin/Accounts#index', 'admin accounts');
+        $router->addRoute('get', '/admin/accounts/:id', 'admin/Accounts#show', 'admin account');
         $router->addRoute('get', '/admin/invoices/pdf/:id', 'api/Invoices#downloadPdf', 'download_pdf_from_admin');
 
         $router->addRoute('post', '/stripe/hooks', 'Stripe#hooks');

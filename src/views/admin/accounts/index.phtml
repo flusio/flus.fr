@@ -1,0 +1,47 @@
+<?php
+    $this->layout('admin.phtml', [
+        'title' => 'Comptes utilisateurices',
+    ]);
+?>
+
+<div class="header">
+    <h1 class="header__title">Comptes utilisateurices</h1>
+</div>
+
+<p class="paragraph--center">
+    <a href="<?= url('admin') ?>">
+        Voir les paiements
+    </a>
+</p>
+
+<?php if ($accounts): ?>
+    <table>
+        <tbody>
+            <?php foreach ($accounts as $account): ?>
+                <tr>
+                    <td>
+                        <?= $this->protect($account->email) ?>
+                    </td>
+
+                    <td>
+                        <?php if ($account->isFree()): ?>
+                            gratuit
+                        <?php else: ?>
+                            <?= format_date($account->expired_at, '%d %B %Y') ?>
+                        <?php endif; ?>
+                    </td>
+
+                    <td>
+                        <a href="<?= url('admin account', ['id' => $account->id]) ?>">
+                            Voir
+                        </a>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+<?php else: ?>
+    <p class="paragraph--center paragraph--secondary">
+        Il n’y a aucun compte à afficher.
+    </p>
+<?php endif; ?>

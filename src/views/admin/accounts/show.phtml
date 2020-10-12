@@ -1,26 +1,44 @@
 <?php
     $this->layout('admin.phtml', [
-        'title' => 'Paiements en ' . $year,
+        'title' => 'Compte utilisateurice',
     ]);
 ?>
 
 <div class="header">
-    <h1 class="header__title">Paiements en <?= $year ?></h1>
+    <h1 class="header__title">
+        Abonnement de <?= $this->protect($account->email) ?>
+    </h1>
 </div>
 
 <p class="paragraph--center">
     <a href="<?= url('admin accounts') ?>">
-        Voir les comptes
+        Retourner aux comptes
     </a>
 </p>
 
-<a href="<?= url('new admin payment') ?>">
-    Créer un paiement
-</a>
+<div class="section__intro">
+    <p>
+        <?php if ($account->isFree()): ?>
+            Cette personne bénéficie d’un abonnement gratuit.
+        <?php elseif ($account->hasExpired()): ?>
+            <strong>
+                Son abonnement a expiré le <?= format_date($account->expired_at, '%d %B %Y') ?>.
+            </strong>
+        <?php else: ?>
+            Son abonnement expirera le <strong><?= format_date($account->expired_at, '%d %B %Y') ?>.</strong>
+        <?php endif; ?>
+    </p>
+</div>
 
-<?php foreach ($payments_by_months as $month => $payments): ?>
-    <h2><?= format_month($month, '%B') ?></h2>
+<hr />
 
+<div class="header">
+    <h2 class="header__title">
+        Paiements passés
+    </h2>
+</div>
+
+<?php if ($payments): ?>
     <table>
         <tbody>
             <?php foreach ($payments as $payment): ?>
@@ -42,16 +60,10 @@
                     </td>
 
                     <td>
-                        <?= $payment->email ?>
-                    </td>
-
-                    <td>
                         <?php if ($payment->completed_at): ?>
-                            <?= format_date($payment->completed_at, '%d %b') ?>
+                            <?= format_date($payment->completed_at, '%d %b %Y') ?>
                         <?php else: ?>
-                            <a href="<?= url('admin payment', ['id' => $payment->id]) ?>">
-                                non payé
-                            </a>
+                            non payée
                         <?php endif; ?>
                     </td>
 
@@ -62,16 +74,12 @@
                             </a>
                         <?php endif; ?>
                     </td>
-
-                    <?php if ($payment->payment_intent_id): ?>
-                        <td>
-                            <a href="https://dashboard.stripe.com/payments/<?= $payment->payment_intent_id ?>">
-                                💰&nbsp;Stripe
-                            </a>
-                        </td>
-                    <?php endif; ?>
                 </tr>
             <?php endforeach; ?>
         </tbody>
     </table>
-<?php endforeach; ?>
+<?php else: ?>
+    <p class="paragraph--center paragraph--secondary">
+        Il n’y a aucun paiement à afficher.
+    </p>
+<?php endif; ?>
