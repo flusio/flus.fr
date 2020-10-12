@@ -11,19 +11,39 @@
         </h1>
     </div>
 
-    <p class="section__intro">
-        <?= $this->protect($account->email) ?><br />
+    <div class="section__intro">
+        <p>
+            <?= $this->protect($account->email) ?><br />
 
-        <?php if ($account->isFree()): ?>
-            Vous bénéficiez d’un abonnement gratuit, veinard‧e.
-        <?php elseif ($account->hasExpired()): ?>
-            <strong>
-                Votre abonnement a expiré le <?= format_date($account->expired_at, '%d %B %Y') ?>.
-            </strong>
-        <?php else: ?>
-            Votre abonnement expirera le <strong><?= format_date($account->expired_at, '%d %B %Y') ?>.</strong>
+            <?php if ($account->isFree()): ?>
+                Vous bénéficiez d’un abonnement gratuit, veinard‧e.
+            <?php elseif ($account->hasExpired()): ?>
+                <strong>
+                    Votre abonnement a expiré le <?= format_date($account->expired_at, '%d %B %Y') ?>.
+                </strong>
+            <?php else: ?>
+                Votre abonnement expirera le <strong><?= format_date($account->expired_at, '%d %B %Y') ?>.</strong>
+                <?php if ($account->reminder): ?>
+                    Vous recevrez un courriel à l’approche de l’échéance.
+                <?php endif; ?>
+            <?php endif; ?>
+        </p>
+
+        <?php if (!$account->isFree()): ?>
+            <form method="post" action="<?= url('account set reminder') ?>">
+                <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+                <?php if ($account->reminder): ?>
+                    <button type="submit" class="button--ghost" name="reminder" value="false">
+                        Désactiver le rappel
+                    </button>
+                <?php else: ?>
+                    <button type="submit" class="button--default" name="reminder" value="true">
+                        Activer un rappel
+                    </button>
+                <?php endif; ?>
+            </form>
         <?php endif; ?>
-    </p>
+    </div>
 
     <?php if ($no_address): ?>
         <p class="paragraph--center paragraph--limit">

@@ -172,4 +172,41 @@ class Accounts
 
         return \Minz\Response::redirect('account');
     }
+
+    /**
+     * @request_param string csrf
+     * @request_param boolean reminder
+     *
+     * @response 401
+     *     if the user is not connected
+     * @response 400
+     *     if csrf is invalid
+     * @response 302 /account
+     *     on success
+     *
+     * @param \Minz\Request $request
+     *
+     * @return \Minz\Response
+     */
+    public function setReminder($request)
+    {
+        $user = utils\CurrentUser::get();
+        if (!$user || utils\CurrentUser::isAdmin()) {
+            return \Minz\Response::unauthorized('unauthorized.phtml');
+        }
+
+        $account_dao = new models\dao\Account();
+        $db_account = $account_dao->find($user['account_id']);
+        $account = new models\Account($db_account);
+
+        $reminder = $request->param('reminder', false);
+
+        $csrf = new \Minz\CSRF();
+        if ($csrf->validateToken($request->param('csrf'))) {
+            $account->reminder = filter_var($reminder, FILTER_VALIDATE_BOOLEAN);
+            $account_dao->save($account);
+        }
+
+        return \Minz\Response::redirect('account');
+    }
 }

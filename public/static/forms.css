@@ -1,3 +1,21 @@
+.button--default {
+    padding: .5em 1em;
+
+    font-size: 1em;
+    color: var(--color-text);
+
+    background-color: var(--color-grey-3);
+    border: .2rem solid var(--color-grey-1);
+    border-radius: 1.5em;
+
+    transition: background-color .2s ease-in-out;
+}
+
+.button--default:hover,
+.button--default:focus {
+    background-color: var(--color-grey-2);
+}
+
 .button--primary {
     padding: .5em 1.5em;
 

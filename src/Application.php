@@ -30,6 +30,7 @@ class Application
 
         $router->addRoute('get', '/account', 'Accounts#show', 'account');
         $router->addRoute('get', '/account/login', 'Accounts#login', 'account login');
+        $router->addRoute('post', '/account/reminder', 'Accounts#setReminder', 'account set reminder');
         $router->addRoute('get', '/account/address', 'Accounts#address', 'account address');
         $router->addRoute('post', '/account/address', 'Accounts#updateAddress', 'account update address');
         $router->addRoute('get', '/account/renew', 'Subscriptions#init', 'subscription init');
@@ -68,6 +69,7 @@ class Application
         $router->addRoute('cli', '/accounts', 'cli/Accounts#index');
         $router->addRoute('cli', '/accounts/create', 'cli/Accounts#create');
         $router->addRoute('cli', '/accounts/login-url', 'cli/Accounts#loginUrl');
+        $router->addRoute('cli', '/accounts/remind', 'cli/Accounts#remind');
 
         // TODO The following routes are deprecated and will be removed in the future.
         $router->addRoute('get', '/payments/:id', 'api/Payments#show');

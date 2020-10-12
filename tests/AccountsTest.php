@@ -453,6 +453,63 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 400, 'Le pays que vous avez renseigné est invalide.');
     }
 
+    public function testSetReminderChangesReminder()
+    {
+        $old_reminder = $this->fake('boolean');
+        $new_reminder = !$old_reminder;
+        $user = $this->loginUser([
+            'reminder' => $old_reminder,
+        ]);
+        $account_dao = new models\dao\Account();
+
+        $response = $this->appRun('POST', '/account/reminder', [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'reminder' => $new_reminder,
+        ]);
+
+        $this->assertResponse($response, 302, '/account');
+        $account = new models\Account($account_dao->find($user['account_id']));
+        $this->assertSame($new_reminder, $account->reminder);
+    }
+
+    public function testSetReminderFailsIfNotConnected()
+    {
+        $old_reminder = $this->fake('boolean');
+        $new_reminder = !$old_reminder;
+        $account_id = $this->create('account', [
+            'reminder' => $old_reminder,
+        ]);
+        $account_dao = new models\dao\Account();
+
+        $response = $this->appRun('POST', '/account/reminder', [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'reminder' => $new_reminder,
+        ]);
+
+        $this->assertResponse($response, 401);
+        $account = new models\Account($account_dao->find($account_id));
+        $this->assertSame($old_reminder, $account->reminder);
+    }
+
+    public function testSetReminderFailsIfCsrfIsInvalid()
+    {
+        $old_reminder = $this->fake('boolean');
+        $new_reminder = !$old_reminder;
+        $user = $this->loginUser([
+            'reminder' => $old_reminder,
+        ]);
+        $account_dao = new models\dao\Account();
+
+        $response = $this->appRun('POST', '/account/reminder', [
+            'csrf' => 'not the token',
+            'reminder' => $new_reminder,
+        ]);
+
+        $this->assertResponse($response, 302, '/account');
+        $account = new models\Account($account_dao->find($user['account_id']));
+        $this->assertSame($old_reminder, $account->reminder);
+    }
+
     public function updateAddressProvider()
     {
         $faker = \Faker\Factory::create();

@@ -1,0 +1,34 @@
+<p>
+    Bonjour,
+</p>
+
+<p>
+    Vous recevez ce courriel car vous possédez un compte Flus qui arrive à
+    échéance le <?= format_date($expired_at, '%d %B %Y') ?>.
+    Si vous voulez continuer à utiliser le service après cette date, vous
+    devrez renouveler votre abonnement.
+</p>
+
+<p>
+    Si vous le souhaitez, vous pouvez effectuer ce renouvellement dès
+    maintenant&nbsp;: votre nouvel abonnement prendra effet dès la fin de la
+    période actuelle. Pour cela, il vous suffit de suivre le lien suivant
+    (valide une fois pendant 24h)&nbsp;:
+</p>
+
+<p>
+    <a href="<?= $login_url ?>"><?= $login_url ?></a>
+</p>
+
+<p>
+    Si le lien précédent ne fonctionne pas, vous pouvez vous
+    <a href="https://flus.io/">connecter à FreshRSS, menu «&nbsp;Facturation&nbsp;»</a>.
+</p>
+
+<p>
+    En vous remerciant de votre soutien,
+</p>
+
+<p>
+    Marien
+</p>

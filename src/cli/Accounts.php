@@ -3,6 +3,7 @@
 namespace Website\cli;
 
 use Website\models;
+use Website\mailers;
 
 /**
  * @author Marien Fressinaud <dev@marienfressinaud.fr>
@@ -90,5 +91,63 @@ class Accounts
         ]);
 
         return \Minz\Response::Text(200, $login_url);
+    }
+
+    /**
+     * @response 200
+     *
+     * @param \Minz\Request $request
+     *
+     * @return \Minz\Response
+     */
+    public function remind($request)
+    {
+        $account_dao = new models\dao\Account();
+        $token_dao = new models\dao\Token();
+        $mailer = new mailers\Accounts();
+
+        $db_accounts = $account_dao->listBy([
+            'reminder' => true,
+        ]);
+        $number_reminders = 0;
+
+        foreach ($db_accounts as $db_account) {
+            $account = new models\Account($db_account);
+            if ($account->isFree()) {
+                continue;
+            }
+
+            $today = \Minz\Time::now();
+            $interval = $today->diff($account->expired_at);
+            $diff_days = $interval->days;
+
+            if ($interval->invert === 1 && $diff_days === 1) {
+                // subscription ended yesterday
+
+                // First create a login token
+                $token = models\Token::init(24, 'hours');
+                $account->access_token = $token->token;
+                $token_dao->save($token);
+                $account_dao->save($account);
+
+                // Then, send the email
+                $mailer->sendReminderSubscriptionEnded($account);
+                $number_reminders += 1;
+            } elseif ($interval->invert === 0 && ($diff_days === 2 || $diff_days === 7)) {
+                // subscription end in 2 or 7 days
+
+                // First create a login token
+                $token = models\Token::init(24, 'hours');
+                $account->access_token = $token->token;
+                $token_dao->save($token);
+                $account_dao->save($account);
+
+                // Then, send the email
+                $mailer->sendReminderSubscriptionEnding($account);
+                $number_reminders += 1;
+            }
+        }
+
+        return \Minz\Response::text(200, "{$number_reminders} reminders sent");
     }
 }

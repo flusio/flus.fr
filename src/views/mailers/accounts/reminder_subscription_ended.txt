@@ -1,0 +1,21 @@
+Bonjour,
+
+Vous recevez ce courriel car vous possédez un compte Flus qui a expiré le <?= format_date($expired_at, '%d %B %Y') ?>.
+Si vous voulez continuer à utiliser le service, vous devez renouveler votre
+abonnement.
+
+Pour cela, il vous suffit de suivre le lien suivant (valide une fois pendant 24h) :
+
+<?= $this->safe('login_url') ?>
+
+
+Si le lien précédent ne fonctionne pas, vous pouvez vous connecter à FreshRSS,
+menu « Facturation » ( https://flus.io/ ).
+
+Si vous avez décidé d’arrêter d’utiliser Flus mais souhaitez récupérer vos
+données (ou pour toute autre question), vous pouvez me contacter à l’adresse
+suivante : support@flus.io
+
+En vous remerciant de votre soutien,
+
+Marien
