@@ -15,6 +15,7 @@ class Accounts
      * @request_header string PHP_AUTH_USER
      * @request_param string email
      * @request_param datetime expired_at (TODO temporary, to allow a migration)
+     * @request_param boolean reminder (TODO temporary, to allow a migration)
      *
      * @response 401
      *     if the auth header is invalid
@@ -37,6 +38,7 @@ class Accounts
 
         $email = utils\Email::sanitize($request->param('email', ''));
         $expired_at = $request->param('expired_at');
+        $reminder = $request->param('reminder', false);
         $account_dao = new models\dao\Account();
         $db_account = $account_dao->findBy([
             'email' => $email,
@@ -49,6 +51,7 @@ class Accounts
             if ($expired_at) {
                 $account->setExpiredAt($expired_at);
             }
+            $account->reminder = filter_var($reminder, FILTER_VALIDATE_BOOLEAN);
 
             $errors = $account->validate();
             if ($errors) {
