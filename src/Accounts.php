@@ -75,6 +75,24 @@ class Accounts
     }
 
     /**
+     * @response 302
+     *
+     * @param \Minz\Request $request
+     *
+     * @return \Minz\Response
+     */
+    public function logout($request)
+    {
+        $user = utils\CurrentUser::get();
+        $csrf = new \Minz\CSRF();
+        if ($csrf->validateToken($request->param('csrf')) && $user) {
+            utils\CurrentUser::logOut();
+        }
+
+        return \Minz\Response::redirect('home');
+    }
+
+    /**
      * @response 401
      *     if the user is not connected
      * @response 200

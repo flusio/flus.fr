@@ -30,6 +30,7 @@ class Application
 
         $router->addRoute('get', '/account', 'Accounts#show', 'account');
         $router->addRoute('get', '/account/login', 'Accounts#login', 'account login');
+        $router->addRoute('post', '/account/logout', 'Accounts#logout', 'account logout');
         $router->addRoute('post', '/account/reminder', 'Accounts#setReminder', 'account set reminder');
         $router->addRoute('get', '/account/address', 'Accounts#address', 'account address');
         $router->addRoute('post', '/account/address', 'Accounts#updateAddress', 'account update address');

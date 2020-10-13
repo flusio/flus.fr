@@ -237,6 +237,32 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($user);
     }
 
+    public function testLogoutRedirectsToShow()
+    {
+        $this->loginUser();
+
+        $response = $this->appRun('POST', '/account/logout', [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+        ]);
+
+        $this->assertResponse($response, 302, '/');
+        $user = utils\CurrentUser::get();
+        $this->assertNull($user);
+    }
+
+    public function testLogoutDoesNotLogOutIfCsrfIsInvalid()
+    {
+        $this->loginUser();
+
+        $response = $this->appRun('POST', '/account/logout', [
+            'csrf' => 'not the token',
+        ]);
+
+        $this->assertResponse($response, 302, '/');
+        $user = utils\CurrentUser::get();
+        $this->assertNotNull($user);
+    }
+
     public function testAddressRendersCorrectly()
     {
         $this->loginUser();
