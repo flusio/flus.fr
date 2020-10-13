@@ -199,26 +199,6 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($expired_at, $output['expired_at']);
     }
 
-    public function testExpiredAtReturnsNoExpirationIfSetTo19700101()
-    {
-        $expired_at = (new \DateTime('1970-01-01'))->format(\Minz\Model::DATETIME_FORMAT);
-        $account_id = $this->create('account', [
-            'expired_at' => $expired_at,
-        ]);
-
-        $response = $this->appRun('GET', '/api/account/expired-at', [
-            'account_id' => $account_id,
-        ], [
-            'PHP_AUTH_USER' => \Minz\Configuration::$application['flus_private_key'],
-        ]);
-
-        $this->assertResponse($response, 200, null, [
-            'Content-Type' => 'application/json'
-        ]);
-        $output = json_decode($response->render(), true);
-        $this->assertSame('no expiration', $output['expired_at']);
-    }
-
     public function testExpiredAtFailsIfMissingAuth()
     {
         $expired_at = $this->fake('dateTime')->format(\Minz\Model::DATETIME_FORMAT);

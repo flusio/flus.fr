@@ -157,13 +157,8 @@ class Accounts
         }
 
         $account = new models\Account($db_account);
-        if ($account->expired_at->getTimestamp() > 0) {
-            $expired_at = $account->expired_at->format(\Minz\Model::DATETIME_FORMAT);
-        } else {
-            $expired_at = 'no expiration';
-        }
         $json_output = json_encode([
-            'expired_at' => $expired_at,
+            'expired_at' => $account->expired_at->format(\Minz\Model::DATETIME_FORMAT),
         ]);
 
         $output = new \Minz\Output\Text($json_output);
