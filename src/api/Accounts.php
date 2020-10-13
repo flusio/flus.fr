@@ -64,6 +64,7 @@ class Accounts
 
         $json_output = json_encode([
             'id' => $account->id,
+            'expired_at' => $account->expired_at->format(\Minz\Model::DATETIME_FORMAT),
         ]);
 
         $output = new \Minz\Output\Text($json_output);
