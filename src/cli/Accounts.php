@@ -148,6 +148,10 @@ class Accounts
             }
         }
 
-        return \Minz\Response::text(200, "{$number_reminders} reminders sent");
+        if ($number_reminders > 0) {
+            return \Minz\Response::text(200, "{$number_reminders} reminders sent");
+        } else {
+            return \Minz\Response::text(200, '');
+        }
     }
 }

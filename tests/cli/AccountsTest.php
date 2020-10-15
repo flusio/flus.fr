@@ -88,7 +88,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('cli', '/accounts/remind');
 
-        $this->assertResponse($response, 200, '0 reminders sent');
+        $this->assertResponse($response, 200);
         $this->assertEmailsCount(0);
     }
 
@@ -103,7 +103,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('cli', '/accounts/remind');
 
-        $this->assertResponse($response, 200, '0 reminders sent');
+        $this->assertResponse($response, 200);
         $this->assertEmailsCount(0);
     }
 }

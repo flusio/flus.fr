@@ -51,5 +51,8 @@ $application = new \Website\Application();
 $response = $application->run($request);
 
 // Display the content
-echo $response->render();
-echo "\n";
+$render = $response->render();
+if ($render) {
+    echo $render;
+    echo "\n";
+}

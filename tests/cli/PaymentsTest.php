@@ -120,7 +120,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('CLI', '/payments/complete');
 
-        $this->assertResponse($response, 200, '0 payments completed');
+        $this->assertResponse($response, 200);
         $payment = new models\Payment($payment_dao->find($payment_id));
         $this->assertSame($completed_at->getTimestamp(), $payment->completed_at->getTimestamp());
     }
@@ -135,7 +135,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('CLI', '/payments/complete');
 
-        $this->assertResponse($response, 200, '0 payments completed');
+        $this->assertResponse($response, 200);
         $payment = new models\Payment($payment_dao->find($payment_id));
         $this->assertNull($payment->completed_at);
     }

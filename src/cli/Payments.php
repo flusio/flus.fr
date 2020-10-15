@@ -47,6 +47,10 @@ class Payments
             $invoice_mailer->sendInvoice($payment->email, $payment->invoiceFilepath());
         }
 
-        return \Minz\Response::text(200, "{$number_payments} payments completed");
+        if ($number_payments > 0) {
+            return \Minz\Response::text(200, "{$number_payments} payments completed");
+        } else {
+            return \Minz\Response::text(200, '');
+        }
     }
 }
