@@ -44,11 +44,6 @@ class Application
         $router->addRoute('get', '/api/account/login-url', 'api/Accounts#loginUrl');
         $router->addRoute('get', '/api/account/expired-at', 'api/Accounts#expiredAt');
 
-        $router->addRoute('get', '/api/payments/:id', 'api/Payments#show');
-        $router->addRoute('post', '/api/payments/subscriptions', 'api/Payments#paySubscription');
-
-        $router->addRoute('get', '/api/invoices/pdf/:id', 'api/Invoices#downloadPdf');
-
         $router->addRoute('get', '/admin', 'admin/Payments#index', 'admin');
         $router->addRoute('get', '/admin/login', 'admin/Auth#login', 'login');
         $router->addRoute('post', '/admin/login', 'admin/Auth#createSession', 'create_session');
@@ -73,11 +68,6 @@ class Application
         $router->addRoute('cli', '/accounts/create', 'cli/Accounts#create');
         $router->addRoute('cli', '/accounts/login-url', 'cli/Accounts#loginUrl');
         $router->addRoute('cli', '/accounts/remind', 'cli/Accounts#remind');
-
-        // TODO The following routes are deprecated and will be removed in the future.
-        $router->addRoute('get', '/payments/:id', 'api/Payments#show');
-        $router->addRoute('post', '/payments/subscriptions', 'api/Payments#paySubscription');
-        $router->addRoute('get', '/invoices/pdf/:id', 'api/Invoices#downloadPdf');
 
         $this->engine = new \Minz\Engine($router);
         \Minz\Url::setRouter($router);
