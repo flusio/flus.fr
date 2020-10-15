@@ -1,6 +1,6 @@
 <?php
 
-namespace Website\api;
+namespace Website;
 
 class InvoicesTest extends \PHPUnit\Framework\TestCase
 {
@@ -24,27 +24,6 @@ class InvoicesTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider completedParametersProvider
      */
-    public function testDownloadPdfRendersAPdf($completed_at, $invoice_number)
-    {
-        $payment_id = $this->create('payment', [
-            'completed_at' => $completed_at->format(\Minz\Model::DATETIME_FORMAT),
-            'invoice_number' => $invoice_number,
-        ]);
-
-        $response = $this->appRun('GET', '/invoices/pdf/' . $payment_id, [], [
-            'PHP_AUTH_USER' => \Minz\Configuration::$application['flus_private_key'],
-        ]);
-
-        $expected_filename = "facture_{$invoice_number}.pdf";
-        $this->assertResponse($response, 200, null, [
-            'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'attachment; filename="' . $expected_filename . '"',
-        ]);
-    }
-
-    /**
-     * @dataProvider completedParametersProvider
-     */
     public function testDownloadPdfWithAuthenticatedAdminRendersAPdf($completed_at, $invoice_number)
     {
         $this->loginAdmin();
@@ -54,7 +33,7 @@ class InvoicesTest extends \PHPUnit\Framework\TestCase
             'invoice_number' => $invoice_number,
         ]);
 
-        $response = $this->appRun('GET', '/invoices/pdf/' . $payment_id);
+        $response = $this->appRun('GET', "/invoices/{$payment_id}/pdf");
 
         $expected_filename = "facture_{$invoice_number}.pdf";
         $this->assertResponse($response, 200, null, [
@@ -76,7 +55,7 @@ class InvoicesTest extends \PHPUnit\Framework\TestCase
             'account_id' => $user['account_id'],
         ]);
 
-        $response = $this->appRun('GET', '/invoices/pdf/' . $payment_id);
+        $response = $this->appRun('GET', "/invoices/{$payment_id}/pdf");
 
         $expected_filename = "facture_{$invoice_number}.pdf";
         $this->assertResponse($response, 200, null, [
@@ -87,22 +66,21 @@ class InvoicesTest extends \PHPUnit\Framework\TestCase
 
     public function testDownloadPdfWithNonExistingPaymentReturnsNotFound()
     {
-        $response = $this->appRun('GET', '/invoices/pdf/not_an_existing_id', [], [
-            'PHP_AUTH_USER' => \Minz\Configuration::$application['flus_private_key'],
-        ]);
+        $this->loginAdmin();
+
+        $response = $this->appRun('GET', '/invoices/not-an-id/pdf');
 
         $this->assertResponse($response, 404);
     }
 
     public function testDownloadPdfWithPaymentWithNoInvoiceNumberReturnsNotFound()
     {
+        $this->loginAdmin();
         $payment_id = $this->create('payment', [
             'invoice_number' => null,
         ]);
 
-        $response = $this->appRun('GET', '/invoices/pdf/' . $payment_id, [], [
-            'PHP_AUTH_USER' => \Minz\Configuration::$application['flus_private_key'],
-        ]);
+        $response = $this->appRun('GET', "/invoices/{$payment_id}/pdf");
 
         $this->assertResponse($response, 404);
     }
@@ -117,7 +95,7 @@ class InvoicesTest extends \PHPUnit\Framework\TestCase
             'invoice_number' => $invoice_number,
         ]);
 
-        $response = $this->appRun('GET', '/invoices/pdf/' . $payment_id);
+        $response = $this->appRun('GET', "/invoices/{$payment_id}/pdf");
 
         $this->assertResponse($response, 401);
     }
@@ -135,7 +113,7 @@ class InvoicesTest extends \PHPUnit\Framework\TestCase
             'account_id' => $account_id,
         ]);
 
-        $response = $this->appRun('GET', '/invoices/pdf/' . $payment_id);
+        $response = $this->appRun('GET', "/invoices/{$payment_id}/pdf");
 
         $this->assertResponse($response, 401);
     }

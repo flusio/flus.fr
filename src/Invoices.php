@@ -1,21 +1,25 @@
 <?php
 
-namespace Website\api;
+namespace Website;
 
-use Website\models;
-use Website\services;
-use Website\utils;
-
+/**
+ * @author Marien Fressinaud <dev@marienfressinaud.fr>
+ * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
+ */
 class Invoices
 {
     /**
      * Serve (and generate if needed) a PDF invoice
      *
-     * Parameter is:
+     * @request_param string id
+     *     The id of the payment
      *
-     * - `id`, the id of the payment
-     *
-     * The request must be authenticated (basic auth) with the Flus token.
+     * @response 404
+     *     If the payment doesn't exist or has no invoice_number
+     * @response 401
+     *     If the user is not connected or doesn't own the payment
+     * @response 200
+     *     On success
      *
      * @param \Minz\Request $request
      *
@@ -38,9 +42,7 @@ class Invoices
         $is_admin = utils\CurrentUser::isAdmin();
         $user = utils\CurrentUser::get();
         $account_owns = $user && $user['account_id'] === $payment->account_id;
-        $auth_token = $request->header('PHP_AUTH_USER', '');
-        $private_key = \Minz\Configuration::$application['flus_private_key'];
-        if (!$is_admin && !$account_owns && !hash_equals($private_key, $auth_token)) {
+        if (!$is_admin && !$account_owns) {
             return \Minz\Response::unauthorized();
         }
 

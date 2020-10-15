@@ -22,7 +22,8 @@ $http_parameters = array_merge(
 
 if (
     substr($http_uri, 0, 6) === '/admin' ||
-    substr($http_uri, 0, 8) === '/account'
+    substr($http_uri, 0, 8) === '/account' ||
+    substr($http_uri, 0, 9) === '/invoices'
 ) {
     \Minz\Environment::startSession();
 }

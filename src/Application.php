@@ -36,9 +36,10 @@ class Application
         $router->addRoute('post', '/account/address', 'Accounts#updateAddress', 'account update address');
         $router->addRoute('get', '/account/renew', 'Subscriptions#init', 'subscription init');
         $router->addRoute('post', '/account/renew', 'Subscriptions#renew', 'subscription renew');
-        $router->addRoute('get', '/account/invoices/pdf/:id', 'api/Invoices#downloadPdf', 'account download pdf');
 
         $router->addRoute('get', '/payments/:id/pay', 'Payments#pay');
+
+        $router->addRoute('get', '/invoices/:id/pdf', 'Invoices#downloadPdf', 'invoice download pdf');
 
         $router->addRoute('get', '/api/account', 'api/Accounts#show');
         $router->addRoute('get', '/api/account/login-url', 'api/Accounts#loginUrl');
@@ -55,7 +56,6 @@ class Application
         $router->addRoute('post', '/admin/payments/:id/destroy', 'admin/Payments#destroy', 'destroy admin payment');
         $router->addRoute('get', '/admin/accounts', 'admin/Accounts#index', 'admin accounts');
         $router->addRoute('get', '/admin/accounts/:id', 'admin/Accounts#show', 'admin account');
-        $router->addRoute('get', '/admin/invoices/pdf/:id', 'api/Invoices#downloadPdf', 'download_pdf_from_admin');
 
         $router->addRoute('post', '/stripe/hooks', 'Stripe#hooks');
 
