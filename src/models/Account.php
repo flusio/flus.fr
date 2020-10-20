@@ -100,14 +100,6 @@ class Account extends \Minz\Model
     }
 
     /**
-     * @param string $expired_at
-     */
-    public function setExpiredAt($expired_at)
-    {
-        $this->expired_at = date_create_from_format(\Minz\Model::DATETIME_FORMAT, $expired_at);
-    }
-
-    /**
      * Extend the subscription period by the given frequency
      *
      * @param string $frequency (`month` or `year`)

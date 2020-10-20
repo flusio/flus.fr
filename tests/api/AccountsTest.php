@@ -63,26 +63,6 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider showParamsProvider
      */
-    public function testShowAcceptsExpiredAtToCreateAccount($email)
-    {
-        $account_dao = new models\dao\Account();
-        $expired_at = $this->fake('dateTime');
-
-        $response = $this->appRun('GET', '/api/account', [
-            'email' => $email,
-            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
-        ], [
-            'PHP_AUTH_USER' => \Minz\Configuration::$application['flus_private_key'],
-        ]);
-
-        $this->assertSame(1, $account_dao->count());
-        $account = new models\Account($account_dao->listAll()[0]);
-        $this->assertSame($expired_at->getTimestamp(), $account->expired_at->getTimestamp());
-    }
-
-    /**
-     * @dataProvider showParamsProvider
-     */
     public function testShowFailsIfMissingAuth($email)
     {
         $account_id = $this->create('account', [
