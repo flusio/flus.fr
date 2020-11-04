@@ -2,5 +2,6 @@
 <gupdate xmlns="http://www.google.com/update2/response" protocol="2.0">
     <app appid="lbbadpgibpjaoadkieangdkifgehbbol">
         <updatecheck codebase="<?= url_full_public('addons/flusio-browser-0.3.crx') ?>" version="0.3" />
+        <updatecheck codebase="<?= url_full_public('addons/flusio-browser-0.4.crx') ?>" version="0.4" />
     </app>
 </gupdate>
