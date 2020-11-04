@@ -15,12 +15,4 @@ class Addons
     {
         return \Minz\Response::ok('addons/gecko_update.json');
     }
-
-    /**
-     * @response 200
-     */
-    public function chromeUpdate($request)
-    {
-        return \Minz\Response::ok('addons/chrome_update.xml');
-    }
 }

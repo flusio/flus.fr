@@ -29,7 +29,6 @@ class Application
         $router->addRoute('get', '/sitemap.xml', 'Home#sitemap', 'sitemap.xml');
 
         $router->addRoute('get', '/addons/updates.json', 'Addons#geckoUpdate');
-        $router->addRoute('get', '/addons/updates.xml', 'Addons#chromeUpdate');
 
         $router->addRoute('get', '/account', 'Accounts#show', 'account');
         $router->addRoute('get', '/account/login', 'Accounts#login', 'account login');
