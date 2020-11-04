@@ -1,0 +1,12 @@
+{
+    "addons": {
+        "{4f83b8ac-d692-44f8-9a5d-d018c9865bea}": {
+            "updates": [
+                {
+                    "version": "0.3",
+                    "update_link": "<?= url_full_public('addons/flusio-browser-0.3.xpi') ?>"
+                }
+            ]
+        }
+    }
+}
