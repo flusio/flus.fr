@@ -9,6 +9,10 @@
                 {
                     "version": "0.4",
                     "update_link": "<?= url_full_public('addons/flusio-browser-0.4.xpi') ?>"
+                },
+                {
+                    "version": "0.5",
+                    "update_link": "<?= url_full_public('addons/flusio-browser-0.5.xpi') ?>"
                 }
             ]
         }
