@@ -77,6 +77,33 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $this->assertEmailContainsBody($email_sent, 'En vous remerciant de votre soutien');
     }
 
+    public function testRemindSendsDifferentEmailsToDifferentPeople()
+    {
+        $email_1 = $this->fakeUnique('email');
+        $email_2 = $this->fakeUnique('email');
+        $this->create('account', [
+            'reminder' => true,
+            'expired_at' => \Minz\Time::ago(1, 'day')->format(\Minz\Model::DATETIME_FORMAT),
+            'email' => $email_1,
+        ]);
+        $this->create('account', [
+            'reminder' => true,
+            'expired_at' => \Minz\Time::ago(1, 'day')->format(\Minz\Model::DATETIME_FORMAT),
+            'email' => $email_2,
+        ]);
+
+        $this->assertEmailsCount(0);
+
+        $response = $this->appRun('cli', '/accounts/remind');
+
+        $this->assertResponse($response, 200, '2 reminders sent');
+        $this->assertEmailsCount(2);
+        $email_sent_1 = \Minz\Tests\Mailer::take(0);
+        $this->assertEmailEqualsTo($email_sent_1, [$email_1]);
+        $email_sent_2 = \Minz\Tests\Mailer::take(1);
+        $this->assertEmailEqualsTo($email_sent_2, [$email_2]);
+    }
+
     public function testRemindDoesNotSendEmailIfReminderIsFalse()
     {
         $email = $this->fake('email');
