@@ -1,0 +1,42 @@
+name: Continuous Integration
+
+on: push
+
+env:
+    NUMBER_OF_DATASETS: 25
+    COVERAGE: --coverage-text
+
+jobs:
+    build:
+        name: PHP ${{ matrix.php-versions }} CI on ${{ matrix.operating-system }}
+
+        runs-on: ${{ matrix.operating-system }}
+
+        strategy:
+            matrix:
+                operating-system: [ubuntu-latest]
+                php-versions: ['7.3', '7.4']
+
+        services:
+            stripe-mock:
+                image: stripemock/stripe-mock:latest
+                ports:
+                    - 127.0.0.1:12111-12112:12111-12112
+
+        steps:
+        - uses: actions/checkout@v2
+          with:
+              submodules: true
+
+        - name: Setup PHP
+          uses: shivammathur/setup-php@v2
+          with:
+              php-version: ${{ matrix.php-versions }}
+              coverage: xdebug
+              extensions: pdo, pdo_pgsql
+
+        - name: Run the linters
+          run: make lint
+
+        - name: Run the test suite (SQLite)
+          run: make test
