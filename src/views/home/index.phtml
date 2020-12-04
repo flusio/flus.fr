@@ -1,444 +1,96 @@
 <?php
     $this->layout('base.phtml', [
-        'title' => 'Flus, média social citoyen',
+        'title' => 'Flus, média social de veille',
         'canonical' => url_full('home'),
-        'description' => 'Flus se transforme pour devenir un lieu apaisé donnant de la voix à celles et ceux qui fréquentent l’information de qualité.',
+        'description' => 'Le média social qui change notre rapport à l’information.',
         'og' => [
             'type' => 'website',
-            'image' => url_full_static('illustrations/collaboration.svg'),
-            'twitter_card' => 'summary_large_image',
+            'image' => url_full_static('flus.png'),
+            'twitter_card' => 'summary',
         ],
     ]);
 ?>
 
 <section class="section section--start" id="start">
-    <p class="paragraph--featured">
-        Flus se transforme pour devenir<br />
-        un média social citoyen.
-    </p>
+    <div class="columns columns--center hello">
+        <div class="columns__item">
+            <h1 class="hello__headline">
+                Le média social qui change<br />notre rapport à l’information.
+            </h1>
 
-    <p class="paragraph--featured">
-        <a class="call-to-action" href="#fonctionnalités">
-            Découvrez les fonctionnalités à venir
-        </a>
-    </p>
-
-    <p class="paragraph--secondary paragraph--center">
-        <a href="https://flus.io/">
-            ou accédez à Flus 1
-        </a>
-    </p>
-</section>
-
-<hr />
-
-<section class="section section--features" id="fonctionnalités">
-    <div class="section__intro">
-        <p>
-            Aujourd’hui, l’information circule principalement via des médias
-            encourageant les interactions courtes et instantanées,
-            court-circuitant ainsi une part de notre capacité de raisonnement.
-        </p>
-
-        <p>
-            <strong>Il est temps de créer un lieu apaisé donnant de la voix à
-                celles et ceux qui fréquentent l’information de qualité et
-                éclairent les sujets de société.</strong>
-        </p>
-    </div>
-
-    <img
-        class="illustration illustration--centered illustration--pull-right collaboration"
-        alt=""
-        src="<?= url_static('illustrations/collaboration.svg') ?>"
-        height="300"
-    />
-
-    <ul class="features">
-        <li class="features__item">
-            Créez &amp; partagez <strong>vos listes thématiques</strong> à
-            partir des articles qui vous sont importants&nbsp;;
-        </li>
-
-        <li class="features__item">
-            Entourez-vous de personnes que vous appréciez pour créer vos listes
-            au sein de communautés&nbsp;;
-        </li>
-
-        <li class="features__item">
-            Discutez avec vos pairs <strong>pour approfondir les sujets qui
-                vous font réagir</strong>, ou initiez des discussions avec
-            d’autres communautés <strong>pour confronter et étayer vos
-                positions</strong>&nbsp;;
-        </li>
-
-        <li class="features__item">
-            Obtenez des suggestions de listes et sites à suivre, ou d’articles
-            à lire en fonction de vos propres critères&nbsp;;
-        </li>
-
-        <li class="features__item">
-            <strong>Obtenez un journal quotidien personnalisé</strong> en
-            fonction de vos abonnements et mettez de côté facilement les
-            articles que vous souhaitez lire plus tard&nbsp;;
-        </li>
-
-        <li class="features__item">
-            Déterminez la pertinence de souscrire à un site sur la base
-            d’indicateurs objectifs –&nbsp;comme sa fréquence de
-            publication&nbsp;– et adaptez les suggestions de lecture <strong>en
-                fonction du temps qui vous est disponible.</strong>
-        </li>
-    </ul>
-
-    <div class="section__outro">
-        <p>
-            <strong>Ces fonctionnalités seront conçues avec l’objectif de
-                servir au mieux les citoyen·nes qui souhaitent s’informer et
-                dans le respect de leur vie privée.</strong> Le code sera libre
-            et documenté pour que n’importe qui puisse s’en emparer.
-        </p>
-
-        <p>
-            Je ferai également appel à des expert·es, notamment en expérience
-            utilisateur·ice, lorsque je le jugerai nécessaire.
-        </p>
-
-        <p>
-            Le développement <a href="https://github.com/flusio/flusio">se
-                passe sur GitHub.</a>
-        </p>
-    </div>
-
-    <img
-        class="illustration illustration--centered browsing"
-        alt=""
-        src="<?= url_static('illustrations/browsing.svg') ?>"
-        height="200"
-    />
-</section>
-
-<section class="section section--revenues" id="revenues">
-    <div class="header">
-        <h2 class="header__title">Financement</h2>
-    </div>
-
-    <div class="section__intro">
-        <p>
-            Je ne crois pas qu’un logiciel soit jamais gratuit, pas même
-            lorsque son code est développé par des bénévoles et offert
-            gracieusement au reste du monde.
-        </p>
-
-        <p>
-            Cela demande toujours du temps et des ressources financières.
-        </p>
-    </div>
-
-    <p>
-        <strong>Une première version bêta sortira au cours de l’automne
-            2020.</strong> Pour cela, Flus sera mon unique activité
-        rémunératrice&nbsp;: je vais avoir besoin de votre aide pour rendre
-        cette nouvelle version de Flus concrète.
-    </p>
-
-    <p>
-        Vous pouvez dès maintenant, au choix, vous créer un compte payant et
-        <strong>bénéficier de la version actuelle de Flus</strong> –&nbsp;sous
-        la forme d’un agrégateur de flux <abbr>RSS</abbr>&nbsp;–, ou bien
-        financer une cagnotte commune pour la prochaine version. <strong>Vous
-            offrirez ainsi des comptes à celles et ceux qui n’auront pas les
-            moyens de payer un abonnement.</strong>
-    </p>
-
-    <div class="revenues__actions">
-        <a class="revenues__button call-to-action" href="https://flus.io/i/?c=auth&amp;a=register">
-            Créez un compte payant
-        </a>
-
-        <a class="revenues__button call-to-action" href="<?= url('common pot') ?>">
-            Participez à la cagnotte commune
-        </a>
-    </div>
-
-    <img
-        class="illustration illustration--centered savings"
-        alt=""
-        src="<?= url_static('illustrations/savings.svg') ?>"
-        height="250"
-    />
-
-    <p>
-        Voici comment je prévois de répartir mes dépenses pour l’année à
-        venir&nbsp;:
-    </p>
-
-    <div class="gauge" style="--gauge-value: <?= $percent_target ?>%;">
-        <p class="gauge__status">
-            Montant récolté&nbsp;: <strong><?= $this->safe('total_revenue') ?>
-                sur <?= $this->safe('revenue_target') ?>&nbsp;€</strong>
-        </p>
-
-        <ul class="gauge__container">
-            <li class="gauge__current"></li>
-
-            <li class="gauge__item gauge__item--purchases">
-                Achats<br />8&nbsp;%
-            </li>
-
-            <li class="gauge__item gauge__item--services">
-                Prestations<br />16,5&nbsp;%
-            </li>
-
-            <li class="gauge__item gauge__item--social">
-                Cotisations<br />16,5&nbsp;%
-            </li>
-
-            <li class="gauge__item gauge__item--salary">
-                Rémunération<br />59&nbsp;%
-            </li>
-        </ul>
-
-        <p class="gauge__about">
-            <a href="<?= url('funding') ?>">
-                en savoir plus
-            </a>
-        </p>
-    </div>
-
-    <p class="paragraph--center">
-        <a href="#humain">
-            «&nbsp;Mais pourquoi je te donnerais de l’argent, t’es qui&nbsp;?&nbsp;»
-        </a>
-    </p>
-</section>
-
-<section class="section section--human" id="humain">
-    <div class="header">
-        <h2 class="header__title">Humain</h2>
-    </div>
-
-    <div class="section__intro">
-        <p>
-            Bien qu’on ait tendance à l’oublier, il y a toujours un·e ou
-            plusieurs humain·es derrière tout service en ligne.
-        </p>
-
-        <p>
-            Avec Flus, je souhaite établir un lien de proximité entre les
-            usager·es et moi-même.
-        </p>
-    </div>
-
-    <p>
-        Je suis Marien, ingénieur en informatique vivant à Grenoble.
-    </p>
-
-    <img
-        class="illustration illustration--centered illustration--pull-right me"
-        alt="Une photo de moi, souriant et un peu barbu, mais ça va, je reste présentable."
-        src="<?= url_static('me.jpg') ?>"
-        height="252"
-    />
-
-    <p>
-        <strong>Je participe depuis maintenant plus de 10 ans à la vaste
-            communauté du logiciel libre.</strong> Il s’agit à la fois d’un
-        plaisir –&nbsp;celui de partager le fruit de mon travail&nbsp;– et d’un
-        engagement. J’ai rejoint pour cela
-        <a href="https://framasoft.org/">l’association Framasoft</a> en 2015.
-        J’y ai trouvé l’espace nécessaire pour politiser ma vision d’un
-        numérique basé sur la notion des communs.
-    </p>
-
-    <p>
-        <strong>Je crois infiniment que l’on peut imaginer un numérique à
-            dimension humaine.</strong> J’ai, comme beaucoup d’entre vous,
-        horreur d’avoir affaire à d’énormes services en ligne sans
-        visage&nbsp;; mon entreprise n’est pas destinée à grossir indéfiniment
-        et je souhaite ainsi garder une taille accessible. N’hésitez pas
-        <a href="<?= url('contact') ?>">à m’interpeler pour discuter&nbsp;!</a>
-    </p>
-
-    <p>
-        <strong>Enfin, j’essaye toujours de tenir un discours honnête.</strong>
-        Je fais de mon mieux pour établir la confiance, notamment en expliquant
-        autant que possible les choix que je fais concernant le service que je
-        mets en ligne. C’est pour moi un engagement de respect envers
-        vous-mêmes.
-    </p>
-</section>
-
-<section class="section section--manifesto" id="manifeste">
-    <div class="header">
-        <h2 class="header__title">Manifeste</h2>
-    </div>
-
-    <div class="section__intro">
-        <p>
-            Ces 10 affirmations forment mon manifeste pour une information de
-            meilleure qualité sur Internet.
-        </p>
-
-        <p>
-            <strong>Il s’agit d’une boussole guidant les choix que je fais pour
-                Flus.</strong>
-        </p>
-    </div>
-
-    <ol class="manifesto">
-        <li class="manifesto__item">
-            S’informer est un acte politique essentiel
-
-            <img
-                class="illustration illustration--centered illustration--pull-left reading"
-                alt=""
-                src="<?= url_static('illustrations/reading.svg') ?>"
-                height="200"
-            />
-        </li>
-
-        <li class="manifesto__item">
-            S’informer doit être accessible au plus grand nombre
-        </li>
-
-        <li class="manifesto__item">
-            Interroger notre bulle de convictions est un acte difficile et
-            nécessaire
-        </li>
-
-        <li class="manifesto__item">
-            Une information complexe doit être traitée par une pluralité de
-            points de vue
-        </li>
-
-        <li class="manifesto__item">
-            Les communautés invitent à questionner le monde qui nous entoure
-        </li>
-
-        <li class="manifesto__item">
-            L’instantanéité des échanges courts est le terreau des réactions
-            émotionnelles et rendent difficile la prise de recul
-        </li>
-
-        <li class="manifesto__item">
-            Notre temps est une ressource précieuse qui ne doit pas se faire
-            accaparer par un besoin d’information
-
-            <img
-                class="illustration illustration--centered illustration--pull-right time"
-                alt=""
-                src="<?= url_static('illustrations/time.svg') ?>"
-                height="200"
-            />
-        </li>
-
-        <li class="manifesto__item">
-            Les premières suggestions faites par une plateforme sont
-            déterminantes, ses algorithmes doivent être transparents
-        </li>
-
-        <li class="manifesto__item">
-            Nous devrions être en mesure de choisir par nous-mêmes les
-            informations qui nous sont suggérées
-        </li>
-
-        <li class="manifesto__item">
-            Il n’est possible de s’informer correctement que sur une plateforme
-            honnête ; code ouvert et respect de la vie privée en sont des
-            conditions
-
-            <img
-                class="illustration illustration--centered illustration--pull-left privacy"
-                alt=""
-                src="<?= url_static('illustrations/privacy.svg') ?>"
-                height="200"
-            />
-        </li>
-    </ol>
-</section>
-
-<hr />
-
-<section class="section section--more" id="plus">
-    <div class="section__intro">
-        <p>
-            Si vous êtes convaincu·e, vous aussi, de l’importance que revêt
-            Flus, vous voudrez peut-être en savoir plus ou me donner un dernier
-            coup de pouce&nbsp;?
-        </p>
-    </div>
-
-    <p class="paragraph--center">
-        <a href="<?= url('common pot') ?>">
-            Contribuer à la cagnotte
-        </a>
-    </p>
-
-    <div class="columns columns--center">
-        <div class="columns__item columns__item--centered">
-            <p class="paragraph--center">
-                <a class="call-to-action" href="carnet/">
-                    Rendez-vous sur le «&nbsp;carnet de flus&nbsp;»
-                </a>
-            </p>
+            <div class="hello__beta">
+                en version beta
+            </div>
         </div>
 
         <div class="columns__item">
-            <p class="paragraph--center">
-                ou partagez autour de vous
+            <div class="hello__registration">
+                <a class="call-to-action" href="https://app.flus.fr/registration">
+                    S’inscrire sur Flus
+                </a>
+            </div>
+
+            <p class="hello__pricing">
+                <small>Le premier mois est <a href="<?= url('pricing') ?>">gratuit</a></small>
             </p>
-
-            <ul class="sharing">
-                <li class="sharing__item sharing__item--mail">
-                    <a
-                        class="sharing__link"
-                        href="mailto:?subject=<?= rawurlencode('Aidons Flus à se développer') ?>&amp;body=<?= rawurlencode('Faites comme moi et soutenez Flus, un futur média social citoyen pour celles et ceux qui veulent s’informer correctement et de manière apaisée en ligne ' . url_full('home')) ?>"
-                        title="Partager par courriel"
-                    >
-                        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
-                            <path fill="#fff" d="M26.667 0h-21.333c-2.934 0-5.334 2.4-5.334 5.334v21.332c0 2.936 2.4 5.334 5.334 5.334h21.333c2.934 0 5.333-2.398 5.333-5.334v-21.332c0-2.934-2.399-5.334-5.333-5.334zM5.707 27.707l-2.414-2.414 8-8 0.914 0.914-6.5 9.5zM4.793 6.207l0.914-0.914 10.293 8.293 10.293-8.293 0.914 0.914-11.207 13.207-11.207-13.207zM26.293 27.707l-6.5-9.5 0.914-0.914 8 8-2.414 2.414z"></path>
-                        </svg>
-                        <span class="sr-only">Courriel</span>
-                    </a>
-                </li>
-
-                <li class="sharing__item sharing__item--twitter">
-                    <a
-                        class="sharing__link"
-                        target="_blank"
-                        rel="noopener noreferrer nofollow"
-                        href="https://twitter.com/intent/tweet?text=<?= rawurlencode('Faites comme moi et soutenez Flus, un futur média social citoyen pour celles et ceux qui veulent s’informer correctement et de manière apaisée en ligne ' . url_full('home')) ?>"
-                        title="Partager sur Twitter"
-                    >
-                        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
-                            <path fill="#fff" d="M32 7.075c-1.175 0.525-2.444 0.875-3.769 1.031 1.356-0.813 2.394-2.1 2.887-3.631-1.269 0.75-2.675 1.3-4.169 1.594-1.2-1.275-2.906-2.069-4.794-2.069-3.625 0-6.563 2.938-6.563 6.563 0 0.512 0.056 1.012 0.169 1.494-5.456-0.275-10.294-2.888-13.531-6.862-0.563 0.969-0.887 2.1-0.887 3.3 0 2.275 1.156 4.287 2.919 5.463-1.075-0.031-2.087-0.331-2.975-0.819 0 0.025 0 0.056 0 0.081 0 3.181 2.263 5.838 5.269 6.437-0.55 0.15-1.131 0.231-1.731 0.231-0.425 0-0.831-0.044-1.237-0.119 0.838 2.606 3.263 4.506 6.131 4.563-2.25 1.762-5.075 2.813-8.156 2.813-0.531 0-1.050-0.031-1.569-0.094 2.913 1.869 6.362 2.95 10.069 2.95 12.075 0 18.681-10.006 18.681-18.681 0-0.287-0.006-0.569-0.019-0.85 1.281-0.919 2.394-2.075 3.275-3.394z"></path>
-                        </svg>
-                        <span class="sr-only">Twitter</span>
-                    </a>
-                </li>
-
-                <li class="sharing__item sharing__item--facebook">
-                    <a
-                        class="sharing__link"
-                        target="_blank"
-                        rel="noopener noreferrer nofollow"
-                        href="https://www.facebook.com/sharer/sharer.php?u=<?= rawurlencode(url_full('home')) ?>"
-                        title="Partager sur Facebook"
-                    >
-                        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
-                            <path fill="#fff" d="M19 6h5v-6h-5c-3.86 0-7 3.14-7 7v3h-4v6h4v16h6v-16h5l1-6h-6v-3c0-0.542 0.458-1 1-1z"></path>
-                        </svg>
-                        <span class="sr-only">Facebook</span>
-                    </a>
-                </li>
-            </ul>
         </div>
     </div>
 
-    <img
-        class="illustration"
-        alt=""
-        src="<?= url_static('illustrations/cup-of-tea.svg') ?>"
-    />
+    <div class="screenshot">
+        <img
+            class="illustration screenshot__image no-mobile"
+            src="<?= url_static('screenshot.jpg') ?>"
+            alt="Capture d’écran affichant le journal de Flus, montrant 3 liens différents."
+        />
+
+        <img
+            class="illustration screenshot__image only-mobile"
+            src="<?= url_static('screenshot-mobile.jpg') ?>"
+            alt="Capture d’écran affichant le journal de Flus sur mobile, montrant 2 liens différents."
+         />
+    </div>
+
+    <ul class="features">
+        <li class="features__item">
+            <span class="features__icon icon icon--only icon--tree"></span>
+
+            <span class="features__title">
+                Un <strong>Journal</strong> pour lire en respectant votre temps disponible
+            </span>
+
+            <span class="features__description">
+                Pas de scroll infini, pas de pub&nbsp;; juste vous et l’info.
+            </span>
+        </li>
+
+        <li class="features__item">
+            <span class="features__icon icon icon--only icon--bookmark"></span>
+
+            <span class="features__title">
+                Des <strong>Signets</strong> pour ranger vos articles à lire plus tard
+            </span>
+
+            <span class="features__description">
+                Votre palanquée d’onglets ouverts ont trouvé une maison.
+            </span>
+        </li>
+
+        <li class="features__item">
+            <span class="features__icon icon icon--only icon--library"></span>
+
+            <span class="features__title">
+                Des <strong>Collections</strong> thématiques pour organiser votre veille
+            </span>
+
+            <span class="features__description">
+                Tout le monde peut bénéficier de votre propre expertise.
+            </span>
+        </li>
+    </ul>
+
+    <p class="paragraph--center">
+        <a href="<?= url('project') ?>">
+            En apprendre plus sur le projet
+        </a>
+    </p>
 </section>

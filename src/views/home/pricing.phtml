@@ -1,0 +1,127 @@
+<?php
+    $this->layout('base.phtml', [
+        'title' => 'Tarifs · Flus',
+        'canonical' => url_full('pricing'),
+        'current_page' => 'pricing',
+        'description' => 'Un prix unique, accessible pour financer directement le projet.',
+        'og' => [
+            'type' => 'website',
+            'image' => url_full_static('flus.png'),
+            'twitter_card' => 'summary',
+        ],
+    ]);
+?>
+
+<section class="section section--text">
+    <div class="header">
+        <h1 class="header__title">Tarifs</h1>
+    </div>
+
+    <p class="section__intro">
+        Un prix unique, accessible pour financer directement le projet.
+    </p>
+
+    <div class="price">
+        <div class="price__month">3&nbsp;€ par mois</div>
+        <div class="price__year">ou 30&nbsp;€ par an</div>
+    </div>
+
+    <p class="paragraph--featured">
+        <a class="call-to-action" href="https://app.flus.fr/">
+            Commencez par un mois gratuit
+        </a>
+    </p>
+
+    <img
+        class="illustration illustration--centered savings"
+        alt=""
+        src="<?= url_static('illustrations/savings.svg') ?>"
+        height="250"
+    />
+
+    <p>
+        Flus est payant afin de me permettre d’en vivre. Cela signifie que
+        j’espère pouvoir travailler dessus à plein temps afin de l’améliorer
+        toujours plus. Vous pouvez tester Flus gratuitement pendant un mois et,
+        si cela vous plaît, soutenez ce petit projet indépendant pour le voir
+        tenir sur la durée.
+    </p>
+
+    <p>
+        Si payer pour un service en ligne vous est compliqué, j’ai mis en place
+        <a href="<?= url('common pot') ?>">une cagnotte commune</a>.
+    </p>
+</section>
+
+<section class="section section--text">
+    <div class="header">
+        <h2 class="header__title">Financement</h2>
+    </div>
+
+    <p class="section__intro">
+        Curieux de connaître mes objectifs financiers et de savoir comment
+        j’utilise mon chiffre d’affaires&nbsp;?
+    </p>
+
+    <div class="gauge" style="--gauge-value: <?= $percent_target ?>%;">
+        <p class="gauge__status">
+            Objectif (1<sup>er</sup> palier)&nbsp;:
+            <strong><?= $this->safe('total_revenue') ?> sur <?= $this->safe('revenue_target') ?>&nbsp;€</strong>
+        </p>
+
+        <ul class="gauge__container">
+            <li class="gauge__current"></li>
+
+            <li class="gauge__item gauge__item--purchases">
+                Achats<br />20&nbsp;%
+            </li>
+
+            <li class="gauge__item gauge__item--services">
+                Prestations<br />20&nbsp;%
+            </li>
+
+            <li class="gauge__item gauge__item--salary">
+                Rémunération (dont cotisations)<br />60&nbsp;%
+            </li>
+        </ul>
+    </div>
+
+    <ul class="revenues">
+        <li class="revenues__item">
+            <div class="revenues__amount">
+                <?= $this->safe('subscriptions_amount') ?>&nbsp;€
+            </div>
+            <div class="revenues__label">
+                abonnements
+            </div>
+        </li>
+
+        <li class="revenues__item">
+            <div class="revenues__amount">
+                <?= $this->safe('common_pot_amount') ?>&nbsp;€<br />
+            </div>
+            <div class="revenues__label">
+                en cagnotte
+            </div>
+        </li>
+    </ul>
+
+    <p>
+        Les <strong>achats</strong> incluent le paiement des serveurs, des
+        noms de domaine et fournitures éventuelles. On y trouve également
+        les frais liés aux paiements, ainsi que les frais bancaires et de
+        mutuelle.
+    </p>
+
+    <p>
+        Le poste des <strong>prestations</strong> est relativement variable,
+        il me permet de faire appel à d’autres personnes pour m’aider sur Flus.
+    </p>
+
+    <p>
+        La <strong>rémunération</strong> correspond à l’argent que je serai
+        en mesure de me verser si j’atteins le palier des 10&nbsp;000&nbsp;€,
+        représentant un peu plus de 4&nbsp;000&nbsp;€ dans ma poche. Mon
+        but est bien sûr d’aller au-delà afin de pouvoir en vivre.
+    </p>
+</section>

@@ -8,13 +8,19 @@
     </url>
 
     <url>
-        <loc><?= url_full('common pot') ?></loc>
+        <loc><?= url_full('project') ?></loc>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>
 
     <url>
-        <loc><?= url_full('funding') ?></loc>
+        <loc><?= url_full('pricing') ?></loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <url>
+        <loc><?= url_full('common pot') ?></loc>
         <changefreq>weekly</changefreq>
         <priority>0.7</priority>
     </url>

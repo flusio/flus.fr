@@ -1,0 +1,172 @@
+<?php
+    $this->layout('base.phtml', [
+        'title' => 'Le projet · Flus',
+        'canonical' => url_full('project'),
+        'current_page' => 'project',
+        'description' => 'L’idée de Flus est née d’une frustration prenant racine dans mon usage du Web.',
+        'og' => [
+            'type' => 'website',
+            'image' => url_full_static('flus.png'),
+            'twitter_card' => 'summary',
+        ],
+    ]);
+?>
+
+<section class="section section--text">
+    <div class="header">
+        <h1 class="header__title">Le projet</h1>
+    </div>
+
+    <p>
+        L’idée de Flus est née d’une frustration prenant racine dans mon usage
+        du Web. Dans notre usage. Celui qui nous est petit à petit imposé par
+        des plateformes devenues incontournables.
+    </p>
+
+    <p>
+        Vous la connaissez tout autant que moi, cette frustration. Parce que
+        vous devez passer par Google, Facebook ou Twitter pour vous informer.
+        <strong>Parce que ces plateformes vous sollicitent et vous imposent des
+            interactions toujours plus nombreuses et rapides.</strong> Parce
+        qu’elles servent de références, même pour des projets qui se veulent
+        plus «&nbsp;éthiques&nbsp;». Parce que vous ne disposez pas des outils
+        pour ralentir l’information.
+    </p>
+
+    <hr />
+
+    <p>
+        Flus se veut différent, oui, mais encore&nbsp;?
+    </p>
+
+    <ol>
+        <li><strong>Flus est conçu sur la base de problèmes concrets.</strong>
+            Je m’entoure de personnes dont c’est le métier de les résoudre.</li>
+        <li><strong>Flus est un lieu d’expérimentation</strong>&nbsp;: je ne me
+            contente pas de copier ce qui se fait ailleurs, je conçois
+            différemment.</li>
+        <li><strong>Flus est ouvert.</strong> Le code est dit
+            «&nbsp;libre&nbsp;», sous une licence qui force toute amélioration
+            à l’être également. C’est un commun qui bénéficie à tout le
+            monde.</li>
+        <li><strong>Flus se veut plus petit.</strong> Avec un objectif modeste
+            en terme de nombre d’utilisateurs, je veux rester à l’écoute pour
+            concevoir la plateforme ensemble.</li>
+        <li><strong>Flus repose sur un modèle économique simple et transparent.</strong>
+            <a href="<?= url('pricing') ?>">Vous payez avec votre porte-monnaie</a>,
+            pas vos données ni votre temps de cerveau.</li>
+    </ol>
+
+    <hr />
+
+    <p>
+        Je compte créer un terrain apaisé et propices aux échanges de qualité
+        autour de l’information en ligne&nbsp;:
+    </p>
+
+    <ul>
+        <li>en ciblant des publics dont c’est le rôle ou le métier de vulgariser les sujets de société&nbsp;;</li>
+        <li>en proposant des outils pour se protéger de l’afflux constant d’informations&nbsp;;</li>
+        <li>en créant des mécanismes pour jauger soi-même de la qualité de ce qu’on lit.</li>
+    </ul>
+
+    <p>
+        Flus est en version beta, il reste encore du boulot pour en arriver tout à fait là où j’aimerais aller.
+        <strong>Vous pouvez toutefois l’utiliser&nbsp;: vous commencerez immédiatement
+        à calmer le rythme du monde (numérique) qui vous entoure, et vous
+        soutiendrez ainsi un projet indépendant sur la durée.</strong>
+    </p>
+
+    <div class="signature">
+        — Marien
+    </div>
+</section>
+
+<section class="section section--text">
+    <div class="header">
+        <h2 class="header__title">Le manifeste</h2>
+    </div>
+
+    <div class="section__intro">
+        <p>
+            Ces 10 affirmations forment mon manifeste pour une information de
+            meilleure qualité sur Internet.
+        </p>
+
+        <p>
+            <strong>Il s’agit d’une boussole guidant les choix que je fais pour
+                Flus.</strong>
+        </p>
+    </div>
+
+    <ol class="manifesto">
+        <li class="manifesto__item">
+            S’informer est un acte politique essentiel
+
+            <img
+                class="illustration illustration--centered illustration--pull-left reading"
+                alt=""
+                src="<?= url_static('illustrations/reading.svg') ?>"
+                height="200"
+            />
+        </li>
+
+        <li class="manifesto__item">
+            S’informer doit être accessible au plus grand nombre
+        </li>
+
+        <li class="manifesto__item">
+            Interroger notre bulle de convictions est un acte difficile et
+            nécessaire
+        </li>
+
+        <li class="manifesto__item">
+            Une information complexe doit être traitée par une pluralité de
+            points de vue
+        </li>
+
+        <li class="manifesto__item">
+            Les communautés invitent à questionner le monde qui nous entoure
+        </li>
+
+        <li class="manifesto__item">
+            L’instantanéité des échanges courts est le terreau des réactions
+            émotionnelles et rendent difficile la prise de recul
+        </li>
+
+        <li class="manifesto__item">
+            Notre temps est une ressource précieuse qui ne doit pas se faire
+            accaparer par un besoin d’information
+
+            <img
+                class="illustration illustration--centered illustration--pull-right time"
+                alt=""
+                src="<?= url_static('illustrations/time.svg') ?>"
+                height="200"
+            />
+        </li>
+
+        <li class="manifesto__item">
+            Les premières suggestions faites par une plateforme sont
+            déterminantes, ses algorithmes doivent être transparents
+        </li>
+
+        <li class="manifesto__item">
+            Nous devrions être en mesure de choisir par nous-mêmes les
+            informations qui nous sont suggérées
+        </li>
+
+        <li class="manifesto__item">
+            Il n’est possible de s’informer correctement que sur une plateforme
+            honnête ; code ouvert et respect de la vie privée en sont des
+            conditions
+
+            <img
+                class="illustration illustration--centered illustration--pull-left privacy"
+                alt=""
+                src="<?= url_static('illustrations/privacy.svg') ?>"
+                height="200"
+            />
+        </li>
+    </ol>
+</section>

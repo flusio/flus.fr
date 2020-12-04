@@ -14,8 +14,24 @@ class HomeTest extends \PHPUnit\Framework\TestCase
     {
         $response = $this->appRun('GET', '/');
 
-        $this->assertResponse($response, 200, 'Flus, média social citoyen');
+        $this->assertResponse($response, 200, 'Le média social qui change<br />notre rapport à l’information.');
         $this->assertPointer($response, 'home/index.phtml');
+    }
+
+    public function testProjectRendersCorrectly()
+    {
+        $response = $this->appRun('GET', '/projet');
+
+        $this->assertResponse($response, 200, 'Le projet');
+        $this->assertPointer($response, 'home/project.phtml');
+    }
+
+    public function testPricingRendersCorrectly()
+    {
+        $response = $this->appRun('GET', '/tarifs');
+
+        $this->assertResponse($response, 200, 'Tarifs');
+        $this->assertPointer($response, 'home/pricing.phtml');
     }
 
     public function testCreditsRendersCorrectly()
@@ -40,14 +56,6 @@ class HomeTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponse($response, 200, 'Conditions Générales de Vente');
         $this->assertPointer($response, 'home/cgv.phtml');
-    }
-
-    public function testFundingRendersCorrectly()
-    {
-        $response = $this->appRun('GET', '/financement');
-
-        $this->assertResponse($response, 200);
-        $this->assertPointer($response, 'home/funding.phtml');
     }
 
     public function testRobotsRendersCorrectly()
