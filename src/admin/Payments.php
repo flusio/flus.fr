@@ -48,7 +48,6 @@ class Payments
         return \Minz\Response::ok('admin/payments/init.phtml', [
             'countries' => utils\Countries::listSorted(),
             'type' => 'common_pot',
-            'username' => '',
             'email' => '',
             'company_vat_number' => '',
             'amount' => 30,
@@ -74,7 +73,6 @@ class Payments
      * - `amount`, required if type is set to `common_pot`, it must be a numerical
      *   value between 1 and 1000.
      * - `email`
-     * - `username`, optional
      * - `company_vat_number`, optional
      * - `address[first_name]`
      * - `address[last_name]`
@@ -96,7 +94,6 @@ class Payments
 
         $type = $request->param('type');
         $email = $request->param('email');
-        $username = $request->param('username');
         $company_vat_number = $request->param('company_vat_number');
         $amount = $request->param('amount', 0);
         $address = $request->param('address', [
@@ -115,7 +112,6 @@ class Payments
                 'countries' => utils\Countries::listSorted(),
                 'type' => $type,
                 'email' => $email,
-                'username' => $username,
                 'company_vat_number' => $company_vat_number,
                 'amount' => $amount,
                 'address' => $address,
@@ -139,7 +135,6 @@ class Payments
                 'countries' => utils\Countries::listSorted(),
                 'type' => $type,
                 'email' => $email,
-                'username' => $username,
                 'company_vat_number' => $company_vat_number,
                 'amount' => $amount,
                 'address' => $address,
@@ -156,10 +151,6 @@ class Payments
             $payment->frequency = $frequency;
         }
 
-        if ($username) {
-            $payment->username = trim($username);
-        }
-
         if ($company_vat_number) {
             $payment->company_vat_number = trim($company_vat_number);
         }
@@ -174,7 +165,6 @@ class Payments
                 'countries' => utils\Countries::listSorted(),
                 'type' => $type,
                 'email' => $email,
-                'username' => $username,
                 'company_vat_number' => $company_vat_number,
                 'amount' => $amount,
                 'address' => $address,

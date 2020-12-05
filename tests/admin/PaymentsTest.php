@@ -76,29 +76,6 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider createProvider
      */
-    public function testCreateTakesAUsername($type, $email, $amount, $address)
-    {
-        $this->loginAdmin();
-        $payment_dao = new models\dao\Payment();
-        $username = $this->fake('username');
-
-        $response = $this->appRun('POST', '/admin/payments/new', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
-            'type' => $type,
-            'email' => $email,
-            'amount' => $amount,
-            'address' => $address,
-            'username' => $username,
-        ]);
-
-        $this->assertResponse($response, 302, '/admin?status=payment_created');
-        $payment = new models\Payment($payment_dao->take());
-        $this->assertSame($username, $payment->username);
-    }
-
-    /**
-     * @dataProvider createProvider
-     */
     public function testCreateTakesACompanyVatNumber($type, $email, $amount, $address)
     {
         $this->loginAdmin();

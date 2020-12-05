@@ -36,7 +36,6 @@ CREATE TABLE payments (
     invoice_number TEXT,
     email TEXT NOT NULL,
     amount INTEGER NOT NULL,
-    username TEXT,
     frequency TEXT,
     company_vat_number TEXT,
 

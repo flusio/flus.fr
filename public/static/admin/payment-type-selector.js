@@ -14,10 +14,8 @@
         setType(type) {
             if (type === 'common_pot') {
                 document.getElementById('form-group-amount').style.display = 'block';
-                document.getElementById('form-group-username').style.display = 'none';
             } else {
                 document.getElementById('form-group-amount').style.display = 'none';
-                document.getElementById('form-group-username').style.display = 'block';
             }
         }
 

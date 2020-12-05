@@ -95,11 +95,6 @@ class Payment extends \Minz\Model
             'validator' => '\Website\utils\Countries::isSupported',
         ],
 
-        'username' => [
-            'type' => 'string',
-            'validator' => '\Website\models\Payment::validateUsername',
-        ],
-
         'frequency' => [
             'type' => 'string',
             'validator' => '\Website\models\Payment::validateFrequency',
@@ -416,19 +411,6 @@ class Payment extends \Minz\Model
     public static function validateSessionId($id)
     {
         return strlen($id) > 0;
-    }
-
-    /**
-     * @param string $username
-     *
-     * @return boolean Returns true if the username is valid
-     */
-    public static function validateUsername($username)
-    {
-        // This is the same pattern as in FreshRSS
-        // @see https://github.com/FreshRSS/FreshRSS/blob/master/app/Controllers/userController.php#L11
-        $pattern = '/^([0-9a-zA-Z_][0-9a-zA-Z_.@-]{1,38}|[0-9a-zA-Z])$/';
-        return preg_match($pattern, $username) === 1;
     }
 
     /**

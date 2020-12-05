@@ -32,7 +32,6 @@ class InvoicePDFTest extends TestCase
         $this->assertSame($payment->invoice_number, $metadata['N° facture']);
         $this->assertSame($expected_established, $metadata['Établie le']);
         $this->assertSame($expected_paid, $metadata['Payée le']);
-        $this->assertSame($payment->username, $metadata['Identifiant client']);
     }
 
     /**
@@ -228,7 +227,6 @@ class InvoicePDFTest extends TestCase
             $payment = new models\Payment([
                 'created_at' => $faker->dateTime->format(\Minz\Model::DATETIME_FORMAT),
                 'type' => 'subscription',
-                'username' => $faker->username,
                 'frequency' => $faker->randomElement(['month', 'year']),
                 'email' => $faker->email,
                 'amount' => $faker->numberBetween(100, 100000),

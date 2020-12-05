@@ -81,8 +81,6 @@ class InvoicePDF extends \FPDF
                 ],
             ];
         } else {
-            $this->metadata['Identifiant client'] = $payment->username;
-
             $period = $payment->frequency === 'month' ? '1 mois' : '1 an';
             $this->purchases = [
                 [
