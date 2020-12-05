@@ -153,7 +153,7 @@ class Payment extends \Minz\Model
      *
      * @return \Website\models\Payment
      */
-    public static function initFromAccount($account, $frequency)
+    public static function initSubscriptionFromAccount($account, $frequency)
     {
         $frequency = strtolower(trim($frequency));
         $amount = 0;
@@ -165,6 +165,22 @@ class Payment extends \Minz\Model
 
         $payment = self::init('subscription', $account->email, $amount, $account->address());
         $payment->frequency = $frequency;
+        $payment->account_id = $account->id;
+
+        return $payment;
+    }
+
+    /**
+     * Init a common pot payment from an account.
+     *
+     * @param \Website\models\Account $account
+     * @param integer|float $amount
+     *
+     * @return \Website\models\Payment
+     */
+    public static function initCommonPotFromAccount($account, $amount)
+    {
+        $payment = self::init('common_pot', $account->email, $amount, $account->address());
         $payment->account_id = $account->id;
 
         return $payment;

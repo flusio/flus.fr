@@ -305,6 +305,8 @@ legend {
 /**
  * Custom styles
  */
+.form--contact,
+.form--common-pot,
 .form--renew {
     max-width: 50ch;
     margin-right: auto;

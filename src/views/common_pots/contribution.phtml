@@ -1,0 +1,164 @@
+<?php
+    $this->layout('account.phtml', [
+        'title' => 'Contribuer à la cagnotte commune de Flus',
+    ]);
+?>
+
+<section class="section" id="cagnotte">
+    <div class="header">
+        <h1 class="header__title">
+            Contribuer à la cagnotte commune
+        </h1>
+    </div>
+
+    <p class="paragraph--center">
+        <a href="<?= url('common pot account') ?>">
+            Des questions sur la cagnotte&nbsp;?
+        </a>
+    </p>
+
+    <form
+         method="post"
+         action="<?= url('contribute common pot') ?>"
+         class="form--common-pot"
+     >
+        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+
+        <?php if ($error): ?>
+            <p class="form__error">
+                <?= $error ?>
+            </p>
+        <?php endif; ?>
+
+         <div
+             class="amount-selector form-group <?= isset($errors['amount']) ? 'form-group--invalid' : '' ?>"
+             data-controller="amount-selector"
+             data-amount-selector-initial-amount="<?= $amount ?>"
+         >
+            <label>
+                Sélectionner un montant
+            </label>
+
+            <div class="amount-selector__container">
+                <button
+                    type="button"
+                    class="amount-selector__button"
+                    data-action="amount-selector#select"
+                    data-target="amount-selector.button"
+                    data-value="15"
+                >
+                    15&nbsp;€
+                </button>
+
+                <button
+                    type="button"
+                    class="amount-selector__button"
+                    data-action="amount-selector#select"
+                    data-target="amount-selector.button"
+                    data-value="30"
+                >
+                    30&nbsp;€
+                </button>
+
+                <button
+                    type="button"
+                    class="amount-selector__button"
+                    data-action="amount-selector#select"
+                    data-target="amount-selector.button"
+                    data-value="45"
+                >
+                    45&nbsp;€
+                </button>
+
+                <button
+                    type="button"
+                    class="amount-selector__button"
+                    data-action="amount-selector#select"
+                    data-target="amount-selector.button"
+                    data-value="60"
+                >
+                    60&nbsp;€
+                </button>
+            </div>
+
+            <label for="amount">
+                <span class="amount-selector__choose-label">
+                    ou choisir
+                </span>
+
+                <input
+                    id="amount"
+                    class="amount-selector__input"
+                    name="amount"
+                    type="number"
+                    step="0.5"
+                    min="1"
+                    max="1000"
+                    value="<?= $amount ?>"
+                    data-action="amount-selector#change"
+                    data-target="amount-selector.amount"
+                    required
+                    <?= isset($errors['amount']) ? 'autofocus' : '' ?>
+                />
+
+                <span>
+                    euros
+                </span>
+            </label>
+
+            <?php if (isset($errors['amount'])): ?>
+                <p class="form-group__error">
+                    <?= $errors['amount'] ?>
+                </p>
+            <?php endif; ?>
+        </div>
+
+        <p class="paragraph--center paragraph--limit paragraph--secondary">
+            <i>
+                Facturé au <?= $this->protect($account->address_address1) ?>,
+                <?= $this->protect($account->address_city) ?>.
+                <a href="<?= url('account address') ?>">Modifier&nbsp;?</a>
+            </i>
+        </p>
+
+        <div class="form-group form-group--cgv <?= isset($errors['cgv']) ? 'form-group--invalid' : '' ?>">
+            <p class="form-group__caption">
+                Vous devriez prendre le temps de
+                <a href="<?= url('cgv') ?>" target="_blank" rel="noopener noreferrer nofollow">
+                    lire les Conditions Générales de Vente</a>
+                pour vous assurer que celles-ci vous conviennent.<br/>
+                Vous serez ensuite redirigé·e vers le prestataire de paiement
+                <a href="https://stripe.com/fr" target="_blank" rel="noopener noreferrer nofollow">Stripe</a>.
+            </p>
+
+            <input
+                id="cgv"
+                name="accept_cgv"
+                type="checkbox"
+                required
+            />
+
+            <label for="cgv">
+                Accepter les Conditions Générales de Vente
+            </label>
+
+            <?php if (isset($errors['cgv'])): ?>
+                <p class="form-group__error">
+                    <?= $errors['cgv'] ?>
+                </p>
+            <?php endif; ?>
+        </div>
+
+        <div class="form__actions">
+            <button type="submit" class="button--primary">
+                Valider votre participation à la cagnotte
+            </button>
+        </div>
+
+        <p class="paragraph--center">
+            <a href="<?= url('account') ?>">
+                Retour à votre abonnement
+            </a>
+        </p>
+    </form>
+</section>

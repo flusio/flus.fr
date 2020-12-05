@@ -21,10 +21,7 @@ class Application
         $router->addRoute('get', '/cgv', 'Home#cgv', 'cgv');
         $router->addRoute('get', '/contact', 'Home#contact', 'contact');
         $router->addRoute('post', '/contact', 'Home#sendContactEmail', 'send contact email');
-        $router->addRoute('get', '/cagnotte', 'Payments#init', 'common pot');
-        $router->addRoute('post', '/cagnotte', 'Payments#payCommonPot', 'submit common pot');
-        $router->addRoute('get', '/merci', 'Payments#succeeded');
-        $router->addRoute('get', '/annulation', 'Payments#canceled');
+        $router->addRoute('get', '/cagnotte', 'CommonPots#show', 'common pot');
 
         $router->addRoute('get', '/robots.txt', 'Home#robots', 'robots.txt');
         $router->addRoute('get', '/sitemap.xml', 'Home#sitemap', 'sitemap.xml');
@@ -40,8 +37,23 @@ class Application
         $router->addRoute('post', '/account/address', 'Accounts#updateAddress', 'account update address');
         $router->addRoute('get', '/account/renew', 'Subscriptions#init', 'subscription init');
         $router->addRoute('post', '/account/renew', 'Subscriptions#renew', 'subscription renew');
+        $router->addRoute('get', '/account/common-pot', 'CommonPots#show', 'common pot account');
+        $router->addRoute(
+            'get',
+            '/account/common-pot/contribute',
+            'CommonPots#contribution',
+            'common pot contribution'
+        );
+        $router->addRoute(
+            'post',
+            '/account/common-pot/contribute',
+            'CommonPots#contribute',
+            'contribute common pot'
+        );
 
         $router->addRoute('get', '/payments/:id/pay', 'Payments#pay');
+        $router->addRoute('get', '/merci', 'Payments#succeeded');
+        $router->addRoute('get', '/annulation', 'Payments#canceled');
 
         $router->addRoute('get', '/invoices/:id/pdf', 'Invoices#downloadPdf', 'invoice download pdf');
 

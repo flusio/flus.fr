@@ -1,0 +1,138 @@
+<?php
+    if ($current_user) {
+        $this->layout('account.phtml', [
+            'title' => 'La cagnotte commune · Flus',
+            'canonical' => url_full('common pot account'),
+        ]);
+    } else {
+        $this->layout('base.phtml', [
+            'title' => 'La cagnotte commune · Flus',
+            'canonical' => url_full('common pot'),
+            'description' => 'Flus propose une cagnotte commune à laquelle n’importe qui peut participer pour fournir des abonnements gratuits à celles et ceux qui n’en ont pas les moyens.',
+            'og' => [
+                'type' => 'website',
+                'image' => url_full_static('illustrations/high-five.svg'),
+                'twitter_card' => 'summary_large_image',
+            ],
+        ]);
+    }
+?>
+
+<section class="section section--text">
+    <div class="header">
+        <h1 class="header__title">
+            Cagnotte commune
+        </h1>
+    </div>
+
+    <p class="paragraph--featured">
+        Elle s’élève à <?= $this->safe('common_pot_amount') ?>&nbsp;€
+    </p>
+
+    <p class="section__intro">
+        N’importe qui devrait pouvoir bénéficier de l’accès à l’information.
+        Or, j’ai également besoin de vivre de mon activité. Pour concilier ces
+        deux positions, j’ai mis en place ce système de cagnotte commune.
+    </p>
+
+    <dl class="faq">
+        <dt class="faq__question">
+            En quoi consiste cette cagnotte commune&nbsp;?
+        </dt>
+        <dd class="faq__answer">
+            Il s’agit de proposer un système alternatif de paiement pour les
+            personnes n’ayant pas les moyens de s’offrir un abonnement à Flus.
+            Cette cagnotte permet simplement de mettre en commun les moyens des
+            un·es et des autres pour bénéficier tous ensemble de l’accès à ce
+            service. Elle permet également de proposer un autre moyen de
+            soutenir mon travail aux personnes qui le souhaitent.
+        </dd>
+
+        <dt class="faq__question">
+            Peut-on bénéficier d’abonnements annuels gratuits&nbsp;?
+        </dt>
+        <dd class="faq__answer">
+            Pour l’instant ce n’est pas prévu. Afin de laisser la chance au
+            plus de monde possible de bénéficier d’un abonnement gratuit, je
+            préfère ne pas laisser la possibilité d’en prendre un trop grand
+            nombre en une seule fois.
+        </dd>
+
+        <dt class="faq__question">
+            Quelles conditions pour en bénéficier&nbsp;?
+        </dt>
+        <dd class="faq__answer">
+            Bien qu’elle soit destinée à des personnes n’ayant pas les moyens
+            de payer un abonnement, je ne demande pas que vous justifiez de
+            votre situation. Vous restez le ou la mieux placée pour savoir si
+            vous en avez besoin. Il existe toutefois deux conditions pour en
+            profiter. Premièrement, le montant de la cagnotte doit évidemment
+            être supérieur à l’équivalent d’un mois d’abonnement à Flus
+            <?php if ($common_pot_amount > 3): ?>
+                (ce qui est actuellement le cas 😉).
+            <?php else: ?>
+                (ce qui n’est pas le cas 😟).
+            <?php endif; ?>
+            Deuxièmement, votre abonnement doit expirer dans moins
+            de 7 jours, cela afin d’éviter que n’importe qui épuise la cagnotte
+            en une fois.
+        </dd>
+
+        <dt class="faq__question">
+            Comment en bénéficier&nbsp;?
+        </dt>
+        <dd class="faq__answer">
+            <?php if ($current_user): ?>
+                Rendez-vous dans la partie
+                «&nbsp;<a href="">Bénéficier de la cagnotte</a>&nbsp;».
+            <?php else: ?>
+                Dans <a href="https://app.flus.fr">Flus</a>, depuis le menu
+                «&nbsp;Compte &amp; abonnement&nbsp;», «&nbsp;Gérer votre abonnement&nbsp;»,
+                vous trouverez l’option «&nbsp;Bénéficier de la cagnotte&nbsp;».
+                Vous devrez ensuite valider les conditions générales de vente et
+                confirmer.
+            <?php endif; ?>
+        </dd>
+
+        <dt class="faq__question">
+            Qui peut la financer&nbsp;?
+        </dt>
+        <dd class="faq__answer">
+            N’importe qui peut financer la cagnotte tant qu’il en a les moyens
+            et l’envie. Il n’y a bien entendu aucune obligation à y participer,
+            et cela n’offre aucun privilège supplémentaire.
+        </dd>
+
+        <dt class="faq__question">
+            Comment la financer&nbsp;?
+        </dt>
+        <dd class="faq__answer">
+            <?php if ($current_user): ?>
+                Rendez-vous dans la partie
+                «&nbsp;<a href="<?= url('common pot contribution') ?>">Contribuer à la cagnotte</a>&nbsp;».
+            <?php else: ?>
+                Il vous faut vous <a href="https://app.flus.fr/registration">créer un
+                compte sur Flus</a>. Depuis le menu «&nbsp;Compte &amp; abonnement&nbsp;»,
+                «&nbsp;Gérer votre abonnement&nbsp;», vous devrez tout d’abord
+                indiquer votre adresse postale (pour la facturation). Vous trouverez
+                ensuite l’option «&nbsp;Contribuer à la cagnotte&nbsp;» qui vous
+                permettra de participer du montant que vous souhaitez.
+            <?php endif; ?>
+        </dd>
+    </dl>
+
+    <img
+        class="illustration illustration--centered high-five"
+        alt=""
+        src="<?= url_static('illustrations/high-five.svg') ?>"
+        height="250"
+    />
+
+    <?php if ($current_user): ?>
+        <p class="paragraph--center">
+            <a href="<?= url('account') ?>">
+                Retour à votre abonnement
+            </a>
+        </p>
+    <?php endif; ?>
+</section>

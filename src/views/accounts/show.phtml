@@ -55,17 +55,25 @@
                 Indiquer votre adresse
             </a>
         </p>
-    <?php elseif (!$account->isFree()): ?>
+    <?php else: ?>
+        <?php if (!$account->isFree()): ?>
+            <p class="paragraph--center">
+                <?php if ($account->hasExpired()): ?>
+                    <a class="call-to-action" href="<?= url('subscription init') ?>">
+                        Renouveler votre abonnement
+                    </a>
+                <?php else: ?>
+                    <a href="<?= url('subscription init') ?>">
+                        Renouveler votre abonnement
+                    </a>
+                <?php endif; ?>
+            </p>
+        <?php endif; ?>
+
         <p class="paragraph--center">
-            <?php if ($account->hasExpired()): ?>
-                <a class="call-to-action" href="<?= url('subscription init') ?>">
-                    Renouveler votre abonnement
-                </a>
-            <?php else: ?>
-                <a href="<?= url('subscription init') ?>">
-                    Renouveler votre abonnement
-                </a>
-            <?php endif; ?>
+            <a href="<?= url('common pot contribution') ?>">
+                Contribuer à la cagnotte
+            </a>
         </p>
     <?php endif; ?>
 
@@ -80,17 +88,14 @@
         </div>
 
         <div class="columns__item columns__item--center">
-            <p class="paragraph--secondary">
+            <p>
                 <a href="https://app.flus.fr/">
                     <img alt="" src="<?= url_static('flus.svg') ?>" width="75"/><br />
                     Accéder à Flus 2
-                </a><br />
-                <small>(inscriptions fermées)</small>
+                </a>
             </p>
         </div>
     </div>
-
-    <hr />
 
     <div class="header">
         <h2 class="header__title">

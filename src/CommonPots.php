@@ -2,25 +2,35 @@
 
 namespace Website;
 
-/**
- * @author Marien Fressinaud <dev@marienfressinaud.fr>
- * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
- */
-class Subscriptions
+class CommonPots
 {
     /**
+     * Show the page about the common pot.
+     *
+     * @response 200
+     */
+    public function show()
+    {
+        $payment_dao = new models\dao\Payment();
+        $common_pot_amount = $payment_dao->findCommonPotRevenue() / 100;
+        $available_accounts = floor($common_pot_amount / 3);
+        return \Minz\Response::ok('common_pots/show.phtml', [
+            'common_pot_amount' => number_format($common_pot_amount, 2, ',', '&nbsp;'),
+            'available_accounts' => number_format($available_accounts, 0, ',', '&nbsp;'),
+        ]);
+    }
+
+    /**
+     * Show the page allowing to contribute to the common pot
+     *
      * @response 401
      *     if the user is not connected
      * @response 302 /account/address
      *     if the address is not set
      * @response 200
      *     on success
-     *
-     * @param \Minz\Request $request
-     *
-     * @return \Minz\Response
      */
-    public function init($request)
+    public function contribution()
     {
         $user = utils\CurrentUser::get();
         if (!$user || utils\CurrentUser::isAdmin()) {
@@ -36,32 +46,29 @@ class Subscriptions
             return \Minz\Response::redirect('account address');
         }
 
-        return \Minz\Response::ok('subscriptions/init.phtml', [
+        return \Minz\Response::ok('common_pots/contribution.phtml', [
             'account' => $account,
+            'amount' => 30,
         ]);
     }
 
     /**
-     * Initialize a subscription Payment for the current account and call
-     * Stripe API to start a payment session.
+     * Handle the payment request for the common pot contribution and redirect to Stripe.
      *
      * @request_param string csrf
-     * @request_param string frequency (month or year)
+     * @request_param integer amount must be between 1 and 1000
+     * @request_param boolean accept_cgv
      *
      * @response 401
      *     if the user is not connected
      * @response 302 /account/address
      *     if the address is not set
      * @response 400
-     *     if CSRF or frequency are invalid
+     *     if accept_cgv is false or if CSRF or amount are invalid
      * @response 302 /payments/:id/pay
      *     on success
-     *
-     * @param \Minz\Request $request
-     *
-     * @return \Minz\Response
      */
-    public function renew($request)
+    public function contribute($request)
     {
         $user = utils\CurrentUser::get();
         if (!$user || utils\CurrentUser::isAdmin()) {
@@ -77,42 +84,51 @@ class Subscriptions
             return \Minz\Response::redirect('account address');
         }
 
-        $frequency = $request->param('frequency');
-        $payment = models\Payment::initSubscriptionFromAccount($account, $frequency);
+        $accept_cgv = $request->param('accept_cgv', false);
+        $amount = $request->param('amount', 0);
+
+        if (!$accept_cgv) {
+            return \Minz\Response::badRequest('common_pots/contribution.phtml', [
+                'account' => $account,
+                'amount' => $amount,
+                'errors' => [
+                    'cgv' => 'Vous devez accepter ces conditions pour participer à la cagnotte.',
+                ],
+            ]);
+        }
+
+        $payment = models\Payment::initCommonPotFromAccount($account, $amount);
         $errors = $payment->validate();
         if ($errors) {
-            return \Minz\Response::badRequest('subscriptions/init.phtml', [
+            return \Minz\Response::badRequest('common_pots/contribution.phtml', [
                 'account' => $account,
+                'amount' => $amount,
                 'errors' => $errors,
             ]);
         }
 
         $csrf = new \Minz\CSRF();
         if (!$csrf->validateToken($request->param('csrf'))) {
-            return \Minz\Response::badRequest('subscriptions/init.phtml', [
+            return \Minz\Response::badRequest('common_pots/contribution.phtml', [
                 'account' => $account,
+                'amount' => $amount,
                 'error' => 'Une vérification de sécurité a échoué, veuillez réessayer de soumettre le formulaire.',
             ]);
         }
 
         $stripe_service = new services\Stripe(
-            $request->param('success_url', \Minz\Url::absoluteFor('Payments#succeeded')),
-            $request->param('cancel_url', \Minz\Url::absoluteFor('Payments#canceled'))
+            \Minz\Url::absoluteFor('Payments#succeeded'),
+            \Minz\Url::absoluteFor('Payments#canceled')
         );
 
-        $period = $payment->frequency === 'month' ? '1 mois' : '1 an';
         $stripe_session = $stripe_service->createSession(
             $payment,
-            "Abonnement à Flus ({$period})"
+            'Participation à la cagnotte de Flus'
         );
 
-        $payment_dao = new models\dao\Payment();
         $payment->payment_intent_id = $stripe_session->payment_intent;
         $payment->session_id = $stripe_session->id;
         $payment_id = $payment_dao->save($payment);
-
-        $account->preferred_frequency = $payment->frequency;
-        $account_dao->save($account);
 
         return \Minz\Response::redirect('Payments#pay', [
             'id' => $payment_id,
