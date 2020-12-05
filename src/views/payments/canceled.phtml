@@ -1,16 +1,38 @@
 <?php
-    $this->layout('base.phtml', [
+    $this->layout('account.phtml', [
         'title' => 'Annulation de votre paiement',
         'canonical' => url_full('Payments#canceled'),
     ]);
 ?>
 
-<p class="paragraph--featured">
-    Votre paiement a bien été annulé.
-</p>
+<section class="section section--text">
+    <p class="paragraph--featured">
+        Votre paiement a bien été annulé.
+    </p>
 
-<p class="paragraph--center">
-    <a class="call-to-action" href="<?= url('home') ?>">
-        Revenir à la page d’accueil
-    </a>
-</p>
+    <p class="paragraph--center">
+        <a class="call-to-action" href="<?= url('account') ?>">
+            Revenir à votre compte
+        </a>
+    </p>
+
+    <div class="columns columns--center columns--spaced columns--background">
+        <div class="columns__item columns__item--center">
+            <p>
+                <a href="https://flus.io/">
+                    <img alt="" src="<?= url_static('freshrss.svg') ?>" width="70"/><br />
+                    Accéder à Flus 1
+                </a>
+            </p>
+        </div>
+
+        <div class="columns__item columns__item--center">
+            <p>
+                <a href="https://app.flus.fr/">
+                    <img alt="" src="<?= url_static('flus.svg') ?>" width="75"/><br />
+                    Accéder à Flus 2
+                </a>
+            </p>
+        </div>
+    </div>
+</section>

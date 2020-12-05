@@ -1,16 +1,38 @@
 <?php
-    $this->layout('base.phtml', [
-        'title' => 'Flus vous remercie',
+    $this->layout('account.phtml', [
+        'title' => 'Merci pour votre soutien !',
         'canonical' => url_full('Payments#succeeded'),
     ]);
 ?>
 
-<p class="paragraph--featured">
-    Votre paiement a bien été pris en compte, merci&nbsp;!
-</p>
+<section class="section section--text">
+    <p class="paragraph--featured">
+        Votre paiement a bien été pris en compte, merci pour votre soutien&nbsp;!
+    </p>
 
-<p class="paragraph--center">
-    <a class="call-to-action" href="<?= url('home') ?>">
-        Revenir à la page d’accueil
-    </a>
-</p>
+    <p class="paragraph--center">
+        <a class="call-to-action" href="<?= url('account') ?>">
+            Revenir à votre compte
+        </a>
+    </p>
+
+    <div class="columns columns--center columns--spaced columns--background">
+        <div class="columns__item columns__item--center">
+            <p>
+                <a href="https://flus.io/">
+                    <img alt="" src="<?= url_static('freshrss.svg') ?>" width="70"/><br />
+                    Accéder à Flus 1
+                </a>
+            </p>
+        </div>
+
+        <div class="columns__item columns__item--center">
+            <p>
+                <a href="https://app.flus.fr/">
+                    <img alt="" src="<?= url_static('flus.svg') ?>" width="75"/><br />
+                    Accéder à Flus 2
+                </a>
+            </p>
+        </div>
+    </div>
+</section>
