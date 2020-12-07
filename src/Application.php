@@ -50,6 +50,8 @@ class Application
             'CommonPots#contribute',
             'contribute common pot'
         );
+        $router->addRoute('get', '/account/common-pot/use', 'CommonPots#usage', 'common pot usage');
+        $router->addRoute('post', '/account/common-pot/use', 'CommonPots#use', 'use common pot');
 
         $router->addRoute('get', '/payments/:id/pay', 'Payments#pay');
         $router->addRoute('get', '/merci', 'Payments#succeeded');

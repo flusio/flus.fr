@@ -75,6 +75,14 @@
                 Contribuer à la cagnotte
             </a>
         </p>
+
+        <?php if (!$account->isFree()): ?>
+            <p class="paragraph--center">
+                <a href="<?= url('common pot usage') ?>">
+                    Bénéficier de la cagnotte
+                </a>
+            </p>
+        <?php endif; ?>
     <?php endif; ?>
 
     <div class="columns columns--center columns--spaced columns--background">

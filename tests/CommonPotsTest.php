@@ -13,28 +13,33 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
 
     public function testShowPublicRendersCorrectly()
     {
-        $amount_common_pot = $this->fake('numberBetween', 100, 100000);
-        $amount_subscriptions = $this->fake('numberBetween', 100, 100000);
+        $common_pot_expenses = $this->fake('numberBetween', 100, 499);
+        $common_pot_revenues = $this->fake('numberBetween', 500, 100000);
+        $subscriptions_revenues = $this->fake('numberBetween', 100, 100000);
+        $this->create('common_pot_payment', [
+            'amount' => $common_pot_expenses,
+        ]);
         $this->create('payment', [
             'type' => 'common_pot',
-            'amount' => $amount_common_pot,
+            'amount' => $common_pot_revenues,
             'completed_at' => $this->fake('dateTime')->getTimestamp(),
         ]);
         $this->create('payment', [
             'type' => 'subscription',
-            'amount' => $amount_subscriptions,
+            'amount' => $subscriptions_revenues,
             'completed_at' => $this->fake('dateTime')->getTimestamp(),
         ]);
 
         $response = $this->appRun('GET', '/cagnotte');
 
-        $expected_amount = number_format(($amount_common_pot / 100), 2, ',', '&nbsp') . '&nbsp;€';
-        $this->assertResponse($response, 200, $expected_amount);
+        $expected_amount = ($common_pot_revenues - $common_pot_expenses) / 100;
+        $expected_formatted_amount = number_format($expected_amount, 2, ',', '&nbsp') . '&nbsp;€';
+        $this->assertResponse($response, 200, $expected_formatted_amount);
         $this->assertPointer($response, 'common_pots/show.phtml');
     }
 
     /**
-     * @dataProvider contributionProvider
+     * @dataProvider addressProvider
      */
     public function testContributionRendersCorrectly($address)
     {
@@ -62,7 +67,7 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider contributionProvider
+     * @dataProvider addressProvider
      */
     public function testContributionFailsIfNotConnected($address)
     {
@@ -357,7 +362,400 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function contributionProvider()
+    /**
+     * @dataProvider addressProvider
+     */
+    public function testUsageRendersCorrectly($address)
+    {
+        $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', -42, 7), 'days');
+        $this->loginUser([
+            'address_first_name' => $address['first_name'],
+            'address_last_name' => $address['last_name'],
+            'address_address1' => $address['address1'],
+            'address_postcode' => $address['postcode'],
+            'address_city' => $address['city'],
+            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+        $this->create('payment', [
+            'type' => 'common_pot',
+            'amount' => 500,
+            'completed_at' => $this->fake('dateTime')->getTimestamp(),
+        ]);
+
+        $response = $this->appRun('GET', '/account/common-pot/use');
+
+        $this->assertResponse($response, 200, 'Vous êtes sur le point de renouveler un mois');
+        $this->assertPointer($response, 'common_pots/usage.phtml');
+    }
+
+    /**
+     * @dataProvider addressProvider
+     */
+    public function testUsageRendersIfCommonPotIsNotFullEnough($address)
+    {
+        $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', -42, 7), 'days');
+        $this->loginUser([
+            'address_first_name' => $address['first_name'],
+            'address_last_name' => $address['last_name'],
+            'address_address1' => $address['address1'],
+            'address_postcode' => $address['postcode'],
+            'address_city' => $address['city'],
+            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+        $this->create('payment', [
+            'type' => 'common_pot',
+            'amount' => 500,
+            'completed_at' => $this->fake('dateTime')->getTimestamp(),
+        ]);
+        $this->create('common_pot_payment', [
+            'amount' => 300,
+        ]);
+
+        $response = $this->appRun('GET', '/account/common-pot/use');
+
+        $this->assertResponse($response, 200, 'il n’y a plus assez d’argent dans la cagnotte');
+    }
+
+    /**
+     * @dataProvider addressProvider
+     */
+    public function testUsageRendersIfFreeAccount($address)
+    {
+        $expired_at = new \DateTime('1970-01-01');
+        $this->loginUser([
+            'address_first_name' => $address['first_name'],
+            'address_last_name' => $address['last_name'],
+            'address_address1' => $address['address1'],
+            'address_postcode' => $address['postcode'],
+            'address_city' => $address['city'],
+            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+        $this->create('payment', [
+            'type' => 'common_pot',
+            'amount' => 500,
+            'completed_at' => $this->fake('dateTime')->getTimestamp(),
+        ]);
+
+        $response = $this->appRun('GET', '/account/common-pot/use');
+
+        $this->assertResponse($response, 200, 'Vous bénéficiez déjà d’un compte gratuit');
+    }
+
+    /**
+     * @dataProvider addressProvider
+     */
+    public function testUsageRendersNotExpiringSoon($address)
+    {
+        $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 8, 42), 'days');
+        $this->loginUser([
+            'address_first_name' => $address['first_name'],
+            'address_last_name' => $address['last_name'],
+            'address_address1' => $address['address1'],
+            'address_postcode' => $address['postcode'],
+            'address_city' => $address['city'],
+            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+        $this->create('payment', [
+            'type' => 'common_pot',
+            'amount' => 500,
+            'completed_at' => $this->fake('dateTime')->getTimestamp(),
+        ]);
+
+        $response = $this->appRun('GET', '/account/common-pot/use');
+
+        $this->assertResponse(
+            $response,
+            200,
+            'Vous pourrez utiliser la cagnotte lorsque votre abonnement sera sur le point d’expirer'
+        );
+    }
+
+    public function testUsageRedirectsIfNoAddress()
+    {
+        $this->loginUser();
+
+        $response = $this->appRun('GET', '/account/common-pot/use');
+
+        $this->assertResponse($response, 302, '/account/address');
+    }
+
+    /**
+     * @dataProvider addressProvider
+     */
+    public function testUsageFailsIfNotConnected($address)
+    {
+        $this->create('account', [
+            'address_first_name' => $address['first_name'],
+            'address_last_name' => $address['last_name'],
+            'address_address1' => $address['address1'],
+            'address_postcode' => $address['postcode'],
+            'address_city' => $address['city'],
+        ]);
+
+        $response = $this->appRun('GET', '/account/common-pot/use');
+
+        $this->assertResponse($response, 401);
+    }
+
+    /**
+     * @dataProvider addressProvider
+     */
+    public function testUseExtendsSubscriptionAndRedirectsCorrectly($address)
+    {
+        $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', -42, 7), 'days');
+        $user = $this->loginUser([
+            'address_first_name' => $address['first_name'],
+            'address_last_name' => $address['last_name'],
+            'address_address1' => $address['address1'],
+            'address_postcode' => $address['postcode'],
+            'address_city' => $address['city'],
+            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+        $this->create('payment', [
+            'type' => 'common_pot',
+            'amount' => 500,
+            'completed_at' => $this->fake('dateTime')->getTimestamp(),
+        ]);
+        $account_dao = new models\dao\Account();
+        $common_pot_payment_dao = new models\dao\CommonPotPayment();
+
+        $this->assertSame(0, $common_pot_payment_dao->count());
+
+        $response = $this->appRun('POST', '/account/common-pot/use', [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'accept_cgv' => true,
+        ]);
+
+        $this->assertResponse($response, 302, '/account');
+        $this->assertSame(1, $common_pot_payment_dao->count());
+        $account = new models\Account($account_dao->find($user['account_id']));
+        $this->assertGreaterThan($expired_at->getTimestamp(), $account->expired_at->getTimestamp());
+    }
+
+    public function testUseRedirectsIfNoAddress()
+    {
+        $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', -42, 7), 'days');
+        $user = $this->loginUser([
+            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+        $this->create('payment', [
+            'type' => 'common_pot',
+            'amount' => 500,
+            'completed_at' => $this->fake('dateTime')->getTimestamp(),
+        ]);
+        $account_dao = new models\dao\Account();
+        $common_pot_payment_dao = new models\dao\CommonPotPayment();
+
+        $response = $this->appRun('POST', '/account/common-pot/use', [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'accept_cgv' => true,
+        ]);
+
+        $this->assertResponse($response, 302, '/account/address');
+        $this->assertSame(0, $common_pot_payment_dao->count());
+        $account = new models\Account($account_dao->find($user['account_id']));
+        $this->assertEquals($account->expired_at->getTimestamp(), $expired_at->getTimestamp());
+    }
+
+    /**
+     * @dataProvider addressProvider
+     */
+    public function testUseFailsIfNotConnected($address)
+    {
+        $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', -42, 7), 'days');
+        $account_id = $this->create('account', [
+            'address_first_name' => $address['first_name'],
+            'address_last_name' => $address['last_name'],
+            'address_address1' => $address['address1'],
+            'address_postcode' => $address['postcode'],
+            'address_city' => $address['city'],
+            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+        $this->create('payment', [
+            'type' => 'common_pot',
+            'amount' => 500,
+            'completed_at' => $this->fake('dateTime')->getTimestamp(),
+        ]);
+        $account_dao = new models\dao\Account();
+        $common_pot_payment_dao = new models\dao\CommonPotPayment();
+
+        $response = $this->appRun('POST', '/account/common-pot/use', [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'accept_cgv' => true,
+        ]);
+
+        $this->assertResponse($response, 401);
+        $this->assertSame(0, $common_pot_payment_dao->count());
+        $account = new models\Account($account_dao->find($account_id));
+        $this->assertEquals($account->expired_at->getTimestamp(), $expired_at->getTimestamp());
+    }
+
+    /**
+     * @dataProvider addressProvider
+     */
+    public function testUseFailsIfAcceptCgvIsFalse($address)
+    {
+        $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', -42, 7), 'days');
+        $user = $this->loginUser([
+            'address_first_name' => $address['first_name'],
+            'address_last_name' => $address['last_name'],
+            'address_address1' => $address['address1'],
+            'address_postcode' => $address['postcode'],
+            'address_city' => $address['city'],
+            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+        $this->create('payment', [
+            'type' => 'common_pot',
+            'amount' => 500,
+            'completed_at' => $this->fake('dateTime')->getTimestamp(),
+        ]);
+        $account_dao = new models\dao\Account();
+        $common_pot_payment_dao = new models\dao\CommonPotPayment();
+
+        $response = $this->appRun('POST', '/account/common-pot/use', [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'accept_cgv' => false,
+        ]);
+
+        $this->assertResponse($response, 400, 'Vous devez accepter ces conditions');
+        $this->assertSame(0, $common_pot_payment_dao->count());
+        $account = new models\Account($account_dao->find($user['account_id']));
+        $this->assertEquals($account->expired_at->getTimestamp(), $expired_at->getTimestamp());
+    }
+
+    /**
+     * @dataProvider addressProvider
+     */
+    public function testUseFailsIfCsrfIsInvalid($address)
+    {
+        $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', -42, 7), 'days');
+        $user = $this->loginUser([
+            'address_first_name' => $address['first_name'],
+            'address_last_name' => $address['last_name'],
+            'address_address1' => $address['address1'],
+            'address_postcode' => $address['postcode'],
+            'address_city' => $address['city'],
+            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+        $this->create('payment', [
+            'type' => 'common_pot',
+            'amount' => 500,
+            'completed_at' => $this->fake('dateTime')->getTimestamp(),
+        ]);
+        $account_dao = new models\dao\Account();
+        $common_pot_payment_dao = new models\dao\CommonPotPayment();
+
+        $response = $this->appRun('POST', '/account/common-pot/use', [
+            'csrf' => 'not the token',
+            'accept_cgv' => true,
+        ]);
+
+        $this->assertResponse($response, 400, 'Une vérification de sécurité a échoué');
+        $this->assertSame(0, $common_pot_payment_dao->count());
+        $account = new models\Account($account_dao->find($user['account_id']));
+        $this->assertEquals($account->expired_at->getTimestamp(), $expired_at->getTimestamp());
+    }
+
+    /**
+     * @dataProvider addressProvider
+     */
+    public function testUseFailsIfCommonPotIsNotFullEnough($address)
+    {
+        $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', -42, 7), 'days');
+        $user = $this->loginUser([
+            'address_first_name' => $address['first_name'],
+            'address_last_name' => $address['last_name'],
+            'address_address1' => $address['address1'],
+            'address_postcode' => $address['postcode'],
+            'address_city' => $address['city'],
+            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+        $this->create('payment', [
+            'type' => 'common_pot',
+            'amount' => 200,
+            'completed_at' => $this->fake('dateTime')->getTimestamp(),
+        ]);
+        $account_dao = new models\dao\Account();
+        $common_pot_payment_dao = new models\dao\CommonPotPayment();
+
+        $response = $this->appRun('POST', '/account/common-pot/use', [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'accept_cgv' => true,
+        ]);
+
+        $this->assertResponse($response, 400, 'La cagnotte n’est pas suffisamment fournie');
+        $this->assertSame(0, $common_pot_payment_dao->count());
+        $account = new models\Account($account_dao->find($user['account_id']));
+        $this->assertEquals($account->expired_at->getTimestamp(), $expired_at->getTimestamp());
+    }
+
+    /**
+     * @dataProvider addressProvider
+     */
+    public function testUseFailsIfFreeAccount($address)
+    {
+        $expired_at = new \DateTime('1970-01-01');
+        $user = $this->loginUser([
+            'address_first_name' => $address['first_name'],
+            'address_last_name' => $address['last_name'],
+            'address_address1' => $address['address1'],
+            'address_postcode' => $address['postcode'],
+            'address_city' => $address['city'],
+            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+        $this->create('payment', [
+            'type' => 'common_pot',
+            'amount' => 500,
+            'completed_at' => $this->fake('dateTime')->getTimestamp(),
+        ]);
+        $account_dao = new models\dao\Account();
+        $common_pot_payment_dao = new models\dao\CommonPotPayment();
+
+        $response = $this->appRun('POST', '/account/common-pot/use', [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'accept_cgv' => true,
+        ]);
+
+        $this->assertResponse($response, 400, 'Votre abonnement n’est pas encore prêt d’expirer');
+        $this->assertSame(0, $common_pot_payment_dao->count());
+        $account = new models\Account($account_dao->find($user['account_id']));
+        $this->assertEquals($account->expired_at->getTimestamp(), $expired_at->getTimestamp());
+    }
+
+    /**
+     * @dataProvider addressProvider
+     */
+    public function testUseFailsIfNotExpiringSoon($address)
+    {
+        $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 8, 42), 'days');
+        $user = $this->loginUser([
+            'address_first_name' => $address['first_name'],
+            'address_last_name' => $address['last_name'],
+            'address_address1' => $address['address1'],
+            'address_postcode' => $address['postcode'],
+            'address_city' => $address['city'],
+            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+        $this->create('payment', [
+            'type' => 'common_pot',
+            'amount' => 500,
+            'completed_at' => $this->fake('dateTime')->getTimestamp(),
+        ]);
+        $account_dao = new models\dao\Account();
+        $common_pot_payment_dao = new models\dao\CommonPotPayment();
+
+        $response = $this->appRun('POST', '/account/common-pot/use', [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'accept_cgv' => true,
+        ]);
+
+        $this->assertResponse($response, 400, 'Votre abonnement n’est pas encore prêt d’expirer');
+        $this->assertSame(0, $common_pot_payment_dao->count());
+        $account = new models\Account($account_dao->find($user['account_id']));
+        $this->assertEquals($account->expired_at->getTimestamp(), $expired_at->getTimestamp());
+    }
+
+    public function addressProvider()
     {
         $faker = \Faker\Factory::create();
         $datasets = [];

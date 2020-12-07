@@ -69,6 +69,33 @@ echo 'Use SEED=' . $faker_seed . " to reproduce this suite.\n";
 );
 
 \Minz\Tests\DatabaseFactory::addFactory(
+    'common_pot_payment',
+    '\Website\models\dao\CommonPotPayment',
+    [
+        'id' => function () {
+            return bin2hex(random_bytes(16));
+        },
+        'created_at' => function () use ($faker) {
+            return $faker->dateTime->format(\Minz\Model::DATETIME_FORMAT);
+        },
+        'amount' => function () use ($faker) {
+            return $faker->numberBetween(100, 100000);
+        },
+        'frequency' => function () use ($faker) {
+            return $faker->randomElement(['month', 'year']);
+        },
+
+        // a common pot payment is always completed
+        'completed_at' => function () use ($faker) {
+            return $faker->dateTime->format(\Minz\Model::DATETIME_FORMAT);
+        },
+        'is_paid' => function () {
+            return true;
+        },
+    ]
+);
+
+\Minz\Tests\DatabaseFactory::addFactory(
     'token',
     '\Website\models\dao\Token',
     [

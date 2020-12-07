@@ -53,3 +53,17 @@ CREATE TABLE payments (
 
     FOREIGN KEY (account_id) REFERENCES accounts(id) ON UPDATE CASCADE ON DELETE SET NULL
 );
+
+CREATE TABLE common_pot_payments (
+    id TEXT PRIMARY KEY NOT NULL,
+    created_at TEXT NOT NULL,
+    completed_at TEXT,
+    is_paid BOOLEAN NOT NULL DEFAULT true,
+
+    amount INTEGER NOT NULL,
+    frequency TEXT,
+
+    account_id TEXT,
+
+    FOREIGN KEY (account_id) REFERENCES accounts(id) ON UPDATE CASCADE ON DELETE SET NULL
+);
