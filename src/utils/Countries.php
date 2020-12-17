@@ -25,7 +25,7 @@ class Countries
         'GR' => 'Grèce',
         'HR' => 'Croatie',
         'HU' => 'Hongrie',
-        'IE' => 'Irelande',
+        'IE' => 'Irlande',
         'IT' => 'Italie',
         'LT' => 'Lituanie',
         'LU' => 'Luxembourg',
