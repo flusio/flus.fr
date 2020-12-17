@@ -162,10 +162,12 @@ class CommonPots
         $common_pot_payment_dao = new models\dao\CommonPotPayment();
         $common_pot_amount = $common_pot_payment_dao->findAvailableAmount() / 100;
         return \Minz\Response::ok('common_pots/usage.phtml', [
+            'account' => $account,
             'common_pot_amount' => number_format($common_pot_amount, 2, ',', '&nbsp;'),
             'full_enough' => $common_pot_amount >= 3,
             'free_account' => $account->isFree(),
             'expire_soon' => $account->expired_at <= \Minz\Time::fromNow(7, 'days'),
+            'reminder' => $account->reminder,
         ]);
     }
 
@@ -174,6 +176,7 @@ class CommonPots
      *
      * @request_param string csrf
      * @request_param boolean accept_cgv
+     * @request_param boolean reminder
      *
      * @response 401
      *     if the user is not connected
@@ -208,12 +211,17 @@ class CommonPots
         $expire_soon = $account->expired_at <= \Minz\Time::fromNow(7, 'days');
 
         $accept_cgv = $request->param('accept_cgv', false);
+        $reminder = $request->param('reminder', false);
+        $reminder = filter_var($reminder, FILTER_VALIDATE_BOOLEAN);
+
         if (!$accept_cgv) {
             return \Minz\Response::badRequest('common_pots/usage.phtml', [
+                'account' => $account,
                 'common_pot_amount' => $common_pot_amount,
                 'full_enough' => $full_enough,
                 'free_account' => $free_account,
                 'expire_soon' => $expire_soon,
+                'reminder' => $reminder,
                 'errors' => [
                     'cgv' => 'Vous devez accepter ces conditions pour bénéficier de la cagnotte.',
                 ],
@@ -223,30 +231,36 @@ class CommonPots
         $csrf = new \Minz\CSRF();
         if (!$csrf->validateToken($request->param('csrf'))) {
             return \Minz\Response::badRequest('common_pots/usage.phtml', [
+                'account' => $account,
                 'common_pot_amount' => $common_pot_amount,
                 'full_enough' => $full_enough,
                 'free_account' => $free_account,
                 'expire_soon' => $expire_soon,
+                'reminder' => $reminder,
                 'error' => 'Une vérification de sécurité a échoué, veuillez réessayer de soumettre le formulaire.',
             ]);
         }
 
         if (!$full_enough) {
             return \Minz\Response::badRequest('common_pots/usage.phtml', [
+                'account' => $account,
                 'common_pot_amount' => $common_pot_amount,
                 'full_enough' => $full_enough,
                 'free_account' => $free_account,
                 'expire_soon' => $expire_soon,
+                'reminder' => $reminder,
                 'error' => 'La cagnotte n’est pas suffisamment fournie pour pouvoir en bénéficier.',
             ]);
         }
 
         if ($free_account || !$expire_soon) {
             return \Minz\Response::badRequest('common_pots/usage.phtml', [
+                'account' => $account,
                 'common_pot_amount' => $common_pot_amount,
                 'full_enough' => $full_enough,
                 'free_account' => $free_account,
                 'expire_soon' => $expire_soon,
+                'reminder' => $reminder,
                 'error' => 'Votre abonnement n’est pas encore prêt d’expirer, veuillez attendre un peu.',
             ]);
         }
@@ -256,6 +270,7 @@ class CommonPots
         $common_pot_payment_dao->save($common_pot_payment);
 
         $account->extendSubscription($common_pot_payment->frequency);
+        $account->reminder = $reminder;
         $account_dao->save($account);
 
         return \Minz\Response::redirect('account');

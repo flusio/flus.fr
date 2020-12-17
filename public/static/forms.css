@@ -337,6 +337,10 @@ legend {
     border-radius: 0.75rem;
 }
 
+.form-group--reminder {
+    padding: var(--space-medium);
+}
+
 /**
  * Amount selector on the "cagnotte" page
  */

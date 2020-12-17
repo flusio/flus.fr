@@ -38,6 +38,23 @@
         <p class="paragraph--center">
             Vous pourrez utiliser la cagnotte lorsque votre abonnement sera sur le point d’expirer (à 7 jours ou moins). Patience&nbsp;!
         </p>
+
+        <form method="post" action="<?= url('account set reminder') ?>">
+            <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+            <input type="hidden" name="from" value="common pot usage" />
+
+            <p class="paragraph--center">
+                <?php if ($account->reminder): ?>
+                    <button type="submit" class="button--ghost" name="reminder" value="false">
+                        Désactiver le rappel
+                    </button>
+                <?php else: ?>
+                    <button type="submit" class="button--default" name="reminder" value="true">
+                        Activer un rappel
+                    </button>
+                <?php endif; ?>
+            </p>
+        </form>
     <?php elseif (!$full_enough): ?>
         <p class="paragraph--center">
             Malheureusement, il n’y a plus assez d’argent dans la cagnotte pour
@@ -55,12 +72,24 @@
                 Vous êtes sur le point de renouveler un mois d’abonnement (soit l’équivalent de 3&nbsp;€)
             </p>
 
+            <div class="form-group form-group--reminder">
+                <input
+                    id="reminder"
+                    name="reminder"
+                    type="checkbox"
+                    <?= $reminder ? 'checked' : '' ?>
+                />
+
+                <label for="reminder">
+                    Recevoir un rappel à l’approche de l’échéance
+                </label>
+            </div>
+
             <div class="form-group form-group--cgv <?= isset($errors['cgv']) ? 'form-group--invalid' : '' ?>">
                 <p class="form-group__caption">
-                    Vous devriez prendre le temps de
+                    Vous devez accepter les
                     <a href="<?= url('cgv') ?>" target="_blank" rel="noopener noreferrer nofollow">
-                        lire les Conditions Générales de Vente</a>
-                    pour vous assurer que celles-ci vous conviennent.<br/>
+                        Conditions Générales de Vente</a>.
                 </p>
 
                 <input

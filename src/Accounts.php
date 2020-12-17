@@ -200,6 +200,7 @@ class Accounts
     /**
      * @request_param string csrf
      * @request_param boolean reminder
+     * @request_param string from A route name (default is "account")
      *
      * @response 401
      *     if the user is not connected
@@ -224,6 +225,7 @@ class Accounts
         $account = new models\Account($db_account);
 
         $reminder = $request->param('reminder', false);
+        $from = $request->param('from', 'account');
 
         $csrf = new \Minz\CSRF();
         if ($csrf->validateToken($request->param('csrf'))) {
@@ -231,6 +233,6 @@ class Accounts
             $account_dao->save($account);
         }
 
-        return \Minz\Response::redirect('account');
+        return \Minz\Response::redirect($from);
     }
 }

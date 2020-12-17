@@ -37,6 +37,7 @@ class Subscriptions
 
         return \Minz\Response::ok('subscriptions/init.phtml', [
             'account' => $account,
+            'reminder' => $account->reminder,
         ]);
     }
 
@@ -46,6 +47,7 @@ class Subscriptions
      *
      * @request_param string csrf
      * @request_param string frequency (month or year)
+     * @request_param boolean reminder
      *
      * @response 401
      *     if the user is not connected
@@ -76,11 +78,15 @@ class Subscriptions
         }
 
         $frequency = $request->param('frequency');
+        $reminder = $request->param('reminder', false);
+        $reminder = filter_var($reminder, FILTER_VALIDATE_BOOLEAN);
+
         $payment = models\Payment::initSubscriptionFromAccount($account, $frequency);
         $errors = $payment->validate();
         if ($errors) {
             return \Minz\Response::badRequest('subscriptions/init.phtml', [
                 'account' => $account,
+                'reminder' => $reminder,
                 'errors' => $errors,
             ]);
         }
@@ -89,6 +95,7 @@ class Subscriptions
         if (!$csrf->validateToken($request->param('csrf'))) {
             return \Minz\Response::badRequest('subscriptions/init.phtml', [
                 'account' => $account,
+                'reminder' => $reminder,
                 'error' => 'Une vérification de sécurité a échoué, veuillez réessayer de soumettre le formulaire.',
             ]);
         }
@@ -110,6 +117,7 @@ class Subscriptions
         $payment_id = $payment_dao->save($payment);
 
         $account->preferred_frequency = $payment->frequency;
+        $account->reminder = $reminder;
         $account_dao->save($account);
 
         return \Minz\Response::redirect('Payments#pay', [

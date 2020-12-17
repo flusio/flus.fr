@@ -113,20 +113,11 @@
             <?php endif; ?>
         </div>
 
-        <p class="paragraph--center paragraph--limit paragraph--secondary">
-            <i>
-                Facturé au <?= $this->protect($account->address_address1) ?>,
-                <?= $this->protect($account->address_city) ?>.
-                <a href="<?= url('account address') ?>">Modifier&nbsp;?</a>
-            </i>
-        </p>
-
         <div class="form-group form-group--cgv <?= isset($errors['cgv']) ? 'form-group--invalid' : '' ?>">
             <p class="form-group__caption">
-                Vous devriez prendre le temps de
+                Vous devez accepter les
                 <a href="<?= url('cgv') ?>" target="_blank" rel="noopener noreferrer nofollow">
-                    lire les Conditions Générales de Vente</a>
-                pour vous assurer que celles-ci vous conviennent.<br/>
+                    Conditions Générales de Vente</a>.
                 Vous serez ensuite redirigé·e vers le prestataire de paiement
                 <a href="https://stripe.com/fr" target="_blank" rel="noopener noreferrer nofollow">Stripe</a>.
             </p>
@@ -151,7 +142,7 @@
 
         <div class="form__actions">
             <button type="submit" class="button--primary">
-                Valider votre participation à la cagnotte
+                Contribuer à la cagnotte
             </button>
         </div>
 
