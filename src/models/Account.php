@@ -176,6 +176,16 @@ class Account extends \Minz\Model
     }
 
     /**
+     * Return whether the user needs to set its address or not.
+     *
+     * @return boolean
+     */
+    public function mustSetAddress()
+    {
+        return !$this->address_first_name;
+    }
+
+    /**
      * Return whether the account has a free subscription or not
      *
      * @return boolean

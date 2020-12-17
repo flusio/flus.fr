@@ -12,11 +12,18 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\TimeHelper;
 
-    public function testShowRendersCorrectly()
+    /**
+     * @dataProvider addressesProvider
+     */
+    public function testShowRendersCorrectly($email, $address)
     {
-        $email = $this->fake('email');
         $this->loginUser([
             'email' => $email,
+            'address_first_name' => $address['first_name'],
+            'address_last_name' => $address['last_name'],
+            'address_address1' => $address['address1'],
+            'address_postcode' => $address['postcode'],
+            'address_city' => $address['city'],
         ]);
 
         $response = $this->appRun('GET', '/account');
@@ -25,12 +32,20 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $this->assertPointer($response, 'accounts/show.phtml');
     }
 
-    public function testShowRendersFutureExpiration()
+    /**
+     * @dataProvider addressesProvider
+     */
+    public function testShowRendersFutureExpiration($email, $address)
     {
         $this->freeze($this->fake('dateTime'));
         $expired_at = \Minz\Time::fromNow($this->fake('randomDigitNotNull'), 'days');
         $this->loginUser([
             'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+            'address_first_name' => $address['first_name'],
+            'address_last_name' => $address['last_name'],
+            'address_address1' => $address['address1'],
+            'address_postcode' => $address['postcode'],
+            'address_city' => $address['city'],
         ]);
 
         $response = $this->appRun('GET', '/account');
@@ -38,12 +53,20 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 200, 'Votre abonnement expirera le');
     }
 
-    public function testShowRendersPriorExpiration()
+    /**
+     * @dataProvider addressesProvider
+     */
+    public function testShowRendersPriorExpiration($email, $address)
     {
         $this->freeze($this->fake('dateTime'));
         $expired_at = \Minz\Time::ago($this->fake('randomDigitNotNull'), 'days');
         $this->loginUser([
             'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+            'address_first_name' => $address['first_name'],
+            'address_last_name' => $address['last_name'],
+            'address_address1' => $address['address1'],
+            'address_postcode' => $address['postcode'],
+            'address_city' => $address['city'],
         ]);
 
         $response = $this->appRun('GET', '/account');
@@ -51,16 +74,37 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 200, 'Votre abonnement a expiré le');
     }
 
-    public function testShowRendersIfNoExpiration()
+    /**
+     * @dataProvider addressesProvider
+     */
+    public function testShowRendersIfNoExpiration($email, $address)
     {
         $expired_at = new \DateTime('1970-01-01');
         $this->loginUser([
             'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+            'address_first_name' => $address['first_name'],
+            'address_last_name' => $address['last_name'],
+            'address_address1' => $address['address1'],
+            'address_postcode' => $address['postcode'],
+            'address_city' => $address['city'],
         ]);
 
         $response = $this->appRun('GET', '/account');
 
         $this->assertResponse($response, 200, 'Vous bénéficiez d’un abonnement gratuit');
+    }
+
+    public function testShowRedirectsIfNoAddress()
+    {
+        $email = $this->fake('email');
+        $this->loginUser([
+            'email' => $email,
+            'address_first_name' => null,
+        ]);
+
+        $response = $this->appRun('GET', '/account');
+
+        $this->assertResponse($response, 302, '/account/address');
     }
 
     public function testShowFailsIfNotConnected()
@@ -281,7 +325,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider updateAddressProvider
+     * @dataProvider addressesProvider
      */
     public function testUpdateAddressChangesAddressAndRedirects($email, $address)
     {
@@ -305,7 +349,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider updateAddressProvider
+     * @dataProvider addressesProvider
      */
     public function testUpdateAddressFailsIfNotConnected($email, $address)
     {
@@ -319,7 +363,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider updateAddressProvider
+     * @dataProvider addressesProvider
      */
     public function testUpdateAddressFailsIfCsrfIsInvalid($email, $address)
     {
@@ -336,7 +380,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider updateAddressProvider
+     * @dataProvider addressesProvider
      */
     public function testUpdateAddressFailsWithInvalidEmail($email, $address)
     {
@@ -356,7 +400,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider updateAddressProvider
+     * @dataProvider addressesProvider
      */
     public function testUpdateAddressFailsWithMissingEmail($email, $address)
     {
@@ -372,7 +416,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider updateAddressProvider
+     * @dataProvider addressesProvider
      */
     public function testUpdateAddressFailsWithMissingFirstName($email, $address)
     {
@@ -390,7 +434,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider updateAddressProvider
+     * @dataProvider addressesProvider
      */
     public function testUpdateAddressFailsWithMissingLastName($email, $address)
     {
@@ -408,7 +452,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider updateAddressProvider
+     * @dataProvider addressesProvider
      */
     public function testUpdateAddressFailsWithMissingAddress1($email, $address)
     {
@@ -426,7 +470,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider updateAddressProvider
+     * @dataProvider addressesProvider
      */
     public function testUpdateAddressFailsWithMissingPostcode($email, $address)
     {
@@ -444,7 +488,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider updateAddressProvider
+     * @dataProvider addressesProvider
      */
     public function testUpdateAddressFailsWithMissingCity($email, $address)
     {
@@ -462,7 +506,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider updateAddressProvider
+     * @dataProvider addressesProvider
      */
     public function testUpdateAddressFailsWithInvalidCountry($email, $address)
     {
@@ -536,7 +580,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($old_reminder, $account->reminder);
     }
 
-    public function updateAddressProvider()
+    public function addressesProvider()
     {
         $faker = \Faker\Factory::create();
         $datasets = [];

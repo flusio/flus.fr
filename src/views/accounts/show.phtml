@@ -45,45 +45,39 @@
         <?php endif; ?>
     </div>
 
-    <?php if ($no_address): ?>
-        <p class="paragraph--center paragraph--limit">
-            Vous devez avant tout indiquer votre adresse postale.
-        </p>
-
+    <?php if (!$account->isFree()): ?>
         <p class="paragraph--center">
-            <a class="call-to-action" href="<?= url('account address') ?>">
-                Indiquer votre adresse
-            </a>
-        </p>
-    <?php else: ?>
-        <?php if (!$account->isFree()): ?>
-            <p class="paragraph--center">
-                <?php if ($account->hasExpired()): ?>
-                    <a class="call-to-action" href="<?= url('subscription init') ?>">
-                        Renouveler votre abonnement
-                    </a>
-                <?php else: ?>
-                    <a href="<?= url('subscription init') ?>">
-                        Renouveler votre abonnement
-                    </a>
-                <?php endif; ?>
-            </p>
-        <?php endif; ?>
-
-        <p class="paragraph--center">
-            <a href="<?= url('common pot contribution') ?>">
-                Contribuer à la cagnotte
-            </a>
-        </p>
-
-        <?php if (!$account->isFree()): ?>
-            <p class="paragraph--center">
-                <a href="<?= url('common pot usage') ?>">
-                    Bénéficier de la cagnotte
+            <?php if ($account->hasExpired()): ?>
+                <a class="call-to-action" href="<?= url('subscription init') ?>">
+                    Renouveler votre abonnement
                 </a>
-            </p>
-        <?php endif; ?>
+            <?php else: ?>
+                <a href="<?= url('subscription init') ?>">
+                    Renouveler votre abonnement
+                </a>
+            <?php endif; ?>
+        </p>
     <?php endif; ?>
+
+    <p class="paragraph--center">
+        <a href="<?= url('common pot contribution') ?>">
+            Contribuer à la cagnotte
+        </a>
+    </p>
+
+    <?php if (!$account->isFree()): ?>
+        <p class="paragraph--center">
+            <a href="<?= url('common pot usage') ?>">
+                Bénéficier de la cagnotte
+            </a>
+        </p>
+    <?php endif; ?>
+
+    <p class="paragraph--center">
+        <a href="<?= url('account address') ?>">
+            Gérer vos adresses
+        </a>
+    </p>
 
     <div class="columns columns--center columns--spaced columns--background">
         <div class="columns__item columns__item--center">

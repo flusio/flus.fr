@@ -11,6 +11,20 @@
         </h1>
     </div>
 
+    <?php if ($account->mustSetAddress()): ?>
+        <div class="section__intro">
+            <p>
+                <strong>Vous êtes sur le point de renouveler votre abonnement
+                    ou de participer à la cagnotte.</strong>
+            </p>
+
+            <p>
+                Votre adresse postale m’est nécessaire pour pouvoir établir des
+                factures en bonne et due forme.
+            </p>
+        </div>
+    <?php endif; ?>
+
     <form
         method="post"
         action="<?= url('account update address') ?>"
@@ -24,33 +38,8 @@
             </p>
         <?php endif; ?>
 
-        <div class="form-group <?= isset($errors['email']) ? 'form-group--invalid' : '' ?>">
-            <label for="email">
-                Adresse courriel
-            </label>
-
-            <input
-                id="email"
-                name="email"
-                type="email"
-                value="<?= $email ?>"
-                required
-            />
-
-            <?php if (isset($errors['email'])): ?>
-                <p class="form-group__error">
-                    <?= $errors['email'] ?>
-                </p>
-            <?php endif; ?>
-        </div>
-
         <fieldset>
             <legend>Adresse postale</legend>
-
-            <p class="fieldset__caption">
-                Cette adresse m’est nécessaire pour pouvoir établir des factures
-                en bonne et due forme.
-            </p>
 
             <div class="columns">
                 <div class="columns__item">
@@ -192,16 +181,38 @@
             </div>
         </fieldset>
 
+        <div class="form-group <?= isset($errors['email']) ? 'form-group--invalid' : '' ?>">
+            <label for="email">
+                Adresse courriel
+            </label>
+
+            <input
+                id="email"
+                name="email"
+                type="email"
+                value="<?= $email ?>"
+                required
+            />
+
+            <?php if (isset($errors['email'])): ?>
+                <p class="form-group__error">
+                    <?= $errors['email'] ?>
+                </p>
+            <?php endif; ?>
+        </div>
+
         <div class="form__actions">
             <button type="submit" class="button--primary">
-                Valider vos adresses
+                Confirmer vos adresses
             </button>
         </div>
 
-        <p class="paragraph--center">
-            <a href="<?= url('account') ?>">
-                Retour à votre abonnement
-            </a>
-        </p>
+        <?php if (!$account->mustSetAddress()): ?>
+            <p class="paragraph--center">
+                <a href="<?= url('account') ?>">
+                    Retour à votre abonnement
+                </a>
+            </p>
+        <?php endif; ?>
     </form>
 </section>

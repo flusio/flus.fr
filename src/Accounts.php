@@ -11,6 +11,8 @@ class Accounts
     /**
      * @response 401
      *     if the user is not connected
+     * @response 302 /account/address
+     *     if the address is not set
      * @response 200
      *     on success
      *
@@ -28,9 +30,13 @@ class Accounts
         $account_dao = new models\dao\Account();
         $db_account = $account_dao->find($user['account_id']);
         $account = new models\Account($db_account);
+
+        if ($account->mustSetAddress()) {
+            return \Minz\Response::redirect('account address');
+        }
+
         return \Minz\Response::ok('accounts/show.phtml', [
             'account' => $account,
-            'no_address' => !$account->address_first_name,
             'payments' => $account->payments(),
         ]);
     }

@@ -41,8 +41,7 @@ class CommonPots
         $db_account = $account_dao->find($user['account_id']);
         $account = new models\Account($db_account);
 
-        $no_address = !$account->address_first_name;
-        if ($no_address) {
+        if ($account->mustSetAddress()) {
             return \Minz\Response::redirect('account address');
         }
 
@@ -79,8 +78,7 @@ class CommonPots
         $db_account = $account_dao->find($user['account_id']);
         $account = new models\Account($db_account);
 
-        $no_address = !$account->address_first_name;
-        if ($no_address) {
+        if ($account->mustSetAddress()) {
             return \Minz\Response::redirect('account address');
         }
 
@@ -157,8 +155,7 @@ class CommonPots
         $db_account = $account_dao->find($user['account_id']);
         $account = new models\Account($db_account);
 
-        $no_address = !$account->address_first_name;
-        if ($no_address) {
+        if ($account->mustSetAddress()) {
             return \Minz\Response::redirect('account address');
         }
 
@@ -199,8 +196,7 @@ class CommonPots
         $db_account = $account_dao->find($user['account_id']);
         $account = new models\Account($db_account);
 
-        $no_address = !$account->address_first_name;
-        if ($no_address) {
+        if ($account->mustSetAddress()) {
             return \Minz\Response::redirect('account address');
         }
 
