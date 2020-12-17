@@ -90,9 +90,18 @@ class Accounts
     public function logout($request)
     {
         $user = utils\CurrentUser::get();
+        $account_dao = new models\dao\Account();
+        $db_account = $account_dao->find($user['account_id']);
+        $account = new models\Account($db_account);
+
         $csrf = new \Minz\CSRF();
         if ($csrf->validateToken($request->param('csrf')) && $user) {
             utils\CurrentUser::logOut();
+            if ($account->preferred_service === 'flusio') {
+                return \Minz\Response::found('https://app.flus.fr');
+            } else {
+                return \Minz\Response::found('https://flus.io');
+            }
         }
 
         return \Minz\Response::redirect('home');

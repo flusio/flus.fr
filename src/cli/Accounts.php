@@ -58,6 +58,9 @@ class Accounts
 
     /**
      * @request_param string account_id
+     * @request_param string service
+     *     The name of the service making the request ('flusio' or 'freshrss').
+     *     If the variable is invalid, it defaults to 'flusio'.
      *
      * @response 404
      *     if the account doesn't exist
@@ -71,6 +74,7 @@ class Accounts
     public function loginUrl($request)
     {
         $account_id = $request->param('account_id');
+        $service = $request->param('service');
         $account_dao = new models\dao\Account();
         $token_dao = new models\dao\Token();
 
@@ -79,9 +83,14 @@ class Accounts
             return \Minz\Response::Text(404, 'This account doesn’t exist.');
         }
 
+        if ($service !== 'flusio' && $service !== 'freshrss') {
+            $service = 'flusio';
+        }
+
         $account = new models\Account($db_account);
         $token = models\Token::init(10, 'minutes');
         $account->access_token = $token->token;
+        $account->preferred_service = $service;
         $token_dao->save($token);
         $account_dao->save($account);
 

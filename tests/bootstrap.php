@@ -130,6 +130,9 @@ echo 'Use SEED=' . $faker_seed . " to reproduce this suite.\n";
         'preferred_payment_type' => function () use ($faker) {
             return $faker->randomElement(['common_pot', 'card']);
         },
+        'preferred_service' => function () use ($faker) {
+            return $faker->randomElement(['flusio', 'freshrss']);
+        },
         'email' => function () use ($faker) {
             return $faker->email;
         },

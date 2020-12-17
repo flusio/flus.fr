@@ -14,6 +14,7 @@ CREATE TABLE accounts (
 
     preferred_frequency TEXT NOT NULL DEFAULT 'month',
     preferred_payment_type TEXT NOT NULL DEFAULT 'card',
+    preferred_service TEXT NOT NULL DEFAULT 'flusio',
     reminder BOOLEAN NOT NULL DEFAULT false,
 
     address_first_name TEXT,

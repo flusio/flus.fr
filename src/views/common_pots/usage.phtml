@@ -119,8 +119,14 @@
     <?php endif; ?>
 
     <p class="paragraph--center">
-        <a href="<?= url('account') ?>">
-            Retour à votre abonnement
-        </a>
+        <?php if ($free_account || !$expire_soon || !$full_enough): ?>
+            <a class="call-to-action" href="<?= url('account') ?>">
+                Revenir à votre compte
+            </a>
+        <?php else: ?>
+            <a href="<?= url('account') ?>">
+                Revenir à votre compte
+            </a>
+        <?php endif; ?>
     </p>
 </section>

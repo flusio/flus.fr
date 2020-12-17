@@ -47,6 +47,12 @@ class Account extends \Minz\Model
             'validator' => '\Website\models\Account::validatePaymentType',
         ],
 
+        'preferred_service' => [
+            'type' => 'string',
+            'required' => true,
+            'validator' => '\Website\models\Account::validateServiceName',
+        ],
+
         'reminder' => [
             'type' => 'boolean',
             'required' => true,
@@ -94,6 +100,7 @@ class Account extends \Minz\Model
             'expired_at' => \Minz\Time::fromNow(1, 'month'),
             'preferred_frequency' => 'month',
             'preferred_payment_type' => 'card',
+            'preferred_service' => 'flusio',
             'reminder' => false,
             'address_country' => 'FR',
         ]);
@@ -267,5 +274,15 @@ class Account extends \Minz\Model
     public static function validateFrequency($frequency)
     {
         return $frequency === 'month' || $frequency === 'year';
+    }
+
+    /**
+     * @param string $type
+     *
+     * @return boolean Returns true if the value is either `flusio` or `freshrss`
+     */
+    public static function validateServiceName($service)
+    {
+        return $service === 'flusio' || $service === 'freshrss';
     }
 }

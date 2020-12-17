@@ -283,13 +283,21 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
     public function testLogoutRedirectsToShow()
     {
-        $this->loginUser();
+        $service = $this->fake('randomElement', ['flusio', 'freshrss']);
+        $this->loginUser([
+            'preferred_service' => $service,
+        ]);
 
         $response = $this->appRun('POST', '/account/logout', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
         ]);
 
-        $this->assertResponse($response, 302, '/');
+        if ($service === 'flusio') {
+            $expected_location = 'https://app.flus.fr';
+        } else {
+            $expected_location = 'https://flus.io';
+        }
+        $this->assertResponse($response, 302, $expected_location);
         $user = utils\CurrentUser::get();
         $this->assertNull($user);
     }

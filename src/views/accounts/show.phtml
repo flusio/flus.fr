@@ -1,13 +1,13 @@
 <?php
     $this->layout('account.phtml', [
-        'title' => 'Votre abonnement à Flus',
+        'title' => 'Votre compte de paiement Flus',
     ]);
 ?>
 
 <section class="section">
     <div class="header">
         <h1 class="header__title">
-            Votre abonnement à Flus
+            Votre compte de paiement Flus
         </h1>
     </div>
 
@@ -30,59 +30,52 @@
         </p>
     </div>
 
-    <?php if (!$account->isFree()): ?>
-        <p class="paragraph--center">
-            <?php if ($account->hasExpired()): ?>
-                <a class="call-to-action" href="<?= url('subscription init') ?>">
-                    Renouveler votre abonnement
-                </a>
-            <?php else: ?>
-                <a href="<?= url('subscription init') ?>">
-                    Renouveler votre abonnement
-                </a>
+    <nav class="navaccount">
+        <ul class="navaccount__container">
+            <?php if (!$account->isFree()): ?>
+                <li class="navaccount__item <?= $account->hasExpired() ? 'navaccount__item--featured' : '' ?>">
+                    <a class="navaccount__link navaccount__link--subscription" href="<?= url('subscription init') ?>">
+                        Renouveler votre abonnement
+                    </a>
+                </li>
             <?php endif; ?>
-        </p>
-    <?php endif; ?>
 
-    <p class="paragraph--center">
-        <a href="<?= url('common pot contribution') ?>">
-            Contribuer à la cagnotte
-        </a>
-    </p>
-
-    <?php if (!$account->isFree()): ?>
-        <p class="paragraph--center">
-            <a href="<?= url('common pot usage') ?>">
-                Bénéficier de la cagnotte
-            </a>
-        </p>
-    <?php endif; ?>
-
-    <p class="paragraph--center">
-        <a href="<?= url('account address') ?>">
-            Gérer vos adresses
-        </a>
-    </p>
-
-    <div class="columns columns--center columns--spaced columns--background">
-        <div class="columns__item columns__item--center">
-            <p>
-                <a href="https://flus.io/">
-                    <img alt="" src="<?= url_static('freshrss.svg') ?>" width="70"/><br />
-                    Accéder à Flus 1
+            <li class="navaccount__item">
+                <a class="navaccount__link navaccount__link--give" href="<?= url('common pot contribution') ?>">
+                    Contribuer à la cagnotte
                 </a>
-            </p>
-        </div>
+            </li>
 
-        <div class="columns__item columns__item--center">
-            <p>
-                <a href="https://app.flus.fr/">
-                    <img alt="" src="<?= url_static('flus.svg') ?>" width="75"/><br />
-                    Accéder à Flus 2
+            <?php if (!$account->isFree()): ?>
+                <li class="navaccount__item">
+                    <a class="navaccount__link navaccount__link--common-pot" href="<?= url('common pot usage') ?>">
+                        Bénéficier de la cagnotte
+                    </a>
+                </li>
+            <?php endif; ?>
+
+            <li class="navaccount__item">
+                <a class="navaccount__link navaccount__link--address" href="<?= url('account address') ?>">
+                    Gérer vos adresses
                 </a>
-            </p>
-        </div>
-    </div>
+            </li>
+
+            <li class="navaccount__item">
+                <form method="post" action="<?= url('account logout') ?>">
+                    <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+                    <button class="navaccount__button navaccount__button--leave" type="submit">
+                        <?php if ($account->preferred_service === 'flusio'): ?>
+                            <img alt="" src="<?= url_static('flus.svg') ?>" width="70"/>
+                        <?php else: ?>
+                            <img alt="" src="<?= url_static('freshrss.svg') ?>" width="70"/>
+                        <?php endif; ?>
+                        <br />
+                        Revenir à l’application
+                    </button>
+                </form>
+            </li>
+        </ul>
+    </nav>
 
     <div class="header">
         <h2 class="header__title">

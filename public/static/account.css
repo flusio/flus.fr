@@ -335,6 +335,112 @@ hr {
     margin-top: var(--space-large);
 }
 
+.navaccount {
+    margin-top: var(--space-large);
+    margin-bottom: var(--space-large);
+}
+
+.navaccount__container {
+    max-width: 50ch;
+    margin: 0 auto;
+    padding: 0;
+
+    list-style: none;
+}
+
+.navaccount__item {
+    border: .2rem solid var(--color-purple-1);
+}
+
+.navaccount__item + .navaccount__item {
+    border-top: none;
+}
+
+.navaccount__item:first-child,
+.navaccount__item:first-child .navaccount__link,
+.navaccount__item:first-child .navaccount__button {
+    border-radius: 1rem 1rem 0 0;
+}
+
+.navaccount__item:last-child,
+.navaccount__item:last-child .navaccount__link,
+.navaccount__item:last-child .navaccount__button {
+    border-radius: 0 0 1rem 1rem;
+}
+
+.navaccount__item--featured {
+    font-weight: bold;
+}
+
+.navaccount__link,
+.navaccount__button {
+    display: block;
+    padding: var(--space-medium);
+
+    color: var(--color-text);
+    text-decoration: none;
+
+    transition:
+        background-color .3s ease-in-out,
+        color .3s ease-in-out;
+}
+
+.navaccount__link:hover,
+.navaccount__link:focus,
+.navaccount__button:hover,
+.navaccount__button:focus {
+    color: var(--color-link);
+
+    background-color: var(--color-purple-3);
+}
+
+.navaccount__item--featured .navaccount__link,
+.navaccount__item--featured .navaccount__button {
+    color: var(--color-link);
+}
+
+.navaccount__link {
+    padding-left: 6rem;
+
+    background-repeat: no-repeat;
+    background-position: 1rem center;
+}
+
+.navaccount__button {
+    width: 100%;
+
+    text-align: left;
+    font-size: 1em;
+
+    background-color: transparent;
+    border: none;
+
+    cursor: pointer;
+}
+
+.navaccount__link--subscription {
+    background-image: url("icons/commerce/credit-card-line.svg");
+}
+
+.navaccount__link--give {
+    background-image: url("icons/social/heart-line.svg");
+}
+
+.navaccount__link--common-pot {
+    background-image: url("icons/commerce/piggy-bank-line.svg");
+}
+
+.navaccount__link--address {
+    background-image: url("icons/travel/map-marker-line.svg");
+}
+
+.navaccount__button--leave {
+    font-weight: bold;
+    text-align: center;
+
+    background-color: var(--color-purple-3);
+}
+
 .error-box {
     position: absolute;
     left: 0;
