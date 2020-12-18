@@ -12,26 +12,36 @@ class Payments
      *
      * @return \Minz\Response
      */
-    public function index()
+    public function index($request)
     {
         if (!utils\CurrentUser::isAdmin()) {
             return \Minz\Response::redirect('login');
         }
 
-        $year = \Minz\Time::now()->format('Y');
+        $year = $request->param('year', \Minz\Time::now()->format('Y'));
         $payment_dao = new models\dao\Payment();
         $raw_payments = $payment_dao->listByYear($year);
         $payments_by_months = [];
+        $payments = [];
         foreach ($raw_payments as $raw_payment) {
             $payment = new models\Payment($raw_payment);
             $month = intval($payment->created_at->format('n'));
             $payments_by_months[$month][] = $payment;
+            $payments[] = $payment;
         }
 
-        return \Minz\Response::ok('admin/payments/index.phtml', [
-            'year' => $year,
-            'payments_by_months' => $payments_by_months,
-        ]);
+        $format = $request->param('format', 'html');
+        if ($format === 'csv') {
+            return \Minz\Response::ok('admin/payments/index.txt', [
+                'year' => $year,
+                'payments' => $payments,
+            ]);
+        } else {
+            return \Minz\Response::ok('admin/payments/index.phtml', [
+                'year' => $year,
+                'payments_by_months' => $payments_by_months,
+            ]);
+        }
     }
 
     /**

@@ -1,0 +1,27 @@
+<?php
+    $line_number = 0;
+    foreach ($payments as $payment):
+        if (!$payment->completed_at):
+            continue;
+        endif;
+
+        $line_number += 1;
+
+        echo format_date($payment->completed_at, '%d/%m/%Y') . ';';
+        if ($payment->type === 'subscription' && $payment->frequency === 'month'):
+            echo 'mensuel;';
+        elseif ($payment->type === 'subscription' && $payment->frequency === 'year'):
+            echo 'annuel;';
+        else:
+            echo 'cagnotte;';
+        endif;
+        echo $payment->amount / 100 . ';';
+        if ($payment->payment_intent_id):
+            echo 'stripe;';
+        else:
+            echo 'virement;';
+        endif;
+        echo "=MOIS(A{$line_number});";
+        echo "\n";
+    endforeach;
+?>
