@@ -16,6 +16,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
     public function testRemindSendsEmailAt7DaysBeforeExpiration()
     {
+        $this->freeze($this->fake('dateTime'));
         $email = $this->fake('email');
         $this->create('account', [
             'reminder' => true,
@@ -37,6 +38,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
     public function testRemindSendsEmailAt2DaysBeforeExpiration()
     {
+        $this->freeze($this->fake('dateTime'));
         $email = $this->fake('email');
         $this->create('account', [
             'reminder' => true,
@@ -58,6 +60,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
     public function testRemindSendsEmailTheDayAfterExpiration()
     {
+        $this->freeze($this->fake('dateTime'));
         $email = $this->fake('email');
         $this->create('account', [
             'reminder' => true,
@@ -79,6 +82,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
     public function testRemindSendsDifferentEmailsToDifferentPeople()
     {
+        $this->freeze($this->fake('dateTime'));
         $email_1 = $this->fakeUnique('email');
         $email_2 = $this->fakeUnique('email');
         $this->create('account', [
@@ -106,6 +110,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
     public function testRemindDoesNotSendEmailIfReminderIsFalse()
     {
+        $this->freeze($this->fake('dateTime'));
         $email = $this->fake('email');
         $this->create('account', [
             'reminder' => 0,
@@ -121,6 +126,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
     public function testRemindDoesNotSendEmailIfAccountIsFree()
     {
+        $this->freeze($this->fake('dateTime'));
         $email = $this->fake('email');
         $this->create('account', [
             'reminder' => true,
