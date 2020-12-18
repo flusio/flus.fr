@@ -34,17 +34,6 @@ $request = new \Minz\Request($http_method, $http_uri, $http_parameters, $_SERVER
 $application = new \Website\Application();
 $response = $application->run($request);
 
-$response->removeCookie('__stripe_mid', [
-    'secure' => false,
-    'httponly' => false,
-    'samesite' => 'Lax',
-]);
-$response->removeCookie('__stripe_sid', [
-    'secure' => false,
-    'httponly' => false,
-    'samesite' => 'Lax',
-]);
-
 // Generate the HTTP headers and output
 http_response_code($response->code());
 

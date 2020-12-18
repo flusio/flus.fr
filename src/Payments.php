@@ -45,7 +45,18 @@ class Payments
      */
     public function succeeded()
     {
-        return \Minz\Response::ok('payments/succeeded.phtml');
+        $response = \Minz\Response::ok('payments/succeeded.phtml');
+        $response->removeCookie('__stripe_mid', [
+            'secure' => false,
+            'httponly' => false,
+            'samesite' => 'Lax',
+        ]);
+        $response->removeCookie('__stripe_sid', [
+            'secure' => false,
+            'httponly' => false,
+            'samesite' => 'Lax',
+        ]);
+        return $response;
     }
 
     /**
@@ -55,6 +66,17 @@ class Payments
      */
     public function canceled()
     {
-        return \Minz\Response::ok('payments/canceled.phtml');
+        $response = \Minz\Response::ok('payments/canceled.phtml');
+        $response->removeCookie('__stripe_mid', [
+            'secure' => false,
+            'httponly' => false,
+            'samesite' => 'Lax',
+        ]);
+        $response->removeCookie('__stripe_sid', [
+            'secure' => false,
+            'httponly' => false,
+            'samesite' => 'Lax',
+        ]);
+        return $response;
     }
 }
