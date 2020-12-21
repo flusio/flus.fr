@@ -14,6 +14,7 @@ class Countries
         'AT' => 'Autriche',
         'BE' => 'Belgique',
         'BG' => 'Bulgarie',
+        'CH' => 'Suisse',
         'CY' => 'Chypre',
         'CZ' => 'République tchèque',
         'DE' => 'Allemagne',
