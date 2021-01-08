@@ -45,6 +45,11 @@ class Home
         return $response;
     }
 
+    public function funding()
+    {
+        return \Minz\Response::redirect('pricing');
+    }
+
     public function credits()
     {
         return \Minz\Response::ok('home/credits.phtml');

@@ -16,6 +16,7 @@ class Application
         $router->addRoute('get', '/', 'Home#index', 'home');
         $router->addRoute('get', '/projet', 'Home#project', 'project');
         $router->addRoute('get', '/tarifs', 'Home#pricing', 'pricing');
+        $router->addRoute('get', '/financement', 'Home#funding', 'funding');
         $router->addRoute('get', '/credits', 'Home#credits', 'credits');
         $router->addRoute('get', '/mentions-legales', 'Home#legal', 'legal');
         $router->addRoute('get', '/cgv', 'Home#cgv', 'cgv');
