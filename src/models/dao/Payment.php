@@ -70,26 +70,40 @@ class Payment extends \Minz\DatabaseModel
     /**
      * Return the sum of amounts for completed common pot payments
      *
+     * @param integer $year
+     *
      * @return integer
      */
-    public function findCommonPotRevenue()
+    public function findCommonPotRevenue($year)
     {
-        $sql = 'SELECT SUM(amount) FROM payments '
-             . 'WHERE type = "common_pot" AND completed_at IS NOT NULL';
-        $statement = $this->query($sql);
+        $sql = <<<'SQL'
+            SELECT SUM(amount) FROM payments
+            WHERE type = "common_pot"
+            AND completed_at IS NOT NULL
+            AND strftime('%Y', completed_at) = ?
+        SQL;
+        $statement = $this->prepare($sql);
+        $statement->execute([$year]);
         return intval($statement->fetchColumn());
     }
 
     /**
      * Return the sum of amounts for completed subscriptions payments
      *
+     * @param integer $year
+     *
      * @return integer
      */
-    public function findSubscriptionsRevenue()
+    public function findSubscriptionsRevenue($year)
     {
-        $sql = 'SELECT SUM(amount) FROM payments '
-             . 'WHERE type = "subscription" AND completed_at IS NOT NULL';
-        $statement = $this->query($sql);
+        $sql = <<<'SQL'
+            SELECT SUM(amount) FROM payments
+            WHERE type = "subscription"
+            AND completed_at IS NOT NULL
+            AND strftime('%Y', completed_at) = ?
+        SQL;
+        $statement = $this->prepare($sql);
+        $statement->execute([$year]);
         return intval($statement->fetchColumn());
     }
 

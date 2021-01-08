@@ -21,8 +21,8 @@ class Home
         $total_revenue = $payment_dao->findTotalRevenue($current_year) / 100;
         $revenue_target = 10000;
         $percent_target = min(100, max(5, $total_revenue * 100 / $revenue_target));
-        $common_pot_revenue = $payment_dao->findCommonPotRevenue() / 100;
-        $subscriptions_revenue = $payment_dao->findSubscriptionsRevenue() / 100;
+        $common_pot_revenue = $payment_dao->findCommonPotRevenue($current_year) / 100;
+        $subscriptions_revenue = $payment_dao->findSubscriptionsRevenue($current_year) / 100;
 
         $response = \Minz\Response::ok('home/pricing.phtml', [
             'total_revenue' => number_format($total_revenue, 2, ',', '&nbsp;'),
