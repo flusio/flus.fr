@@ -51,13 +51,19 @@ class Payment extends \Minz\DatabaseModel
     /**
      * Return the sum of amounts for completed payments
      *
+     * @param integer $year
+     *
      * @return integer
      */
-    public function findTotalRevenue()
+    public function findTotalRevenue($year)
     {
-        $sql = 'SELECT SUM(amount) FROM payments '
-             . 'WHERE completed_at IS NOT NULL';
-        $statement = $this->query($sql);
+        $sql = <<<'SQL'
+            SELECT SUM(amount) FROM payments
+            WHERE completed_at IS NOT NULL
+            AND strftime('%Y', completed_at) = ?
+        SQL;
+        $statement = $this->prepare($sql);
+        $statement->execute([$year]);
         return intval($statement->fetchColumn());
     }
 

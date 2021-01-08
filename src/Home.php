@@ -17,7 +17,8 @@ class Home
     public function pricing()
     {
         $payment_dao = new models\dao\Payment();
-        $total_revenue = $payment_dao->findTotalRevenue() / 100;
+        $current_year = intval(\Minz\Time::now()->format('Y'));
+        $total_revenue = $payment_dao->findTotalRevenue($current_year) / 100;
         $revenue_target = 10000;
         $percent_target = min(100, max(5, $total_revenue * 100 / $revenue_target));
         $common_pot_revenue = $payment_dao->findCommonPotRevenue() / 100;
