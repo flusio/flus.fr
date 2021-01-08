@@ -13,10 +13,8 @@ class CommonPots
     {
         $common_pot_payment_dao = new models\dao\CommonPotPayment();
         $common_pot_amount = $common_pot_payment_dao->findAvailableAmount() / 100;
-        $available_accounts = floor($common_pot_amount / 3);
         return \Minz\Response::ok('common_pots/show.phtml', [
             'common_pot_amount' => number_format($common_pot_amount, 2, ',', '&nbsp;'),
-            'available_accounts' => number_format($available_accounts, 0, ',', '&nbsp;'),
         ]);
     }
 
