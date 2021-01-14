@@ -13,6 +13,10 @@
                 {
                     "version": "0.5",
                     "update_link": "<?= url_full_public('addons/flusio-browser-0.5.xpi') ?>"
+                },
+                {
+                    "version": "0.8",
+                    "update_link": "https://addons.mozilla.org/firefox/downloads/file/3704896/flus-0.8-fx.xpi"
                 }
             ]
         }
