@@ -30,6 +30,11 @@
             echo 'virement;';
         endif;
         echo "=MOIS(A{$line_number});";
+        if ($payment->isReimbursed()):
+            echo 'x;';
+        else:
+            echo ';';
+        endif;
         echo $payment->invoice_number . ';';
         echo "\n";
     endforeach;

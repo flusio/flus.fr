@@ -287,6 +287,18 @@ class Payment extends \Minz\Model
     }
 
     /**
+     * @return boolean
+     */
+    public function isReimbursed()
+    {
+        $payment_dao = new dao\Payment();
+        $db_credit_payment = $payment_dao->findBy([
+            'credited_payment_id' => $this->id,
+        ]);
+        return $db_credit_payment !== null;
+    }
+
+    /**
      * @return string
      */
     public function toJson()
