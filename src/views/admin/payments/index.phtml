@@ -55,6 +55,8 @@
                                     💸
                                 </a>
                             <?php endif; ?>
+                        <?php elseif ($payment->is_paid): ?>
+                            en attente
                         <?php else: ?>
                             <a href="<?= url('admin payment', ['id' => $payment->id]) ?>">
                                 non payé
