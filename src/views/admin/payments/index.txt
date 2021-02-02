@@ -30,6 +30,7 @@
             echo 'virement;';
         endif;
         echo "=MOIS(A{$line_number});";
+        echo $payment->invoice_number . ';';
         echo "\n";
     endforeach;
 ?>
