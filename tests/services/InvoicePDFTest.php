@@ -8,6 +8,10 @@ use Website\utils;
 
 class InvoicePDFTest extends TestCase
 {
+    use \tests\FakerHelper;
+    use \Minz\Tests\InitializerHelper;
+    use \Minz\Tests\FactoriesHelper;
+
     /**
      * @dataProvider subscriptionPaymentProvider
      */
@@ -60,6 +64,27 @@ class InvoicePDFTest extends TestCase
 
         $metadata = $invoice_pdf->metadata;
         $this->assertSame('à payer', $metadata['Payée le']);
+    }
+
+    /**
+     * @dataProvider creditPaymentProvider
+     */
+    public function testPdfToCredit($payment)
+    {
+        $credited_completed_at = $this->fake('dateTime');
+        $random_number = sprintf('-%04d', $this->fake('randomNumber', 4));
+        $credited_invoice_number = $credited_completed_at->format('Y-m') . $random_number;
+        $credited_payment_id = $this->create('payment', [
+            'amount' => $payment->amount,
+            'invoice_number' => $credited_invoice_number,
+        ]);
+        $payment->credited_payment_id = $credited_payment_id;
+        $expected_credited_at = strftime('%d %B %Y', $payment->completed_at->getTimestamp());
+
+        $invoice_pdf = new InvoicePDF($payment);
+
+        $metadata = $invoice_pdf->metadata;
+        $this->assertSame($expected_credited_at, $metadata['Créditée le']);
     }
 
     /**
@@ -175,6 +200,41 @@ class InvoicePDFTest extends TestCase
     }
 
     /**
+     * @dataProvider creditPaymentProvider
+     */
+    public function testPdfWithCreditHasCorrespondingPurchase($payment)
+    {
+        $credited_completed_at = $this->fake('dateTime');
+        $random_number = sprintf('-%04d', $this->fake('randomNumber', 4));
+        $credited_invoice_number = $credited_completed_at->format('Y-m') . $random_number;
+        $credited_payment_id = $this->create('payment', [
+            'amount' => $payment->amount,
+            'invoice_number' => $credited_invoice_number,
+        ]);
+        $payment->credited_payment_id = $credited_payment_id;
+
+        $invoice_pdf = new InvoicePDF($payment);
+
+        $this->assertSame(1, count($invoice_pdf->purchases));
+        $this->assertSame(
+            "Remboursement de la facture\n{$credited_invoice_number}",
+            $invoice_pdf->purchases[0]['description']
+        );
+        $this->assertSame(
+            1,
+            $invoice_pdf->purchases[0]['number']
+        );
+        $this->assertSame(
+            ($payment->amount / 100) . ' €',
+            $invoice_pdf->purchases[0]['price']
+        );
+        $this->assertSame(
+            ($payment->amount / 100) . ' €',
+            $invoice_pdf->purchases[0]['total']
+        );
+    }
+
+    /**
      * @dataProvider subscriptionPaymentProvider
      */
     public function testPdfHasTotalPurchases($payment)
@@ -257,6 +317,35 @@ class InvoicePDFTest extends TestCase
             $payment = new models\Payment([
                 'created_at' => $faker->dateTime->format(\Minz\Model::DATETIME_FORMAT),
                 'type' => 'common_pot',
+                'email' => $faker->email,
+                'amount' => $faker->numberBetween(100, 100000),
+                'address_first_name' => $faker->firstName,
+                'address_last_name' => $faker->lastName,
+                'address_address1' => $faker->streetAddress,
+                'address_postcode' => $faker->postcode,
+                'address_city' => $faker->city,
+                'address_country' => $faker->randomElement(\Website\utils\Countries::codes()),
+                'completed_at' => $completed_at->format(\Minz\Model::DATETIME_FORMAT),
+                'invoice_number' => $invoice_number,
+            ]);
+
+            $datasets[] = [$payment];
+        }
+
+        return $datasets;
+    }
+
+    public function creditPaymentProvider()
+    {
+        $faker = \Faker\Factory::create();
+        $datasets = [];
+        foreach (range(1, \Minz\Configuration::$application['number_of_datasets']) as $n) {
+            $completed_at = $faker->dateTime;
+            $invoice_number = $completed_at->format('Y-m') . sprintf('-%04d', $faker->randomNumber(4));
+
+            $payment = new models\Payment([
+                'created_at' => $faker->dateTime->format(\Minz\Model::DATETIME_FORMAT),
+                'type' => 'credit',
                 'email' => $faker->email,
                 'amount' => $faker->numberBetween(100, 100000),
                 'address_first_name' => $faker->firstName,

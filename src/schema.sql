@@ -39,6 +39,7 @@ CREATE TABLE payments (
     amount INTEGER NOT NULL,
     frequency TEXT,
     company_vat_number TEXT,
+    credited_payment_id TEXT,
 
     address_first_name TEXT NOT NULL,
     address_last_name TEXT NOT NULL,
@@ -52,6 +53,7 @@ CREATE TABLE payments (
 
     account_id TEXT,
 
+    FOREIGN KEY (credited_payment_id) REFERENCES payments(id) ON UPDATE CASCADE ON DELETE SET NULL,
     FOREIGN KEY (account_id) REFERENCES accounts(id) ON UPDATE CASCADE ON DELETE SET NULL
 );
 

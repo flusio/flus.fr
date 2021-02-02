@@ -105,6 +105,10 @@ class Payment extends \Minz\Model
             'validator' => '\Website\models\Payment::validateVatNumber',
         ],
 
+        'credited_payment_id' => [
+            'type' => 'string',
+        ],
+
         'account_id' => [
             'type' => 'string',
         ],
@@ -376,11 +380,11 @@ class Payment extends \Minz\Model
      * @param string $type
      *
      * @return boolean Returns true if the value is either `common_pot` or
-     *                 `subscription`
+     *                 `subscription` or `credit`
      */
     public static function validateType($type)
     {
-        return $type === 'common_pot' || $type === 'subscription';
+        return $type === 'common_pot' || $type === 'subscription' || $type === 'credit';
     }
 
     /**

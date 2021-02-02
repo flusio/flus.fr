@@ -2,6 +2,7 @@
 
 namespace Website\services;
 
+use Website\models;
 use Website\utils;
 
 /**
@@ -44,16 +45,24 @@ class InvoicePDF extends \FPDF
         $this->logo = \Minz\Configuration::$app_path . '/public/static/logo-512px.png';
 
         $established_at = strftime('%d %B %Y', $payment->created_at->getTimestamp());
-        if ($payment->completed_at) {
-            $paid_at = strftime('%d %B %Y', $payment->completed_at->getTimestamp());
-        } else {
-            $paid_at = 'à payer';
-        }
         $this->metadata = [
             'N° facture' => $payment->invoice_number,
             'Établie le' => $established_at,
-            'Payée le' => $paid_at,
         ];
+
+        if ($payment->type === 'credit') {
+            if ($payment->completed_at) {
+                $this->metadata['Créditée le'] = strftime('%d %B %Y', $payment->completed_at->getTimestamp());
+            } else {
+                $this->metadata['Créditée le'] = 'à créditer';
+            }
+        } else {
+            if ($payment->completed_at) {
+                $this->metadata['Payée le'] = strftime('%d %B %Y', $payment->completed_at->getTimestamp());
+            } else {
+                $this->metadata['Payée le'] = 'à payer';
+            }
+        }
 
         $address = $payment->address();
         $this->customer = [
@@ -80,11 +89,23 @@ class InvoicePDF extends \FPDF
                     'total' => $amount,
                 ],
             ];
-        } else {
+        } elseif ($payment->type === 'subscription') {
             $period = $payment->frequency === 'month' ? '1 mois' : '1 an';
             $this->purchases = [
                 [
                     'description' => "Renouvellement d'un abonnement\nde " . $period . " à Flus",
+                    'number' => 1,
+                    'price' => $amount,
+                    'total' => $amount,
+                ],
+            ];
+        } elseif ($payment->type === 'credit') {
+            $payment_dao = new models\dao\Payment();
+            $db_credited_payment = $payment_dao->find($payment->credited_payment_id);
+            $invoice_number = $db_credited_payment['invoice_number'];
+            $this->purchases = [
+                [
+                    'description' => "Remboursement de la facture\n{$invoice_number}",
                     'number' => 1,
                     'price' => $amount,
                     'total' => $amount,

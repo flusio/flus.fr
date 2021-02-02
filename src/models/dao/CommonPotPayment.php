@@ -32,7 +32,13 @@ class CommonPotPayment extends \Minz\DatabaseModel
                 WHERE cpp.completed_at IS NOT NULL
             )
             FROM payments p
-            WHERE p.type = "common_pot" AND p.completed_at IS NOT NULL
+            WHERE p.type = "common_pot"
+            AND p.completed_at IS NOT NULL
+            AND p.id NOT IN (
+                SELECT p2.credited_payment_id FROM payments p2
+                WHERE p2.credited_payment_id NOT NULL
+                AND p2.completed_at IS NOT NULL
+            )
         SQL;
         $statement = $this->query($sql);
         return intval($statement->fetchColumn());
