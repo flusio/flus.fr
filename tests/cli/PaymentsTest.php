@@ -54,6 +54,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
             'expired_at' => \Minz\Time::now()->format(\Minz\Model::DATETIME_FORMAT),
         ]);
         $payment_id = $this->create('payment', [
+            'type' => 'subscription',
             'completed_at' => null,
             'is_paid' => 1,
             'account_id' => $account_id,
@@ -69,6 +70,29 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
 
         $account = new models\Account($account_dao->find($account_id));
         $this->assertSame($expected_expired_at->getTimestamp(), $account->expired_at->getTimestamp());
+    }
+
+    public function testCompleteDontExtendsSubscriptionIfNotSubscription()
+    {
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
+        $account_dao = new models\dao\Account();
+        $expired_at = \Minz\Time::now();
+        $account_id = $this->create('account', [
+            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+        $type = $this->fake('randomElement', ['common_pot', 'credit']);
+        $payment_id = $this->create('payment', [
+            'type' => $type,
+            'completed_at' => null,
+            'is_paid' => 1,
+            'account_id' => $account_id,
+        ]);
+
+        $response = $this->appRun('CLI', '/payments/complete');
+
+        $account = new models\Account($account_dao->find($account_id));
+        $this->assertSame($expired_at->getTimestamp(), $account->expired_at->getTimestamp());
     }
 
     public function testCompleteCreatesAnInvoice()

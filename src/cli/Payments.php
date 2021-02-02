@@ -36,7 +36,7 @@ class Payments
             $payment_dao->save($payment);
 
             $account = $payment->account();
-            if ($account) {
+            if ($account && $payment->type === 'subscription') {
                 $account->extendSubscription($payment->frequency);
                 $account_dao->save($account);
             }
