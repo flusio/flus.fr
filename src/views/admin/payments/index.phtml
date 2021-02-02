@@ -50,6 +50,11 @@
                     <td>
                         <?php if ($payment->completed_at): ?>
                             <?= format_date($payment->completed_at, '%d %b') ?>
+                            <?php if ($payment->type !== 'credit'): ?>
+                                <a href="<?= url('new admin credit', ['credited_payment_id' => $payment->id]) ?>">
+                                    💸
+                                </a>
+                            <?php endif; ?>
                         <?php else: ?>
                             <a href="<?= url('admin payment', ['id' => $payment->id]) ?>">
                                 non payé

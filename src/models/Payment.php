@@ -186,6 +186,33 @@ class Payment extends \Minz\Model
     }
 
     /**
+     * Init a credit payment from a payment.
+     *
+     * @param \Website\models\Payment $payment
+     *
+     * @return \Website\models\Payment
+     */
+    public static function initCreditFromPayment($payment)
+    {
+        return new self([
+            'id' => bin2hex(random_bytes(16)),
+            'type' => 'credit',
+            'email' => $payment->email,
+            'amount' => $payment->amount,
+            'address_first_name' => $payment->address_first_name,
+            'address_last_name' => $payment->address_last_name,
+            'address_address1' => $payment->address_address1,
+            'address_postcode' => $payment->address_postcode,
+            'address_city' => $payment->address_city,
+            'address_country' => $payment->address_country,
+            'company_vat_number' => $payment->company_vat_number,
+            'account_id' => $payment->account_id,
+            'credited_payment_id' => $payment->id,
+            'is_paid' => false,
+        ]);
+    }
+
+    /**
      * Return the account associated to the payment if any
      *
      * @return \Website\models\Account|null

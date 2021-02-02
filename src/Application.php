@@ -68,6 +68,8 @@ class Application
         $router->addRoute('get', '/admin/login', 'admin/Auth#login', 'login');
         $router->addRoute('post', '/admin/login', 'admin/Auth#createSession', 'create_session');
         $router->addRoute('post', '/admin/logout', 'admin/Auth#deleteSession', 'logout');
+        $router->addRoute('get', '/admin/credits/new', 'admin/Credits#init', 'new admin credit');
+        $router->addRoute('post', '/admin/credits/new', 'admin/Credits#create', 'create admin credit');
         $router->addRoute('get', '/admin/payments/new', 'admin/Payments#init', 'new admin payment');
         $router->addRoute('post', '/admin/payments/new', 'admin/Payments#create', 'create admin payment');
         $router->addRoute('get', '/admin/payments/:id', 'admin/Payments#show', 'admin payment');
