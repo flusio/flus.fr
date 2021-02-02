@@ -1,6 +1,6 @@
 <?php
     $line_number = 0;
-    foreach ($payments as $payment):
+    foreach (array_reverse($payments) as $payment):
         if (!$payment->completed_at):
             continue;
         endif;
