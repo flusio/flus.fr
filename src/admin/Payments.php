@@ -69,7 +69,6 @@ class Payments
                 'city' => '',
                 'country' => 'FR',
             ],
-            'generate_invoice' => true,
         ]);
     }
 
@@ -90,7 +89,6 @@ class Payments
      * - `address[postcode]`
      * - `address[city]`
      * - `address[country]`, optional (default is `FR`)
-     * - `generate_invoice`, optional
      *
      * @param \Minz\Request $request
      *
@@ -114,7 +112,6 @@ class Payments
             'city' => '',
             'country' => 'FR',
         ]);
-        $generate_invoice = $request->param('generate_invoice', false);
 
         $csrf = new \Minz\CSRF();
         if (!$csrf->validateToken($request->param('csrf'))) {
@@ -125,7 +122,6 @@ class Payments
                 'company_vat_number' => $company_vat_number,
                 'amount' => $amount,
                 'address' => $address,
-                'generate_invoice' => $generate_invoice,
                 'error' => 'Une vérification de sécurité a échoué, veuillez réessayer de soumettre le formulaire.',
             ]);
         }
@@ -148,7 +144,6 @@ class Payments
                 'company_vat_number' => $company_vat_number,
                 'amount' => $amount,
                 'address' => $address,
-                'generate_invoice' => $generate_invoice,
                 'errors' => [
                     'type' => 'Le type de paiement est invalide',
                 ],
@@ -165,9 +160,7 @@ class Payments
             $payment->company_vat_number = trim($company_vat_number);
         }
 
-        if ($generate_invoice) {
-            $payment->invoice_number = models\Payment::generateInvoiceNumber();
-        }
+        $payment->invoice_number = models\Payment::generateInvoiceNumber();
 
         $errors = $payment->validate();
         if ($errors) {
@@ -178,7 +171,6 @@ class Payments
                 'company_vat_number' => $company_vat_number,
                 'amount' => $amount,
                 'address' => $address,
-                'generate_invoice' => $generate_invoice,
                 'errors' => $errors,
             ]);
         }

@@ -100,7 +100,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider createProvider
      */
-    public function testCreateCanGenerateAnInvoiceNumber($type, $email, $amount, $address)
+    public function testCreateGenerateAnInvoiceNumber($type, $email, $amount, $address)
     {
         $this->loginAdmin();
         $payment_dao = new models\dao\Payment();
@@ -111,7 +111,6 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
             'email' => $email,
             'amount' => $amount,
             'address' => $address,
-            'generate_invoice' => true,
         ]);
 
         $this->assertResponse($response, 302, '/admin?status=payment_created');
