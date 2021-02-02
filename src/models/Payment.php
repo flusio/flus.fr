@@ -105,6 +105,10 @@ class Payment extends \Minz\Model
             'validator' => '\Website\models\Payment::validateVatNumber',
         ],
 
+        'credited_payment_id' => [
+            'type' => 'string',
+        ],
+
         'account_id' => [
             'type' => 'string',
         ],
@@ -179,6 +183,33 @@ class Payment extends \Minz\Model
         $payment->account_id = $account->id;
 
         return $payment;
+    }
+
+    /**
+     * Init a credit payment from a payment.
+     *
+     * @param \Website\models\Payment $payment
+     *
+     * @return \Website\models\Payment
+     */
+    public static function initCreditFromPayment($payment)
+    {
+        return new self([
+            'id' => bin2hex(random_bytes(16)),
+            'type' => 'credit',
+            'email' => $payment->email,
+            'amount' => $payment->amount,
+            'address_first_name' => $payment->address_first_name,
+            'address_last_name' => $payment->address_last_name,
+            'address_address1' => $payment->address_address1,
+            'address_postcode' => $payment->address_postcode,
+            'address_city' => $payment->address_city,
+            'address_country' => $payment->address_country,
+            'company_vat_number' => $payment->company_vat_number,
+            'account_id' => $payment->account_id,
+            'credited_payment_id' => $payment->id,
+            'is_paid' => false,
+        ]);
     }
 
     /**
@@ -376,11 +407,11 @@ class Payment extends \Minz\Model
      * @param string $type
      *
      * @return boolean Returns true if the value is either `common_pot` or
-     *                 `subscription`
+     *                 `subscription` or `credit`
      */
     public static function validateType($type)
     {
-        return $type === 'common_pot' || $type === 'subscription';
+        return $type === 'common_pot' || $type === 'subscription' || $type === 'credit';
     }
 
     /**

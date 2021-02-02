@@ -12,10 +12,18 @@
             echo 'mensuel;';
         elseif ($payment->type === 'subscription' && $payment->frequency === 'year'):
             echo 'annuel;';
-        else:
+        elseif ($payment->type === 'common_pot'):
             echo 'cagnotte;';
+        elseif ($payment->type === 'credit'):
+            echo 'credit;';
+        else:
+            echo 'heu non;';
         endif;
-        echo $payment->amount / 100 . ';';
+        if ($payment->type === 'credit'):
+            echo '-' . $payment->amount / 100 . ';';
+        else:
+            echo $payment->amount / 100 . ';';
+        endif;
         if ($payment->payment_intent_id):
             echo 'stripe;';
         else:

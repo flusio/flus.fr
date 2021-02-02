@@ -60,6 +60,11 @@ class Payment extends \Minz\DatabaseModel
         $sql = <<<'SQL'
             SELECT SUM(amount) FROM payments
             WHERE completed_at IS NOT NULL
+            AND type != 'credit'
+            AND id NOT IN (
+                SELECT p2.credited_payment_id FROM payments p2
+                WHERE p2.type = 'credit'
+            )
             AND strftime('%Y', completed_at) = ?
         SQL;
         $statement = $this->prepare($sql);
@@ -80,6 +85,10 @@ class Payment extends \Minz\DatabaseModel
             SELECT SUM(amount) FROM payments
             WHERE type = "common_pot"
             AND completed_at IS NOT NULL
+            AND id NOT IN (
+                SELECT p2.credited_payment_id FROM payments p2
+                WHERE p2.type = 'credit'
+            )
             AND strftime('%Y', completed_at) = ?
         SQL;
         $statement = $this->prepare($sql);
@@ -100,6 +109,10 @@ class Payment extends \Minz\DatabaseModel
             SELECT SUM(amount) FROM payments
             WHERE type = "subscription"
             AND completed_at IS NOT NULL
+            AND id NOT IN (
+                SELECT p2.credited_payment_id FROM payments p2
+                WHERE p2.type = 'credit'
+            )
             AND strftime('%Y', completed_at) = ?
         SQL;
         $statement = $this->prepare($sql);
