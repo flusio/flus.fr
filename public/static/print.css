@@ -24,19 +24,19 @@ table {
 }
 
 .cell--date {
-    width: 100px;
+    width: 90px;
 }
 
 .cell--ref {
-    width: 125px;
+    width: 110px;
 }
 
 .cell--nature {
-    width: 125px;
+    width: 100px;
 }
 
 .cell--amount {
-    width: 100px;
+    width: 50px;
 }
 
 td.cell--amount {
@@ -44,5 +44,5 @@ td.cell--amount {
 }
 
 .cell--type {
-    width: 100px;
+    width: 90px;
 }
