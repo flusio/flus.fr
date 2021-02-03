@@ -1,0 +1,64 @@
+<?php $this->layout('print.phtml', ['title' => 'Livre des recettes']); ?>
+
+<table>
+    <thead>
+        <tr>
+            <th class="cell cell--date">Date</th>
+            <th class="cell cell--ref">Référence</th>
+            <th class="cell cell--customer">Client</th>
+            <th class="cell cell--nature">Nature</th>
+            <th class="cell cell--amount">Montant</th>
+            <th class="cell cell--type">Règlement</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <?php foreach (array_reverse($payments) as $payment): ?>
+            <?php if (!$payment->completed_at) { continue; } ?>
+
+            <tr>
+                <td class="cell cell--date">
+                    <?= format_date($payment->completed_at, '%d/%m/%Y') ?>
+                </td>
+
+                <td class="cell cell--ref">
+                    <?= $payment->invoice_number ?>
+                </td>
+
+                <td class="cell cell--customer">
+                    <?= $payment->address_first_name . ' ' . $payment->address_last_name ?>
+                </td>
+
+                <td class="cell cell--nature">
+                    <?php if ($payment->type === 'subscription' && $payment->frequency === 'month'): ?>
+                        abo. mensuel
+                    <?php elseif ($payment->type === 'subscription' && $payment->frequency === 'year'): ?>
+                        abo. annuel
+                    <?php elseif ($payment->type === 'common_pot'): ?>
+                        cagnotte
+                    <?php elseif ($payment->type === 'credit'): ?>
+                        crédit
+                    <?php else: ?>
+                        heu non…
+                    <?php endif; ?>
+                </td>
+
+                <td class="cell cell--amount">
+                    <?php if ($payment->type === 'credit'): ?>
+                        -<?= $payment->amount / 100 ?>
+                    <?php else: ?>
+                        <?= $payment->amount / 100 ?>
+                    <?php endif; ?>
+                </td>
+
+                <td class="cell cell--type">
+                    <?php if ($payment->payment_intent_id): ?>
+                        CB
+                    <?php else: ?>
+                        virement
+                    <?php endif; ?>
+                </td>
+            </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>

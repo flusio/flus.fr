@@ -36,6 +36,11 @@ class Payments
                 'year' => $year,
                 'payments' => $payments,
             ]);
+        } elseif ($format === 'recettes') {
+            return \Minz\Response::ok('admin/payments/recettes.phtml', [
+                'year' => $year,
+                'payments' => $payments,
+            ]);
         } else {
             return \Minz\Response::ok('admin/payments/index.phtml', [
                 'year' => $year,

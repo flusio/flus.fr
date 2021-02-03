@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="initial-scale=1.0" />
+        <link rel="stylesheet" href="<?= url_static('print.css') ?>">
+
+        <title><?= $title ?></title>
+    </head>
+
+    <body>
+        <h1><?= $title ?></h1>
+
+        <?= $this->safe('content') ?>
+    </body>
+</html>

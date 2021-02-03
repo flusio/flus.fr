@@ -1,0 +1,48 @@
+body {
+    font-family: sans-serif;
+}
+
+h1 {
+    text-align: center;
+}
+
+table {
+    width: 100%;
+    max-width: 1200px;
+    margin: auto;
+
+    font-size: 90%;
+
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+.cell {
+    padding: 5px;
+
+    border: 1px solid black;
+}
+
+.cell--date {
+    width: 100px;
+}
+
+.cell--ref {
+    width: 125px;
+}
+
+.cell--nature {
+    width: 125px;
+}
+
+.cell--amount {
+    width: 100px;
+}
+
+td.cell--amount {
+    text-align: right;
+}
+
+.cell--type {
+    width: 100px;
+}
