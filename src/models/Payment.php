@@ -287,6 +287,18 @@ class Payment extends \Minz\Model
     }
 
     /**
+     * @return integer
+     */
+    public function stripeFees()
+    {
+        if ($this->payment_intent_id) {
+            return intval(floor($this->amount * 0.014) + 25);
+        } else {
+            return 0;
+        }
+    }
+
+    /**
      * @return boolean
      */
     public function isReimbursed()

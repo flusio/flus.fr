@@ -35,6 +35,7 @@
         else:
             echo ';';
         endif;
+        echo $payment->stripeFees() / 100 . ';';
         echo $payment->invoice_number . ';';
         echo "\n";
     endforeach;
