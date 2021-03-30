@@ -64,7 +64,7 @@
                                 </a>
                             <?php endif; ?>
                         <?php elseif ($payment->is_paid): ?>
-                            en attente
+                            traitement en cours
                         <?php else: ?>
                             <a href="<?= url('admin payment', ['id' => $payment->id]) ?>">
                                 non payé
