@@ -39,12 +39,13 @@ class Invoices
         }
 
         $invoice_mailer = new mailers\Invoices();
-        $result = $invoice_mailer->sendInvoice($payment->email, $payment->invoiceFilepath());
+        $email = $payment->account()->email;
+        $result = $invoice_mailer->sendInvoice($email, $payment->invoiceFilepath());
 
         if ($result) {
             return \Minz\Response::text(
                 200,
-                "La facture {$payment->invoice_number} a été envoyée à l’adresse {$payment->email}."
+                "La facture {$payment->invoice_number} a été envoyée à l’adresse {$email}."
             );
         } else {
             return \Minz\Response::text(500, 'La facture n’a pas pu être envoyée.'); // @codeCoverageIgnore

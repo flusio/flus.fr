@@ -61,19 +61,10 @@ class Payments
         }
 
         return \Minz\Response::ok('admin/payments/init.phtml', [
-            'countries' => utils\Countries::listSorted(),
             'type' => 'common_pot',
             'email' => '',
             'company_vat_number' => '',
             'amount' => 30,
-            'address' => [
-                'first_name' => '',
-                'last_name' => '',
-                'address1' => '',
-                'postcode' => '',
-                'city' => '',
-                'country' => 'FR',
-            ],
         ]);
     }
 
@@ -88,12 +79,6 @@ class Payments
      *   value between 1 and 1000.
      * - `email`
      * - `company_vat_number`, optional
-     * - `address[first_name]`
-     * - `address[last_name]`
-     * - `address[address1]`
-     * - `address[postcode]`
-     * - `address[city]`
-     * - `address[country]`, optional (default is `FR`)
      *
      * @param \Minz\Request $request
      *
@@ -109,25 +94,27 @@ class Payments
         $email = utils\Email::sanitize($request->param('email', ''));
         $company_vat_number = $request->param('company_vat_number');
         $amount = $request->param('amount', 0);
-        $address = $request->param('address', [
-            'first_name' => '',
-            'last_name' => '',
-            'address1' => '',
-            'postcode' => '',
-            'city' => '',
-            'country' => 'FR',
-        ]);
 
         $csrf = new \Minz\CSRF();
         if (!$csrf->validateToken($request->param('csrf'))) {
             return \Minz\Response::badRequest('admin/payments/init.phtml', [
-                'countries' => utils\Countries::listSorted(),
                 'type' => $type,
                 'email' => $email,
                 'company_vat_number' => $company_vat_number,
                 'amount' => $amount,
-                'address' => $address,
                 'error' => 'Une vérification de sécurité a échoué, veuillez réessayer de soumettre le formulaire.',
+            ]);
+        }
+
+        if (!utils\Email::validate($email)) {
+            return \Minz\Response::badRequest('admin/payments/init.phtml', [
+                'type' => $type,
+                'email' => $email,
+                'company_vat_number' => $company_vat_number,
+                'amount' => $amount,
+                'errors' => [
+                    'email' => 'L’adresse courriel que vous avez fournie est invalide.',
+                ],
             ]);
         }
 
@@ -137,9 +124,8 @@ class Payments
             $account = new models\Account($db_account);
         } else {
             $account = models\Account::init($email);
+            $account_dao->save($account);
         }
-        $account->setAddress($address);
-        $account_dao->save($account);
 
         if ($type === 'common_pot') {
             $payment = models\Payment::initCommonPotFromAccount($account, $amount);
@@ -149,12 +135,10 @@ class Payments
             $payment = models\Payment::initSubscriptionFromAccount($account, 'year');
         } else {
             return \Minz\Response::badRequest('admin/payments/init.phtml', [
-                'countries' => utils\Countries::listSorted(),
                 'type' => $type,
                 'email' => $email,
                 'company_vat_number' => $company_vat_number,
                 'amount' => $amount,
-                'address' => $address,
                 'errors' => [
                     'type' => 'Le type de paiement est invalide',
                 ],
@@ -168,12 +152,10 @@ class Payments
         $errors = $payment->validate();
         if ($errors) {
             return \Minz\Response::badRequest('admin/payments/init.phtml', [
-                'countries' => utils\Countries::listSorted(),
                 'type' => $type,
                 'email' => $email,
                 'company_vat_number' => $company_vat_number,
                 'amount' => $amount,
-                'address' => $address,
                 'errors' => $errors,
             ]);
         }

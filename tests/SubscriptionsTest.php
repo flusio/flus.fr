@@ -111,13 +111,6 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($expected_amount, $payment->amount);
         $this->assertSame($frequency, $payment->frequency);
         $this->assertSame($account->id, $payment->account_id);
-        $this->assertSame($account->email, $payment->email);
-        $this->assertSame($account->address_first_name, $payment->address_first_name);
-        $this->assertSame($account->address_last_name, $payment->address_last_name);
-        $this->assertSame($account->address_address1, $payment->address_address1);
-        $this->assertSame($account->address_postcode, $payment->address_postcode);
-        $this->assertSame($account->address_city, $payment->address_city);
-        $this->assertSame($account->address_country, $payment->address_country);
         $this->assertNotNull($payment->payment_intent_id);
         $this->assertNotNull($payment->session_id);
     }

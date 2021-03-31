@@ -45,29 +45,8 @@ echo 'Use SEED=' . $faker_seed . " to reproduce this suite.\n";
             $account_factory = new \Minz\Tests\DatabaseFactory('account');
             return $account_factory->create();
         },
-        'email' => function () use ($faker) {
-            return $faker->email;
-        },
         'amount' => function () use ($faker) {
             return $faker->numberBetween(100, 100000);
-        },
-        'address_first_name' => function () use ($faker) {
-            return $faker->firstName;
-        },
-        'address_last_name' => function () use ($faker) {
-            return $faker->lastName;
-        },
-        'address_address1' => function () use ($faker) {
-            return $faker->streetAddress;
-        },
-        'address_postcode' => function () use ($faker) {
-            return $faker->postcode;
-        },
-        'address_city' => function () use ($faker) {
-            return $faker->city;
-        },
-        'address_country' => function () use ($faker) {
-            return $faker->randomElement(\Website\utils\Countries::codes());
         },
     ]
 );
@@ -92,29 +71,8 @@ echo 'Use SEED=' . $faker_seed . " to reproduce this suite.\n";
             $account_factory = new \Minz\Tests\DatabaseFactory('account');
             return $account_factory->create();
         },
-        'email' => function () use ($faker) {
-            return $faker->email;
-        },
         'amount' => function () use ($faker) {
             return $faker->numberBetween(100, 100000);
-        },
-        'address_first_name' => function () use ($faker) {
-            return $faker->firstName;
-        },
-        'address_last_name' => function () use ($faker) {
-            return $faker->lastName;
-        },
-        'address_address1' => function () use ($faker) {
-            return $faker->streetAddress;
-        },
-        'address_postcode' => function () use ($faker) {
-            return $faker->postcode;
-        },
-        'address_city' => function () use ($faker) {
-            return $faker->city;
-        },
-        'address_country' => function () use ($faker) {
-            return $faker->randomElement(\Website\utils\Countries::codes());
         },
         'credited_payment_id' => function () {
             $payment_factory = new \Minz\Tests\DatabaseFactory('payment');

@@ -35,18 +35,10 @@ CREATE TABLE payments (
     type TEXT NOT NULL,
 
     invoice_number TEXT,
-    email TEXT NOT NULL,
     amount INTEGER NOT NULL,
     frequency TEXT,
     company_vat_number TEXT,
     credited_payment_id TEXT,
-
-    address_first_name TEXT NOT NULL,
-    address_last_name TEXT NOT NULL,
-    address_address1 TEXT NOT NULL,
-    address_postcode TEXT NOT NULL,
-    address_city TEXT NOT NULL,
-    address_country TEXT NOT NULL DEFAULT "FR",
 
     payment_intent_id TEXT,
     session_id TEXT,

@@ -42,6 +42,9 @@ class InvoicePDF extends \FPDF
     {
         parent::__construct();
 
+        $account_dao = new models\dao\Account();
+        $account = new models\Account($account_dao->find($payment->account_id));
+
         $this->logo = \Minz\Configuration::$app_path . '/public/static/logo-512px.png';
 
         $established_at = strftime('%d %B %Y', $payment->created_at->getTimestamp());
@@ -64,7 +67,7 @@ class InvoicePDF extends \FPDF
             }
         }
 
-        $address = $payment->address();
+        $address = $account->address();
         $this->customer = [
             $address['first_name'] . ' ' . $address['last_name'],
             $address['address1'],

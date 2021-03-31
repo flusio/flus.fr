@@ -42,12 +42,6 @@ class Payment extends \Minz\Model
             'validator' => '\Website\models\Payment::validateType',
         ],
 
-        'email' => [
-            'type' => 'string',
-            'required' => true,
-            'validator' => '\Website\utils\Email::validate',
-        ],
-
         'amount' => [
             'type' => 'integer',
             'required' => true,
@@ -62,37 +56,6 @@ class Payment extends \Minz\Model
         'session_id' => [
             'type' => 'string',
             'validator' => '\Website\models\Payment::validateSessionId',
-        ],
-
-        'address_first_name' => [
-            'type' => 'string',
-            'required' => true,
-        ],
-
-        'address_last_name' => [
-            'type' => 'string',
-            'required' => true,
-        ],
-
-        'address_address1' => [
-            'type' => 'string',
-            'required' => true,
-        ],
-
-        'address_postcode' => [
-            'type' => 'string',
-            'required' => true,
-        ],
-
-        'address_city' => [
-            'type' => 'string',
-            'required' => true,
-        ],
-
-        'address_country' => [
-            'type' => 'string',
-            'required' => true,
-            'validator' => '\Website\utils\Countries::isSupported',
         ],
 
         'frequency' => [
@@ -122,25 +85,16 @@ class Payment extends \Minz\Model
      * `init` method takes the amount in euros. This is why float are accepted.
      *
      * @param string $type
-     * @param string $email
      * @param integer|float $amount
-     * @param array $address
      *
      * @return \Website\models\Payment
      */
-    private static function init($type, $email, $amount, $address)
+    private static function init($type, $amount)
     {
         return new self([
             'id' => bin2hex(random_bytes(16)),
             'type' => $type,
-            'email' => utils\Email::sanitize($email),
             'amount' => is_numeric($amount) ? intval($amount * 100) : $amount,
-            'address_first_name' => trim($address['first_name']),
-            'address_last_name' => trim($address['last_name']),
-            'address_address1' => trim($address['address1']),
-            'address_postcode' => trim($address['postcode']),
-            'address_city' => trim($address['city']),
-            'address_country' => trim($address['country']),
             'is_paid' => false,
         ]);
     }
@@ -163,7 +117,7 @@ class Payment extends \Minz\Model
             $amount = 30;
         }
 
-        $payment = self::init('subscription', $account->email, $amount, $account->address());
+        $payment = self::init('subscription', $amount);
         $payment->frequency = $frequency;
         $payment->account_id = $account->id;
 
@@ -180,7 +134,7 @@ class Payment extends \Minz\Model
      */
     public static function initCommonPotFromAccount($account, $amount)
     {
-        $payment = self::init('common_pot', $account->email, $amount, $account->address());
+        $payment = self::init('common_pot', $amount);
         $payment->account_id = $account->id;
 
         return $payment;
@@ -198,14 +152,7 @@ class Payment extends \Minz\Model
         return new self([
             'id' => bin2hex(random_bytes(16)),
             'type' => 'credit',
-            'email' => $payment->email,
             'amount' => $payment->amount,
-            'address_first_name' => $payment->address_first_name,
-            'address_last_name' => $payment->address_last_name,
-            'address_address1' => $payment->address_address1,
-            'address_postcode' => $payment->address_postcode,
-            'address_city' => $payment->address_city,
-            'address_country' => $payment->address_country,
             'company_vat_number' => $payment->company_vat_number,
             'account_id' => $payment->account_id,
             'credited_payment_id' => $payment->id,
@@ -231,23 +178,6 @@ class Payment extends \Minz\Model
         }
 
         return new Account($db_account);
-    }
-
-    /**
-     * Return the address information as an array
-     *
-     * @return array
-     */
-    public function address()
-    {
-        return [
-            'first_name' => $this->address_first_name,
-            'last_name' => $this->address_last_name,
-            'address1' => $this->address_address1,
-            'postcode' => $this->address_postcode,
-            'city' => $this->address_city,
-            'country' => $this->address_country,
-        ];
     }
 
     /**
@@ -356,26 +286,8 @@ class Payment extends \Minz\Model
         foreach (parent::validate() as $property => $error) {
             $code = $error['code'];
 
-            if ($property === 'email') {
-                if ($code === \Minz\Model::ERROR_REQUIRED) {
-                    $formatted_error = 'L’adresse courriel est obligatoire.';
-                } else {
-                    $formatted_error = 'L’adresse courriel que vous avez fournie est invalide.';
-                }
-            } elseif ($property === 'amount') {
+            if ($property === 'amount') {
                 $formatted_error = 'Le montant doit être compris entre 1 et 1000 €.';
-            } elseif ($property === 'address_first_name') {
-                $formatted_error = 'Votre prénom est obligatoire.';
-            } elseif ($property === 'address_last_name') {
-                $formatted_error = 'Votre nom est obligatoire.';
-            } elseif ($property === 'address_address1') {
-                $formatted_error = 'Votre adresse est obligatoire.';
-            } elseif ($property === 'address_postcode') {
-                $formatted_error = 'Votre code postal est obligatoire.';
-            } elseif ($property === 'address_city') {
-                $formatted_error = 'Votre ville est obligatoire.';
-            } elseif ($property === 'address_country') {
-                $formatted_error = 'Le pays que vous avez renseigné est invalide.';
             } elseif ($property === 'frequency') {
                 $formatted_error = 'Vous devez choisir l’une des deux périodes proposées.';
             } else {
