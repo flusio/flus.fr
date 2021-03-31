@@ -51,10 +51,10 @@ CREATE TABLE payments (
     payment_intent_id TEXT,
     session_id TEXT,
 
-    account_id TEXT,
+    account_id TEXT NOT NULL,
 
-    FOREIGN KEY (credited_payment_id) REFERENCES payments(id) ON UPDATE CASCADE ON DELETE SET NULL,
-    FOREIGN KEY (account_id) REFERENCES accounts(id) ON UPDATE CASCADE ON DELETE SET NULL
+    FOREIGN KEY (credited_payment_id) REFERENCES payments(id) ON UPDATE CASCADE ON DELETE RESTRICT,
+    FOREIGN KEY (account_id) REFERENCES accounts(id) ON UPDATE CASCADE ON DELETE RESTRICT
 );
 
 CREATE TABLE pot_usages (

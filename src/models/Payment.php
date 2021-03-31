@@ -110,6 +110,7 @@ class Payment extends \Minz\Model
         ],
 
         'account_id' => [
+            'required' => true,
             'type' => 'string',
         ],
     ];
@@ -127,7 +128,7 @@ class Payment extends \Minz\Model
      *
      * @return \Website\models\Payment
      */
-    public static function init($type, $email, $amount, $address)
+    private static function init($type, $email, $amount, $address)
     {
         return new self([
             'id' => bin2hex(random_bytes(16)),

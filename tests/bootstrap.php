@@ -41,6 +41,10 @@ echo 'Use SEED=' . $faker_seed . " to reproduce this suite.\n";
         'type' => function () use ($faker) {
             return $faker->randomElement(['common_pot', 'subscription']);
         },
+        'account_id' => function () use ($faker) {
+            $account_factory = new \Minz\Tests\DatabaseFactory('account');
+            return $account_factory->create();
+        },
         'email' => function () use ($faker) {
             return $faker->email;
         },
@@ -83,6 +87,10 @@ echo 'Use SEED=' . $faker_seed . " to reproduce this suite.\n";
         },
         'type' => function () use ($faker) {
             return 'credit';
+        },
+        'account_id' => function () use ($faker) {
+            $account_factory = new \Minz\Tests\DatabaseFactory('account');
+            return $account_factory->create();
         },
         'email' => function () use ($faker) {
             return $faker->email;

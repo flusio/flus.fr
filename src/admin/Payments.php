@@ -106,7 +106,7 @@ class Payments
         }
 
         $type = $request->param('type');
-        $email = $request->param('email');
+        $email = utils\Email::sanitize($request->param('email', ''));
         $company_vat_number = $request->param('company_vat_number');
         $amount = $request->param('amount', 0);
         $address = $request->param('address', [
@@ -131,16 +131,22 @@ class Payments
             ]);
         }
 
+        $account_dao = new models\dao\Account();
+        $db_account = $account_dao->findBy(['email' => $email]);
+        if ($db_account) {
+            $account = new models\Account($db_account);
+        } else {
+            $account = models\Account::init($email);
+        }
+        $account->setAddress($address);
+        $account_dao->save($account);
+
         if ($type === 'common_pot') {
-            // nothing to do
+            $payment = models\Payment::initCommonPotFromAccount($account, $amount);
         } elseif ($type === 'subscription_month') {
-            $type = 'subscription';
-            $frequency = 'month';
-            $amount = 3;
+            $payment = models\Payment::initSubscriptionFromAccount($account, 'month');
         } elseif ($type === 'subscription_year') {
-            $type = 'subscription';
-            $frequency = 'year';
-            $amount = 30;
+            $payment = models\Payment::initSubscriptionFromAccount($account, 'year');
         } else {
             return \Minz\Response::badRequest('admin/payments/init.phtml', [
                 'countries' => utils\Countries::listSorted(),
@@ -155,17 +161,9 @@ class Payments
             ]);
         }
 
-        $payment = models\Payment::init($type, $email, $amount, $address);
-
-        if ($type === 'subscription') {
-            $payment->frequency = $frequency;
-        }
-
         if ($company_vat_number) {
             $payment->company_vat_number = trim($company_vat_number);
         }
-
-        $payment->invoice_number = models\Payment::generateInvoiceNumber();
 
         $errors = $payment->validate();
         if ($errors) {
@@ -181,6 +179,7 @@ class Payments
         }
 
         $payment_dao = new models\dao\Payment();
+        $payment->invoice_number = models\Payment::generateInvoiceNumber();
         $payment_id = $payment_dao->save($payment);
 
         return \Minz\Response::redirect('admin', ['status' => 'payment_created']);
