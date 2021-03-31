@@ -5,19 +5,19 @@ namespace Website\models;
 use Website\utils;
 
 /**
- * A CommonPotPayment represents a payment by a customer made via the common
+ * A PotUsage represents a payment by a customer made via the common
  * pot. It’s different from a Payment because it has no invoice attached and
  * doesn’t involve a payment via Stripe.
  *
- * As opposed to Payment, a CommonPotPayment is always completed because it
+ * As opposed to Payment, a PotUsage is always completed because it
  * doesn't involve the Stripe service. If the common pot is full enough, the
- * CommonPotPayment is created. If it’s not, the payment is not created and is
+ * PotUsage is created. If it’s not, the payment is not created and is
  * refused to the user.
  *
  * @author Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class CommonPotPayment extends \Minz\Model
+class PotUsage extends \Minz\Model
 {
     public const PROPERTIES = [
         'id' => [
@@ -60,7 +60,7 @@ class CommonPotPayment extends \Minz\Model
      * @param \Website\models\Account $account
      * @param string $frequency (`month` or `year`)
      *
-     * @return \Website\models\CommonPotPayment
+     * @return \Website\models\PotUsage
      */
     public static function initFromAccount($account, $frequency)
     {

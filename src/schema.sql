@@ -57,7 +57,7 @@ CREATE TABLE payments (
     FOREIGN KEY (account_id) REFERENCES accounts(id) ON UPDATE CASCADE ON DELETE SET NULL
 );
 
-CREATE TABLE common_pot_payments (
+CREATE TABLE pot_usages (
     id TEXT PRIMARY KEY NOT NULL,
     created_at TEXT NOT NULL,
     completed_at TEXT,

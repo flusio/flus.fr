@@ -116,8 +116,8 @@ echo 'Use SEED=' . $faker_seed . " to reproduce this suite.\n";
 );
 
 \Minz\Tests\DatabaseFactory::addFactory(
-    'common_pot_payment',
-    '\Website\models\dao\CommonPotPayment',
+    'pot_usage',
+    '\Website\models\dao\PotUsage',
     [
         'id' => function () {
             return bin2hex(random_bytes(16));

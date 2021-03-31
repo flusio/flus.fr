@@ -8,14 +8,14 @@ use Website\models;
  * @author Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class CommonPotPayment extends \Minz\DatabaseModel
+class PotUsage extends \Minz\DatabaseModel
 {
     use SaveHelper;
 
     public function __construct()
     {
-        $properties = array_keys(models\CommonPotPayment::PROPERTIES);
-        parent::__construct('common_pot_payments', 'id', $properties);
+        $properties = array_keys(models\PotUsage::PROPERTIES);
+        parent::__construct('pot_usages', 'id', $properties);
     }
 
     /**
@@ -27,9 +27,9 @@ class CommonPotPayment extends \Minz\DatabaseModel
     {
         $sql = <<<'SQL'
             SELECT COALESCE(SUM(p.amount), 0) - (
-                SELECT COALESCE(SUM(cpp.amount), 0)
-                FROM common_pot_payments cpp
-                WHERE cpp.completed_at IS NOT NULL
+                SELECT COALESCE(SUM(pu.amount), 0)
+                FROM pot_usages pu
+                WHERE pu.completed_at IS NOT NULL
             )
             FROM payments p
             WHERE p.type = "common_pot"

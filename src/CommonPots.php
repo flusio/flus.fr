@@ -11,8 +11,8 @@ class CommonPots
      */
     public function show()
     {
-        $common_pot_payment_dao = new models\dao\CommonPotPayment();
-        $common_pot_amount = $common_pot_payment_dao->findAvailableAmount() / 100;
+        $pot_usage_dao = new models\dao\PotUsage();
+        $common_pot_amount = $pot_usage_dao->findAvailableAmount() / 100;
         return \Minz\Response::ok('common_pots/show.phtml', [
             'common_pot_amount' => number_format($common_pot_amount, 2, ',', '&nbsp;'),
         ]);
@@ -157,8 +157,8 @@ class CommonPots
             return \Minz\Response::redirect('account address');
         }
 
-        $common_pot_payment_dao = new models\dao\CommonPotPayment();
-        $common_pot_amount = $common_pot_payment_dao->findAvailableAmount() / 100;
+        $pot_usage_dao = new models\dao\PotUsage();
+        $common_pot_amount = $pot_usage_dao->findAvailableAmount() / 100;
         return \Minz\Response::ok('common_pots/usage.phtml', [
             'account' => $account,
             'common_pot_amount' => number_format($common_pot_amount, 2, ',', '&nbsp;'),
@@ -201,8 +201,8 @@ class CommonPots
             return \Minz\Response::redirect('account address');
         }
 
-        $common_pot_payment_dao = new models\dao\CommonPotPayment();
-        $common_pot_amount = $common_pot_payment_dao->findAvailableAmount() / 100;
+        $pot_usage_dao = new models\dao\PotUsage();
+        $common_pot_amount = $pot_usage_dao->findAvailableAmount() / 100;
         $full_enough = $common_pot_amount >= 3;
         $common_pot_amount = number_format($common_pot_amount, 2, ',', '&nbsp;');
         $free_account = $account->isFree();
@@ -263,11 +263,11 @@ class CommonPots
             ]);
         }
 
-        $common_pot_payment_dao = new models\dao\CommonPotPayment();
-        $common_pot_payment = models\CommonPotPayment::initFromAccount($account, 'month');
-        $common_pot_payment_dao->save($common_pot_payment);
+        $pot_usage_dao = new models\dao\PotUsage();
+        $pot_usage = models\PotUsage::initFromAccount($account, 'month');
+        $pot_usage_dao->save($pot_usage);
 
-        $account->extendSubscription($common_pot_payment->frequency);
+        $account->extendSubscription($pot_usage->frequency);
         $account->reminder = $reminder;
         $account_dao->save($account);
 

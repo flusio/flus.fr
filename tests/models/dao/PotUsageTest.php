@@ -2,7 +2,7 @@
 
 namespace Website\models\dao;
 
-class CommonPotPaymentTest extends \PHPUnit\Framework\TestCase
+class PotUsageTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\FakerHelper;
     use \Minz\Tests\InitializerHelper;
@@ -11,7 +11,7 @@ class CommonPotPaymentTest extends \PHPUnit\Framework\TestCase
 
     public function testFindAvailableAmount()
     {
-        $common_pot_payment_dao = new CommonPotPayment();
+        $pot_usage_dao = new PotUsage();
         $revenues = $this->fake('numberBetween', 500, 1000);
         $expenses = $this->fake('numberBetween', 100, 499);
         $this->create('payment', [
@@ -19,12 +19,12 @@ class CommonPotPaymentTest extends \PHPUnit\Framework\TestCase
             'completed_at' => $this->fake('iso8601'),
             'amount' => $revenues,
         ]);
-        $this->create('common_pot_payment', [
+        $this->create('pot_usage', [
             'completed_at' => $this->fake('iso8601'),
             'amount' => $expenses,
         ]);
 
-        $amount = $common_pot_payment_dao->findAvailableAmount();
+        $amount = $pot_usage_dao->findAvailableAmount();
 
         $expected_amount = $revenues - $expenses;
         $this->assertSame($expected_amount, $amount);
@@ -32,7 +32,7 @@ class CommonPotPaymentTest extends \PHPUnit\Framework\TestCase
 
     public function testFindAvailableAmountWhenNoExpenses()
     {
-        $common_pot_payment_dao = new CommonPotPayment();
+        $pot_usage_dao = new PotUsage();
         $revenues = $this->fake('numberBetween', 500, 1000);
         $this->create('payment', [
             'type' => 'common_pot',
@@ -40,7 +40,7 @@ class CommonPotPaymentTest extends \PHPUnit\Framework\TestCase
             'amount' => $revenues,
         ]);
 
-        $amount = $common_pot_payment_dao->findAvailableAmount();
+        $amount = $pot_usage_dao->findAvailableAmount();
 
         $expected_amount = $revenues;
         $this->assertSame($expected_amount, $amount);
@@ -48,7 +48,7 @@ class CommonPotPaymentTest extends \PHPUnit\Framework\TestCase
 
     public function testFindAvailableAmountWhenRevenueIsNotCompleted()
     {
-        $common_pot_payment_dao = new CommonPotPayment();
+        $pot_usage_dao = new PotUsage();
         $revenues = $this->fake('numberBetween', 500, 1000);
         $expenses = $this->fake('numberBetween', 100, 499);
         $this->create('payment', [
@@ -56,12 +56,12 @@ class CommonPotPaymentTest extends \PHPUnit\Framework\TestCase
             'completed_at' => null,
             'amount' => $revenues,
         ]);
-        $this->create('common_pot_payment', [
+        $this->create('pot_usage', [
             'completed_at' => $this->fake('iso8601'),
             'amount' => $expenses,
         ]);
 
-        $amount = $common_pot_payment_dao->findAvailableAmount();
+        $amount = $pot_usage_dao->findAvailableAmount();
 
         $expected_amount = -$expenses;
         $this->assertSame($expected_amount, $amount);
@@ -69,7 +69,7 @@ class CommonPotPaymentTest extends \PHPUnit\Framework\TestCase
 
     public function testFindAvailableAmountWhenRevenueIsSubscription()
     {
-        $common_pot_payment_dao = new CommonPotPayment();
+        $pot_usage_dao = new PotUsage();
         $revenues = $this->fake('numberBetween', 500, 1000);
         $expenses = $this->fake('numberBetween', 100, 499);
         $this->create('payment', [
@@ -77,12 +77,12 @@ class CommonPotPaymentTest extends \PHPUnit\Framework\TestCase
             'completed_at' => $this->fake('iso8601'),
             'amount' => $revenues,
         ]);
-        $this->create('common_pot_payment', [
+        $this->create('pot_usage', [
             'completed_at' => $this->fake('iso8601'),
             'amount' => $expenses,
         ]);
 
-        $amount = $common_pot_payment_dao->findAvailableAmount();
+        $amount = $pot_usage_dao->findAvailableAmount();
 
         $expected_amount = -$expenses;
         $this->assertSame($expected_amount, $amount);
@@ -90,9 +90,9 @@ class CommonPotPaymentTest extends \PHPUnit\Framework\TestCase
 
     public function testFindAvailableAmountWhenExpenseIsNotCompleted()
     {
-        // Note this case should never happen in real life (common_pot_payments
+        // Note this case should never happen in real life (pot_usages
         // are always completed)
-        $common_pot_payment_dao = new CommonPotPayment();
+        $pot_usage_dao = new PotUsage();
         $revenues = $this->fake('numberBetween', 500, 1000);
         $expenses = $this->fake('numberBetween', 100, 499);
         $this->create('payment', [
@@ -100,12 +100,12 @@ class CommonPotPaymentTest extends \PHPUnit\Framework\TestCase
             'completed_at' => $this->fake('iso8601'),
             'amount' => $revenues,
         ]);
-        $this->create('common_pot_payment', [
+        $this->create('pot_usage', [
             'completed_at' => null,
             'amount' => $expenses,
         ]);
 
-        $amount = $common_pot_payment_dao->findAvailableAmount();
+        $amount = $pot_usage_dao->findAvailableAmount();
 
         $expected_amount = $revenues;
         $this->assertSame($expected_amount, $amount);
