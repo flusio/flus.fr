@@ -15,6 +15,7 @@
     <tbody>
         <?php foreach (array_reverse($payments) as $payment): ?>
             <?php if (!$payment->completed_at) { continue; } ?>
+            <?php $account = $payment->account(); ?>
 
             <tr>
                 <td class="cell cell--date">
@@ -26,7 +27,7 @@
                 </td>
 
                 <td class="cell cell--customer">
-                    <?= $payment->address_first_name . ' ' . $payment->address_last_name ?>
+                    <?= $account->address_first_name . ' ' . $account->address_last_name ?>
                 </td>
 
                 <td class="cell cell--nature">
