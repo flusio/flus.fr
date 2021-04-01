@@ -135,25 +135,6 @@
             <?php endif; ?>
         </div>
 
-        <div class="form-group <?= isset($errors['company_vat_number']) ? 'form-group--invalid' : '' ?>">
-            <label for="company-vat-number">
-                Numéro TVA (uniquement pour les entreprises)
-            </label>
-
-            <input
-                id="company-vat-number"
-                name="company_vat_number"
-                type="text"
-                value="<?= $company_vat_number ?>"
-            />
-
-            <?php if (isset($errors['company_vat_number'])): ?>
-                <p class="form-group__error">
-                    <?= $errors['company_vat_number'] ?>
-                </p>
-            <?php endif; ?>
-        </div>
-
         <div class="form__actions">
             <button type="submit" class="button--primary">
                 Créer le paiement

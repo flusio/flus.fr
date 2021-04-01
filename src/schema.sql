@@ -23,6 +23,7 @@ CREATE TABLE accounts (
     address_postcode TEXT,
     address_city TEXT,
     address_country TEXT,
+    company_vat_number TEXT,
 
     FOREIGN KEY (access_token) REFERENCES tokens(token) ON UPDATE CASCADE ON DELETE SET NULL
 );
@@ -37,7 +38,6 @@ CREATE TABLE payments (
     invoice_number TEXT,
     amount INTEGER NOT NULL,
     frequency TEXT,
-    company_vat_number TEXT,
     credited_payment_id TEXT,
 
     payment_intent_id TEXT,

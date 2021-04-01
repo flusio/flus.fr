@@ -116,8 +116,8 @@ class InvoicePDF extends \FPDF
             ];
         }
 
-        if ($payment->company_vat_number) {
-            $this->metadata['N° TVA client'] = $payment->company_vat_number;
+        if ($account->company_vat_number) {
+            $this->metadata['N° TVA client'] = $account->company_vat_number;
         }
     }
 

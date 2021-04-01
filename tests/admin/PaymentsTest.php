@@ -75,29 +75,6 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider createProvider
      */
-    public function testCreateTakesACompanyVatNumber($type, $email, $amount)
-    {
-        $this->loginAdmin();
-        $payment_dao = new models\dao\Payment();
-        $faker = \Faker\Factory::create('fr_FR');
-        $vat = $faker->vat;
-
-        $response = $this->appRun('POST', '/admin/payments/new', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
-            'type' => $type,
-            'email' => $email,
-            'amount' => $amount,
-            'company_vat_number' => $vat,
-        ]);
-
-        $this->assertResponse($response, 302, '/admin?status=payment_created');
-        $payment = new models\Payment($payment_dao->take());
-        $this->assertSame($vat, $payment->company_vat_number);
-    }
-
-    /**
-     * @dataProvider createProvider
-     */
     public function testCreateGenerateAnInvoiceNumber($type, $email, $amount)
     {
         $this->loginAdmin();

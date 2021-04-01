@@ -47,8 +47,11 @@ class InvoicePDFTest extends TestCase
         $faker = \Faker\Factory::create('fr_FR');
         $vat_number = $faker->vat;
         $payment_dao = new models\dao\Payment();
-        $payment_id = $this->create('payment', [
+        $account_id = $this->create('account', [
             'company_vat_number' => $vat_number,
+        ]);
+        $payment_id = $this->create('payment', [
+            'account_id' => $account_id,
         ]);
         $payment = new models\Payment($payment_dao->find($payment_id));
 

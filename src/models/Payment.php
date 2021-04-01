@@ -63,11 +63,6 @@ class Payment extends \Minz\Model
             'validator' => '\Website\models\Payment::validateFrequency',
         ],
 
-        'company_vat_number' => [
-            'type' => 'string',
-            'validator' => '\Website\models\Payment::validateVatNumber',
-        ],
-
         'credited_payment_id' => [
             'type' => 'string',
         ],
@@ -153,7 +148,6 @@ class Payment extends \Minz\Model
             'id' => bin2hex(random_bytes(16)),
             'type' => 'credit',
             'amount' => $payment->amount,
-            'company_vat_number' => $payment->company_vat_number,
             'account_id' => $payment->account_id,
             'credited_payment_id' => $payment->id,
             'is_paid' => false,
@@ -389,19 +383,5 @@ class Payment extends \Minz\Model
     public static function validateFrequency($frequency)
     {
         return $frequency === 'month' || $frequency === 'year';
-    }
-
-    /**
-     * @param string $vat_number
-     *
-     * @return boolean Returns true if the number LOOKS good
-     */
-    public static function validateVatNumber($vat_number)
-    {
-        $length = strlen(trim($vat_number));
-        // what a tremendous verification! This could be improved, but I don't
-        // plan to let anyone to set its vat number himself, so this is fine
-        // for now.
-        return $length >= 10 && $length <= 20;
     }
 }

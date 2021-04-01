@@ -63,7 +63,6 @@ class Payments
         return \Minz\Response::ok('admin/payments/init.phtml', [
             'type' => 'common_pot',
             'email' => '',
-            'company_vat_number' => '',
             'amount' => 30,
         ]);
     }
@@ -78,7 +77,6 @@ class Payments
      * - `amount`, required if type is set to `common_pot`, it must be a numerical
      *   value between 1 and 1000.
      * - `email`
-     * - `company_vat_number`, optional
      *
      * @param \Minz\Request $request
      *
@@ -92,7 +90,6 @@ class Payments
 
         $type = $request->param('type');
         $email = utils\Email::sanitize($request->param('email', ''));
-        $company_vat_number = $request->param('company_vat_number');
         $amount = $request->param('amount', 0);
 
         $csrf = new \Minz\CSRF();
@@ -100,7 +97,6 @@ class Payments
             return \Minz\Response::badRequest('admin/payments/init.phtml', [
                 'type' => $type,
                 'email' => $email,
-                'company_vat_number' => $company_vat_number,
                 'amount' => $amount,
                 'error' => 'Une vérification de sécurité a échoué, veuillez réessayer de soumettre le formulaire.',
             ]);
@@ -110,7 +106,6 @@ class Payments
             return \Minz\Response::badRequest('admin/payments/init.phtml', [
                 'type' => $type,
                 'email' => $email,
-                'company_vat_number' => $company_vat_number,
                 'amount' => $amount,
                 'errors' => [
                     'email' => 'L’adresse courriel que vous avez fournie est invalide.',
@@ -137,7 +132,6 @@ class Payments
             return \Minz\Response::badRequest('admin/payments/init.phtml', [
                 'type' => $type,
                 'email' => $email,
-                'company_vat_number' => $company_vat_number,
                 'amount' => $amount,
                 'errors' => [
                     'type' => 'Le type de paiement est invalide',
@@ -145,16 +139,11 @@ class Payments
             ]);
         }
 
-        if ($company_vat_number) {
-            $payment->company_vat_number = trim($company_vat_number);
-        }
-
         $errors = $payment->validate();
         if ($errors) {
             return \Minz\Response::badRequest('admin/payments/init.phtml', [
                 'type' => $type,
                 'email' => $email,
-                'company_vat_number' => $company_vat_number,
                 'amount' => $amount,
                 'errors' => $errors,
             ]);
