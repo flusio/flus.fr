@@ -103,9 +103,8 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
             'accept_cgv' => true,
         ]);
 
-        $payment_dao = new models\dao\Payment();
-        $payment_id = $payment_dao->take()['id'];
-        $redirect_to = "/payments/{$payment_id}/pay";
+        $payment = models\Payment::take();
+        $redirect_to = "/payments/{$payment->id}/pay";
         $this->assertResponse($response, 302, $redirect_to);
     }
 
@@ -145,9 +144,8 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
             'address_postcode' => $address['postcode'],
             'address_city' => $address['city'],
         ]);
-        $payment_dao = new models\dao\Payment();
 
-        $this->assertSame(0, $payment_dao->count());
+        $this->assertSame(0, models\Payment::count());
 
         $response = $this->appRun('POST', '/account/common-pot/contribute', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
@@ -155,9 +153,9 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
             'accept_cgv' => true,
         ]);
 
-        $this->assertSame(1, $payment_dao->count());
+        $this->assertSame(1, models\Payment::count());
 
-        $payment = new models\Payment($payment_dao->take());
+        $payment = models\Payment::take();
         $this->assertSame('common_pot', $payment->type);
         $this->assertSame($amount * 100, $payment->amount);
         $this->assertNull($payment->completed_at);
@@ -510,10 +508,8 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
             'amount' => 500,
             'completed_at' => $this->fake('dateTime')->getTimestamp(),
         ]);
-        $account_dao = new models\dao\Account();
-        $pot_usage_dao = new models\dao\PotUsage();
 
-        $this->assertSame(0, $pot_usage_dao->count());
+        $this->assertSame(0, models\PotUsage::count());
 
         $response = $this->appRun('POST', '/account/common-pot/use', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
@@ -521,8 +517,8 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, '/account');
-        $this->assertSame(1, $pot_usage_dao->count());
-        $account = new models\Account($account_dao->find($user['account_id']));
+        $this->assertSame(1, models\PotUsage::count());
+        $account = models\Account::find($user['account_id']);
         $this->assertGreaterThan($expired_at->getTimestamp(), $account->expired_at->getTimestamp());
     }
 
@@ -537,8 +533,6 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
             'amount' => 500,
             'completed_at' => $this->fake('dateTime')->getTimestamp(),
         ]);
-        $account_dao = new models\dao\Account();
-        $pot_usage_dao = new models\dao\PotUsage();
 
         $response = $this->appRun('POST', '/account/common-pot/use', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
@@ -546,8 +540,8 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, '/account/address');
-        $this->assertSame(0, $pot_usage_dao->count());
-        $account = new models\Account($account_dao->find($user['account_id']));
+        $this->assertSame(0, models\PotUsage::count());
+        $account = models\Account::find($user['account_id']);
         $this->assertEquals($account->expired_at->getTimestamp(), $expired_at->getTimestamp());
     }
 
@@ -570,8 +564,6 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
             'amount' => 500,
             'completed_at' => $this->fake('dateTime')->getTimestamp(),
         ]);
-        $account_dao = new models\dao\Account();
-        $pot_usage_dao = new models\dao\PotUsage();
 
         $response = $this->appRun('POST', '/account/common-pot/use', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
@@ -579,8 +571,8 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 401);
-        $this->assertSame(0, $pot_usage_dao->count());
-        $account = new models\Account($account_dao->find($account_id));
+        $this->assertSame(0, models\PotUsage::count());
+        $account = models\Account::find($account_id);
         $this->assertEquals($account->expired_at->getTimestamp(), $expired_at->getTimestamp());
     }
 
@@ -603,8 +595,6 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
             'amount' => 500,
             'completed_at' => $this->fake('dateTime')->getTimestamp(),
         ]);
-        $account_dao = new models\dao\Account();
-        $pot_usage_dao = new models\dao\PotUsage();
 
         $response = $this->appRun('POST', '/account/common-pot/use', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
@@ -612,8 +602,8 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 400, 'Vous devez accepter ces conditions');
-        $this->assertSame(0, $pot_usage_dao->count());
-        $account = new models\Account($account_dao->find($user['account_id']));
+        $this->assertSame(0, models\PotUsage::count());
+        $account = models\Account::find($user['account_id']);
         $this->assertEquals($account->expired_at->getTimestamp(), $expired_at->getTimestamp());
     }
 
@@ -636,8 +626,6 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
             'amount' => 500,
             'completed_at' => $this->fake('dateTime')->getTimestamp(),
         ]);
-        $account_dao = new models\dao\Account();
-        $pot_usage_dao = new models\dao\PotUsage();
 
         $response = $this->appRun('POST', '/account/common-pot/use', [
             'csrf' => 'not the token',
@@ -645,8 +633,8 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 400, 'Une vérification de sécurité a échoué');
-        $this->assertSame(0, $pot_usage_dao->count());
-        $account = new models\Account($account_dao->find($user['account_id']));
+        $this->assertSame(0, models\PotUsage::count());
+        $account = models\Account::find($user['account_id']);
         $this->assertEquals($account->expired_at->getTimestamp(), $expired_at->getTimestamp());
     }
 
@@ -669,8 +657,6 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
             'amount' => 200,
             'completed_at' => $this->fake('dateTime')->getTimestamp(),
         ]);
-        $account_dao = new models\dao\Account();
-        $pot_usage_dao = new models\dao\PotUsage();
 
         $response = $this->appRun('POST', '/account/common-pot/use', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
@@ -678,8 +664,8 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 400, 'La cagnotte n’est pas suffisamment fournie');
-        $this->assertSame(0, $pot_usage_dao->count());
-        $account = new models\Account($account_dao->find($user['account_id']));
+        $this->assertSame(0, models\PotUsage::count());
+        $account = models\Account::find($user['account_id']);
         $this->assertEquals($account->expired_at->getTimestamp(), $expired_at->getTimestamp());
     }
 
@@ -702,8 +688,6 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
             'amount' => 500,
             'completed_at' => $this->fake('dateTime')->getTimestamp(),
         ]);
-        $account_dao = new models\dao\Account();
-        $pot_usage_dao = new models\dao\PotUsage();
 
         $response = $this->appRun('POST', '/account/common-pot/use', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
@@ -711,8 +695,8 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 400, 'Votre abonnement n’est pas encore prêt d’expirer');
-        $this->assertSame(0, $pot_usage_dao->count());
-        $account = new models\Account($account_dao->find($user['account_id']));
+        $this->assertSame(0, models\PotUsage::count());
+        $account = models\Account::find($user['account_id']);
         $this->assertEquals($account->expired_at->getTimestamp(), $expired_at->getTimestamp());
     }
 
@@ -735,8 +719,6 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
             'amount' => 500,
             'completed_at' => $this->fake('dateTime')->getTimestamp(),
         ]);
-        $account_dao = new models\dao\Account();
-        $pot_usage_dao = new models\dao\PotUsage();
 
         $response = $this->appRun('POST', '/account/common-pot/use', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
@@ -744,8 +726,8 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 400, 'Votre abonnement n’est pas encore prêt d’expirer');
-        $this->assertSame(0, $pot_usage_dao->count());
-        $account = new models\Account($account_dao->find($user['account_id']));
+        $this->assertSame(0, models\PotUsage::count());
+        $account = models\Account::find($user['account_id']);
         $this->assertEquals($account->expired_at->getTimestamp(), $expired_at->getTimestamp());
     }
 

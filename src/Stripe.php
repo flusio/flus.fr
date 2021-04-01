@@ -32,19 +32,17 @@ class Stripe
         if ($event->type === 'checkout.session.completed') {
             $session = $event->data->object;
 
-            $payment_dao = new \Website\models\dao\Payment();
-            $db_payment = $payment_dao->findBy([
+            $payment = models\Payment::findBy([
                 'payment_intent_id' => $session->payment_intent,
             ]);
 
-            if (!$db_payment) {
+            if (!$payment) {
                 \Minz\Log::warning("Payment {$session->payment_intent} completed, not in database.");
                 return \Minz\Response::ok();
             }
 
-            $payment = new models\Payment($db_payment);
             $payment->is_paid = true;
-            $payment_dao->save($payment);
+            $payment->save();
         }
 
         return \Minz\Response::ok();

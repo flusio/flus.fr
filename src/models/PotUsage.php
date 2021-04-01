@@ -19,6 +19,8 @@ use Website\utils;
  */
 class PotUsage extends \Minz\Model
 {
+    use DaoConnector;
+
     public const PROPERTIES = [
         'id' => [
             'type' => 'string',
@@ -94,13 +96,7 @@ class PotUsage extends \Minz\Model
             return null;
         }
 
-        $account_dao = new dao\Account();
-        $db_account = $account_dao->find($this->account_id);
-        if (!$db_account) {
-            return null;
-        }
-
-        return new Account($db_account);
+        return Account::find($this->account_id);
     }
 
     /**

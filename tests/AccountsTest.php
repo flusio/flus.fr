@@ -137,8 +137,6 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
     public function testLoginDeletesTheAccessToken()
     {
-        $token_dao = new models\dao\Token();
-        $account_dao = new models\dao\Account();
         $expired_at = \Minz\Time::fromNow(30, 'days');
         $token = $this->create('token', [
             'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
@@ -152,9 +150,9 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
             'access_token' => $token,
         ]);
 
-        $account = new models\Account($account_dao->find($account_id));
+        $account = models\Account::find($account_id);
         $this->assertNull($account->access_token);
-        $this->assertFalse($token_dao->exists($token));
+        $this->assertFalse(models\Token::exists($token));
     }
 
     public function testLoginRedirectsIfAlreadyConnected()
@@ -338,7 +336,6 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     public function testUpdateAddressChangesAddressAndRedirects($email, $address)
     {
         $user = $this->loginUser();
-        $account_dao = new models\dao\Account();
 
         $response = $this->appRun('POST', '/account/address', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
@@ -347,7 +344,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, '/account');
-        $account = new models\Account($account_dao->find($user['account_id']));
+        $account = models\Account::find($user['account_id']);
         $this->assertSame($email, $account->email);
         $this->assertSame($address['first_name'], $account->address_first_name);
         $this->assertSame($address['last_name'], $account->address_last_name);
@@ -376,7 +373,6 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     public function testUpdateAddressFailsIfCsrfIsInvalid($email, $address)
     {
         $user = $this->loginUser();
-        $account_dao = new models\dao\Account();
 
         $response = $this->appRun('POST', '/account/address', [
             'csrf' => 'not the token',
@@ -393,7 +389,6 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     public function testUpdateAddressFailsWithInvalidEmail($email, $address)
     {
         $user = $this->loginUser();
-        $account_dao = new models\dao\Account();
         $email = $this->fake('domainName');
 
         $response = $this->appRun('POST', '/account/address', [
@@ -403,7 +398,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 400, 'L’adresse courriel que vous avez fournie est invalide');
-        $account = new models\Account($account_dao->find($user['account_id']));
+        $account = models\Account::find($user['account_id']);
         $this->assertNotSame($email, $account->email);
     }
 
@@ -413,7 +408,6 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     public function testUpdateAddressFailsWithMissingEmail($email, $address)
     {
         $user = $this->loginUser();
-        $account_dao = new models\dao\Account();
 
         $response = $this->appRun('POST', '/account/address', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
@@ -429,7 +423,6 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     public function testUpdateAddressFailsWithMissingFirstName($email, $address)
     {
         $user = $this->loginUser();
-        $account_dao = new models\dao\Account();
         unset($address['first_name']);
 
         $response = $this->appRun('POST', '/account/address', [
@@ -447,7 +440,6 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     public function testUpdateAddressFailsWithMissingLastName($email, $address)
     {
         $user = $this->loginUser();
-        $account_dao = new models\dao\Account();
         unset($address['last_name']);
 
         $response = $this->appRun('POST', '/account/address', [
@@ -465,7 +457,6 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     public function testUpdateAddressFailsWithMissingAddress1($email, $address)
     {
         $user = $this->loginUser();
-        $account_dao = new models\dao\Account();
         unset($address['address1']);
 
         $response = $this->appRun('POST', '/account/address', [
@@ -483,7 +474,6 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     public function testUpdateAddressFailsWithMissingPostcode($email, $address)
     {
         $user = $this->loginUser();
-        $account_dao = new models\dao\Account();
         unset($address['postcode']);
 
         $response = $this->appRun('POST', '/account/address', [
@@ -501,7 +491,6 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     public function testUpdateAddressFailsWithMissingCity($email, $address)
     {
         $user = $this->loginUser();
-        $account_dao = new models\dao\Account();
         unset($address['city']);
 
         $response = $this->appRun('POST', '/account/address', [
@@ -519,7 +508,6 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     public function testUpdateAddressFailsWithInvalidCountry($email, $address)
     {
         $user = $this->loginUser();
-        $account_dao = new models\dao\Account();
         $address['country'] = 'invalid';
 
         $response = $this->appRun('POST', '/account/address', [
@@ -538,7 +526,6 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $user = $this->loginUser([
             'reminder' => $old_reminder,
         ]);
-        $account_dao = new models\dao\Account();
 
         $response = $this->appRun('POST', '/account/reminder', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
@@ -546,7 +533,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, '/account');
-        $account = new models\Account($account_dao->find($user['account_id']));
+        $account = models\Account::find($user['account_id']);
         $this->assertSame($new_reminder, $account->reminder);
     }
 
@@ -557,7 +544,6 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $account_id = $this->create('account', [
             'reminder' => $old_reminder,
         ]);
-        $account_dao = new models\dao\Account();
 
         $response = $this->appRun('POST', '/account/reminder', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
@@ -565,7 +551,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 401);
-        $account = new models\Account($account_dao->find($account_id));
+        $account = models\Account::find($account_id);
         $this->assertSame($old_reminder, $account->reminder);
     }
 
@@ -576,7 +562,6 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $user = $this->loginUser([
             'reminder' => $old_reminder,
         ]);
-        $account_dao = new models\dao\Account();
 
         $response = $this->appRun('POST', '/account/reminder', [
             'csrf' => 'not the token',
@@ -584,7 +569,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, '/account');
-        $account = new models\Account($account_dao->find($user['account_id']));
+        $account = models\Account::find($user['account_id']);
         $this->assertSame($old_reminder, $account->reminder);
     }
 

@@ -29,7 +29,6 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     {
         $now = $this->fake('dateTime');
         $this->freeze($now);
-        $payment_dao = new models\dao\Payment();
         $payment_id = $this->create('payment', [
             'completed_at' => null,
             'is_paid' => 1,
@@ -38,7 +37,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('CLI', '/payments/complete');
 
         $this->assertResponse($response, 200, '1 payments completed');
-        $payment = new models\Payment($payment_dao->find($payment_id));
+        $payment = models\Payment::find($payment_id);
         $this->assertSame($now->getTimestamp(), $payment->completed_at->getTimestamp());
     }
 
@@ -49,7 +48,6 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     {
         $now = $this->fake('dateTime');
         $this->freeze($now);
-        $account_dao = new models\dao\Account();
         $account_id = $this->create('account', [
             'expired_at' => \Minz\Time::now()->format(\Minz\Model::DATETIME_FORMAT),
         ]);
@@ -68,7 +66,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('CLI', '/payments/complete');
 
-        $account = new models\Account($account_dao->find($account_id));
+        $account = models\Account::find($account_id);
         $this->assertSame($expected_expired_at->getTimestamp(), $account->expired_at->getTimestamp());
     }
 
@@ -76,7 +74,6 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     {
         $now = $this->fake('dateTime');
         $this->freeze($now);
-        $account_dao = new models\dao\Account();
         $expired_at = \Minz\Time::now();
         $account_id = $this->create('account', [
             'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
@@ -91,13 +88,12 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('CLI', '/payments/complete');
 
-        $account = new models\Account($account_dao->find($account_id));
+        $account = models\Account::find($account_id);
         $this->assertSame($expired_at->getTimestamp(), $account->expired_at->getTimestamp());
     }
 
     public function testCompleteCreatesAnInvoice()
     {
-        $payment_dao = new models\dao\Payment();
         $payment_id = $this->create('payment', [
             'completed_at' => null,
             'is_paid' => 1,
@@ -105,7 +101,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('CLI', '/payments/complete');
 
-        $payment = new models\Payment($payment_dao->find($payment_id));
+        $payment = models\Payment::find($payment_id);
         $this->assertNotNull($payment->invoice_number);
         $this->assertTrue($payment->invoiceExists());
     }
@@ -113,7 +109,6 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     public function testCompleteSendsAnEmail()
     {
         $email = $this->fake('email');
-        $payment_dao = new models\dao\Payment();
         $account_id = $this->create('account', [
             'email' => $email,
         ]);
@@ -139,7 +134,6 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     public function testCompleteDoesNothingIfAlreadyCompleted()
     {
         $completed_at = $this->fake('dateTime');
-        $payment_dao = new models\dao\Payment();
         $payment_id = $this->create('payment', [
             'completed_at' => $completed_at->format(\Minz\Model::DATETIME_FORMAT),
             'is_paid' => 1,
@@ -148,13 +142,12 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('CLI', '/payments/complete');
 
         $this->assertResponse($response, 200);
-        $payment = new models\Payment($payment_dao->find($payment_id));
+        $payment = models\Payment::find($payment_id);
         $this->assertSame($completed_at->getTimestamp(), $payment->completed_at->getTimestamp());
     }
 
     public function testCompleteDoesNothingIfNotIsPaid()
     {
-        $payment_dao = new models\dao\Payment();
         $payment_id = $this->create('payment', [
             'completed_at' => null,
             'is_paid' => 0,
@@ -163,7 +156,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('CLI', '/payments/complete');
 
         $this->assertResponse($response, 200);
-        $payment = new models\Payment($payment_dao->find($payment_id));
+        $payment = models\Payment::find($payment_id);
         $this->assertNull($payment->completed_at);
     }
 

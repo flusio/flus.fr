@@ -27,10 +27,7 @@ class Accounts
             return \Minz\Response::unauthorized('unauthorized.phtml');
         }
 
-        $account_dao = new models\dao\Account();
-        $db_account = $account_dao->find($user['account_id']);
-        $account = new models\Account($db_account);
-
+        $account = models\Account::find($user['account_id']);
         if ($account->mustSetAddress()) {
             return \Minz\Response::redirect('account address');
         }
@@ -60,22 +57,19 @@ class Accounts
     {
         $account_id = $request->param('account_id');
         $access_token = $request->param('access_token');
-        $account_dao = new models\dao\Account();
-        $token_dao = new models\dao\Token();
 
-        $db_account = $account_dao->find($account_id);
-        if (!$db_account) {
+        $account = models\Account::find($account_id);
+        if (!$account) {
             return \Minz\Response::notFound('not_found.phtml');
         }
 
-        $account = new models\Account($db_account);
         if (!$account->checkAccess($access_token)) {
             return \Minz\Response::badRequest('bad_request.phtml');
         }
 
         utils\CurrentUser::logUserIn($account->id);
 
-        $token_dao->delete($account->access_token);
+        models\Token::delete($account->access_token);
 
         return \Minz\Response::redirect('account');
     }
@@ -90,12 +84,10 @@ class Accounts
     public function logout($request)
     {
         $user = utils\CurrentUser::get();
-        $account_dao = new models\dao\Account();
-        $db_account = $account_dao->find($user['account_id']);
-        $account = new models\Account($db_account);
 
         $csrf = new \Minz\CSRF();
         if ($csrf->validateToken($request->param('csrf')) && $user) {
+            $account = models\Account::find($user['account_id']);
             utils\CurrentUser::logOut();
             if ($account->preferred_service === 'flusio') {
                 return \Minz\Response::found('https://app.flus.fr');
@@ -124,9 +116,7 @@ class Accounts
             return \Minz\Response::unauthorized('unauthorized.phtml');
         }
 
-        $account_dao = new models\dao\Account();
-        $db_account = $account_dao->find($user['account_id']);
-        $account = new models\Account($db_account);
+        $account = models\Account::find($user['account_id']);
         return \Minz\Response::ok('accounts/address.phtml', [
             'account' => $account,
             'email' => $account->email,
@@ -154,9 +144,7 @@ class Accounts
             return \Minz\Response::unauthorized('unauthorized.phtml');
         }
 
-        $account_dao = new models\dao\Account();
-        $db_account = $account_dao->find($user['account_id']);
-        $account = new models\Account($db_account);
+        $account = models\Account::find($user['account_id']);
 
         $email = $request->param('email');
         $address = $request->param('address', $account->address());
@@ -201,7 +189,7 @@ class Accounts
             ]);
         }
 
-        $account_dao->save($account);
+        $account->save();
 
         return \Minz\Response::redirect('account');
     }
@@ -229,9 +217,7 @@ class Accounts
             return \Minz\Response::unauthorized('unauthorized.phtml');
         }
 
-        $account_dao = new models\dao\Account();
-        $db_account = $account_dao->find($user['account_id']);
-        $account = new models\Account($db_account);
+        $account = models\Account::find($user['account_id']);
 
         $reminder = $request->param('reminder', false);
         $from = $request->param('from', 'account');
@@ -239,7 +225,7 @@ class Accounts
         $csrf = new \Minz\CSRF();
         if ($csrf->validateToken($request->param('csrf'))) {
             $account->reminder = filter_var($reminder, FILTER_VALIDATE_BOOLEAN);
-            $account_dao->save($account);
+            $account->save();
         }
 
         return \Minz\Response::redirect($from);

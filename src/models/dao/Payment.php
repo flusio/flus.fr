@@ -10,8 +10,6 @@ use Website\models;
  */
 class Payment extends \Minz\DatabaseModel
 {
-    use SaveHelper;
-
     public function __construct()
     {
         $properties = array_keys(models\Payment::PROPERTIES);

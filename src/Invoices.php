@@ -27,15 +27,10 @@ class Invoices
      */
     public function downloadPdf($request)
     {
-        $payment_dao = new models\dao\Payment();
         $payment_id = $request->param('id');
-        $db_payment = $payment_dao->find($payment_id);
-        if (!$db_payment) {
-            return \Minz\Response::notFound();
-        }
+        $payment = models\Payment::find($payment_id);
 
-        $payment = new models\Payment($db_payment);
-        if (!$payment->invoice_number) {
+        if (!$payment || !$payment->invoice_number) {
             return \Minz\Response::notFound();
         }
 

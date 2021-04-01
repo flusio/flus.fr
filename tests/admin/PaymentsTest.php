@@ -78,7 +78,6 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     public function testCreateGenerateAnInvoiceNumber($type, $email, $amount)
     {
         $this->loginAdmin();
-        $payment_dao = new models\dao\Payment();
 
         $response = $this->appRun('POST', '/admin/payments/new', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
@@ -88,7 +87,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, '/admin?status=payment_created');
-        $payment = new models\Payment($payment_dao->take());
+        $payment = models\Payment::take();
         $this->assertNotNull($payment->invoice_number);
         $this->assertNull($payment->completed_at);
         $this->assertFalse($payment->is_paid);
@@ -191,7 +190,6 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
 
     public function testConfirmRendersCorrectly()
     {
-        $payment_dao = new models\dao\Payment();
         $this->loginAdmin();
         $payment_id = $this->create('payment', [
             'is_paid' => false,
@@ -202,7 +200,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, '/admin?status=payment_confirmed');
-        $payment = new models\Payment($payment_dao->find($payment_id));
+        $payment = models\Payment::find($payment_id);
         $this->assertTrue($payment->is_paid);
     }
 
@@ -236,7 +234,6 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
 
     public function testConfirmFailsIfNotConnected()
     {
-        $payment_dao = new models\dao\Payment();
         $payment_id = $this->create('payment', [
             'is_paid' => false,
         ]);
@@ -246,13 +243,12 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, '/admin/login?from=admin%2Fpayments%23index');
-        $payment = new models\Payment($payment_dao->find($payment_id));
+        $payment = models\Payment::find($payment_id);
         $this->assertFalse($payment->is_paid);
     }
 
     public function testConfirmFailsIfCsrfIsInvalid()
     {
-        $payment_dao = new models\dao\Payment();
         $this->loginAdmin();
         $payment_id = $this->create('payment', [
             'is_paid' => false,
@@ -263,13 +259,12 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 400, 'Une vérification de sécurité a échoué');
-        $payment = new models\Payment($payment_dao->find($payment_id));
+        $payment = models\Payment::find($payment_id);
         $this->assertFalse($payment->is_paid);
     }
 
     public function testDestroyRendersCorrectly()
     {
-        $payment_dao = new models\dao\Payment();
         $this->loginAdmin();
         $payment_id = $this->create('payment', [
             'is_paid' => false,
@@ -281,8 +276,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, '/admin?status=payment_deleted');
-        $db_payment = $payment_dao->find($payment_id);
-        $this->assertNull($db_payment);
+        $this->assertFalse(models\Payment::exists($payment_id));
     }
 
     public function testDestroyFailsIfInvalidId()
@@ -298,7 +292,6 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
 
     public function testDestroyFailsIfNotConnected()
     {
-        $payment_dao = new models\dao\Payment();
         $payment_id = $this->create('payment', [
             'is_paid' => false,
             'invoice_number' => null,
@@ -309,13 +302,11 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, '/admin/login?from=admin%2Fpayments%23index');
-        $db_payment = $payment_dao->find($payment_id);
-        $this->assertNotNull($db_payment);
+        $this->assertTrue(models\Payment::exists($payment_id));
     }
 
     public function testDestroyFailsIfCsrfIsInvalid()
     {
-        $payment_dao = new models\dao\Payment();
         $this->loginAdmin();
         $payment_id = $this->create('payment', [
             'is_paid' => false,
@@ -327,13 +318,11 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 400, 'Une vérification de sécurité a échoué');
-        $db_payment = $payment_dao->find($payment_id);
-        $this->assertNotNull($db_payment);
+        $this->assertTrue(models\Payment::exists($payment_id));
     }
 
     public function testDestroyFailsIfIsPaidIsTrue()
     {
-        $payment_dao = new models\dao\Payment();
         $this->loginAdmin();
         $payment_id = $this->create('payment', [
             'is_paid' => true,
@@ -345,13 +334,11 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 400, 'Ce paiement a déjà été payé');
-        $db_payment = $payment_dao->find($payment_id);
-        $this->assertNotNull($db_payment);
+        $this->assertTrue(models\Payment::exists($payment_id));
     }
 
     public function testDestroyFailsIfInvoiceNumberIsNotNull()
     {
-        $payment_dao = new models\dao\Payment();
         $this->loginAdmin();
         $invoice_number = $this->fake('dateTime')->format('Y-m') . sprintf('-%04d', $this->fake('randomNumber', 4));
         $payment_id = $this->create('payment', [
@@ -364,8 +351,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 400, 'Ce paiement est associé à une facture');
-        $db_payment = $payment_dao->find($payment_id);
-        $this->assertNotNull($db_payment);
+        $this->assertTrue(models\Payment::exists($payment_id));
     }
 
     public function createProvider()

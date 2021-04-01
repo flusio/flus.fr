@@ -11,13 +11,12 @@ class PaymentTest extends \PHPUnit\Framework\TestCase
 
     public function testComplete()
     {
-        $payment_dao = new dao\Payment();
         $completed_at = $this->fake('dateTime');
         $payment_id = $this->create('payment', [
             'is_paid' => 1,
             'completed_at' => null,
         ]);
-        $payment = new Payment($payment_dao->find($payment_id));
+        $payment = Payment::find($payment_id);
 
         $payment->complete($completed_at);
 
@@ -26,7 +25,6 @@ class PaymentTest extends \PHPUnit\Framework\TestCase
 
     public function testCompleteSetsInvoiceNumber()
     {
-        $payment_dao = new dao\Payment();
         $now = $this->fake('dateTime');
         $this->freeze($now);
         $payment_id = $this->create('payment', [
@@ -34,7 +32,7 @@ class PaymentTest extends \PHPUnit\Framework\TestCase
             'completed_at' => null,
             'invoice_number' => null,
         ]);
-        $payment = new Payment($payment_dao->find($payment_id));
+        $payment = Payment::find($payment_id);
 
         $payment->complete($now);
 
@@ -44,7 +42,6 @@ class PaymentTest extends \PHPUnit\Framework\TestCase
 
     public function testCompleteIncrementsInvoiceNumberOverMonths()
     {
-        $payment_dao = new dao\Payment();
         $now = $this->fake('dateTime');
         $this->freeze($now);
 
@@ -59,7 +56,7 @@ class PaymentTest extends \PHPUnit\Framework\TestCase
             'completed_at' => null,
             'invoice_number' => null,
         ]);
-        $payment = new Payment($payment_dao->find($payment_id));
+        $payment = Payment::find($payment_id);
 
         $payment->complete($now);
 
@@ -69,7 +66,6 @@ class PaymentTest extends \PHPUnit\Framework\TestCase
 
     public function testCompleteResetsInvoiceNumberOverYears()
     {
-        $payment_dao = new dao\Payment();
         $now = $this->fake('dateTime');
         $this->freeze($now);
 
@@ -85,7 +81,7 @@ class PaymentTest extends \PHPUnit\Framework\TestCase
             'completed_at' => null,
             'invoice_number' => null,
         ]);
-        $payment = new Payment($payment_dao->find($payment_id));
+        $payment = Payment::find($payment_id);
 
         $payment->complete($now);
 
@@ -95,7 +91,6 @@ class PaymentTest extends \PHPUnit\Framework\TestCase
 
     public function testCompleteIgnoresNullInvoiceNumbers()
     {
-        $payment_dao = new dao\Payment();
         $now = $this->fake('dateTime');
         $this->freeze($now);
 
@@ -110,7 +105,7 @@ class PaymentTest extends \PHPUnit\Framework\TestCase
             'completed_at' => null,
             'invoice_number' => null,
         ]);
-        $payment = new Payment($payment_dao->find($payment_id));
+        $payment = Payment::find($payment_id);
 
         $payment->complete($now);
 
@@ -120,13 +115,12 @@ class PaymentTest extends \PHPUnit\Framework\TestCase
 
     public function testCompleteDoesNothingIfNotIsPaid()
     {
-        $payment_dao = new dao\Payment();
         $completed_at = $this->fake('dateTime');
         $payment_id = $this->create('payment', [
             'is_paid' => 0,
             'completed_at' => null,
         ]);
-        $payment = new Payment($payment_dao->find($payment_id));
+        $payment = Payment::find($payment_id);
 
         $payment->complete($completed_at);
 

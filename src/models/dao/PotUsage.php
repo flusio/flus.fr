@@ -10,8 +10,6 @@ use Website\models;
  */
 class PotUsage extends \Minz\DatabaseModel
 {
-    use SaveHelper;
-
     public function __construct()
     {
         $properties = array_keys(models\PotUsage::PROPERTIES);

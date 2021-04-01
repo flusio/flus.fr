@@ -90,11 +90,9 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
             'address_postcode' => $address['postcode'],
             'address_city' => $address['city'],
         ]);
-        $payment_dao = new models\dao\Payment();
-        $account_dao = new models\dao\Account();
-        $account = new models\Account($account_dao->find($user['account_id']));
+        $account = models\Account::find($user['account_id']);
 
-        $this->assertSame(0, $payment_dao->count());
+        $this->assertSame(0, models\Payment::count());
 
         $response = $this->appRun('POST', '/account/renew', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
@@ -102,9 +100,9 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
             'frequency' => $frequency,
         ]);
 
-        $this->assertSame(1, $payment_dao->count());
+        $this->assertSame(1, models\Payment::count());
 
-        $payment = new models\Payment($payment_dao->listAll()[0]);
+        $payment = models\Payment::take();
         $this->assertResponse($response, 302, "/payments/{$payment->id}/pay");
         $expected_amount = $frequency === 'month' ? 300 : 3000;
         $this->assertNull($payment->completed_at);
@@ -136,8 +134,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
             'frequency' => $frequency,
         ]);
 
-        $account_dao = new models\dao\Account();
-        $account = new models\Account($account_dao->find($user['account_id']));
+        $account = models\Account::find($user['account_id']);
         $this->assertSame('year', $account->preferred_frequency);
     }
 
@@ -147,9 +144,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
     public function testRenewRedirectsIfNoAddress($address, $frequency)
     {
         $user = $this->loginUser();
-        $payment_dao = new models\dao\Payment();
-        $account_dao = new models\dao\Account();
-        $account = new models\Account($account_dao->find($user['account_id']));
+        $account = models\Account::find($user['account_id']);
 
         $response = $this->appRun('POST', '/account/renew', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
@@ -158,7 +153,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 302, '/account/address');
-        $this->assertSame(0, $payment_dao->count());
+        $this->assertSame(0, models\Payment::count());
     }
 
     /**
@@ -173,9 +168,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
             'address_postcode' => $address['postcode'],
             'address_city' => $address['city'],
         ]);
-        $payment_dao = new models\dao\Payment();
-        $account_dao = new models\dao\Account();
-        $account = new models\Account($account_dao->find($account_id));
+        $account = models\Account::find($account_id);
 
         $response = $this->appRun('POST', '/account/renew', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
@@ -184,7 +177,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 401);
-        $this->assertSame(0, $payment_dao->count());
+        $this->assertSame(0, models\Payment::count());
     }
 
     /**
@@ -199,9 +192,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
             'address_postcode' => $address['postcode'],
             'address_city' => $address['city'],
         ]);
-        $payment_dao = new models\dao\Payment();
-        $account_dao = new models\dao\Account();
-        $account = new models\Account($account_dao->find($user['account_id']));
+        $account = models\Account::find($user['account_id']);
         $frequency = $this->fake('word');
 
         $response = $this->appRun('POST', '/account/renew', [
@@ -211,7 +202,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 400, 'Vous devez choisir l’une des deux périodes proposées');
-        $this->assertSame(0, $payment_dao->count());
+        $this->assertSame(0, models\Payment::count());
     }
 
     /**
@@ -226,9 +217,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
             'address_postcode' => $address['postcode'],
             'address_city' => $address['city'],
         ]);
-        $payment_dao = new models\dao\Payment();
-        $account_dao = new models\dao\Account();
-        $account = new models\Account($account_dao->find($user['account_id']));
+        $account = models\Account::find($user['account_id']);
 
         $response = $this->appRun('POST', '/account/renew', [
             'csrf' => 'not the token',
@@ -237,7 +226,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 400, 'Une vérification de sécurité a échoué');
-        $this->assertSame(0, $payment_dao->count());
+        $this->assertSame(0, models\Payment::count());
     }
 
     public function initParamsProvider()

@@ -42,8 +42,7 @@ class InvoicePDF extends \FPDF
     {
         parent::__construct();
 
-        $account_dao = new models\dao\Account();
-        $account = new models\Account($account_dao->find($payment->account_id));
+        $account = models\Account::find($payment->account_id);
 
         $this->logo = \Minz\Configuration::$app_path . '/public/static/logo-512px.png';
 
@@ -103,9 +102,8 @@ class InvoicePDF extends \FPDF
                 ],
             ];
         } elseif ($payment->type === 'credit') {
-            $payment_dao = new models\dao\Payment();
-            $db_credited_payment = $payment_dao->find($payment->credited_payment_id);
-            $invoice_number = $db_credited_payment['invoice_number'];
+            $credited_payment = models\Payment::find($payment->credited_payment_id);
+            $invoice_number = $credited_payment->invoice_number;
             $this->purchases = [
                 [
                     'description' => "Remboursement de la facture\n{$invoice_number}",

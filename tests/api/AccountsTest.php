@@ -40,9 +40,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
      */
     public function testShowCreatesAccountIfDoesNotExist($email)
     {
-        $account_dao = new models\dao\Account();
-
-        $this->assertSame(0, $account_dao->count());
+        $this->assertSame(0, models\Account::count());
 
         $response = $this->appRun('GET', '/api/account', [
             'email' => $email,
@@ -53,8 +51,8 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 200, null, [
             'Content-Type' => 'application/json'
         ]);
-        $this->assertSame(1, $account_dao->count());
-        $account = new models\Account($account_dao->listAll()[0]);
+        $this->assertSame(1, models\Account::count());
+        $account = models\Account::take();
         $this->assertSame($email, $account->email);
         $output = json_decode($response->render(), true);
         $this->assertSame($account->id, $output['id']);
@@ -92,8 +90,6 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     public function testLoginUrlSetsAccessTokenReturnsAUrl()
     {
         $this->freeze($this->fake('unixTime'));
-        $account_dao = new models\dao\Account();
-        $token_dao = new models\dao\Token();
         $account_id = $this->create('account', [
             'access_token' => null,
         ]);
@@ -108,8 +104,8 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
             'Content-Type' => 'application/json'
         ]);
 
-        $account = new models\Account($account_dao->find($account_id));
-        $token = new models\Token($token_dao->find($account->access_token));
+        $account = models\Account::find($account_id);
+        $token = models\Token::find($account->access_token);
         $this->assertTrue($token->isValid());
         $this->assertTrue($token->expiresIn(10, 'minutes'));
 
@@ -124,8 +120,6 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     public function testLoginUrlFailsIfMissingAuth()
     {
         $this->freeze($this->fake('unixTime'));
-        $account_dao = new models\dao\Account();
-        $token_dao = new models\dao\Token();
         $account_id = $this->create('account', [
             'access_token' => null,
         ]);
@@ -135,15 +129,13 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 401);
-        $account = new models\Account($account_dao->find($account_id));
+        $account = models\Account::find($account_id);
         $this->assertNull($account->access_token);
     }
 
     public function testLoginUrlFailsIfAccountIsInvalid()
     {
         $this->freeze($this->fake('unixTime'));
-        $account_dao = new models\dao\Account();
-        $token_dao = new models\dao\Token();
         $account_id = $this->create('account', [
             'access_token' => null,
         ]);
@@ -155,7 +147,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponse($response, 404);
-        $account = new models\Account($account_dao->find($account_id));
+        $account = models\Account::find($account_id);
         $this->assertNull($account->access_token);
     }
 

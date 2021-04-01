@@ -22,23 +22,20 @@ class Payments
     public function complete($request)
     {
         $invoice_mailer = new mailers\Invoices();
-        $account_dao = new models\dao\Account();
-        $payment_dao = new \Website\models\dao\Payment();
-        $db_payments = $payment_dao->listBy([
+        $payments = models\Payment::listBy([
             'completed_at' => null,
             'is_paid' => 1,
         ]);
-        $number_payments = count($db_payments);
+        $number_payments = count($payments);
 
-        foreach ($db_payments as $db_payment) {
-            $payment = new models\Payment($db_payment);
+        foreach ($payments as $payment) {
             $payment->complete(\Minz\Time::now());
-            $payment_dao->save($payment);
+            $payment->save();
 
             $account = $payment->account();
             if ($account && $payment->type === 'subscription') {
                 $account->extendSubscription($payment->frequency);
-                $account_dao->save($account);
+                $account->save();
             }
 
             $invoice_pdf_service = new services\InvoicePDF($payment);

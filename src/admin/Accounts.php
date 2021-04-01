@@ -22,12 +22,7 @@ class Accounts
             return \Minz\Response::redirect('login');
         }
 
-        $account_dao = new models\dao\Account();
-        $db_accounts = $account_dao->listAll();
-        $accounts = [];
-        foreach ($db_accounts as $db_account) {
-            $accounts[] = new models\Account($db_account);
-        }
+        $accounts = models\Account::listAll();
 
         usort($accounts, function ($account1, $account2) {
             return $account1->email <=> $account2->email;
@@ -49,14 +44,12 @@ class Accounts
             return \Minz\Response::redirect('login');
         }
 
-        $account_dao = new models\dao\Account();
         $account_id = $request->param('id');
-        $db_account = $account_dao->find($account_id);
-        if (!$db_account) {
+        $account = models\Account::find($account_id);
+        if (!$account) {
             return \Minz\Response::notFound('not_found.phtml');
         }
 
-        $account = new models\Account($db_account);
         return \Minz\Response::ok('admin/accounts/show.phtml', [
             'account' => $account,
             'payments' => $account->payments(),

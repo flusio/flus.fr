@@ -22,14 +22,12 @@ class Credits
         }
 
         $credited_payment_id = $request->param('credited_payment_id');
-        $payment_dao = new models\dao\Payment();
-        $db_payment = $payment_dao->find($credited_payment_id);
-        if (!$db_payment) {
+        $credited_payment = models\Payment::find($credited_payment_id);
+        if (!$credited_payment) {
             return \Minz\Response::notFound('not_found.phtml');
         }
 
-        $credited_payment = new models\Payment($db_payment);
-        $already_credited = $payment_dao->findBy([
+        $already_credited = models\Payment::findBy([
             'credited_payment_id' => $credited_payment->id,
         ]) !== null;
 
@@ -60,14 +58,12 @@ class Credits
         }
 
         $credited_payment_id = $request->param('credited_payment_id');
-        $payment_dao = new models\dao\Payment();
-        $db_payment = $payment_dao->find($credited_payment_id);
-        if (!$db_payment) {
+        $credited_payment = models\Payment::find($credited_payment_id);
+        if (!$credited_payment) {
             return \Minz\Response::notFound('not_found.phtml');
         }
 
-        $credited_payment = new models\Payment($db_payment);
-        $already_credited = $payment_dao->findBy([
+        $already_credited = models\Payment::findBy([
             'credited_payment_id' => $credited_payment->id,
         ]) !== null;
 
@@ -96,7 +92,7 @@ class Credits
 
         $payment = models\Payment::initCreditFromPayment($credited_payment);
         $payment->invoice_number = models\Payment::generateInvoiceNumber();
-        $payment_id = $payment_dao->save($payment);
+        $payment->save();
 
         return \Minz\Response::redirect('admin', ['status' => 'payment_credited']);
     }

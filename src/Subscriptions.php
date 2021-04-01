@@ -27,10 +27,7 @@ class Subscriptions
             return \Minz\Response::unauthorized('unauthorized.phtml');
         }
 
-        $account_dao = new models\dao\Account();
-        $db_account = $account_dao->find($user['account_id']);
-        $account = new models\Account($db_account);
-
+        $account = models\Account::find($user['account_id']);
         if ($account->mustSetAddress()) {
             return \Minz\Response::redirect('account address');
         }
@@ -69,10 +66,7 @@ class Subscriptions
             return \Minz\Response::unauthorized('unauthorized.phtml');
         }
 
-        $account_dao = new models\dao\Account();
-        $db_account = $account_dao->find($user['account_id']);
-        $account = new models\Account($db_account);
-
+        $account = models\Account::find($user['account_id']);
         if ($account->mustSetAddress()) {
             return \Minz\Response::redirect('account address');
         }
@@ -111,17 +105,16 @@ class Subscriptions
             "Abonnement à Flus ({$period})"
         );
 
-        $payment_dao = new models\dao\Payment();
         $payment->payment_intent_id = $stripe_session->payment_intent;
         $payment->session_id = $stripe_session->id;
-        $payment_id = $payment_dao->save($payment);
+        $payment->save();
 
         $account->preferred_frequency = $payment->frequency;
         $account->reminder = $reminder;
-        $account_dao->save($account);
+        $account->save();
 
         return \Minz\Response::redirect('Payments#pay', [
-            'id' => $payment_id,
+            'id' => $payment->id,
         ]);
     }
 }

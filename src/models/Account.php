@@ -10,6 +10,8 @@ use Website\utils;
  */
 class Account extends \Minz\Model
 {
+    use DaoConnector;
+
     public const PROPERTIES = [
         'id' => [
             'type' => 'string',
@@ -150,10 +152,7 @@ class Account extends \Minz\Model
             return false;
         }
 
-        $token_dao = new dao\Token();
-        $db_token = $token_dao->find($this->access_token);
-        $token = new Token($db_token);
-
+        $token = Token::find($this->access_token);
         return $token->isValid();
     }
 
@@ -224,13 +223,9 @@ class Account extends \Minz\Model
      */
     public function payments()
     {
-        $payment_dao = new dao\Payment();
-        $db_payments = $payment_dao->listBy([
+        return Payment::listBy([
             'account_id' => $this->id,
         ]);
-        return array_map(function ($db_payment) {
-            return new Payment($db_payment);
-        }, $db_payments);
     }
 
     /**

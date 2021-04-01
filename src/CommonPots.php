@@ -11,8 +11,7 @@ class CommonPots
      */
     public function show()
     {
-        $pot_usage_dao = new models\dao\PotUsage();
-        $common_pot_amount = $pot_usage_dao->findAvailableAmount() / 100;
+        $common_pot_amount = models\PotUsage::daoCall('findAvailableAmount') / 100;
         return \Minz\Response::ok('common_pots/show.phtml', [
             'common_pot_amount' => number_format($common_pot_amount, 2, ',', '&nbsp;'),
         ]);
@@ -35,10 +34,7 @@ class CommonPots
             return \Minz\Response::unauthorized('unauthorized.phtml');
         }
 
-        $account_dao = new models\dao\Account();
-        $db_account = $account_dao->find($user['account_id']);
-        $account = new models\Account($db_account);
-
+        $account = models\Account::find($user['account_id']);
         if ($account->mustSetAddress()) {
             return \Minz\Response::redirect('account address');
         }
@@ -72,10 +68,7 @@ class CommonPots
             return \Minz\Response::unauthorized('unauthorized.phtml');
         }
 
-        $account_dao = new models\dao\Account();
-        $db_account = $account_dao->find($user['account_id']);
-        $account = new models\Account($db_account);
-
+        $account = models\Account::find($user['account_id']);
         if ($account->mustSetAddress()) {
             return \Minz\Response::redirect('account address');
         }
@@ -122,13 +115,12 @@ class CommonPots
             'Participation à la cagnotte de Flus'
         );
 
-        $payment_dao = new models\dao\Payment();
         $payment->payment_intent_id = $stripe_session->payment_intent;
         $payment->session_id = $stripe_session->id;
-        $payment_id = $payment_dao->save($payment);
+        $payment->save();
 
         return \Minz\Response::redirect('Payments#pay', [
-            'id' => $payment_id,
+            'id' => $payment->id,
         ]);
     }
 
@@ -149,16 +141,12 @@ class CommonPots
             return \Minz\Response::unauthorized('unauthorized.phtml');
         }
 
-        $account_dao = new models\dao\Account();
-        $db_account = $account_dao->find($user['account_id']);
-        $account = new models\Account($db_account);
-
+        $account = models\Account::find($user['account_id']);
         if ($account->mustSetAddress()) {
             return \Minz\Response::redirect('account address');
         }
 
-        $pot_usage_dao = new models\dao\PotUsage();
-        $common_pot_amount = $pot_usage_dao->findAvailableAmount() / 100;
+        $common_pot_amount = models\PotUsage::daoCall('findAvailableAmount') / 100;
         return \Minz\Response::ok('common_pots/usage.phtml', [
             'account' => $account,
             'common_pot_amount' => number_format($common_pot_amount, 2, ',', '&nbsp;'),
@@ -193,16 +181,12 @@ class CommonPots
             return \Minz\Response::unauthorized('unauthorized.phtml');
         }
 
-        $account_dao = new models\dao\Account();
-        $db_account = $account_dao->find($user['account_id']);
-        $account = new models\Account($db_account);
-
+        $account = models\Account::find($user['account_id']);
         if ($account->mustSetAddress()) {
             return \Minz\Response::redirect('account address');
         }
 
-        $pot_usage_dao = new models\dao\PotUsage();
-        $common_pot_amount = $pot_usage_dao->findAvailableAmount() / 100;
+        $common_pot_amount = models\PotUsage::daoCall('findAvailableAmount') / 100;
         $full_enough = $common_pot_amount >= 3;
         $common_pot_amount = number_format($common_pot_amount, 2, ',', '&nbsp;');
         $free_account = $account->isFree();
@@ -263,13 +247,12 @@ class CommonPots
             ]);
         }
 
-        $pot_usage_dao = new models\dao\PotUsage();
         $pot_usage = models\PotUsage::initFromAccount($account, 'month');
-        $pot_usage_dao->save($pot_usage);
+        $pot_usage->save();
 
         $account->extendSubscription($pot_usage->frequency);
         $account->reminder = $reminder;
-        $account_dao->save($account);
+        $account->save();
 
         return \Minz\Response::redirect('account');
     }

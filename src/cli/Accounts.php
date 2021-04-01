@@ -20,13 +20,12 @@ class Accounts
      */
     public function index($request)
     {
-        $account_dao = new models\dao\Account();
-        $db_accounts = $account_dao->listAll();
-        $accounts = array_map(function ($db_account) {
-            return "{$db_account['id']} {$db_account['email']}";
-        }, $db_accounts);
+        $accounts = models\Account::listAll();
+        $formatted_accounts = array_map(function ($account) {
+            return "{$account->id} {$account->email}";
+        }, $accounts);
 
-        return \Minz\Response::Text(200, implode("\n", $accounts));
+        return \Minz\Response::Text(200, implode("\n", $formatted_accounts));
     }
 
     /**
@@ -50,10 +49,9 @@ class Accounts
             return \Minz\Response::Text(400, implode(' ', $errors));
         }
 
-        $account_dao = new models\dao\Account();
-        $account_id = $account_dao->save($account);
+        $account->save();
 
-        return \Minz\Response::Text(200, "Account {$account_id} ({$account->email}) created.");
+        return \Minz\Response::Text(200, "Account {$account->id} ({$account->email}) created.");
     }
 
     /**
@@ -75,11 +73,9 @@ class Accounts
     {
         $account_id = $request->param('account_id');
         $service = $request->param('service');
-        $account_dao = new models\dao\Account();
-        $token_dao = new models\dao\Token();
 
-        $db_account = $account_dao->find($account_id);
-        if (!$db_account) {
+        $account = models\Account::find($account_id);
+        if (!$account) {
             return \Minz\Response::Text(404, 'This account doesn’t exist.');
         }
 
@@ -87,12 +83,12 @@ class Accounts
             $service = 'flusio';
         }
 
-        $account = new models\Account($db_account);
         $token = models\Token::init(10, 'minutes');
+        $token->save();
+
         $account->access_token = $token->token;
         $account->preferred_service = $service;
-        $token_dao->save($token);
-        $account_dao->save($account);
+        $account->save();
 
         $login_url = \Minz\Url::absoluteFor('account login', [
             'account_id' => $account->id,
@@ -111,17 +107,14 @@ class Accounts
      */
     public function remind($request)
     {
-        $account_dao = new models\dao\Account();
-        $token_dao = new models\dao\Token();
         $mailer = new mailers\Accounts();
 
-        $db_accounts = $account_dao->listBy([
+        $accounts = models\Account::listBy([
             'reminder' => true,
         ]);
         $number_reminders = 0;
 
-        foreach ($db_accounts as $db_account) {
-            $account = new models\Account($db_account);
+        foreach ($accounts as $account) {
             if ($account->isFree()) {
                 continue;
             }
@@ -135,9 +128,10 @@ class Accounts
 
                 // First create a login token
                 $token = models\Token::init(24, 'hours');
+                $token->save();
+
                 $account->access_token = $token->token;
-                $token_dao->save($token);
-                $account_dao->save($account);
+                $account->save();
 
                 // Then, send the email
                 $mailer->sendReminderSubscriptionEnded($account);
@@ -147,9 +141,10 @@ class Accounts
 
                 // First create a login token
                 $token = models\Token::init(24, 'hours');
+                $token->save();
+
                 $account->access_token = $token->token;
-                $token_dao->save($token);
-                $account_dao->save($account);
+                $account->save();
 
                 // Then, send the email
                 $mailer->sendReminderSubscriptionEnding($account);

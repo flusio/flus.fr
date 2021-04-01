@@ -19,15 +19,11 @@ class Payments
         }
 
         $year = $request->param('year', \Minz\Time::now()->format('Y'));
-        $payment_dao = new models\dao\Payment();
-        $raw_payments = $payment_dao->listByYear($year);
+        $payments = models\Payment::daoToList('listByYear', $year);
         $payments_by_months = [];
-        $payments = [];
-        foreach ($raw_payments as $raw_payment) {
-            $payment = new models\Payment($raw_payment);
+        foreach ($payments as $payment) {
             $month = intval($payment->created_at->format('n'));
             $payments_by_months[$month][] = $payment;
-            $payments[] = $payment;
         }
 
         $format = $request->param('format', 'html');
@@ -113,13 +109,10 @@ class Payments
             ]);
         }
 
-        $account_dao = new models\dao\Account();
-        $db_account = $account_dao->findBy(['email' => $email]);
-        if ($db_account) {
-            $account = new models\Account($db_account);
-        } else {
+        $account = models\Account::findBy(['email' => $email]);
+        if (!$account) {
             $account = models\Account::init($email);
-            $account_dao->save($account);
+            $account->save();
         }
 
         if ($type === 'common_pot') {
@@ -149,9 +142,8 @@ class Payments
             ]);
         }
 
-        $payment_dao = new models\dao\Payment();
         $payment->invoice_number = models\Payment::generateInvoiceNumber();
-        $payment_id = $payment_dao->save($payment);
+        $payment->save();
 
         return \Minz\Response::redirect('admin', ['status' => 'payment_created']);
     }
@@ -173,14 +165,12 @@ class Payments
             return \Minz\Response::redirect('login', ['from' => 'admin/payments#index']);
         }
 
-        $payment_dao = new models\dao\Payment();
         $payment_id = $request->param('id');
-        $db_payment = $payment_dao->find($payment_id);
-        if (!$db_payment) {
+        $payment = models\Payment::find($payment_id);
+        if (!$payment) {
             return \Minz\Response::notFound('not_found.phtml');
         }
 
-        $payment = new models\Payment($db_payment);
         return \Minz\Response::ok('admin/payments/show.phtml', [
             'payment' => $payment,
         ]);
@@ -203,14 +193,12 @@ class Payments
             return \Minz\Response::redirect('login', ['from' => 'admin/payments#index']);
         }
 
-        $payment_dao = new models\dao\Payment();
         $payment_id = $request->param('id');
-        $db_payment = $payment_dao->find($payment_id);
-        if (!$db_payment) {
+        $payment = models\Payment::find($payment_id);
+        if (!$payment) {
             return \Minz\Response::notFound('not_found.phtml');
         }
 
-        $payment = new models\Payment($db_payment);
         if ($payment->is_paid) {
             return \Minz\Response::badRequest('admin/payments/show.phtml', [
                 'payment' => $payment,
@@ -227,7 +215,7 @@ class Payments
         }
 
         $payment->is_paid = true;
-        $payment_dao->save($payment);
+        $payment->save();
 
         @unlink($payment->invoiceFilepath());
 
@@ -253,14 +241,12 @@ class Payments
             return \Minz\Response::redirect('login', ['from' => 'admin/payments#index']);
         }
 
-        $payment_dao = new models\dao\Payment();
         $payment_id = $request->param('id');
-        $raw_payment = $payment_dao->find($payment_id);
-        if (!$raw_payment) {
+        $payment = models\Payment::find($payment_id);
+        if (!$payment) {
             return \Minz\Response::notFound('not_found.phtml');
         }
 
-        $payment = new models\Payment($raw_payment);
         if ($payment->is_paid) {
             return \Minz\Response::badRequest('admin/payments/show.phtml', [
                 'completed_at' => \Minz\Time::now(),
@@ -286,7 +272,7 @@ class Payments
             ]);
         }
 
-        $payment_dao->delete($payment->id);
+        models\Payment::delete($payment->id);
 
         return \Minz\Response::redirect('admin', [
             'status' => 'payment_deleted',

@@ -8,8 +8,6 @@ namespace Website\models\dao;
  */
 class Account extends \Minz\DatabaseModel
 {
-    use SaveHelper;
-
     /**
      * @throws \Minz\Errors\DatabaseError
      */

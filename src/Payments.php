@@ -17,14 +17,13 @@ class Payments
      */
     public function pay($request)
     {
-        $payment_dao = new models\dao\Payment();
         $payment_id = $request->param('id');
-        $raw_payment = $payment_dao->find($payment_id);
-        if (!$raw_payment) {
+        $payment = models\Payment::find($payment_id);
+
+        if (!$payment) {
             return \Minz\Response::notFound('not_found.phtml');
         }
 
-        $payment = new models\Payment($raw_payment);
         if ($payment->completed_at) {
             return \Minz\Response::badRequest();
         }

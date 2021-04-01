@@ -14,9 +14,8 @@ class InvoicePDFTest extends TestCase
 
     public function testPdfHasALogo()
     {
-        $payment_dao = new models\dao\Payment();
         $payment_id = $this->create('payment');
-        $payment = new models\Payment($payment_dao->find($payment_id));
+        $payment = models\Payment::find($payment_id);
 
         $invoice_pdf = new InvoicePDF($payment);
 
@@ -26,11 +25,10 @@ class InvoicePDFTest extends TestCase
 
     public function testPdfHasMetadata()
     {
-        $payment_dao = new models\dao\Payment();
         $payment_id = $this->create('payment', [
             'completed_at' => $this->fake('dateTime')->format(\Minz\Model::DATETIME_FORMAT),
         ]);
-        $payment = new models\Payment($payment_dao->find($payment_id));
+        $payment = models\Payment::find($payment_id);
 
         $invoice_pdf = new InvoicePDF($payment);
 
@@ -46,14 +44,13 @@ class InvoicePDFTest extends TestCase
     {
         $faker = \Faker\Factory::create('fr_FR');
         $vat_number = $faker->vat;
-        $payment_dao = new models\dao\Payment();
         $account_id = $this->create('account', [
             'company_vat_number' => $vat_number,
         ]);
         $payment_id = $this->create('payment', [
             'account_id' => $account_id,
         ]);
-        $payment = new models\Payment($payment_dao->find($payment_id));
+        $payment = models\Payment::find($payment_id);
 
         $invoice_pdf = new InvoicePDF($payment);
 
@@ -63,11 +60,10 @@ class InvoicePDFTest extends TestCase
 
     public function testPdfNotCompletedIsDue()
     {
-        $payment_dao = new models\dao\Payment();
         $payment_id = $this->create('payment', [
             'completed_at' => null,
         ]);
-        $payment = new models\Payment($payment_dao->find($payment_id));
+        $payment = models\Payment::find($payment_id);
 
         $invoice_pdf = new InvoicePDF($payment);
 
@@ -77,7 +73,6 @@ class InvoicePDFTest extends TestCase
 
     public function testPdfToCredit()
     {
-        $payment_dao = new models\dao\Payment();
         $credited_completed_at = $this->fake('dateTime');
         $random_number = sprintf('-%04d', $this->fake('randomNumber', 4));
         $credited_invoice_number = $credited_completed_at->format('Y-m') . $random_number;
@@ -89,7 +84,7 @@ class InvoicePDFTest extends TestCase
             'credited_payment_id' => $credited_payment_id,
             'completed_at' => $this->fake('dateTime')->format(\Minz\Model::DATETIME_FORMAT),
         ]);
-        $payment = new models\Payment($payment_dao->find($payment_id));
+        $payment = models\Payment::find($payment_id);
         $expected_credited_at = strftime('%d %B %Y', $payment->completed_at->getTimestamp());
 
         $invoice_pdf = new InvoicePDF($payment);
@@ -100,9 +95,8 @@ class InvoicePDFTest extends TestCase
 
     public function testPdfWithCommonPotPaymentHasNoId()
     {
-        $payment_dao = new models\dao\Payment();
         $payment_id = $this->create('payment');
-        $payment = new models\Payment($payment_dao->find($payment_id));
+        $payment = models\Payment::find($payment_id);
 
         $invoice_pdf = new InvoicePDF($payment);
 
@@ -120,11 +114,10 @@ class InvoicePDFTest extends TestCase
             'address_city' => $this->fake('city'),
             'address_country' => $this->fake('randomElement', \Website\utils\Countries::codes()),
         ]);
-        $payment_dao = new models\dao\Payment();
         $payment_id = $this->create('payment', [
             'account_id' => $account_id,
         ]);
-        $payment = new models\Payment($payment_dao->find($payment_id));
+        $payment = models\Payment::find($payment_id);
 
         $invoice_pdf = new InvoicePDF($payment);
 
@@ -142,12 +135,11 @@ class InvoicePDFTest extends TestCase
 
     public function testPdfWithMonthSubscriptionHasCorrespondingPurchase()
     {
-        $payment_dao = new models\dao\Payment();
         $payment_id = $this->create('payment', [
             'type' => 'subscription',
             'frequency' => 'month',
         ]);
-        $payment = new models\Payment($payment_dao->find($payment_id));
+        $payment = models\Payment::find($payment_id);
 
         $invoice_pdf = new InvoicePDF($payment);
 
@@ -172,12 +164,11 @@ class InvoicePDFTest extends TestCase
 
     public function testPdfWithYearSubscriptionHasCorrespondingPurchase()
     {
-        $payment_dao = new models\dao\Payment();
         $payment_id = $this->create('payment', [
             'type' => 'subscription',
             'frequency' => 'year',
         ]);
-        $payment = new models\Payment($payment_dao->find($payment_id));
+        $payment = models\Payment::find($payment_id);
 
         $invoice_pdf = new InvoicePDF($payment);
 
@@ -202,11 +193,10 @@ class InvoicePDFTest extends TestCase
 
     public function testPdfWithCommonPotHasCorrespondingPurchase()
     {
-        $payment_dao = new models\dao\Payment();
         $payment_id = $this->create('payment', [
             'type' => 'common_pot',
         ]);
-        $payment = new models\Payment($payment_dao->find($payment_id));
+        $payment = models\Payment::find($payment_id);
 
         $invoice_pdf = new InvoicePDF($payment);
 
@@ -231,7 +221,6 @@ class InvoicePDFTest extends TestCase
 
     public function testPdfWithCreditHasCorrespondingPurchase()
     {
-        $payment_dao = new models\dao\Payment();
         $credited_completed_at = $this->fake('dateTime');
         $random_number = sprintf('-%04d', $this->fake('randomNumber', 4));
         $credited_invoice_number = $credited_completed_at->format('Y-m') . $random_number;
@@ -242,7 +231,7 @@ class InvoicePDFTest extends TestCase
             'type' => 'credit',
             'credited_payment_id' => $credited_payment_id,
         ]);
-        $payment = new models\Payment($payment_dao->find($payment_id));
+        $payment = models\Payment::find($payment_id);
 
         $invoice_pdf = new InvoicePDF($payment);
 
@@ -267,9 +256,8 @@ class InvoicePDFTest extends TestCase
 
     public function testPdfHasTotalPurchases()
     {
-        $payment_dao = new models\dao\Payment();
         $payment_id = $this->create('payment');
-        $payment = new models\Payment($payment_dao->find($payment_id));
+        $payment = models\Payment::find($payment_id);
 
         $invoice_pdf = new InvoicePDF($payment);
 
@@ -289,9 +277,8 @@ class InvoicePDFTest extends TestCase
 
     public function testPdfHasFooter()
     {
-        $payment_dao = new models\dao\Payment();
         $payment_id = $this->create('payment');
-        $payment = new models\Payment($payment_dao->find($payment_id));
+        $payment = models\Payment::find($payment_id);
 
         $invoice_pdf = new InvoicePDF($payment);
 

@@ -13,6 +13,8 @@ use Website\utils;
  */
 class Payment extends \Minz\Model
 {
+    use DaoConnector;
+
     public const MIN_AMOUNT = 1 * 100;
     public const MAX_AMOUNT = 1000 * 100;
 
@@ -165,13 +167,7 @@ class Payment extends \Minz\Model
             return null;
         }
 
-        $account_dao = new dao\Account();
-        $db_account = $account_dao->find($this->account_id);
-        if (!$db_account) {
-            return null;
-        }
-
-        return new Account($db_account);
+        return Account::find($this->account_id);
     }
 
     /**
@@ -228,11 +224,10 @@ class Payment extends \Minz\Model
      */
     public function isReimbursed()
     {
-        $payment_dao = new dao\Payment();
-        $db_credit_payment = $payment_dao->findBy([
+        $credited_payment = Payment::findBy([
             'credited_payment_id' => $this->id,
         ]);
-        return $db_credit_payment !== null;
+        return $credited_payment !== null;
     }
 
     /**
@@ -301,8 +296,7 @@ class Payment extends \Minz\Model
     {
         $now = \Minz\Time::now();
 
-        $payment_dao = new dao\Payment();
-        $last_invoice_number = $payment_dao->findLastInvoiceNumber();
+        $last_invoice_number = Payment::daoCall('findLastInvoiceNumber');
         if ($last_invoice_number) {
             list(
                 $last_invoice_year,

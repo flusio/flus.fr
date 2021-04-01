@@ -8,6 +8,8 @@ namespace Website\models;
  */
 class Token extends \Minz\Model
 {
+    use DaoConnector;
+
     public const PROPERTIES = [
         'token' => [
             'type' => 'string',

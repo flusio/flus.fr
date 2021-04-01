@@ -35,22 +35,20 @@ class Accounts
         }
 
         $email = utils\Email::sanitize($request->param('email', ''));
-        $account_dao = new models\dao\Account();
-        $db_account = $account_dao->findBy([
+        $account = models\Account::findBy([
             'email' => $email,
         ]);
 
-        if ($db_account) {
-            $account = new models\Account($db_account);
-        } else {
+        if (!$account) {
             $account = models\Account::init($email);
+
             $errors = $account->validate();
             if ($errors) {
                 $output = new \Minz\Output\Text(implode(' ', $errors));
                 return new \Minz\Response(400, $output);
             }
 
-            $account_dao->save($account);
+            $account->save();
         }
 
         $json_output = json_encode([
@@ -92,11 +90,9 @@ class Accounts
 
         $account_id = $request->param('account_id');
         $service = $request->param('service');
-        $account_dao = new models\dao\Account();
-        $token_dao = new models\dao\Token();
 
-        $db_account = $account_dao->find($account_id);
-        if (!$db_account) {
+        $account = models\Account::find($account_id);
+        if (!$account) {
             return \Minz\Response::notFound();
         }
 
@@ -104,12 +100,12 @@ class Accounts
             $service = 'flusio';
         }
 
-        $account = new models\Account($db_account);
         $token = models\Token::init(10, 'minutes');
+        $token->save();
+
         $account->access_token = $token->token;
         $account->preferred_service = $service;
-        $token_dao->save($token);
-        $account_dao->save($account);
+        $account->save();
 
         $login_url = \Minz\Url::absoluteFor('account login', [
             'account_id' => $account->id,
@@ -149,14 +145,12 @@ class Accounts
         }
 
         $account_id = $request->param('account_id');
-        $account_dao = new models\dao\Account();
 
-        $db_account = $account_dao->find($account_id);
-        if (!$db_account) {
+        $account = models\Account::find($account_id);
+        if (!$account) {
             return \Minz\Response::notFound();
         }
 
-        $account = new models\Account($db_account);
         $json_output = json_encode([
             'expired_at' => $account->expired_at->format(\Minz\Model::DATETIME_FORMAT),
         ]);
