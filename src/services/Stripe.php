@@ -38,8 +38,9 @@ class Stripe
      */
     public function createSession($payment, $name)
     {
+        $account = $payment->account();
         return \Stripe\Checkout\Session::create([
-            'customer_email' => $payment->email,
+            'customer_email' => $account->email,
             'payment_method_types' => ['card'],
             'line_items' => [[
                 'name' => $name,

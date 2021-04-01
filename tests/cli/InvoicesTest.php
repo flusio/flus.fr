@@ -28,10 +28,13 @@ class InvoicesTest extends \PHPUnit\Framework\TestCase
     public function testSendPdfSucceedsAndSendsAnEmail($completed_at, $invoice_number)
     {
         $email = $this->fake('email');
+        $account_id = $this->create('account', [
+            'email' => $email,
+        ]);
         $payment_id = $this->create('payment', [
             'completed_at' => $completed_at->format(\Minz\Model::DATETIME_FORMAT),
             'invoice_number' => $invoice_number,
-            'email' => $email,
+            'account_id' => $account_id,
         ]);
 
         $this->assertEmailsCount(0);

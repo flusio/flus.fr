@@ -158,16 +158,10 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, $payment_dao->count());
 
         $payment = new models\Payment($payment_dao->take());
-        $payment_address = $payment->address();
         $this->assertSame('common_pot', $payment->type);
         $this->assertSame($amount * 100, $payment->amount);
         $this->assertNull($payment->completed_at);
         $this->assertNotNull($payment->payment_intent_id);
-        $this->assertSame($address['first_name'], $payment_address['first_name']);
-        $this->assertSame($address['last_name'], $payment_address['last_name']);
-        $this->assertSame($address['address1'], $payment_address['address1']);
-        $this->assertSame($address['postcode'], $payment_address['postcode']);
-        $this->assertSame($address['city'], $payment_address['city']);
     }
 
     /**

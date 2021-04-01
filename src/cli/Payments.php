@@ -44,7 +44,8 @@ class Payments
             $invoice_pdf_service = new services\InvoicePDF($payment);
             $invoice_pdf_service->createPDF($payment->invoiceFilepath());
 
-            $invoice_mailer->sendInvoice($payment->email, $payment->invoiceFilepath());
+            $email = $payment->account()->email;
+            $invoice_mailer->sendInvoice($email, $payment->invoiceFilepath());
         }
 
         if ($number_payments > 0) {

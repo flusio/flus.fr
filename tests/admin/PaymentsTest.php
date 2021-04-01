@@ -58,7 +58,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider createProvider
      */
-    public function testCreateRedirectsCorrectly($type, $email, $amount, $address)
+    public function testCreateRedirectsCorrectly($type, $email, $amount)
     {
         $this->loginAdmin();
 
@@ -67,7 +67,6 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
             'type' => $type,
             'email' => $email,
             'amount' => $amount,
-            'address' => $address,
         ]);
 
         $this->assertResponse($response, 302, '/admin?status=payment_created');
@@ -76,31 +75,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider createProvider
      */
-    public function testCreateTakesACompanyVatNumber($type, $email, $amount, $address)
-    {
-        $this->loginAdmin();
-        $payment_dao = new models\dao\Payment();
-        $faker = \Faker\Factory::create('fr_FR');
-        $vat = $faker->vat;
-
-        $response = $this->appRun('POST', '/admin/payments/new', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
-            'type' => $type,
-            'email' => $email,
-            'amount' => $amount,
-            'address' => $address,
-            'company_vat_number' => $vat,
-        ]);
-
-        $this->assertResponse($response, 302, '/admin?status=payment_created');
-        $payment = new models\Payment($payment_dao->take());
-        $this->assertSame($vat, $payment->company_vat_number);
-    }
-
-    /**
-     * @dataProvider createProvider
-     */
-    public function testCreateGenerateAnInvoiceNumber($type, $email, $amount, $address)
+    public function testCreateGenerateAnInvoiceNumber($type, $email, $amount)
     {
         $this->loginAdmin();
         $payment_dao = new models\dao\Payment();
@@ -110,7 +85,6 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
             'type' => $type,
             'email' => $email,
             'amount' => $amount,
-            'address' => $address,
         ]);
 
         $this->assertResponse($response, 302, '/admin?status=payment_created');
@@ -123,7 +97,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider createProvider
      */
-    public function testCreateFailsIfTypeIsInvalid($type, $email, $amount, $address)
+    public function testCreateFailsIfTypeIsInvalid($type, $email, $amount)
     {
         $this->loginAdmin();
 
@@ -132,7 +106,6 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
             'type' => 'invalid',
             'email' => $email,
             'amount' => $amount,
-            'address' => $address,
         ]);
 
         $this->assertResponse($response, 400, 'Le type de paiement est invalide');
@@ -141,7 +114,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider createProvider
      */
-    public function testCreateFailsIfEmailIsInvalid($type, $email, $amount, $address)
+    public function testCreateFailsIfEmailIsInvalid($type, $email, $amount)
     {
         $this->loginAdmin();
 
@@ -150,7 +123,6 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
             'type' => $type,
             'email' => 'not an email',
             'amount' => $amount,
-            'address' => $address,
         ]);
 
         $this->assertResponse($response, 400, 'L’adresse courriel que vous avez fournie est invalide.');
@@ -159,14 +131,13 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider createProvider
      */
-    public function testCreateFailsIfNotConnected($type, $email, $amount, $address)
+    public function testCreateFailsIfNotConnected($type, $email, $amount)
     {
         $response = $this->appRun('POST', '/admin/payments/new', [
             'csrf' => (new \Minz\CSRF())->generateToken(),
             'type' => $type,
             'email' => $email,
             'amount' => $amount,
-            'address' => $address,
         ]);
 
         $this->assertResponse($response, 302, '/admin/login?from=admin%2Fpayments%23init');
@@ -175,7 +146,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider createProvider
      */
-    public function testCreateFailsIfCsrfIsInvalid($type, $email, $amount, $address)
+    public function testCreateFailsIfCsrfIsInvalid($type, $email, $amount)
     {
         $this->loginAdmin();
 
@@ -184,7 +155,6 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
             'type' => $type,
             'email' => $email,
             'amount' => $amount,
-            'address' => $address,
         ]);
 
         $this->assertResponse($response, 400, 'Une vérification de sécurité a échoué');
@@ -407,13 +377,6 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
                 $faker->randomElement(['common_pot', 'subscription_month', 'subscription_year']),
                 $faker->email,
                 $faker->numberBetween(1, 1000),
-                [
-                    'first_name' => $faker->firstName,
-                    'last_name' => $faker->lastName,
-                    'address1' => $faker->streetAddress,
-                    'postcode' => $faker->postcode,
-                    'city' => $faker->city,
-                ],
             ];
         }
 

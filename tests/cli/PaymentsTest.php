@@ -114,8 +114,11 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     {
         $email = $this->fake('email');
         $payment_dao = new models\dao\Payment();
-        $payment_id = $this->create('payment', [
+        $account_id = $this->create('account', [
             'email' => $email,
+        ]);
+        $payment_id = $this->create('payment', [
+            'account_id' => $account_id,
             'completed_at' => null,
             'is_paid' => 1,
         ]);

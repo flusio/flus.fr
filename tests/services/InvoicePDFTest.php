@@ -12,22 +12,26 @@ class InvoicePDFTest extends TestCase
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\FactoriesHelper;
 
-    /**
-     * @dataProvider subscriptionPaymentProvider
-     */
-    public function testPdfHasALogo($payment)
+    public function testPdfHasALogo()
     {
+        $payment_dao = new models\dao\Payment();
+        $payment_id = $this->create('payment');
+        $payment = new models\Payment($payment_dao->find($payment_id));
+
         $invoice_pdf = new InvoicePDF($payment);
 
         $this->assertStringEndsWith('.png', $invoice_pdf->logo);
         $this->assertTrue(file_exists($invoice_pdf->logo));
     }
 
-    /**
-     * @dataProvider subscriptionPaymentProvider
-     */
-    public function testPdfHasMetadata($payment)
+    public function testPdfHasMetadata()
     {
+        $payment_dao = new models\dao\Payment();
+        $payment_id = $this->create('payment', [
+            'completed_at' => $this->fake('dateTime')->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+        $payment = new models\Payment($payment_dao->find($payment_id));
+
         $invoice_pdf = new InvoicePDF($payment);
 
         $metadata = $invoice_pdf->metadata;
@@ -38,14 +42,18 @@ class InvoicePDFTest extends TestCase
         $this->assertSame($expected_paid, $metadata['Payée le']);
     }
 
-    /**
-     * @dataProvider subscriptionPaymentProvider
-     */
-    public function testPdfWithVatNumber($payment)
+    public function testPdfWithVatNumber()
     {
         $faker = \Faker\Factory::create('fr_FR');
         $vat_number = $faker->vat;
-        $payment->company_vat_number = $vat_number;
+        $payment_dao = new models\dao\Payment();
+        $account_id = $this->create('account', [
+            'company_vat_number' => $vat_number,
+        ]);
+        $payment_id = $this->create('payment', [
+            'account_id' => $account_id,
+        ]);
+        $payment = new models\Payment($payment_dao->find($payment_id));
 
         $invoice_pdf = new InvoicePDF($payment);
 
@@ -53,12 +61,13 @@ class InvoicePDFTest extends TestCase
         $this->assertSame($metadata['N° TVA client'], $vat_number);
     }
 
-    /**
-     * @dataProvider subscriptionPaymentProvider
-     */
-    public function testPdfNotCompletedIsDue($payment)
+    public function testPdfNotCompletedIsDue()
     {
-        $payment->completed_at = null;
+        $payment_dao = new models\dao\Payment();
+        $payment_id = $this->create('payment', [
+            'completed_at' => null,
+        ]);
+        $payment = new models\Payment($payment_dao->find($payment_id));
 
         $invoice_pdf = new InvoicePDF($payment);
 
@@ -66,19 +75,21 @@ class InvoicePDFTest extends TestCase
         $this->assertSame('à payer', $metadata['Payée le']);
     }
 
-    /**
-     * @dataProvider creditPaymentProvider
-     */
-    public function testPdfToCredit($payment)
+    public function testPdfToCredit()
     {
+        $payment_dao = new models\dao\Payment();
         $credited_completed_at = $this->fake('dateTime');
         $random_number = sprintf('-%04d', $this->fake('randomNumber', 4));
         $credited_invoice_number = $credited_completed_at->format('Y-m') . $random_number;
         $credited_payment_id = $this->create('payment', [
-            'amount' => $payment->amount,
             'invoice_number' => $credited_invoice_number,
         ]);
-        $payment->credited_payment_id = $credited_payment_id;
+        $payment_id = $this->create('payment', [
+            'type' => 'credit',
+            'credited_payment_id' => $credited_payment_id,
+            'completed_at' => $this->fake('dateTime')->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+        $payment = new models\Payment($payment_dao->find($payment_id));
         $expected_credited_at = strftime('%d %B %Y', $payment->completed_at->getTimestamp());
 
         $invoice_pdf = new InvoicePDF($payment);
@@ -87,25 +98,37 @@ class InvoicePDFTest extends TestCase
         $this->assertSame($expected_credited_at, $metadata['Créditée le']);
     }
 
-    /**
-     * @dataProvider commonPotPaymentProvider
-     */
-    public function testPdfWithCommonPotPaymentHasNoId($payment)
+    public function testPdfWithCommonPotPaymentHasNoId()
     {
+        $payment_dao = new models\dao\Payment();
+        $payment_id = $this->create('payment');
+        $payment = new models\Payment($payment_dao->find($payment_id));
+
         $invoice_pdf = new InvoicePDF($payment);
 
         $metadata = $invoice_pdf->metadata;
         $this->assertArrayNotHasKey('Identifiant client', $metadata);
     }
 
-    /**
-     * @dataProvider subscriptionPaymentProvider
-     */
-    public function testPdfHasCustomer($payment)
+    public function testPdfHasCustomer()
     {
+        $account_id = $this->create('account', [
+            'address_first_name' => $this->fake('firstName'),
+            'address_last_name' => $this->fake('lastName'),
+            'address_address1' => $this->fake('streetAddress'),
+            'address_postcode' => $this->fake('postcode'),
+            'address_city' => $this->fake('city'),
+            'address_country' => $this->fake('randomElement', \Website\utils\Countries::codes()),
+        ]);
+        $payment_dao = new models\dao\Payment();
+        $payment_id = $this->create('payment', [
+            'account_id' => $account_id,
+        ]);
+        $payment = new models\Payment($payment_dao->find($payment_id));
+
         $invoice_pdf = new InvoicePDF($payment);
 
-        $address = $payment->address();
+        $address = $payment->account()->address();
         $expected_line1 = $address['first_name'] . ' ' . $address['last_name'];
         $expected_line2 = $address['address1'];
         $expected_line3 = $address['postcode'] . ' ' . $address['city'];
@@ -117,12 +140,14 @@ class InvoicePDFTest extends TestCase
         $this->assertSame($expected_line4, $invoice_pdf->customer[3]);
     }
 
-    /**
-     * @dataProvider subscriptionPaymentProvider
-     */
-    public function testPdfWithMonthSubscriptionHasCorrespondingPurchase($payment)
+    public function testPdfWithMonthSubscriptionHasCorrespondingPurchase()
     {
-        $payment->frequency = 'month';
+        $payment_dao = new models\dao\Payment();
+        $payment_id = $this->create('payment', [
+            'type' => 'subscription',
+            'frequency' => 'month',
+        ]);
+        $payment = new models\Payment($payment_dao->find($payment_id));
 
         $invoice_pdf = new InvoicePDF($payment);
 
@@ -145,12 +170,14 @@ class InvoicePDFTest extends TestCase
         );
     }
 
-    /**
-     * @dataProvider subscriptionPaymentProvider
-     */
-    public function testPdfWithYearSubscriptionHasCorrespondingPurchase($payment)
+    public function testPdfWithYearSubscriptionHasCorrespondingPurchase()
     {
-        $payment->frequency = 'year';
+        $payment_dao = new models\dao\Payment();
+        $payment_id = $this->create('payment', [
+            'type' => 'subscription',
+            'frequency' => 'year',
+        ]);
+        $payment = new models\Payment($payment_dao->find($payment_id));
 
         $invoice_pdf = new InvoicePDF($payment);
 
@@ -173,11 +200,14 @@ class InvoicePDFTest extends TestCase
         );
     }
 
-    /**
-     * @dataProvider commonPotPaymentProvider
-     */
-    public function testPdfWithCommonPotHasCorrespondingPurchase($payment)
+    public function testPdfWithCommonPotHasCorrespondingPurchase()
     {
+        $payment_dao = new models\dao\Payment();
+        $payment_id = $this->create('payment', [
+            'type' => 'common_pot',
+        ]);
+        $payment = new models\Payment($payment_dao->find($payment_id));
+
         $invoice_pdf = new InvoicePDF($payment);
 
         $this->assertSame(1, count($invoice_pdf->purchases));
@@ -199,19 +229,20 @@ class InvoicePDFTest extends TestCase
         );
     }
 
-    /**
-     * @dataProvider creditPaymentProvider
-     */
-    public function testPdfWithCreditHasCorrespondingPurchase($payment)
+    public function testPdfWithCreditHasCorrespondingPurchase()
     {
+        $payment_dao = new models\dao\Payment();
         $credited_completed_at = $this->fake('dateTime');
         $random_number = sprintf('-%04d', $this->fake('randomNumber', 4));
         $credited_invoice_number = $credited_completed_at->format('Y-m') . $random_number;
         $credited_payment_id = $this->create('payment', [
-            'amount' => $payment->amount,
             'invoice_number' => $credited_invoice_number,
         ]);
-        $payment->credited_payment_id = $credited_payment_id;
+        $payment_id = $this->create('payment', [
+            'type' => 'credit',
+            'credited_payment_id' => $credited_payment_id,
+        ]);
+        $payment = new models\Payment($payment_dao->find($payment_id));
 
         $invoice_pdf = new InvoicePDF($payment);
 
@@ -234,11 +265,12 @@ class InvoicePDFTest extends TestCase
         );
     }
 
-    /**
-     * @dataProvider subscriptionPaymentProvider
-     */
-    public function testPdfHasTotalPurchases($payment)
+    public function testPdfHasTotalPurchases()
     {
+        $payment_dao = new models\dao\Payment();
+        $payment_id = $this->create('payment');
+        $payment = new models\Payment($payment_dao->find($payment_id));
+
         $invoice_pdf = new InvoicePDF($payment);
 
         $this->assertSame(
@@ -255,11 +287,12 @@ class InvoicePDFTest extends TestCase
         );
     }
 
-    /**
-     * @dataProvider subscriptionPaymentProvider
-     */
-    public function testPdfHasFooter($payment)
+    public function testPdfHasFooter()
     {
+        $payment_dao = new models\dao\Payment();
+        $payment_id = $this->create('payment');
+        $payment = new models\Payment($payment_dao->find($payment_id));
+
         $invoice_pdf = new InvoicePDF($payment);
 
         $this->assertSame(
@@ -274,93 +307,5 @@ class InvoicePDFTest extends TestCase
             'TVA non applicable, art. 293 B du CGI',
             $invoice_pdf->footer[2]
         );
-    }
-
-    public function subscriptionPaymentProvider()
-    {
-        $faker = \Faker\Factory::create();
-        $datasets = [];
-        foreach (range(1, \Minz\Configuration::$application['number_of_datasets']) as $n) {
-            $completed_at = $faker->dateTime;
-            $invoice_number = $completed_at->format('Y-m') . sprintf('-%04d', $faker->randomNumber(4));
-
-            $payment = new models\Payment([
-                'created_at' => $faker->dateTime->format(\Minz\Model::DATETIME_FORMAT),
-                'type' => 'subscription',
-                'frequency' => $faker->randomElement(['month', 'year']),
-                'email' => $faker->email,
-                'amount' => $faker->numberBetween(100, 100000),
-                'address_first_name' => $faker->firstName,
-                'address_last_name' => $faker->lastName,
-                'address_address1' => $faker->streetAddress,
-                'address_postcode' => $faker->postcode,
-                'address_city' => $faker->city,
-                'address_country' => $faker->randomElement(\Website\utils\Countries::codes()),
-                'completed_at' => $completed_at->format(\Minz\Model::DATETIME_FORMAT),
-                'invoice_number' => $invoice_number,
-            ]);
-
-            $datasets[] = [$payment];
-        }
-
-        return $datasets;
-    }
-
-    public function commonPotPaymentProvider()
-    {
-        $faker = \Faker\Factory::create();
-        $datasets = [];
-        foreach (range(1, \Minz\Configuration::$application['number_of_datasets']) as $n) {
-            $completed_at = $faker->dateTime;
-            $invoice_number = $completed_at->format('Y-m') . sprintf('-%04d', $faker->randomNumber(4));
-
-            $payment = new models\Payment([
-                'created_at' => $faker->dateTime->format(\Minz\Model::DATETIME_FORMAT),
-                'type' => 'common_pot',
-                'email' => $faker->email,
-                'amount' => $faker->numberBetween(100, 100000),
-                'address_first_name' => $faker->firstName,
-                'address_last_name' => $faker->lastName,
-                'address_address1' => $faker->streetAddress,
-                'address_postcode' => $faker->postcode,
-                'address_city' => $faker->city,
-                'address_country' => $faker->randomElement(\Website\utils\Countries::codes()),
-                'completed_at' => $completed_at->format(\Minz\Model::DATETIME_FORMAT),
-                'invoice_number' => $invoice_number,
-            ]);
-
-            $datasets[] = [$payment];
-        }
-
-        return $datasets;
-    }
-
-    public function creditPaymentProvider()
-    {
-        $faker = \Faker\Factory::create();
-        $datasets = [];
-        foreach (range(1, \Minz\Configuration::$application['number_of_datasets']) as $n) {
-            $completed_at = $faker->dateTime;
-            $invoice_number = $completed_at->format('Y-m') . sprintf('-%04d', $faker->randomNumber(4));
-
-            $payment = new models\Payment([
-                'created_at' => $faker->dateTime->format(\Minz\Model::DATETIME_FORMAT),
-                'type' => 'credit',
-                'email' => $faker->email,
-                'amount' => $faker->numberBetween(100, 100000),
-                'address_first_name' => $faker->firstName,
-                'address_last_name' => $faker->lastName,
-                'address_address1' => $faker->streetAddress,
-                'address_postcode' => $faker->postcode,
-                'address_city' => $faker->city,
-                'address_country' => $faker->randomElement(\Website\utils\Countries::codes()),
-                'completed_at' => $completed_at->format(\Minz\Model::DATETIME_FORMAT),
-                'invoice_number' => $invoice_number,
-            ]);
-
-            $datasets[] = [$payment];
-        }
-
-        return $datasets;
     }
 }
