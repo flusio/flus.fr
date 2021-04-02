@@ -19,8 +19,8 @@
             </p>
 
             <p>
-                Votre adresse postale m’est nécessaire pour pouvoir établir des
-                factures en bonne et due forme.
+                Avant cela, j’ai besoin de quelques informations pour pouvoir
+                établir vos factures.
             </p>
         </div>
     <?php endif; ?>
@@ -38,54 +38,54 @@
             </p>
         <?php endif; ?>
 
-        <fieldset>
-            <legend>Adresse postale</legend>
+        <div class="columns">
+            <div class="columns__item">
+                <div class="form-group <?= isset($errors['address_first_name']) ? 'form-group--invalid' : '' ?>">
+                    <label for="first-name">
+                        Prénom
+                    </label>
 
-            <div class="columns">
-                <div class="columns__item">
-                    <div class="form-group <?= isset($errors['address_first_name']) ? 'form-group--invalid' : '' ?>">
-                        <label for="first-name">
-                            Prénom
-                        </label>
+                    <input
+                        id="first-name"
+                        name="address[first_name]"
+                        type="text"
+                        value="<?= $address['first_name'] ?>"
+                        required
+                    />
 
-                        <input
-                            id="first-name"
-                            name="address[first_name]"
-                            type="text"
-                            value="<?= $address['first_name'] ?>"
-                            required
-                        />
-
-                        <?php if (isset($errors['address_first_name'])): ?>
-                            <p class="form-group__error">
-                                <?= $errors['address_first_name'] ?>
-                            </p>
-                        <?php endif; ?>
-                    </div>
-                </div>
-
-                <div class="columns__item">
-                    <div class="form-group <?= isset($errors['address_last_name']) ? 'form-group--invalid' : '' ?>">
-                        <label for="last-name">
-                            Nom
-                        </label>
-
-                        <input
-                            id="last-name"
-                            name="address[last_name]"
-                            type="text"
-                            value="<?= $address['last_name'] ?>"
-                            required
-                        />
-
-                        <?php if (isset($errors['address_last_name'])): ?>
-                            <p class="form-group__error">
-                                <?= $errors['address_last_name'] ?>
-                            </p>
-                        <?php endif; ?>
-                    </div>
+                    <?php if (isset($errors['address_first_name'])): ?>
+                        <p class="form-group__error">
+                            <?= $errors['address_first_name'] ?>
+                        </p>
+                    <?php endif; ?>
                 </div>
             </div>
+
+            <div class="columns__item">
+                <div class="form-group <?= isset($errors['address_last_name']) ? 'form-group--invalid' : '' ?>">
+                    <label for="last-name">
+                        Nom
+                    </label>
+
+                    <input
+                        id="last-name"
+                        name="address[last_name]"
+                        type="text"
+                        value="<?= $address['last_name'] ?>"
+                        required
+                    />
+
+                    <?php if (isset($errors['address_last_name'])): ?>
+                        <p class="form-group__error">
+                            <?= $errors['address_last_name'] ?>
+                        </p>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+
+        <fieldset>
+            <legend>Adresse postale (facultative)</legend>
 
             <div class="form-group <?= isset($errors['address_address1']) ? 'form-group--invalid' : '' ?>">
                 <label for="address1">
@@ -97,7 +97,6 @@
                     name="address[address1]"
                     type="text"
                     value="<?= $address['address1'] ?>"
-                    required
                 />
 
                 <?php if (isset($errors['address_address1'])): ?>
@@ -119,7 +118,6 @@
                             name="address[postcode]"
                             type="text"
                             value="<?= $address['postcode'] ?>"
-                            required
                         />
 
                         <?php if (isset($errors['address_postcode'])): ?>
@@ -141,7 +139,6 @@
                             name="address[city]"
                             type="text"
                             value="<?= $address['city'] ?>"
-                            required
                         />
 
                         <?php if (isset($errors['address_city'])): ?>
@@ -161,7 +158,6 @@
                 <select
                     id="country"
                     name="address[country]"
-                    required
                 >
                     <?php foreach ($countries as $code => $label): ?>
                         <option

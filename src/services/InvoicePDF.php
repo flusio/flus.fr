@@ -66,13 +66,20 @@ class InvoicePDF extends \FPDF
             }
         }
 
+        if ($account->company_vat_number) {
+            $this->metadata['N° TVA client'] = $account->company_vat_number;
+        }
+
         $address = $account->address();
         $this->customer = [
             $address['first_name'] . ' ' . $address['last_name'],
-            $address['address1'],
-            $address['postcode'] . ' ' . $address['city'],
-            utils\Countries::codeToLabel($address['country']),
         ];
+
+        if ($address['address1']) {
+            $this->customer[] = $address['address1'];
+            $this->customer[] = $address['postcode'] . ' ' . $address['city'];
+            $this->customer[] = utils\Countries::codeToLabel($address['country']);
+        };
 
         $amount = $payment->amount / 100 . ' €';
 
@@ -113,10 +120,6 @@ class InvoicePDF extends \FPDF
                 ],
             ];
         }
-
-        if ($account->company_vat_number) {
-            $this->metadata['N° TVA client'] = $account->company_vat_number;
-        }
     }
 
     /**
@@ -132,17 +135,17 @@ class InvoicePDF extends \FPDF
 
         $this->Image($this->logo, 20, 20, 60);
 
-        $this->addMetadataInformation($this->metadata);
-        $this->addCustomerInformation($this->customer);
-        $this->addPurchases($this->purchases);
-        $this->addTotalPurchases($this->total_purchases);
+        $this->addMetadataInformation($this->metadata, 20);
+        $this->addCustomerInformation($this->customer, $this->GetY());
+        $this->addPurchases($this->purchases, $this->GetY() + 20);
+        $this->addTotalPurchases($this->total_purchases, $this->GetY() + 20);
 
         $this->Output('F', $filepath);
     }
 
-    private function addMetadataInformation($infos)
+    private function addMetadataInformation($infos, $y_position)
     {
-        $this->SetY(20);
+        $this->SetY($y_position);
         foreach ($infos as $info_key => $info_value) {
             $this->SetX(-100);
             $this->SetFont('', '');
@@ -152,13 +155,13 @@ class InvoicePDF extends \FPDF
         }
     }
 
-    private function addCustomerInformation($infos)
+    private function addCustomerInformation($infos, $y_position)
     {
-        $this->SetY(70);
+        $this->SetY($y_position);
         $this->SetX(-100);
 
         $this->SetFont('', '');
-        $this->Cell(0, 10, 'Adresse client', 0, 1);
+        $this->Cell(0, 10, $this->pdfDecode('Identité client'), 0, 1);
 
         $this->SetFont('', 'B');
         foreach ($infos as $info) {
@@ -167,9 +170,9 @@ class InvoicePDF extends \FPDF
         }
     }
 
-    private function addPurchases($purchases)
+    private function addPurchases($purchases, $y_position)
     {
-        $this->SetXY(20, 130);
+        $this->SetXY(20, $y_position);
         $this->SetFont('', 'B');
         $this->Cell(90, 10, 'Description', 0, 0, '', true);
         $this->Cell(25, 10, $this->pdfDecode('Quantité'), 0, 0, '', true);
@@ -190,9 +193,9 @@ class InvoicePDF extends \FPDF
         }
     }
 
-    private function addTotalPurchases($infos)
+    private function addTotalPurchases($infos, $y_position)
     {
-        $this->SetY($this->GetY() + 20);
+        $this->SetY($y_position);
         $this->SetFont('', 'B');
 
         $this->SetX(135);

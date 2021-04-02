@@ -161,14 +161,17 @@ class Accounts
         if (!$account->address_last_name) {
             $errors['address_last_name'] = 'Votre nom est obligatoire.';
         }
-        if (!$account->address_address1) {
-            $errors['address_address1'] = 'Votre adresse est obligatoire.';
-        }
-        if (!$account->address_postcode) {
-            $errors['address_postcode'] = 'Votre code postal est obligatoire.';
-        }
-        if (!$account->address_city) {
-            $errors['address_city'] = 'Votre ville est obligatoire.';
+
+        if ($account->address_address1 || $account->address_postcode || $account->address_city) {
+            if (!$account->address_address1) {
+                $errors['address_address1'] = 'Votre adresse est incomplète.';
+            }
+            if (!$account->address_postcode) {
+                $errors['address_postcode'] = 'Votre adresse est incomplète.';
+            }
+            if (!$account->address_city) {
+                $errors['address_city'] = 'Votre adresse est incomplète.';
+            }
         }
 
         if ($errors) {

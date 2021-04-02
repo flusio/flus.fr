@@ -359,6 +359,32 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider addressesProvider
      */
+    public function testUpdateAddressAcceptsNoPhysicalAddress($email, $address)
+    {
+        $user = $this->loginUser();
+        unset($address['address1']);
+        unset($address['postcode']);
+        unset($address['city']);
+
+        $response = $this->appRun('POST', '/account/address', [
+            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'email' => $email,
+            'address' => $address,
+        ]);
+
+        $this->assertResponse($response, 302, '/account');
+        $account = models\Account::find($user['account_id']);
+        $this->assertSame($email, $account->email);
+        $this->assertSame($address['first_name'], $account->address_first_name);
+        $this->assertSame($address['last_name'], $account->address_last_name);
+        $this->assertEmpty($account->address_address1);
+        $this->assertEmpty($account->address_postcode);
+        $this->assertEmpty($account->address_city);
+    }
+
+    /**
+     * @dataProvider addressesProvider
+     */
     public function testUpdateAddressFailsIfNotConnected($email, $address)
     {
         $response = $this->appRun('POST', '/account/address', [
@@ -468,7 +494,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
             'address' => $address,
         ]);
 
-        $this->assertResponse($response, 400, 'Votre adresse est obligatoire');
+        $this->assertResponse($response, 400, 'Votre adresse est incomplète');
     }
 
     /**
@@ -485,7 +511,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
             'address' => $address,
         ]);
 
-        $this->assertResponse($response, 400, 'Votre code postal est obligatoire');
+        $this->assertResponse($response, 400, 'Votre adresse est incomplète');
     }
 
     /**
@@ -502,7 +528,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
             'address' => $address,
         ]);
 
-        $this->assertResponse($response, 400, 'Votre ville est obligatoire');
+        $this->assertResponse($response, 400, 'Votre adresse est incomplète');
     }
 
     /**
