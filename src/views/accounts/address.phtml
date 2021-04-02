@@ -197,6 +197,12 @@
             <?php endif; ?>
         </div>
 
+        <?php if ($account->company_vat_number): ?>
+            <p>
+                Numéro <abbr>TVA</abbr> : <?= $account->company_vat_number ?>
+            </p>
+        <?php endif; ?>
+
         <div class="form__actions">
             <button type="submit" class="button--primary">
                 Confirmer vos adresses
