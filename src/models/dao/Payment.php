@@ -17,21 +17,6 @@ class Payment extends \Minz\DatabaseModel
     }
 
     /**
-     * Return a raw payment (order is not guaranteed)
-     *
-     * @return array|null
-     */
-    public function take()
-    {
-        $all = $this->listAll();
-        if (!empty($all)) {
-            return $all[0];
-        } else {
-            return null;
-        }
-    }
-
-    /**
      * Return the last invoice number saved in the database
      *
      * @return string
