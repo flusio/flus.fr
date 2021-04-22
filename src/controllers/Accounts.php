@@ -3,6 +3,7 @@
 namespace Website\controllers;
 
 use Website\models;
+use Website\services;
 use Website\utils;
 
 /**
@@ -35,10 +36,29 @@ class Accounts
             return \Minz\Response::redirect('account address');
         }
 
+        $ongoing_payment = $account->ongoingPayment();
+        if ($ongoing_payment && !$ongoing_payment->is_paid && $ongoing_payment->session_id) {
+            // If we find an ongoing and unpaid payment, we try to directly
+            // refresh its status
+            $stripe_service = new services\Stripe(
+                \Minz\Url::absoluteFor('Payments#succeeded'),
+                \Minz\Url::absoluteFor('Payments#canceled')
+            );
+
+            $session = $stripe_service->retrieveSession($ongoing_payment->session_id);
+            if ($session->payment_intent->status === 'succeeded') {
+                $ongoing_payment->is_paid = true;
+                $ongoing_payment->save();
+            } elseif ($session->payment_intent->status === 'canceled') {
+                models\Payment::delete($ongoing_payment->id);
+                $ongoing_payment = null;
+            }
+        }
+
         return \Minz\Response::ok('accounts/show.phtml', [
             'account' => $account,
             'payments' => $account->payments(),
-            'ongoing_payment' => $account->ongoingPayment(),
+            'ongoing_payment' => $ongoing_payment,
         ]);
     }
 

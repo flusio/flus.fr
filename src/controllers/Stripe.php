@@ -43,6 +43,11 @@ class Stripe
                 return \Minz\Response::ok();
             }
 
+            if ($payment->is_paid) {
+                // We already know that the payment is paid
+                return \Minz\Response::ok();
+            }
+
             $payment->is_paid = true;
             $payment->save();
         }

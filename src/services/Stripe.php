@@ -29,7 +29,7 @@ class Stripe
     }
 
     /**
-     * Return a Stripe checkout session
+     * Create and return a Stripe checkout session
      *
      * @param \Website\models\Payment $payment
      * @param \string $name
@@ -50,6 +50,21 @@ class Stripe
             ]],
             'success_url' => $this->success_url,
             'cancel_url' => $this->cancel_url,
+        ]);
+    }
+
+    /**
+     * Retrieve a Stripe checkout session
+     *
+     * @param string $session_id
+     *
+     * @return \Stripe\Checkout\Session
+     */
+    public function retrieveSession($session_id)
+    {
+        return \Stripe\Checkout\Session::retrieve([
+            'id' => $session_id,
+            'expand' => ['payment_intent'],
         ]);
     }
 }
