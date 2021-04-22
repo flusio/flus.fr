@@ -38,6 +38,7 @@ class Accounts
         return \Minz\Response::ok('accounts/show.phtml', [
             'account' => $account,
             'payments' => $account->payments(),
+            'ongoing_payment' => $account->ongoingPayment(),
         ]);
     }
 

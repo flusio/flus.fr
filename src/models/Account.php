@@ -229,6 +229,16 @@ class Account extends \Minz\Model
     }
 
     /**
+     * Return an ongoing payment associated to this account, if any
+     *
+     * @return \Website\models\Payment|null
+     */
+    public function ongoingPayment()
+    {
+        return Payment::daoToModel('findOngoingForAccount', $this->id);
+    }
+
+    /**
      * Validate a model and return formated errors
      *
      * @return string[]

@@ -59,6 +59,29 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
         $this->assertPointer($response, 'common_pots/contribution.phtml');
     }
 
+    /**
+     * @dataProvider addressProvider
+     */
+    public function testContributionRendersIfOngoingPayment($address)
+    {
+        $user = $this->loginUser([
+            'address_first_name' => $address['first_name'],
+            'address_last_name' => $address['last_name'],
+            'address_address1' => $address['address1'],
+            'address_postcode' => $address['postcode'],
+            'address_city' => $address['city'],
+        ]);
+        $this->create('payment', [
+            'account_id' => $user['account_id'],
+            'completed_at' => null,
+        ]);
+
+        $response = $this->appRun('GET', '/account/common-pot/contribute');
+
+        $this->assertResponse($response, 200, 'Attention, vous avez un paiement en cours de traitement');
+    }
+
+
     public function testContributionRedirectsIfNoAddress()
     {
         $this->loginUser();

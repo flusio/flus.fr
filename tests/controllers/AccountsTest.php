@@ -97,6 +97,30 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 200, 'Vous bénéficiez d’un abonnement gratuit');
     }
 
+    /**
+     * @dataProvider addressesProvider
+     */
+    public function testShowRendersIfOngoingPayment($email, $address)
+    {
+        $user = $this->loginUser([
+            'email' => $email,
+            'address_first_name' => $address['first_name'],
+            'address_last_name' => $address['last_name'],
+            'address_address1' => $address['address1'],
+            'address_postcode' => $address['postcode'],
+            'address_city' => $address['city'],
+        ]);
+        $this->create('payment', [
+            'account_id' => $user['account_id'],
+            'completed_at' => null,
+        ]);
+
+        $response = $this->appRun('GET', '/account');
+
+        $this->assertResponse($response, 200, 'Votre paiement est en cours de traitement');
+        $this->assertPointer($response, 'accounts/show.phtml');
+    }
+
     public function testShowRedirectsIfNoAddress()
     {
         $email = $this->fake('email');

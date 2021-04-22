@@ -45,6 +45,7 @@ class CommonPots
 
         return \Minz\Response::ok('common_pots/contribution.phtml', [
             'account' => $account,
+            'ongoing_payment' => $account->ongoingPayment(),
             'amount' => 30,
         ]);
     }
@@ -83,6 +84,7 @@ class CommonPots
         if (!$accept_cgv) {
             return \Minz\Response::badRequest('common_pots/contribution.phtml', [
                 'account' => $account,
+                'ongoing_payment' => $account->ongoingPayment(),
                 'amount' => $amount,
                 'errors' => [
                     'cgv' => 'Vous devez accepter ces conditions pour participer à la cagnotte.',
@@ -95,6 +97,7 @@ class CommonPots
         if ($errors) {
             return \Minz\Response::badRequest('common_pots/contribution.phtml', [
                 'account' => $account,
+                'ongoing_payment' => $account->ongoingPayment(),
                 'amount' => $amount,
                 'errors' => $errors,
             ]);
@@ -104,6 +107,7 @@ class CommonPots
         if (!$csrf->validateToken($request->param('csrf'))) {
             return \Minz\Response::badRequest('common_pots/contribution.phtml', [
                 'account' => $account,
+                'ongoing_payment' => $account->ongoingPayment(),
                 'amount' => $amount,
                 'error' => 'Une vérification de sécurité a échoué, veuillez réessayer de soumettre le formulaire.',
             ]);

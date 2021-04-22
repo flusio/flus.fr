@@ -39,6 +39,7 @@ class Subscriptions
         return \Minz\Response::ok('subscriptions/init.phtml', [
             'account' => $account,
             'reminder' => $account->reminder,
+            'ongoing_payment' => $account->ongoingPayment(),
         ]);
     }
 
@@ -85,6 +86,7 @@ class Subscriptions
             return \Minz\Response::badRequest('subscriptions/init.phtml', [
                 'account' => $account,
                 'reminder' => $reminder,
+                'ongoing_payment' => $account->ongoingPayment(),
                 'errors' => $errors,
             ]);
         }
@@ -94,6 +96,7 @@ class Subscriptions
             return \Minz\Response::badRequest('subscriptions/init.phtml', [
                 'account' => $account,
                 'reminder' => $reminder,
+                'ongoing_payment' => $account->ongoingPayment(),
                 'error' => 'Une vérification de sécurité a échoué, veuillez réessayer de soumettre le formulaire.',
             ]);
         }
