@@ -10,33 +10,22 @@ namespace Website\services;
  */
 class Stripe
 {
-    /** @var string */
-    private $success_url;
-
-    /** @var string */
-    private $cancel_url;
-
-    /**
-     * @param string $success_url
-     * @param string $cancel_url
-     */
-    public function __construct($success_url, $cancel_url)
+    public function __construct()
     {
         \Stripe\Stripe::setApiKey(\Minz\Configuration::$application['stripe_private_key']);
-
-        $this->success_url = $success_url;
-        $this->cancel_url = $cancel_url;
     }
 
     /**
      * Create and return a Stripe checkout session
      *
      * @param \Website\models\Payment $payment
-     * @param \string $name
+     * @param string $name
+     * @param string $success_url
+     * @param string $cancel_url
      *
      * @return \Stripe\Checkout\Session
      */
-    public function createSession($payment, $name)
+    public function createSession($payment, $name, $success_url, $cancel_url)
     {
         $account = $payment->account();
         return \Stripe\Checkout\Session::create([
@@ -48,8 +37,8 @@ class Stripe
                 'currency' => 'eur',
                 'quantity' => 1,
             ]],
-            'success_url' => $this->success_url,
-            'cancel_url' => $this->cancel_url,
+            'success_url' => $success_url,
+            'cancel_url' => $cancel_url,
         ]);
     }
 

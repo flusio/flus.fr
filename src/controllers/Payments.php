@@ -3,6 +3,8 @@
 namespace Website\controllers;
 
 use Website\models;
+use Website\services;
+use Website\utils;
 
 class Payments
 {
@@ -57,6 +59,25 @@ class Payments
             'httponly' => false,
             'samesite' => 'Lax',
         ]);
+
+        $user = utils\CurrentUser::get();
+        if (!$user || utils\CurrentUser::isAdmin()) {
+            return $response;
+        }
+
+        $account = models\Account::find($user['account_id']);
+        $ongoing_payment = $account->ongoingPayment();
+        if (!$ongoing_payment || $ongoing_payment->is_paid || !$ongoing_payment->session_id) {
+            return $response;
+        }
+
+        $stripe_service = new services\Stripe();
+        $session = $stripe_service->retrieveSession($ongoing_payment->session_id);
+        if ($session->payment_intent->status === 'succeeded') {
+            $ongoing_payment->is_paid = true;
+            $ongoing_payment->save();
+        }
+
         return $response;
     }
 
@@ -78,6 +99,33 @@ class Payments
             'httponly' => false,
             'samesite' => 'Lax',
         ]);
+
+        $user = utils\CurrentUser::get();
+        if (!$user || utils\CurrentUser::isAdmin()) {
+            return $response;
+        }
+
+        $account = models\Account::find($user['account_id']);
+        $ongoing_payment = $account->ongoingPayment();
+        if (!$ongoing_payment || $ongoing_payment->is_paid || !$ongoing_payment->session_id) {
+            return $response;
+        }
+
+        $stripe_service = new services\Stripe();
+        $session = $stripe_service->retrieveSession($ongoing_payment->session_id);
+        $payment_intent = $session->payment_intent;
+        // see statuses lifecycle at https://stripe.com/docs/payments/intents#intent-statuses
+        if ($payment_intent->status !== 'processing' && $payment_intent->status !== 'succeeded') {
+            try {
+                $payment_intent->cancel();
+            } catch (\Stripe\Exception\ApiErrorException $e) {
+                // do nothing on purpose: the payment was already canceled
+                // by Stripe on their side.
+            }
+
+            models\Payment::delete($ongoing_payment->id);
+        }
+
         return $response;
     }
 }

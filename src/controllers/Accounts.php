@@ -37,24 +37,6 @@ class Accounts
         }
 
         $ongoing_payment = $account->ongoingPayment();
-        if ($ongoing_payment && !$ongoing_payment->is_paid && $ongoing_payment->session_id) {
-            // If we find an ongoing and unpaid payment, we try to directly
-            // refresh its status
-            $stripe_service = new services\Stripe(
-                \Minz\Url::absoluteFor('Payments#succeeded'),
-                \Minz\Url::absoluteFor('Payments#canceled')
-            );
-
-            $session = $stripe_service->retrieveSession($ongoing_payment->session_id);
-            if ($session->payment_intent->status === 'succeeded') {
-                $ongoing_payment->is_paid = true;
-                $ongoing_payment->save();
-            } elseif ($session->payment_intent->status === 'canceled') {
-                models\Payment::delete($ongoing_payment->id);
-                $ongoing_payment = null;
-            }
-        }
-
         if ($ongoing_payment && $ongoing_payment->is_paid) {
             // If the ongoing payment is paid, we can complete it so it’s no
             // longer ongoing :)

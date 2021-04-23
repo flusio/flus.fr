@@ -113,14 +113,12 @@ class CommonPots
             ]);
         }
 
-        $stripe_service = new services\Stripe(
-            \Minz\Url::absoluteFor('Payments#succeeded'),
-            \Minz\Url::absoluteFor('Payments#canceled')
-        );
-
+        $stripe_service = new services\Stripe();
         $stripe_session = $stripe_service->createSession(
             $payment,
-            'Participation à la cagnotte de Flus'
+            'Participation à la cagnotte de Flus',
+            \Minz\Url::absoluteFor('Payments#succeeded'),
+            \Minz\Url::absoluteFor('Payments#canceled')
         );
 
         $payment->payment_intent_id = $stripe_session->payment_intent;
