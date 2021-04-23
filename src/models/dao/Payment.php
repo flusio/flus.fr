@@ -17,6 +17,30 @@ class Payment extends \Minz\DatabaseModel
     }
 
     /**
+     * Return an ongoing payment for the given account
+     *
+     * @param string $account_id
+     *
+     * @return array|null
+     */
+    public function findOngoingForAccount($account_id)
+    {
+        $sql = 'SELECT * FROM payments '
+             . 'WHERE account_id = ? '
+             . 'AND completed_at IS NULL '
+             . 'LIMIT 1';
+
+        $statement = $this->prepare($sql);
+        $statement->execute([$account_id]);
+        $result = $statement->fetch();
+        if ($result) {
+            return $result;
+        } else {
+            return null;
+        }
+    }
+
+    /**
      * Return the last invoice number saved in the database
      *
      * @return string

@@ -39,6 +39,7 @@ class Subscriptions
         return \Minz\Response::ok('subscriptions/init.phtml', [
             'account' => $account,
             'reminder' => $account->reminder,
+            'ongoing_payment' => $account->ongoingPayment(),
         ]);
     }
 
@@ -85,6 +86,7 @@ class Subscriptions
             return \Minz\Response::badRequest('subscriptions/init.phtml', [
                 'account' => $account,
                 'reminder' => $reminder,
+                'ongoing_payment' => $account->ongoingPayment(),
                 'errors' => $errors,
             ]);
         }
@@ -94,19 +96,18 @@ class Subscriptions
             return \Minz\Response::badRequest('subscriptions/init.phtml', [
                 'account' => $account,
                 'reminder' => $reminder,
+                'ongoing_payment' => $account->ongoingPayment(),
                 'error' => 'Une vérification de sécurité a échoué, veuillez réessayer de soumettre le formulaire.',
             ]);
         }
 
-        $stripe_service = new services\Stripe(
-            $request->param('success_url', \Minz\Url::absoluteFor('Payments#succeeded')),
-            $request->param('cancel_url', \Minz\Url::absoluteFor('Payments#canceled'))
-        );
-
+        $stripe_service = new services\Stripe();
         $period = $payment->frequency === 'month' ? '1 mois' : '1 an';
         $stripe_session = $stripe_service->createSession(
             $payment,
-            "Abonnement à Flus ({$period})"
+            "Abonnement à Flus ({$period})",
+            $request->param('success_url', \Minz\Url::absoluteFor('Payments#succeeded')),
+            $request->param('cancel_url', \Minz\Url::absoluteFor('Payments#canceled'))
         );
 
         $payment->payment_intent_id = $stripe_session->payment_intent;

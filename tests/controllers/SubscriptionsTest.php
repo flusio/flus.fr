@@ -53,6 +53,30 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 200, 'Votre abonnement expirera le');
     }
 
+    /**
+     * @dataProvider initParamsProvider
+     */
+    public function testInitRendersIfOngoingPayment($address)
+    {
+        $expired_at = \Minz\Time::fromNow($this->fake('randomDigitNotNull'), 'days');
+        $user = $this->loginUser([
+            'address_first_name' => $address['first_name'],
+            'address_last_name' => $address['last_name'],
+            'address_address1' => $address['address1'],
+            'address_postcode' => $address['postcode'],
+            'address_city' => $address['city'],
+            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+        $this->create('payment', [
+            'account_id' => $user['account_id'],
+            'completed_at' => null,
+        ]);
+
+        $response = $this->appRun('GET', '/account/renew');
+
+        $this->assertResponse($response, 200, 'Attention, vous avez un paiement en cours de traitement');
+    }
+
     public function testInitRedirectsIfNoAddress()
     {
         $this->loginUser();

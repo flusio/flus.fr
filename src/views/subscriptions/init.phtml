@@ -12,7 +12,11 @@
     </div>
 
     <p class="section__intro">
-        <?php if (!$account->isFree() && !$account->hasExpired()): ?>
+        <?php if ($ongoing_payment): ?>
+            <strong>
+                Attention, vous avez un paiement en cours de traitement, vous devriez attendre avant d’en effectuer un nouveau…
+            </strong>
+        <?php elseif (!$account->isFree() && !$account->hasExpired()): ?>
             Votre abonnement expirera le <strong><?= format_date($account->expired_at, '%d %B %Y') ?>.</strong>
             Vous pouvez le renouveler dès maintenant, la période de
             renouvellement s’ajoutera à votre abonnement courant.

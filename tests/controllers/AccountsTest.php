@@ -97,6 +97,58 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponse($response, 200, 'Vous bénéficiez d’un abonnement gratuit');
     }
 
+    /**
+     * @dataProvider addressesProvider
+     */
+    public function testShowRendersIfOngoingAndUnpaidPayment($email, $address)
+    {
+        $user = $this->loginUser([
+            'email' => $email,
+            'address_first_name' => $address['first_name'],
+            'address_last_name' => $address['last_name'],
+            'address_address1' => $address['address1'],
+            'address_postcode' => $address['postcode'],
+            'address_city' => $address['city'],
+        ]);
+        $this->create('payment', [
+            'account_id' => $user['account_id'],
+            'completed_at' => null,
+            'is_paid' => false,
+        ]);
+
+        $response = $this->appRun('GET', '/account');
+
+        $this->assertResponse($response, 200, 'Votre paiement est en cours de traitement');
+        $this->assertPointer($response, 'accounts/show.phtml');
+    }
+
+    /**
+     * @dataProvider addressesProvider
+     */
+    public function testShowCompletesAnOngoingAndPaidPayment($email, $address)
+    {
+        $user = $this->loginUser([
+            'email' => $email,
+            'address_first_name' => $address['first_name'],
+            'address_last_name' => $address['last_name'],
+            'address_address1' => $address['address1'],
+            'address_postcode' => $address['postcode'],
+            'address_city' => $address['city'],
+        ]);
+        $payment_id = $this->create('payment', [
+            'account_id' => $user['account_id'],
+            'completed_at' => null,
+            'is_paid' => true,
+        ]);
+
+        $response = $this->appRun('GET', '/account');
+
+        $output = $response->render();
+        $this->assertStringNotContainsString('Votre paiement est en cours de traitement', $output);
+        $payment = models\Payment::find($payment_id);
+        $this->assertNotNull($payment->completed_at);
+    }
+
     public function testShowRedirectsIfNoAddress()
     {
         $email = $this->fake('email');

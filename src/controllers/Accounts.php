@@ -3,6 +3,7 @@
 namespace Website\controllers;
 
 use Website\models;
+use Website\services;
 use Website\utils;
 
 /**
@@ -35,9 +36,19 @@ class Accounts
             return \Minz\Response::redirect('account address');
         }
 
+        $ongoing_payment = $account->ongoingPayment();
+        if ($ongoing_payment && $ongoing_payment->is_paid) {
+            // If the ongoing payment is paid, we can complete it so it’s no
+            // longer ongoing :)
+            $payment_completer = new services\PaymentCompleter();
+            $payment_completer->complete($ongoing_payment);
+            $ongoing_payment = null;
+        }
+
         return \Minz\Response::ok('accounts/show.phtml', [
             'account' => $account,
             'payments' => $account->payments(),
+            'ongoing_payment' => $ongoing_payment,
         ]);
     }
 

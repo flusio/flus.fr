@@ -4,7 +4,6 @@ namespace Website\controllers\cli;
 
 use Website\models;
 use Website\services;
-use Website\mailers;
 
 /**
  * @author Marien Fressinaud <dev@marienfressinaud.fr>
@@ -21,28 +20,15 @@ class Payments
      */
     public function complete($request)
     {
-        $invoice_mailer = new mailers\Invoices();
         $payments = models\Payment::listBy([
             'completed_at' => null,
             'is_paid' => 1,
         ]);
         $number_payments = count($payments);
+        $payment_completer = new services\PaymentCompleter();
 
         foreach ($payments as $payment) {
-            $payment->complete(\Minz\Time::now());
-            $payment->save();
-
-            $account = $payment->account();
-            if ($account && $payment->type === 'subscription') {
-                $account->extendSubscription($payment->frequency);
-                $account->save();
-            }
-
-            $invoice_pdf_service = new services\InvoicePDF($payment);
-            $invoice_pdf_service->createPDF($payment->invoiceFilepath());
-
-            $email = $payment->account()->email;
-            $invoice_mailer->sendInvoice($email, $payment->invoiceFilepath());
+            $payment_completer->complete($payment);
         }
 
         if ($number_payments > 0) {

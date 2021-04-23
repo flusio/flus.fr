@@ -15,7 +15,11 @@
         <p>
             <?= $this->protect($account->email) ?><br />
 
-            <?php if ($account->isFree()): ?>
+            <?php if ($ongoing_payment): ?>
+                <strong>
+                    Votre paiement est en cours de traitement…
+                </strong>
+            <?php elseif ($account->isFree()): ?>
                 Vous bénéficiez d’un abonnement gratuit, veinard‧e.
             <?php elseif ($account->hasExpired()): ?>
                 <strong>

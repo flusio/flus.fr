@@ -12,9 +12,15 @@
     </div>
 
     <p class="paragraph--center">
-        <a href="<?= url('common pot account') ?>">
-            Des questions sur la cagnotte&nbsp;?
-        </a>
+        <?php if ($ongoing_payment): ?>
+            <strong>
+                Attention, vous avez un paiement en cours de traitement, vous devriez attendre avant d’en effectuer un nouveau…
+            </strong>
+        <?php else: ?>
+            <a href="<?= url('common pot account') ?>">
+                Des questions sur la cagnotte&nbsp;?
+            </a>
+        <?php endif; ?>
     </p>
 
     <form
