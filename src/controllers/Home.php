@@ -108,4 +108,14 @@ class Home
             'email_sent' => true,
         ]);
     }
+
+    public function security()
+    {
+        return \Minz\Response::ok('home/security.phtml');
+    }
+
+    public function securityTxt()
+    {
+        return \Minz\Response::ok('home/security.txt');
+    }
 }

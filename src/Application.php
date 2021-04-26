@@ -22,10 +22,12 @@ class Application
         $router->addRoute('get', '/cgv', 'Home#cgv', 'cgv');
         $router->addRoute('get', '/contact', 'Home#contact', 'contact');
         $router->addRoute('post', '/contact', 'Home#sendContactEmail', 'send contact email');
+        $router->addRoute('get', '/securite', 'Home#security', 'security');
         $router->addRoute('get', '/cagnotte', 'CommonPots#show', 'common pot');
 
         $router->addRoute('get', '/robots.txt', 'Home#robots', 'robots.txt');
         $router->addRoute('get', '/sitemap.xml', 'Home#sitemap', 'sitemap.xml');
+        $router->addRoute('get', '/.well-known/security.txt', 'Home#securityTxt', 'security.txt');
 
         $router->addRoute('get', '/addons/updates.json', 'Addons#geckoUpdate');
         $router->addRoute('get', '/addons/gecko/latest', 'Addons#geckoLatest');

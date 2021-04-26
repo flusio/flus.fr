@@ -1,0 +1,65 @@
+<?php
+    $this->layout('base.phtml', [
+        'title' => 'Remonter un problème de sécurité',
+        'canonical' => url_full('security'),
+        'description' => 'La procédure pour remonter un problème de sécurité lié à Flus',
+        'og' => [
+            'type' => 'website',
+            'image' => url_full_static('illustrations/security.svg'),
+            'twitter_card' => 'summary_large_image',
+        ],
+    ]);
+?>
+
+<section class="section section--text">
+    <div class="header">
+        <h1 class="header__title">Remonter un problème de sécurité</h1>
+    </div>
+
+    <div class="section__intro">
+        <p>
+            Si vous avez détecté une faille de sécurité liée aux services fournis
+            par Flus, vous êtes au bon endroit pour m’en avertir.
+        </p>
+        <p>
+            <strong>Pour la sécurité de toutes et tous, il est important de ne pas
+                publier cette faille publiquement sans m’en avertir !</strong>
+        </p>
+    </div>
+
+    <p>
+        Voici la procédure :
+    </p>
+
+    <ol>
+        <li>Rendez-vous sur <a href="<?= url('contact') ?>">le formulaire de contact</a> pour me contacter&nbsp;;</li>
+        <li>Si vous avez une raison de croire que le formulaire est compromis, envoyez-moi un courriel directement à <a href="mailto:security@flus.io">security@flus.io</a>&nbsp;;</li>
+        <li>Je ferai mon possible pour vous confirmer la prise en compte de votre ticket dans les 48 heures, mais notez que cela peut monter jusqu’à 7 jours (il m’arrive de prendre des vacances&nbsp;🍹)&nbsp;;</li>
+        <li>S’il s’agit bien d’une faille de sécurité, je la corrigerai aussi vite que possible en fonction de ma disponibilité et du danger qu’elle représente&nbsp;;</li>
+        <li>Vous serez averti‧e de la correction par courriel&nbsp;;</li>
+        <li>En fonction de la gravité de la faille, un incident sera créé sur le site <a href="https://status.flus.io/">status.flus.io</a> et un article pourra également être publié sur le carnet <a href="https://flus.fr/carnet">flus.fr/carnet</a>&nbsp;;</li>
+        <li>En cas de compromission ou de perte de données, un courriel sera envoyé aux utilisateurs et utilisatrices concernées.</li>
+    </ol>
+
+    <p>
+        Les services suivants sont concernés par cette procédure&nbsp;:
+    </p>
+
+    <ul>
+        <li><a href="https://flus.io">flus.io</a> (Flus 1)</li>
+        <li><a href="https://app.flus.fr">app.flus.fr</a> (Flus 2)</li>
+        <li><a href="https://flus.fr">flus.fr</a> (accueil et service de paiement)</li>
+        <li><a href="https://websub.flus.io">websub.flus.io</a></li>
+    </ul>
+
+    <p>
+        Les personnes me remontant des failles seront remerciées sur cette page.
+    </p>
+
+    <img
+        class="illustration illustration--centered contact"
+        alt=""
+        src="<?= url_static('illustrations/security.svg') ?>"
+        height="300"
+    />
+</section>

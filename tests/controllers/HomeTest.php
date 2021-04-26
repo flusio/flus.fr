@@ -175,4 +175,20 @@ class HomeTest extends \PHPUnit\Framework\TestCase
         $this->assertPointer($response, 'home/contact.phtml');
         $this->assertEmailsCount(0);
     }
+
+    public function testSecurityRendersCorrectly()
+    {
+        $response = $this->appRun('GET', '/securite');
+
+        $this->assertResponse($response, 200);
+        $this->assertPointer($response, 'home/security.phtml');
+    }
+
+    public function testSecurityTxtRendersCorrectly()
+    {
+        $response = $this->appRun('GET', '/.well-known/security.txt');
+
+        $this->assertResponse($response, 200);
+        $this->assertPointer($response, 'home/security.txt');
+    }
 }
