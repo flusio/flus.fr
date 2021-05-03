@@ -1,6 +1,6 @@
 Contact: <?= url_full('contact') . "\n" ?>
 Contact: security@flus.io
-Expires: Fri, 01 Apr 2022 00:00 +0000
+Expires: Sun, 01 May 2022 00:00 +0000
 Policy: <?= url_full('security') . "\n" ?>
 Acknowledgments: <?= url_full('security') . "\n" ?>
 Canonical: <?= url_full('security.txt') . "\n" ?>
