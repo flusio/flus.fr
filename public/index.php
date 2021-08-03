@@ -35,6 +35,7 @@ $request = new \Minz\Request($http_method, $http_uri, $http_parameters, $_SERVER
 // Initialize the Application and execute the request to get a Response
 $application = new \Website\Application();
 $response = $application->run($request);
+$response->setHeader('X-Frame-Options', 'deny');
 
 // Generate the HTTP headers and output
 http_response_code($response->code());
