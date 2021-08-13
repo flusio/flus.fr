@@ -140,7 +140,7 @@
                 </nav>
             </header>
 
-            <main class="layout__content" id="contenu">
+            <main class="layout__content <?= isset($layout_fluid) && $layout_fluid ? 'layout__content--fluid' : '' ?>" id="contenu">
                 <?= $this->safe('content') ?>
             </main>
 

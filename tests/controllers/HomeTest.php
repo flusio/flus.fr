@@ -14,7 +14,7 @@ class HomeTest extends \PHPUnit\Framework\TestCase
     {
         $response = $this->appRun('GET', '/');
 
-        $this->assertResponse($response, 200, 'Le média social qui change<br />notre rapport à l’information.');
+        $this->assertResponse($response, 200, 'Prenez le temps de suivre l’actualité');
         $this->assertPointer($response, 'home/index.phtml');
     }
 

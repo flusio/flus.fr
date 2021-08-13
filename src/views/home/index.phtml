@@ -1,8 +1,9 @@
 <?php
     $this->layout('base.phtml', [
-        'title' => 'Flus, média social de veille',
+        'title' => 'Flus, prenez le temps de suivre l’actualité',
         'canonical' => url_full('home'),
-        'description' => 'Le média social qui change notre rapport à l’information.',
+        'description' => 'Flus est une plateforme Web pour effectuer votre veille quotidienne de manière apaisée.',
+        'layout_fluid' => true,
         'og' => [
             'type' => 'website',
             'image' => url_full_static('og-card.png'),
@@ -12,85 +13,126 @@
 ?>
 
 <section class="section section--start" id="start">
-    <div class="columns columns--center hello">
-        <div class="columns__item">
+    <div class="hello__intro">
+        <div class="hello__text">
             <h1 class="hello__headline">
-                Le média social qui change<br />notre rapport à l’information.
+                Prenez le temps de suivre l’actualité sur une plateforme qui
+                vous respecte.
             </h1>
 
-            <div class="hello__beta">
-                en version beta
-            </div>
-        </div>
+            <ul class="hello__registration">
+                <li>
+                    <a class="call-to-action" href="https://app.flus.fr/registration">
+                        Débuter avec Flus
+                    </a>
+                </li>
 
-        <div class="columns__item">
-            <div class="hello__registration">
-                <a class="call-to-action" href="https://app.flus.fr/registration">
-                    S’inscrire sur Flus
-                </a>
-            </div>
-
-            <p class="hello__pricing">
-                <small>Le premier mois est <a href="<?= url('pricing') ?>">gratuit</a></small>
-            </p>
+                <li>
+                    <a href="<?= url('tour') ?>">
+                        Visite guidée
+                    </a>
+                </li>
+            </ul>
         </div>
     </div>
 
-    <div class="screenshot">
-        <img
-            class="illustration screenshot__image no-mobile"
-            src="<?= url_static('screenshot.jpg') ?>"
-            alt="Capture d’écran affichant le journal de Flus, montrant 3 liens différents."
-        />
+    <div class="hello__text">
+        <p>
+            <strong>
+                Flus est une plateforme Web <a href="<?= url('pricing') ?>">payante</a>
+                pour effectuer votre veille quotidienne de manière apaisée.
+            </strong>
+        </p>
 
-        <img
-            class="illustration screenshot__image only-mobile"
-            src="<?= url_static('screenshot-mobile.jpg') ?>"
-            alt="Capture d’écran affichant le journal de Flus sur mobile, montrant 2 liens différents."
-         />
+        <p>
+            Grâce au <i>journal</i>, suivez vos sites, podcasts ou encore
+            chaînes YouTube favorites, tout en rangeant vos liens à consulter
+            plus tard dans vos <i>signets</i>. Vos liens à archiver ou partager
+            trouveront leur place dans vos <i>collections</i> thématiques.
+        </p>
+
+        <p>
+            Le journal est un espace que vous remplissez à votre
+            convenance&nbsp;: il n’est jamais saturé&nbsp;! Dites adieu aux
+            fils de lecture interminables et à l’angoisse qui s’y mêle 👋.
+        </p>
+
+        <p class="hello__outro">
+            <span class="hello__secondary">Pour en apprendre plus&nbsp;:</span>
+            <span><a class="call-to-action" href="<?= url('tour') ?>">suivez la visite guidée</a></span>
+            <span class="hello__secondary">ou</span>
+            <span><a href="https://app.flus.fr/registration">débutez avec Flus</a></span>
+        </p>
     </div>
 
-    <ul class="features">
-        <li class="features__item">
-            <span class="features__icon icon icon--only icon--library"></span>
+    <div class="hello__screenshot screenshot">
+        <picture>
+            <source srcset="<?= url_static('screenshot-mobile.jpg') ?>" media="(max-width: 800px)">
+            <img
+                loading="lazy"
+                class="illustration screenshot__image"
+                src="<?= url_static('screenshot.jpg') ?>"
+                alt="Capture d’écran affichant le journal de Flus, montrant plusieurs liens différents."
+            />
+        </picture>
+    </div>
 
-            <span class="features__title">
-                Des <strong>Collections</strong> thématiques et des <strong>Flux</strong> pour organiser votre veille
-            </span>
+    <section class="hello__more">
+        <header class="header">
+            <h2 class="header__title">Aller plus loin</h2>
+        </header>
 
-            <span class="features__description">
-                Suivez le Web tout entier&nbsp;; partagez vos passions.
-            </span>
-        </li>
+        <div class="hello__columns">
+            <div class="hello__column">
+                <h3 class="icon icon--thumbs-up">
+                    Positif
+                </h3>
 
-        <li class="features__item">
-            <span class="features__icon icon icon--only icon--bookmark"></span>
+                <p>
+                    Le projet derrière Flus se revendique d’un numérique plus
+                    accessible et plus humain.
+                </p>
 
-            <span class="features__title">
-                Des <strong>Signets</strong> pour ranger vos articles à lire plus tard
-            </span>
+                <p>
+                    <a href="<?= url('project') ?>">
+                        → Découvrez le projet
+                    </a>
+                </p>
+            </div>
 
-            <span class="features__description">
-                Votre palanquée d’onglets a trouvé une maison.
-            </span>
-        </li>
+            <div class="hello__column">
+                <h3 class="icon icon--code">
+                    Libre
+                </h3>
 
-        <li class="features__item">
-            <span class="features__icon icon icon--only icon--tree"></span>
+                <p>
+                    Le code de Flus est ouvert afin de permettre à tout le
+                    monde de l’auditer et de l’installer.
+                </p>
 
-            <span class="features__title">
-                Un <strong>Journal</strong> pour lire en respectant votre temps disponible
-            </span>
+                <p>
+                    <a href="https://github.com/flusio/flusio">
+                        → Explorez le code source
+                    </a>
+                </p>
+            </div>
 
-            <span class="features__description">
-                Pas de scroll infini, pas de pub&nbsp;; juste vous et l’info.
-            </span>
-        </li>
-    </ul>
+            <div class="hello__column">
+                <h3 class="icon icon--euro">
+                    Payant
+                </h3>
 
-    <p class="paragraph--center">
-        <a href="<?= url('project') ?>">
-            En apprendre plus sur le projet
-        </a>
-    </p>
+                <p>
+                    La pérennité de Flus a un coût et je ne vous le cache
+                    pas&nbsp;: 3&nbsp;€ par mois et par personne.
+                </p>
+
+                <p>
+                    <a href="<?= url('pricing') ?>">
+                        → Apprenez-en plus sur le tarif
+                    </a>
+                </p>
+            </div>
+        </div>
+    </section>
 </section>
