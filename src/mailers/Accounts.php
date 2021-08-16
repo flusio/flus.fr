@@ -25,6 +25,7 @@ class Accounts extends \Minz\Mailer
                     'account_id' => $account->id,
                     'access_token' => $account->access_token,
                 ]),
+                'service' => $account->preferred_service,
             ]
         );
 
@@ -48,6 +49,7 @@ class Accounts extends \Minz\Mailer
                     'account_id' => $account->id,
                     'access_token' => $account->access_token,
                 ]),
+                'service' => $account->preferred_service,
             ]
         );
         return $this->send($account->email, $subject);

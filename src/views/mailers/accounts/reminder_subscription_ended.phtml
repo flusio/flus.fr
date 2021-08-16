@@ -18,10 +18,19 @@
     <a href="<?= $login_url ?>"><?= $login_url ?></a>
 </p>
 
-<p>
-    Si le lien précédent ne fonctionne pas, vous pouvez vous
-    <a href="https://flus.io/">connecter à FreshRSS, menu «&nbsp;Facturation&nbsp;»</a>.
-</p>
+<?php if ($service === 'freshrss'): ?>
+    <p>
+        Si le lien précédent ne fonctionne pas, vous pouvez vous
+        <a href="https://flus.io/i/?c=billing">connecter à FreshRSS, menu «&nbsp;Abonnement Flus&nbsp;»</a>,
+        puis « Renouveler depuis votre compte de paiement ».
+    </p>
+<?php else: ?>
+    <p>
+        Si le lien précédent ne fonctionne pas, vous pouvez vous
+        <a href="https://app.flus.fr/my/account">connecter à Flus, menu «&nbsp;Compte &amp; données&nbsp;»</a>,
+        puis « Gérer votre abonnement ».
+    </p>
+<?php endif; ?>
 
 <p>
     Si vous avez décidé d’arrêter d’utiliser Flus mais souhaitez récupérer vos

@@ -13,8 +13,15 @@ Pour cela, il vous suffit de suivre le lien suivant (valide une fois pendant
 <?= $this->safe('login_url') ?>
 
 
+<?php if ($service === 'freshrss'): ?>
 Si le lien précédent ne fonctionne pas, vous pouvez vous connecter à FreshRSS,
-menu « Facturation » ( https://flus.io/ ).
+menu « Abonnement Flus » ( https://flus.io/i/?c=billing ), puis « Renouveler
+depuis votre compte de paiement ».
+<?php else: ?>
+Si le lien précédent ne fonctionne pas, vous pouvez vous connecter à Flus,
+menu « Compte & données » ( https://app.flus.fr/my/account ), puis « Gérer
+votre abonnement ».
+<?php endif; ?>
 
 En vous remerciant de votre soutien,
 
