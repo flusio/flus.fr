@@ -34,6 +34,30 @@ class HomeTest extends \PHPUnit\Framework\TestCase
         $this->assertPointer($response, 'home/pricing.phtml');
     }
 
+    public function testTourRedirectsToTourNews()
+    {
+        $response = $this->appRun('GET', '/visite');
+
+        $this->assertResponse($response, 302, '/visite/journal');
+    }
+
+    /**
+     * @dataProvider tourPagesProvider
+     */
+    public function testTourPageRendersCorrectly($page)
+    {
+        $response = $this->appRun('GET', "/visite/{$page}");
+
+        $this->assertResponse($response, 200, 'Visite guidée');
+    }
+
+    public function testTourPageFailsIfPageUnknown()
+    {
+        $response = $this->appRun('GET', '/visite/unknown');
+
+        $this->assertResponse($response, 404);
+    }
+
     public function testCreditsRendersCorrectly()
     {
         $response = $this->appRun('GET', '/credits');
@@ -190,5 +214,17 @@ class HomeTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponse($response, 200);
         $this->assertPointer($response, 'home/security.txt');
+    }
+
+    public function tourPagesProvider()
+    {
+        return [
+            ['flux'],
+            ['signets'],
+            ['journal'],
+            ['collections'],
+            ['pocket'],
+            ['opml'],
+        ];
     }
 }

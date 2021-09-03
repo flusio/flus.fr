@@ -184,7 +184,14 @@ a:focus {
     text-align: center;
 }
 
-img {
+.paragraph--short {
+    max-width: 45ch;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+img,
+video {
     max-width: 100%;
 }
 
@@ -918,6 +925,56 @@ hr {
     font-size: var(--size-small);
     font-style: italic;
     text-align: center;
+}
+
+@media (min-width: 985px) {
+    .tour__video {
+        min-height: 625px;
+    }
+}
+
+.tour__video video {
+    width: 100%;
+    height: 100%;
+}
+
+.tour__video-transcript {
+    max-width: 45ch;
+    margin: calc(var(--space-large) * -1) auto var(--space-large);
+    padding: var(--space-small) var(--space-medium);
+
+    background-color: var(--color-grey-2);
+}
+
+.tour__video-transcript summary {
+    cursor: pointer;
+}
+
+.tour__navigation {
+    margin-top: var(--space-large);
+    margin-bottom: var(--space-large);
+
+    text-align: center;
+}
+
+.tour__navigation-info {
+    color: var(--color-text-secondary);
+    font-size: var(--size-small);
+}
+
+.tour__navigation-next,
+.tour__navigation-previous,
+.tour__navigation-registration {
+    display: inline-block;
+    margin-bottom: var(--space-medium);
+}
+
+.tour__navigation-previous {
+    font-style: italic;
+}
+
+.tour__navigation-home {
+    font-size: var(--size-small);
 }
 
 .error-box {

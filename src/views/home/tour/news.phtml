@@ -1,0 +1,112 @@
+<?php
+    $this->layout('base.phtml', [
+        'title' => 'Visite guidée : le journal · Flus',
+        'canonical' => url_full('tour', ['page' => 'journal']),
+        'current_page' => 'tour',
+        'description' => 'Le journal est un espace de lecture que vous remplissez à votre convenance',
+        'og' => [
+            'type' => 'website',
+            'image' => url_full_static('flus.png'),
+            'twitter_card' => 'summary',
+        ],
+    ]);
+?>
+
+<section class="section">
+    <div class="header">
+        <h1 class="header__title">Visite guidée : le journal</h1>
+    </div>
+
+    <p class="paragraph--featured paragraph--short">
+        Remplissez le journal depuis vos flux suivis et vos signets, puis videz-le au fil de vos lectures.
+    </p>
+
+    <div class="screenshot tour__video">
+        <video controls class="illustration screenshot__image">
+            <source src="https://flus.fr/carnet/visite/journal.webm" type="video/webm">
+            <source src="https://flus.fr/carnet/visite/journal.mp4" type="video/mp4">
+
+            <p>
+                Votre navigateur ne prend pas en charge cette vidéo. Vous pouvez
+                <a href="#video-transcript">lire la transcription</a> à la place.
+            </p>
+        </video>
+    </div>
+
+    <details id="video-transcript" class="tour__video-transcript">
+        <summary>Transcription de la vidéo</summary>
+
+        <p>
+            Un navigateur Web est ouvert sur la page du journal de Flus
+            sur laquelle apparaissent trois gros boutons pour le remplir.
+        </p>
+
+        <p>
+            La souris clique sur le premier des boutons intitulé&nbsp;:
+            «&nbsp;les dernières publications depuis vos collections suivies&nbsp;».
+            Après un court temps de chargement, le journal est rempli avec 9
+            liens.
+        </p>
+
+        <p>
+            La souris ouvre le menu secondaire de l’un de ces liens pour le
+            marquer à lire plus tard, ce qui le retire du journal.
+        </p>
+
+        <p>
+            La souris se dirige ensuite vers le bas de l’écran et clique sur le
+            bouton global «&nbsp;Vider le journal&nbsp;», puis «&nbsp;Tout
+            marquer comme lu&nbsp;», ce qui retire tous les liens restants du
+            journal.
+        </p>
+
+        <p>
+            Les trois gros boutons du journal réapparaissent et la souris
+            clique sur le deuxième bouton intitulé «&nbsp;3 liens de moins de
+            10 minutes depuis vos signets&nbsp;». Le journal est alors rempli
+            de 3 liens de moins de 10 minutes (qu’est-ce que c’est bien fichu&nbsp;!)
+        </p>
+
+        <p>
+            Comme précédemment, la souris ouvre le menu secondaire de l’un des
+            liens pour le marquer à lire plus tard et le retire ainsi du
+            journal.
+        </p>
+
+        <p>
+            Enfin, la souris vide à nouveau le journal avec le bouton
+            «&nbsp;Vider le journal&nbsp;», puis «&nbsp;Tout marquer comme
+            lu&nbsp;».
+        </p>
+    </details>
+
+    <p class="paragraph--short">
+        Fini le défilement infini&nbsp;: le journal est un espace que vous
+        remplissez volontairement avec quelques liens&nbsp;; vous ne craindrez
+        jamais de le voir surchargé.
+    </p>
+
+    <nav class="tour__navigation">
+        <p class="tour__navigation-info">
+            Continuez la visite avec…
+        </p>
+
+        <a class="tour__navigation-next call-to-action" href="<?= url('tour page', ['page' => 'flux']) ?>">
+            Les flux →
+        </a>
+
+        <br />
+
+        <a class="tour__navigation-previous" href="<?= url('tour page', ['page' => 'opml']) ?>">
+            ← <abbr>OPML</abbr>
+        </a>
+
+        <p class="tour__navigation-info">
+            ou…
+        </p>
+
+        <a class="tour__navigation-home" href="<?= url('home') ?>">
+            Revenir à l’accueil
+        </a>
+    </nav>
+</section>
