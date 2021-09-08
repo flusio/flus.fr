@@ -1144,3 +1144,23 @@ hr {
         display: none;
     }
 }
+
+.accessibility-nav {
+    position: absolute;
+
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+
+    width: 1px;
+    height: 1px;
+}
+
+.accessibility-nav:focus {
+    top: 0.75rem;
+    left: 2rem;
+
+    clip: auto;
+
+    width: auto;
+    height: auto;
+}
