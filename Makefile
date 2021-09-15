@@ -21,11 +21,11 @@ endif
 .PHONY: start
 start: ## Start a development server (use Docker)
 	@echo "Running webserver on http://localhost:8000"
-	docker-compose -f docker/docker-compose.yml up
+	docker-compose -p flusfr -f docker/docker-compose.yml up
 
 .PHONY: stop
 stop: ## Stop and clean Docker server
-	docker-compose -f docker/docker-compose.yml down
+	docker-compose -p flusfr -f docker/docker-compose.yml down
 
 .PHONY: init
 init: ## Initialize the application

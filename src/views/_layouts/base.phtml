@@ -36,6 +36,10 @@
     </head>
 
     <body>
+        <a class="no-mobile accessibility-nav call-to-action" href="#contenu" tabindex="0" data-controller="skip-nav" data-action="skip-nav#skip">
+            Sauter au contenu
+        </a>
+
         <div class="layout">
             <header class="layout__header">
                 <nav class="nav">
@@ -71,6 +75,12 @@
                                 </a>
                             </li>
 
+                            <li class="popup__item <?= $current_page === 'tour' ? 'popup__item--active' : '' ?>">
+                                <a class="popup__link" href="<?= url('tour') ?>">
+                                    Visite
+                                </a>
+                            </li>
+
                             <li class="popup__item <?= $current_page === 'project' ? 'popup__item--active' : '' ?>">
                                 <a class="popup__link" href="<?= url('project') ?>">
                                     Projet
@@ -103,6 +113,12 @@
                     <div class="nav__space"></div>
 
                     <ul class="nav__container no-mobile">
+                        <li class="nav__item <?= $current_page === 'tour' ? 'nav__item--active' : '' ?>">
+                            <a class="nav__link" href="<?= url('tour') ?>">
+                                Visite
+                            </a>
+                        </li>
+
                         <li class="nav__item <?= $current_page === 'project' ? 'nav__item--active' : '' ?>">
                             <a class="nav__link" href="<?= url('project') ?>">
                                 Projet
@@ -128,7 +144,7 @@
                 </nav>
             </header>
 
-            <main class="layout__content" id="contenu">
+            <main class="layout__content <?= isset($layout_fluid) && $layout_fluid ? 'layout__content--fluid' : '' ?>" id="contenu">
                 <?= $this->safe('content') ?>
             </main>
 

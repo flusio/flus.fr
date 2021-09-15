@@ -38,6 +38,31 @@ class Home
         return $response;
     }
 
+    public function tour($request)
+    {
+        $page = $request->param('page');
+        if (!$page) {
+            return \Minz\Response::redirect('tour page', ['page' => 'journal']);
+        }
+
+        $pages_to_views = [
+            'journal' => 'news',
+            'flux' => 'feeds',
+            'signets' => 'bookmarks',
+            'collections' => 'collections',
+            'pocket' => 'pocket',
+            'opml' => 'opml',
+        ];
+        if (!isset($pages_to_views[$page])) {
+            return \Minz\Response::notFound('not_found.phtml');
+        }
+
+        $view = $pages_to_views[$page];
+        $response = \Minz\Response::ok("home/tour/{$view}.phtml");
+        $response->setContentSecurityPolicy('media-src', "'self' flus.fr");
+        return $response;
+    }
+
     public function funding()
     {
         return \Minz\Response::redirect('pricing');
