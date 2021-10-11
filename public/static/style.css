@@ -59,6 +59,7 @@
     --color-purple-3: #eeebfb;
     --color-turquoise-1: #00d0ad;
     --color-turquoise-2: #00baad;
+    --color-turquoise-3: #dff9f5;
     --color-red-1: #ba1109;
 
     --color-text: var(--color-black);
@@ -500,19 +501,21 @@ hr {
 
 .layout__footer {
     display: flex;
-    max-width: 60ch;
-    margin: 10rem auto;
+    margin-top: 10rem;
+    padding-bottom: 5rem;
 
     flex-direction: column;
     align-items: center;
     justify-content: center;
+
+    background: linear-gradient(to bottom, var(--color-turquoise-3), var(--color-purple-3) 95%);
 }
 
 .layout__footer::before {
     content: '';
 
     display: block;
-    width: 75%;
+    width: 100%;
     height: 0.5rem;
     margin-bottom: 5rem;
 
@@ -520,7 +523,6 @@ hr {
     background-repeat: repeat-x;
     background-position: 0 100%;
     background-size: 200% 100%;
-    border-radius: 0.25em;
 
     animation: footerBarAnimation 60s linear infinite;
 }
