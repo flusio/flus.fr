@@ -5,7 +5,7 @@
 ?>
 
 <div class="header">
-    <h1 class="header__title">Comptes utilisateurices</h1>
+    <h1 class="header__title"><?= count($accounts) ?> comptes utilisateurices</h1>
 </div>
 
 <p class="paragraph--center">
@@ -21,6 +21,10 @@
                 <tr>
                     <td>
                         <?= $this->protect($account->email) ?>
+                    </td>
+
+                    <td>
+                        <?= $account->count_payments ?> paiements
                     </td>
 
                     <td>

@@ -90,6 +90,11 @@ class Account extends \Minz\Model
             'type' => 'string',
             'validator' => '\Website\models\Account::validateVatNumber',
         ],
+
+        'count_payments' => [
+            'type' => 'integer',
+            'computed' => true,
+        ],
     ];
 
     /**

@@ -22,7 +22,7 @@ class Accounts
             return \Minz\Response::redirect('login');
         }
 
-        $accounts = models\Account::listAll();
+        $accounts = models\Account::daoToList('listWithCountPayments');
 
         usort($accounts, function ($account1, $account2) {
             return $account1->email <=> $account2->email;
