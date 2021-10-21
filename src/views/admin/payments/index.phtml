@@ -52,7 +52,10 @@
                     </td>
 
                     <td>
-                        <?= $payment->account()->email ?>
+                        <?php $account = $payment->account(); ?>
+                        <a href="<?= url('admin account', ['id' => $account->id]) ?>">
+                            <?= $account->email ?>
+                        </a>
                     </td>
 
                     <td>
