@@ -81,6 +81,7 @@ class Application
         $router->addRoute('post', '/admin/payments/:id/destroy', 'admin/Payments#destroy', 'destroy admin payment');
         $router->addRoute('get', '/admin/accounts', 'admin/Accounts#index', 'admin accounts');
         $router->addRoute('get', '/admin/accounts/:id', 'admin/Accounts#show', 'admin account');
+        $router->addRoute('post', '/admin/accounts/:id', 'admin/Accounts#update', 'update admin account');
 
         $router->addRoute('post', '/stripe/hooks', 'Stripe#hooks');
 
