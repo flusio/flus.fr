@@ -161,7 +161,7 @@ class Accounts
         $account = models\Account::find($user['account_id']);
 
         $email = $request->param('email');
-        $address = $request->param('address', $account->address());
+        $address = $request->paramArray('address', $account->address());
         $account->email = $email;
         $account->setAddress($address);
 
