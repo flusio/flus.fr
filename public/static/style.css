@@ -990,15 +990,15 @@ hr {
 }
 
 .gauge__item--purchases {
-    flex-basis: 20%;
+    flex-basis: 30%;
 }
 
 .gauge__item--services {
-    flex-basis: 20%;
+    flex-basis: 0%;
 }
 
 .gauge__item--salary {
-    flex-basis: 60%;
+    flex-basis: 70%;
 }
 
 .gauge__status {

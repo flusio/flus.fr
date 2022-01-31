@@ -22,7 +22,7 @@ class Home
         $payment_dao = new models\dao\Payment();
         $current_year = intval(\Minz\Time::now()->format('Y'));
         $total_revenue = $payment_dao->findTotalRevenue($current_year) / 100;
-        $revenue_target = 10000;
+        $revenue_target = 5000;
         $percent_target = min(100, max(5, $total_revenue * 100 / $revenue_target));
         $common_pot_revenue = $payment_dao->findCommonPotRevenue($current_year) / 100;
         $subscriptions_revenue = $payment_dao->findSubscriptionsRevenue($current_year) / 100;
