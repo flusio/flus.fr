@@ -70,15 +70,15 @@ help:
 
 bin/phpunit:
 	mkdir -p bin/
-	wget -O bin/phpunit https://phar.phpunit.de/phpunit-8.5.2.phar
-	echo '984e15fbf116a19ab98b6a642ccfc139a1a88172ffef995a9a27d00c556238f1 bin/phpunit' | sha256sum -c - || rm bin/phpunit
+	wget -O bin/phpunit https://phar.phpunit.de/phpunit-9.5.10.phar
+	echo 'a34b9db21de3e75ba2e609e68a4da94633f4a99cad8413fd3731a2cd9aa08ca8 bin/phpunit' | sha256sum -c - || rm bin/phpunit
 
 bin/phpcs:
 	mkdir -p bin/
-	wget -O bin/phpcs https://github.com/squizlabs/PHP_CodeSniffer/releases/download/3.5.3/phpcs.phar
-	echo 'b44e0ad96138e2697a97959fefb9c6f1491f4a22d5daf08aabed12e9a2869678 bin/phpcs' | sha256sum -c - || rm bin/phpcs
+	wget -O bin/phpcs https://github.com/squizlabs/PHP_CodeSniffer/releases/download/3.6.1/phpcs.phar
+	echo 'd0ce68aa469aff7e86935c6156a505c4d6dc90adcf2928d695d8331722ce706b bin/phpcs' | sha256sum -c - || rm bin/phpcs
 
 bin/phpcbf:
 	mkdir -p bin/
-	wget -O bin/phpcbf https://github.com/squizlabs/PHP_CodeSniffer/releases/download/3.5.3/phpcbf.phar
-	echo 'db20ec9cfd434deba03f6f20c818732d477696589d5aea3df697986b6e723ad7 bin/phpcbf' | sha256sum -c - || rm bin/phpcbf
+	wget -O bin/phpcbf https://github.com/squizlabs/PHP_CodeSniffer/releases/download/3.6.1/phpcbf.phar
+	echo '4fd260dd0eb4beadd6c68ae12a23e9adb15e155dfa787c9e6ba7104d3fc01471 bin/phpcbf' | sha256sum -c - || rm bin/phpcbf
