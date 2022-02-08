@@ -58,6 +58,25 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($account->id, $output['id']);
     }
 
+    public function testShowUpdatesLastSyncAt()
+    {
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
+        $email = $this->fake('email');
+        $account_id = $this->create('account', [
+            'email' => $email,
+        ]);
+
+        $response = $this->appRun('GET', '/api/account', [
+            'email' => $email,
+        ], [
+            'PHP_AUTH_USER' => \Minz\Configuration::$application['flus_private_key'],
+        ]);
+
+        $this->assertResponse($response, 200);
+        $account = models\Account::find($account_id);
+        $this->assertEquals($now, $account->last_sync_at);
+    }
     /**
      * @dataProvider showParamsProvider
      */
@@ -169,6 +188,26 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         ]);
         $output = json_decode($response->render(), true);
         $this->assertSame($expired_at, $output['expired_at']);
+    }
+
+    public function testExpiredAtUpdatesLastSyncAt()
+    {
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
+        $expired_at = $this->fake('dateTime')->format(\Minz\Model::DATETIME_FORMAT);
+        $account_id = $this->create('account', [
+            'expired_at' => $expired_at,
+        ]);
+
+        $response = $this->appRun('GET', '/api/account/expired-at', [
+            'account_id' => $account_id,
+        ], [
+            'PHP_AUTH_USER' => \Minz\Configuration::$application['flus_private_key'],
+        ]);
+
+        $this->assertResponse($response, 200);
+        $account = models\Account::find($account_id);
+        $this->assertEquals($now, $account->last_sync_at);
     }
 
     public function testExpiredAtFailsIfMissingAuth()

@@ -49,6 +49,9 @@ class Accounts
             }
 
             $account->save();
+        } else {
+            $account->last_sync_at = \Minz\Time::now();
+            $account->save();
         }
 
         $json_output = json_encode([
@@ -150,6 +153,9 @@ class Accounts
         if (!$account) {
             return \Minz\Response::notFound();
         }
+
+        $account->last_sync_at = \Minz\Time::now();
+        $account->save();
 
         $json_output = json_encode([
             'expired_at' => $account->expired_at->format(\Minz\Model::DATETIME_FORMAT),

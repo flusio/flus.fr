@@ -37,6 +37,10 @@ class Account extends \Minz\Model
             'type' => 'string',
         ],
 
+        'last_sync_at' => [
+            'type' => 'datetime',
+        ],
+
         'preferred_frequency' => [
             'type' => 'string',
             'required' => true,
@@ -115,6 +119,7 @@ class Account extends \Minz\Model
             'preferred_service' => 'flusio',
             'reminder' => false,
             'address_country' => 'FR',
+            'last_sync_at' => \Minz\Time::now(),
         ]);
     }
 

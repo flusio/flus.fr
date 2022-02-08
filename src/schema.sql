@@ -11,6 +11,7 @@ CREATE TABLE accounts (
     expired_at TEXT NOT NULL,
     email TEXT NOT NULL UNIQUE,
     access_token TEXT,
+    last_sync_at TEXT,
 
     preferred_frequency TEXT NOT NULL DEFAULT 'month',
     preferred_payment_type TEXT NOT NULL DEFAULT 'card',
