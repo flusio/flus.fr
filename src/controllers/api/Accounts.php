@@ -166,4 +166,37 @@ class Accounts
         $response->setHeader('Content-Type', 'application/json');
         return $response;
     }
+
+    /**
+     * Return the expiration date of the given accounts and update their
+     * last_sync_at properties.
+     *
+     * @request_header string PHP_AUTH_USER
+     * @request_param string[] account_ids
+     *
+     * @response 401
+     *     if the auth header is invalid
+     * @response 200
+     *     on success
+     */
+    public function sync($request)
+    {
+        $auth_token = $request->header('PHP_AUTH_USER', '');
+        $private_key = \Minz\Configuration::$application['flus_private_key'];
+        if (!hash_equals($private_key, $auth_token)) {
+            return \Minz\Response::unauthorized();
+        }
+
+        $account_ids = $request->paramArray('account_ids', []);
+
+        models\Account::daoCall('updateLastSyncAt', $account_ids, \Minz\Time::now());
+
+        $result = [];
+        $accounts = models\Account::listBy(['id' => $account_ids]);
+        foreach ($accounts as $account) {
+            $result[$account->id] = $account->expired_at->format(\Minz\Model::DATETIME_FORMAT);
+        }
+
+        return \Minz\Response::json(200, $result);
+    }
 }

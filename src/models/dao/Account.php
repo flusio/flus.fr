@@ -35,4 +35,31 @@ class Account extends \Minz\DatabaseModel
         $statement = $this->query($sql);
         return $statement->fetchAll();
     }
+
+    /**
+     * Update the last_sync_at of the given accounts.
+     *
+     * @param string[] $account_ids
+     * @param \DateTime $date
+     *
+     * @return boolean True on success or false on failure
+     */
+    public function updateLastSyncAt($account_ids, $date)
+    {
+        $question_marks = array_fill(0, count($account_ids), '?');
+        $in_statement = implode(',', $question_marks);
+
+        $sql = <<<SQL
+            UPDATE accounts
+            SET last_sync_at = ?
+            WHERE id IN ({$in_statement})
+        SQL;
+
+        $statement = $this->prepare($sql);
+        $parameters = [
+            $date->format(\Minz\Model::DATETIME_FORMAT),
+        ];
+        $parameters = array_merge($parameters, $account_ids);
+        return $statement->execute($parameters);
+    }
 }

@@ -66,6 +66,7 @@ class Router extends \Minz\Router
         $this->addRoute('get', '/api/account', 'api/Accounts#show');
         $this->addRoute('get', '/api/account/login-url', 'api/Accounts#loginUrl');
         $this->addRoute('get', '/api/account/expired-at', 'api/Accounts#expiredAt');
+        $this->addRoute('post', '/api/accounts/sync', 'api/Accounts#sync');
 
         $this->addRoute('get', '/admin', 'admin/Payments#index', 'admin');
         $this->addRoute('get', '/admin/login', 'admin/Auth#login', 'login');
