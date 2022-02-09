@@ -143,4 +143,28 @@ class Payment extends \Minz\DatabaseModel
         $statement->execute([$year]);
         return $statement->fetchAll();
     }
+
+    /**
+     * Change account_id of the given payments
+     *
+     * @param string[] $payments_ids
+     * @param string $account_id
+     *
+     * @return boolean
+     */
+    public function moveToAccountId($payments_ids, $account_id)
+    {
+        $question_marks = array_fill(0, count($payments_ids), '?');
+        $in_statement = implode(',', $question_marks);
+        $sql = <<<SQL
+            UPDATE payments
+            SET account_id = ?
+            WHERE id IN ({$in_statement})
+        SQL;
+
+        $statement = $this->prepare($sql);
+        $parameters = [$account_id];
+        $parameters = array_merge($parameters, $payments_ids);
+        return $statement->execute($parameters);
+    }
 }

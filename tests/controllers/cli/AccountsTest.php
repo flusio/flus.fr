@@ -143,4 +143,101 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 200);
         $this->assertEmailsCount(0);
     }
+
+    public function testClearRemovesNonSyncAccounts()
+    {
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
+        $days = $this->fake('numberBetween', 3, 30);
+        $account_id = $this->create('account', [
+            'last_sync_at' => \Minz\Time::ago($days, 'days')->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+
+        $response = $this->appRun('cli', '/accounts/clear');
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, '1 accounts have been deleted.');
+        $this->assertFalse(models\Account::exists($account_id));
+    }
+
+    public function testClearRemovesAccountsNeverSync()
+    {
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
+        $account_id = $this->create('account', [
+            'last_sync_at' => null,
+        ]);
+
+        $response = $this->appRun('cli', '/accounts/clear');
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, '1 accounts have been deleted.');
+        $this->assertFalse(models\Account::exists($account_id));
+    }
+
+    public function testClearMovesPaymentsAndPotUsagesOfNonSyncAccounts()
+    {
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
+        $days = $this->fake('numberBetween', 3, 30);
+        $default_account = models\Account::defaultAccount();
+        $account_id = $this->create('account', [
+            'last_sync_at' => \Minz\Time::ago($days, 'days')->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+        $payment_id = $this->create('payment', [
+            'account_id' => $account_id,
+        ]);
+        $pot_usage_id = $this->create('pot_usage', [
+            'account_id' => $account_id,
+        ]);
+
+        $response = $this->appRun('cli', '/accounts/clear');
+
+        $this->assertResponseCode($response, 200);
+        $payment = models\Payment::find($payment_id);
+        $pot_usage = models\PotUsage::find($pot_usage_id);
+        $this->assertSame($default_account->id, $payment->account_id);
+        $this->assertSame($default_account->id, $pot_usage->account_id);
+    }
+
+    public function testClearKeepsSyncAccounts()
+    {
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
+        $days = $this->fake('numberBetween', 0, 2);
+        $account_id = $this->create('account', [
+            'last_sync_at' => \Minz\Time::ago($days, 'days')->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+
+        $response = $this->appRun('cli', '/accounts/clear');
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, '0 accounts have been deleted.');
+        $this->assertTrue(models\Account::exists($account_id));
+    }
+
+    public function testClearDoesNotMovePaymentsAndPotUsagesOfSyncAccounts()
+    {
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
+        $days = $this->fake('numberBetween', 0, 2);
+        $default_account = models\Account::defaultAccount();
+        $account_id = $this->create('account', [
+            'last_sync_at' => \Minz\Time::ago($days, 'days')->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+        $payment_id = $this->create('payment', [
+            'account_id' => $account_id,
+        ]);
+        $pot_usage_id = $this->create('pot_usage', [
+            'account_id' => $account_id,
+        ]);
+
+        $response = $this->appRun('cli', '/accounts/clear');
+
+        $this->assertResponseCode($response, 200);
+        $payment = models\Payment::find($payment_id);
+        $pot_usage = models\PotUsage::find($pot_usage_id);
+        $this->assertSame($account_id, $payment->account_id);
+        $this->assertSame($account_id, $pot_usage->account_id);
+    }
 }

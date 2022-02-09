@@ -93,5 +93,6 @@ class Router extends \Minz\Router
         $this->addRoute('cli', '/accounts/create', 'cli/Accounts#create');
         $this->addRoute('cli', '/accounts/login-url', 'cli/Accounts#loginUrl');
         $this->addRoute('cli', '/accounts/remind', 'cli/Accounts#remind');
+        $this->addRoute('cli', '/accounts/clear', 'cli/Accounts#clear');
     }
 }

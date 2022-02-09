@@ -124,6 +124,31 @@ class Account extends \Minz\Model
     }
 
     /**
+     * Return the default account (to rattach payments and pot_usages of
+     * deleted accounts).
+     *
+     * last_sync_at is updated each time the method is called.
+     *
+     * @return \Website\models\Account
+     */
+    public static function defaultAccount()
+    {
+        $email = \Minz\Configuration::$application['support_email'];
+
+        $account = self::findBy(['email' => $email]);
+        if (!$account) {
+            $account = self::init($email);
+            $account->expired_at = new \DateTime('@0');
+            $account->reminder = false;
+        }
+
+        $account->last_sync_at = \Minz\Time::now();
+        $account->save();
+
+        return $account;
+    }
+
+    /**
      * Extend the subscription period by the given frequency
      *
      * @param string $frequency (`month` or `year`)

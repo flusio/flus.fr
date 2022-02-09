@@ -62,4 +62,26 @@ class Account extends \Minz\DatabaseModel
         $parameters = array_merge($parameters, $account_ids);
         return $statement->execute($parameters);
     }
+
+    /**
+     * List the accounts which have a last_sync_at property older than the
+     * given date.
+     *
+     * @param \DateTime $date
+     *
+     * @return array
+     */
+    public function listByLastSyncAtOlderThan($date)
+    {
+        $sql = <<<SQL
+            SELECT * FROM accounts
+            WHERE last_sync_at < ? OR last_sync_at IS NULL
+        SQL;
+
+        $statement = $this->prepare($sql);
+        $statement->execute([
+            $date->format(\Minz\Model::DATETIME_FORMAT),
+        ]);
+        return $statement->fetchAll();
+    }
 }

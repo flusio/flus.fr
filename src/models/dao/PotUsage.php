@@ -41,4 +41,28 @@ class PotUsage extends \Minz\DatabaseModel
         $statement = $this->query($sql);
         return intval($statement->fetchColumn());
     }
+
+    /**
+     * Change account_id of the given pot_usages
+     *
+     * @param string[] $pot_usages_ids
+     * @param string $account_id
+     *
+     * @return boolean
+     */
+    public function moveToAccountId($pot_usages_ids, $account_id)
+    {
+        $question_marks = array_fill(0, count($pot_usages_ids), '?');
+        $in_statement = implode(',', $question_marks);
+        $sql = <<<SQL
+            UPDATE pot_usages
+            SET account_id = ?
+            WHERE id IN ({$in_statement})
+        SQL;
+
+        $statement = $this->prepare($sql);
+        $parameters = [$account_id];
+        $parameters = array_merge($parameters, $pot_usages_ids);
+        return $statement->execute($parameters);
+    }
 }

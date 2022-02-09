@@ -142,4 +142,42 @@ class Accounts
             return \Minz\Response::text(200, '');
         }
     }
+
+    /**
+     * Clear non-synced accounts.
+     *
+     * An account is considered as non-synced if its last_sync_at is older than
+     * 2 days.
+     *
+     * Payments and pot usages attached to deleted accounts are rattached to
+     * the default account.
+     *
+     * @response 200
+     */
+    public function clear($request)
+    {
+        $date = \Minz\Time::ago(2, 'days');
+
+        $accounts_to_delete = models\Account::daoToList('listByLastSyncAtOlderThan', $date);
+        $accounts_ids = array_column($accounts_to_delete, 'id');
+
+        $payments = models\Payment::listBy([
+            'account_id' => $accounts_ids,
+        ]);
+        $payments_ids = array_column($payments, 'id');
+
+        $pot_usages = models\PotUsage::listBy([
+            'account_id' => $accounts_ids,
+        ]);
+        $pot_usages_ids = array_column($pot_usages, 'id');
+
+        $default_account = models\Account::defaultAccount();
+
+        models\Payment::daoCall('moveToAccountId', $payments_ids, $default_account->id);
+        models\PotUsage::daoCall('moveToAccountId', $pot_usages_ids, $default_account->id);
+        models\Account::delete($accounts_ids);
+
+        $number_accounts = count($accounts_ids);
+        return \Minz\Response::text(200, "{$number_accounts} accounts have been deleted.");
+    }
 }
