@@ -21,10 +21,6 @@ class Accounts
      *     if the account doesn’t exist and email is invalid
      * @response 200
      *     on success
-     *
-     * @param \Minz\Request $request
-     *
-     * @return \Minz\Response
      */
     public function show($request)
     {
@@ -72,10 +68,6 @@ class Accounts
      *     if the account_id doesn't exist
      * @response 200
      *     on success
-     *
-     * @param \Minz\Request $request
-     *
-     * @return \Minz\Response
      */
     public function loginUrl($request)
     {
@@ -124,10 +116,6 @@ class Accounts
      *     if the account_id doesn't exist
      * @response 200
      *     on success
-     *
-     * @param \Minz\Request $request
-     *
-     * @return \Minz\Response
      */
     public function expiredAt($request)
     {

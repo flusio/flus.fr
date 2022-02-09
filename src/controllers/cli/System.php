@@ -7,9 +7,11 @@ class System
     /**
      * Initialize the database and set the migration version.
      *
-     * @param \Minz\Request $request
-     *
-     * @return \Minz\Response
+     * @response 500
+     *     If the system is already initialized or if the the migration file
+     *     cannot be saved
+     * @response 200
+     *     On success
      */
     public function init()
     {
@@ -42,9 +44,11 @@ class System
      * Execute the migrations under src/migrations/. The version is stored in
      * data/migrations_version.txt.
      *
-     * @param \Minz\Request $request
-     *
-     * @return \Minz\Response
+     * @response 500
+     *     If the system is not initialized, if the the migration file
+     *     cannot be read or saved, or if an error occured in a migration
+     * @response 200
+     *     On success
      */
     public function migrate($request)
     {
@@ -105,9 +109,11 @@ class System
      *
      * @request_param integer steps (default is 1)
      *
-     * @param \Minz\Request $request
-     *
-     * @return \Minz\Response
+     * @response 500
+     *     If the system is not initialized, if the the migration file
+     *     cannot be read or saved, or if an error occured in a rollback
+     * @response 200
+     *     On success
      */
     public function rollback($request)
     {

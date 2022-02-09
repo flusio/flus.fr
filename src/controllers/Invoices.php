@@ -24,10 +24,6 @@ class Invoices
      *     If the user is not connected or doesn't own the payment
      * @response 200
      *     On success
-     *
-     * @param \Minz\Request $request
-     *
-     * @return \Minz\Response
      */
     public function downloadPdf($request)
     {

@@ -14,7 +14,10 @@ class Accounts
     /**
      * List accounts for the admin
      *
-     * @return \Minz\Response
+     * @response 302 /admin/login
+     *     If user is not connected as an admin
+     * @response 200
+     *     On success
      */
     public function index()
     {
@@ -36,7 +39,14 @@ class Accounts
     /**
      * Show a specific account for the admin
      *
-     * @return \Minz\Response
+     * @request_param string id
+     *
+     * @response 302 /admin/login
+     *     If user is not connected as an admin
+     * @response 404
+     *     If the account doesn't exist
+     * @response 200
+     *     On success
      */
     public function show($request)
     {
@@ -59,6 +69,19 @@ class Accounts
 
     /**
      * Update an account
+     *
+     * @request_param string id
+     * @request_param string csrf
+     * @request_param datetime expired-at
+     *
+     * @response 302 /admin/login
+     *     If user is not connected as an admin
+     * @response 404
+     *     If the account doesn't exist
+     * @response 400
+     *     If CSRF is invalid
+     * @response 200
+     *     On success
      */
     public function update($request)
     {

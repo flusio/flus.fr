@@ -19,10 +19,6 @@ class Accounts
      *     if the address is not set
      * @response 200
      *     on success
-     *
-     * @param \Minz\Request $request
-     *
-     * @return \Minz\Response
      */
     public function show($request)
     {
@@ -62,10 +58,6 @@ class Accounts
      *     if the access_token is invalid
      * @response 302 /account
      *     on success
-     *
-     * @param \Minz\Request $request
-     *
-     * @return \Minz\Response
      */
     public function login($request)
     {
@@ -90,10 +82,6 @@ class Accounts
 
     /**
      * @response 302
-     *
-     * @param \Minz\Request $request
-     *
-     * @return \Minz\Response
      */
     public function logout($request)
     {
@@ -118,10 +106,6 @@ class Accounts
      *     if the user is not connected
      * @response 200
      *     on success
-     *
-     * @param \Minz\Request $request
-     *
-     * @return \Minz\Response
      */
     public function address($request)
     {
@@ -146,10 +130,6 @@ class Accounts
      *     if the email or address is invalid
      * @response 302 /account
      *     on success
-     *
-     * @param \Minz\Request $request
-     *
-     * @return \Minz\Response
      */
     public function updateAddress($request)
     {
@@ -222,10 +202,6 @@ class Accounts
      *     if csrf is invalid
      * @response 302 /account
      *     on success
-     *
-     * @param \Minz\Request $request
-     *
-     * @return \Minz\Response
      */
     public function setReminder($request)
     {

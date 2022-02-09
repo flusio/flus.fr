@@ -9,14 +9,14 @@ class Auth
     /**
      * Show the admin login page
      *
-     * Parameter is:
+     * @request_param string from
+     *     To redirect to the given action pointer after the connection
+     *     (optional)
      *
-     * - `from` (optional): allow to redirect to the given action pointer instead
-     *   of the admin main page
-     *
-     * @param \Minz\Request $request
-     *
-     * @return \Minz\Response
+     * @response 302 /admin
+     *     If user is already connected as an admin
+     * @response 200
+     *     On success
      */
     public function login($request)
     {
@@ -32,18 +32,18 @@ class Auth
     /**
      * Create a session for the user who tries to log in
      *
-     * Parameters are:
+     * @request_param string password
+     * @request_param string csrf
+     * @request_param string from
+     *     To redirect to the given action pointer after the connection,
+     *     default is `admin`
      *
-     * - `csrf`
-     * - `password`
-     * - `from` (optional)
-     *
-     * If the password is good, user is redirected to the admin main page, or to
-     * the `from` page.
-     *
-     * @param \Minz\Request $request
-     *
-     * @return \Minz\Response
+     * @response 302 /admin
+     *     If user is already connected as an admin
+     * @response 400
+     *     If CSRF or password is invalid
+     * @response 302 :from
+     *     On success
      */
     public function createSession($request)
     {
@@ -83,13 +83,9 @@ class Auth
     /**
      * Delete a session and log out the user
      *
-     * Parameter is:
+     * @request_param string csrf
      *
-     * - `csrf`
-     *
-     * @param \Minz\Request $request
-     *
-     * @return \Minz\Response Always redirect to the home page
+     * @response 302 /
      */
     public function deleteSession($request)
     {

@@ -11,9 +11,13 @@ class Stripe
      *
      * @see https://stripe.com/docs/payments/checkout/fulfillment#webhooks
      *
-     * @param \Minz\Request $request
+     * @request_param string @input
+     * @request_header string HTTP_STRIPE_SIGNATURE
      *
-     * @return \Minz\Response
+     * @response 400
+     *     If an error occurs during processing the Stripe request
+     * @response 200
+     *     On success
      */
     public function hooks($request)
     {

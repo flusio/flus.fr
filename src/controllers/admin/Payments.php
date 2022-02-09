@@ -10,7 +10,15 @@ class Payments
     /**
      * Show the admin main page
      *
-     * @return \Minz\Response
+     * @request_param string year
+     * @request_param string format
+     *     The format to render the page. Allowed values are `html` (default),
+     *     `csv` and `recettes`
+     *
+     * @response 302 /admin/login
+     *     If user is not connected as an admin
+     * @response 200
+     *     On success
      */
     public function index($request)
     {
@@ -48,7 +56,10 @@ class Payments
     /**
      * Display a form to create a payment.
      *
-     * @return \Minz\Response
+     * @response 302 /admin/login?from=admin/payments#init
+     *     If user is not connected as an admin
+     * @response 200
+     *     On success
      */
     public function init()
     {
@@ -66,17 +77,21 @@ class Payments
     /**
      * Create a payment
      *
-     * Parameters are:
+     * @request_param string type
+     *     Must be either `common_pot`, `subscription_month` or
+     *     `subscription_year`
+     * @request_param integer amount
+     *     Required if type is set to `common_pot`, it must be a numerical
+     *     value between 1 and 1000.
+     * @request_param string email
+     * @request_param string csrf
      *
-     * - `csrf`
-     * - `type`, must be either `common_pot`, `subscription_month` or `subscription_year`
-     * - `amount`, required if type is set to `common_pot`, it must be a numerical
-     *   value between 1 and 1000.
-     * - `email`
-     *
-     * @param \Minz\Request $request
-     *
-     * @return \Minz\Response
+     * @response 302 /admin/login?from=admin/payments#init
+     *     If user is not connected as an admin
+     * @response 400
+     *     If a parameter is invalid
+     * @response 302 /admin
+     *     On success
      */
     public function create($request)
     {
@@ -151,13 +166,14 @@ class Payments
     /**
      * Display a payment
      *
-     * Parameter is:
+     * @request_param string id
      *
-     * - `id` of the Payment
-     *
-     * @param \Minz\Request $request
-     *
-     * @return \Minz\Response
+     * @response 302 /admin/login?from=admin/payments#index
+     *     If user is not connected as an admin
+     * @response 404
+     *     If the payment doesn't exist
+     * @response 200
+     *     On success
      */
     public function show($request)
     {
@@ -179,13 +195,17 @@ class Payments
     /**
      * Confirm a payment as paid
      *
-     * Parameters are:
+     * @request_param string id
+     * @request_param string csrf
      *
-     * - `id` of the Payment
-     *
-     * @param \Minz\Request $request
-     *
-     * @return \Minz\Response
+     * @response 302 /admin/login?from=admin/payments#index
+     *     If user is not connected as an admin
+     * @response 404
+     *     If the payment doesn't exist
+     * @response 400
+     *     If the CSRF is invalid or if payment is already paid
+     * @response 302 /admin
+     *     On success
      */
     public function confirm($request)
     {
@@ -227,13 +247,18 @@ class Payments
     /**
      * Destroy a payment
      *
-     * Parameter is:
+     * @request_param string id
+     * @request_param string csrf
      *
-     * - `id` of the Payment
-     *
-     * @param \Minz\Request $request
-     *
-     * @return \Minz\Response
+     * @response 302 /admin/login?from=admin/payments#index
+     *     If user is not connected as an admin
+     * @response 404
+     *     If the payment doesn't exist
+     * @response 400
+     *     If the CSRF is invalid or if payment is already paid or is
+     *     associated to an invoice number.
+     * @response 302 /admin
+     *     On success
      */
     public function destroy($request)
     {

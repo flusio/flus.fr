@@ -13,10 +13,6 @@ class Payments
 {
     /**
      * @response 200
-     *
-     * @param \Minz\Request $request
-     *
-     * @return \Minz\Response
      */
     public function complete($request)
     {

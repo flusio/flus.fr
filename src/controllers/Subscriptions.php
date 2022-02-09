@@ -19,10 +19,6 @@ class Subscriptions
      *     if the address is not set
      * @response 200
      *     on success
-     *
-     * @param \Minz\Request $request
-     *
-     * @return \Minz\Response
      */
     public function init($request)
     {
@@ -59,10 +55,6 @@ class Subscriptions
      *     if CSRF or frequency are invalid
      * @response 302 /payments/:id/pay
      *     on success
-     *
-     * @param \Minz\Request $request
-     *
-     * @return \Minz\Response
      */
     public function renew($request)
     {

@@ -13,10 +13,6 @@ class Accounts
 {
     /**
      * @response 200
-     *
-     * @param \Minz\Request $request
-     *
-     * @return \Minz\Response
      */
     public function index($request)
     {
@@ -35,10 +31,6 @@ class Accounts
      *     if the email is invalid
      * @response 200
      *     on success
-     *
-     * @param \Minz\Request $request
-     *
-     * @return \Minz\Response
      */
     public function create($request)
     {
@@ -64,10 +56,6 @@ class Accounts
      *     if the account doesn't exist
      * @response 200
      *     on success
-     *
-     * @param \Minz\Request $request
-     *
-     * @return \Minz\Response
      */
     public function loginUrl($request)
     {
@@ -100,10 +88,6 @@ class Accounts
 
     /**
      * @response 200
-     *
-     * @param \Minz\Request $request
-     *
-     * @return \Minz\Response
      */
     public function remind($request)
     {

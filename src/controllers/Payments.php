@@ -11,13 +11,14 @@ class Payments
     /**
      * Handle the payment itself
      *
-     * Parameter is:
+     * @request_param string id
      *
-     * - `id` of the Payment
-     *
-     * @param \Minz\Request $request
-     *
-     * @return \Minz\Response
+     * @response 404
+     *     If payment is not found
+     * @response 400
+     *     If payment is already completed
+     * @response 200
+     *     On success
      */
     public function pay($request)
     {
@@ -44,7 +45,7 @@ class Payments
     /**
      * Handle the successful redirection from Stripe.
      *
-     * @return \Minz\Response
+     * @response 200
      */
     public function succeeded()
     {
@@ -84,7 +85,7 @@ class Payments
     /**
      * Handle the cancelation redirection from Stripe.
      *
-     * @return \Minz\Response
+     * @response 200
      */
     public function canceled()
     {
