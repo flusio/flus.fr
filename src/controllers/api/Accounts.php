@@ -44,8 +44,7 @@ class Accounts
 
             $errors = $account->validate();
             if ($errors) {
-                $output = new \Minz\Output\Text(implode(' ', $errors));
-                return new \Minz\Response(400, $output);
+                return \Minz\Response::text(400, implode(' ', $errors));
             }
 
             $account->save();
@@ -54,15 +53,10 @@ class Accounts
             $account->save();
         }
 
-        $json_output = json_encode([
+        return \Minz\Response::json(200, [
             'id' => $account->id,
             'expired_at' => $account->expired_at->format(\Minz\Model::DATETIME_FORMAT),
         ]);
-
-        $output = new \Minz\Output\Text($json_output);
-        $response = new \Minz\Response(200, $output);
-        $response->setHeader('Content-Type', 'application/json');
-        return $response;
     }
 
     /**
@@ -114,14 +108,10 @@ class Accounts
             'account_id' => $account->id,
             'access_token' => $account->access_token,
         ]);
-        $json_output = json_encode([
+
+        return \Minz\Response::json(200, [
             'url' => $login_url,
         ]);
-
-        $output = new \Minz\Output\Text($json_output);
-        $response = new \Minz\Response(200, $output);
-        $response->setHeader('Content-Type', 'application/json');
-        return $response;
     }
 
     /**
@@ -157,14 +147,9 @@ class Accounts
         $account->last_sync_at = \Minz\Time::now();
         $account->save();
 
-        $json_output = json_encode([
+        return \Minz\Response::json(200, [
             'expired_at' => $account->expired_at->format(\Minz\Model::DATETIME_FORMAT),
         ]);
-
-        $output = new \Minz\Output\Text($json_output);
-        $response = new \Minz\Response(200, $output);
-        $response->setHeader('Content-Type', 'application/json');
-        return $response;
     }
 
     /**

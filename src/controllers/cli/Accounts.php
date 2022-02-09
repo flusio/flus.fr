@@ -25,7 +25,7 @@ class Accounts
             return "{$account->id} {$account->email}";
         }, $accounts);
 
-        return \Minz\Response::Text(200, implode("\n", $formatted_accounts));
+        return \Minz\Response::text(200, implode("\n", $formatted_accounts));
     }
 
     /**
@@ -46,12 +46,12 @@ class Accounts
         $account = models\Account::init($email);
         $errors = $account->validate();
         if ($errors) {
-            return \Minz\Response::Text(400, implode(' ', $errors));
+            return \Minz\Response::text(400, implode(' ', $errors));
         }
 
         $account->save();
 
-        return \Minz\Response::Text(200, "Account {$account->id} ({$account->email}) created.");
+        return \Minz\Response::text(200, "Account {$account->id} ({$account->email}) created.");
     }
 
     /**
@@ -76,7 +76,7 @@ class Accounts
 
         $account = models\Account::find($account_id);
         if (!$account) {
-            return \Minz\Response::Text(404, 'This account doesn’t exist.');
+            return \Minz\Response::text(404, 'This account doesn’t exist.');
         }
 
         if ($service !== 'flusio' && $service !== 'freshrss') {
@@ -95,7 +95,7 @@ class Accounts
             'access_token' => $account->access_token,
         ]);
 
-        return \Minz\Response::Text(200, $login_url);
+        return \Minz\Response::text(200, $login_url);
     }
 
     /**
