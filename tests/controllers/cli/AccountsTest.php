@@ -28,7 +28,8 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('cli', '/accounts/remind');
 
-        $this->assertResponse($response, 200, '1 reminders sent');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, '1 reminders sent');
         $this->assertEmailsCount(1);
         $email_sent = \Minz\Tests\Mailer::take();
         $this->assertEmailSubject($email_sent, '[Flus] Votre abonnement arrive à échéance');
@@ -50,7 +51,8 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('cli', '/accounts/remind');
 
-        $this->assertResponse($response, 200, '1 reminders sent');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, '1 reminders sent');
         $this->assertEmailsCount(1);
         $email_sent = \Minz\Tests\Mailer::take();
         $this->assertEmailSubject($email_sent, '[Flus] Votre abonnement arrive à échéance');
@@ -72,7 +74,8 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('cli', '/accounts/remind');
 
-        $this->assertResponse($response, 200, '1 reminders sent');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, '1 reminders sent');
         $this->assertEmailsCount(1);
         $email_sent = \Minz\Tests\Mailer::take();
         $this->assertEmailSubject($email_sent, '[Flus] Votre abonnement a expiré');
@@ -100,7 +103,8 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('cli', '/accounts/remind');
 
-        $this->assertResponse($response, 200, '2 reminders sent');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, '2 reminders sent');
         $this->assertEmailsCount(2);
         $email_sent_1 = \Minz\Tests\Mailer::take(0);
         $this->assertEmailEqualsTo($email_sent_1, [$email_1]);
@@ -120,7 +124,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('cli', '/accounts/remind');
 
-        $this->assertResponse($response, 200);
+        $this->assertResponseCode($response, 200);
         $this->assertEmailsCount(0);
     }
 
@@ -136,7 +140,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('cli', '/accounts/remind');
 
-        $this->assertResponse($response, 200);
+        $this->assertResponseCode($response, 200);
         $this->assertEmailsCount(0);
     }
 }

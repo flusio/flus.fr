@@ -36,7 +36,8 @@ class InvoicesTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', "/invoices/{$payment_id}/pdf");
 
         $expected_filename = "facture_{$invoice_number}.pdf";
-        $this->assertResponse($response, 200, null, [
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseHeaders($response, [
             'Content-Type' => 'application/pdf',
             'Content-Disposition' => 'attachment; filename="' . $expected_filename . '"',
         ]);
@@ -58,7 +59,8 @@ class InvoicesTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', "/invoices/{$payment_id}/pdf");
 
         $expected_filename = "facture_{$invoice_number}.pdf";
-        $this->assertResponse($response, 200, null, [
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseHeaders($response, [
             'Content-Type' => 'application/pdf',
             'Content-Disposition' => 'attachment; filename="' . $expected_filename . '"',
         ]);
@@ -70,7 +72,7 @@ class InvoicesTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('GET', '/invoices/not-an-id/pdf');
 
-        $this->assertResponse($response, 404);
+        $this->assertResponseCode($response, 404);
     }
 
     public function testDownloadPdfWithPaymentWithNoInvoiceNumberReturnsNotFound()
@@ -82,7 +84,7 @@ class InvoicesTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('GET', "/invoices/{$payment_id}/pdf");
 
-        $this->assertResponse($response, 404);
+        $this->assertResponseCode($response, 404);
     }
 
     /**
@@ -97,7 +99,7 @@ class InvoicesTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('GET', "/invoices/{$payment_id}/pdf");
 
-        $this->assertResponse($response, 401);
+        $this->assertResponseCode($response, 401);
     }
 
     /**
@@ -115,7 +117,7 @@ class InvoicesTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('GET', "/invoices/{$payment_id}/pdf");
 
-        $this->assertResponse($response, 401);
+        $this->assertResponseCode($response, 401);
     }
 
     public function completedParametersProvider()

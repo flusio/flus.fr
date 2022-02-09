@@ -28,7 +28,8 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
             'PHP_AUTH_USER' => \Minz\Configuration::$application['flus_private_key'],
         ]);
 
-        $this->assertResponse($response, 200, null, [
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseHeaders($response, [
             'Content-Type' => 'application/json'
         ]);
         $output = json_decode($response->render(), true);
@@ -48,7 +49,8 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
             'PHP_AUTH_USER' => \Minz\Configuration::$application['flus_private_key'],
         ]);
 
-        $this->assertResponse($response, 200, null, [
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseHeaders($response, [
             'Content-Type' => 'application/json'
         ]);
         $this->assertSame(1, models\Account::count());
@@ -74,7 +76,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
             'PHP_AUTH_USER' => \Minz\Configuration::$application['flus_private_key'],
         ]);
 
-        $this->assertResponse($response, 200);
+        $this->assertResponseCode($response, 200);
         $account = models\Account::find($account_id);
         $this->assertEquals($now, $account->last_sync_at);
     }
@@ -92,7 +94,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
             'email' => $email,
         ]);
 
-        $this->assertResponse($response, 401);
+        $this->assertResponseCode($response, 401);
     }
 
     public function testShowFailsIfEmailIsInvalid()
@@ -105,7 +107,8 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
             'PHP_AUTH_USER' => \Minz\Configuration::$application['flus_private_key'],
         ]);
 
-        $this->assertResponse($response, 400, 'L’adresse courriel que vous avez fournie est invalide.');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'L’adresse courriel que vous avez fournie est invalide.');
     }
 
     public function testLoginUrlSetsAccessTokenReturnsAUrl()
@@ -121,7 +124,8 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
             'PHP_AUTH_USER' => \Minz\Configuration::$application['flus_private_key'],
         ]);
 
-        $this->assertResponse($response, 200, null, [
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseHeaders($response, [
             'Content-Type' => 'application/json'
         ]);
 
@@ -149,7 +153,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
             'account_id' => $account_id,
         ]);
 
-        $this->assertResponse($response, 401);
+        $this->assertResponseCode($response, 401);
         $account = models\Account::find($account_id);
         $this->assertNull($account->access_token);
     }
@@ -167,7 +171,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
             'PHP_AUTH_USER' => \Minz\Configuration::$application['flus_private_key'],
         ]);
 
-        $this->assertResponse($response, 404);
+        $this->assertResponseCode($response, 404);
         $account = models\Account::find($account_id);
         $this->assertNull($account->access_token);
     }
@@ -185,7 +189,8 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
             'PHP_AUTH_USER' => \Minz\Configuration::$application['flus_private_key'],
         ]);
 
-        $this->assertResponse($response, 200, null, [
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseHeaders($response, [
             'Content-Type' => 'application/json'
         ]);
         $output = json_decode($response->render(), true);
@@ -208,7 +213,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
             'PHP_AUTH_USER' => \Minz\Configuration::$application['flus_private_key'],
         ]);
 
-        $this->assertResponse($response, 200);
+        $this->assertResponseCode($response, 200);
         $account = models\Account::find($account_id);
         $this->assertEquals($now, $account->last_sync_at);
     }
@@ -224,7 +229,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
             'account_id' => $account_id,
         ]);
 
-        $this->assertResponse($response, 401);
+        $this->assertResponseCode($response, 401);
     }
 
     public function testExpiredAtFailsIfAccountIsInvalid()
@@ -240,7 +245,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
             'PHP_AUTH_USER' => \Minz\Configuration::$application['flus_private_key'],
         ]);
 
-        $this->assertResponse($response, 404);
+        $this->assertResponseCode($response, 404);
     }
 
     public function testSyncReturnsExpiredAt()
@@ -312,7 +317,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
             'account_ids' => [$account_id],
         ]);
 
-        $this->assertResponse($response, 401);
+        $this->assertResponseCode($response, 401);
     }
 
     public function showParamsProvider()

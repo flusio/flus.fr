@@ -14,31 +14,34 @@ class HomeTest extends \PHPUnit\Framework\TestCase
     {
         $response = $this->appRun('GET', '/');
 
-        $this->assertResponse($response, 200, 'Prenez le temps de suivre l’actualité');
-        $this->assertPointer($response, 'home/index.phtml');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, 'Prenez le temps de suivre l’actualité');
+        $this->assertResponsePointer($response, 'home/index.phtml');
     }
 
     public function testProjectRendersCorrectly()
     {
         $response = $this->appRun('GET', '/projet');
 
-        $this->assertResponse($response, 200, 'Le projet');
-        $this->assertPointer($response, 'home/project.phtml');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, 'Le projet');
+        $this->assertResponsePointer($response, 'home/project.phtml');
     }
 
     public function testPricingRendersCorrectly()
     {
         $response = $this->appRun('GET', '/tarifs');
 
-        $this->assertResponse($response, 200, 'Tarifs');
-        $this->assertPointer($response, 'home/pricing.phtml');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, 'Tarifs');
+        $this->assertResponsePointer($response, 'home/pricing.phtml');
     }
 
     public function testTourRedirectsToTourNews()
     {
         $response = $this->appRun('GET', '/visite');
 
-        $this->assertResponse($response, 302, '/visite/journal');
+        $this->assertResponseCode($response, 302, '/visite/journal');
     }
 
     /**
@@ -48,60 +51,64 @@ class HomeTest extends \PHPUnit\Framework\TestCase
     {
         $response = $this->appRun('GET', "/visite/{$page}");
 
-        $this->assertResponse($response, 200, 'Visite guidée');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, 'Visite guidée');
     }
 
     public function testTourPageFailsIfPageUnknown()
     {
         $response = $this->appRun('GET', '/visite/unknown');
 
-        $this->assertResponse($response, 404);
+        $this->assertResponseCode($response, 404);
     }
 
     public function testCreditsRendersCorrectly()
     {
         $response = $this->appRun('GET', '/credits');
 
-        $this->assertResponse($response, 200, 'Crédits');
-        $this->assertPointer($response, 'home/credits.phtml');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, 'Crédits');
+        $this->assertResponsePointer($response, 'home/credits.phtml');
     }
 
     public function testLegalRendersCorrectly()
     {
         $response = $this->appRun('GET', '/mentions-legales');
 
-        $this->assertResponse($response, 200, 'Mentions légales');
-        $this->assertPointer($response, 'home/legal.phtml');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, 'Mentions légales');
+        $this->assertResponsePointer($response, 'home/legal.phtml');
     }
 
     public function testCgvRendersCorrectly()
     {
         $response = $this->appRun('GET', '/cgv');
 
-        $this->assertResponse($response, 200, 'Conditions Générales de Vente');
-        $this->assertPointer($response, 'home/cgv.phtml');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, 'Conditions Générales de Vente');
+        $this->assertResponsePointer($response, 'home/cgv.phtml');
     }
 
     public function testRobotsRendersCorrectly()
     {
         $response = $this->appRun('GET', '/robots.txt');
 
-        $this->assertResponse($response, 200);
+        $this->assertResponseCode($response, 200);
     }
 
     public function testSitemapRendersCorrectly()
     {
         $response = $this->appRun('GET', '/sitemap.xml');
 
-        $this->assertResponse($response, 200);
+        $this->assertResponseCode($response, 200);
     }
 
     public function testContactRendersCorrectly()
     {
         $response = $this->appRun('GET', '/contact');
 
-        $this->assertResponse($response, 200);
-        $this->assertPointer($response, 'home/contact.phtml');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponsePointer($response, 'home/contact.phtml');
     }
 
     public function testSendContactEmailSendsTwoEmails()
@@ -118,8 +125,9 @@ class HomeTest extends \PHPUnit\Framework\TestCase
             'content' => $content,
         ]);
 
-        $this->assertResponse($response, 200, 'Votre message a bien été envoyé.');
-        $this->assertPointer($response, 'home/contact.phtml');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, 'Votre message a bien été envoyé.');
+        $this->assertResponsePointer($response, 'home/contact.phtml');
         $this->assertEmailsCount(2);
 
         $email_sent = \Minz\Tests\Mailer::take(0);
@@ -142,8 +150,9 @@ class HomeTest extends \PHPUnit\Framework\TestCase
             'content' => implode("\n", $this->fake('paragraphs')),
         ]);
 
-        $this->assertResponse($response, 400, 'L’adresse courriel est obligatoire.');
-        $this->assertPointer($response, 'home/contact.phtml');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'L’adresse courriel est obligatoire.');
+        $this->assertResponsePointer($response, 'home/contact.phtml');
         $this->assertEmailsCount(0);
     }
 
@@ -155,8 +164,9 @@ class HomeTest extends \PHPUnit\Framework\TestCase
             'content' => implode("\n", $this->fake('paragraphs')),
         ]);
 
-        $this->assertResponse($response, 400, 'L’adresse courriel que vous avez fournie est invalide.');
-        $this->assertPointer($response, 'home/contact.phtml');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'L’adresse courriel que vous avez fournie est invalide.');
+        $this->assertResponsePointer($response, 'home/contact.phtml');
         $this->assertEmailsCount(0);
     }
 
@@ -167,8 +177,9 @@ class HomeTest extends \PHPUnit\Framework\TestCase
             'content' => implode("\n", $this->fake('paragraphs')),
         ]);
 
-        $this->assertResponse($response, 400, 'Le sujet est obligatoire');
-        $this->assertPointer($response, 'home/contact.phtml');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'Le sujet est obligatoire');
+        $this->assertResponsePointer($response, 'home/contact.phtml');
         $this->assertEmailsCount(0);
     }
 
@@ -179,8 +190,9 @@ class HomeTest extends \PHPUnit\Framework\TestCase
             'subject' => $this->fake('sentence'),
         ]);
 
-        $this->assertResponse($response, 400, 'Le message est obligatoire');
-        $this->assertPointer($response, 'home/contact.phtml');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'Le message est obligatoire');
+        $this->assertResponsePointer($response, 'home/contact.phtml');
         $this->assertEmailsCount(0);
     }
 
@@ -195,8 +207,9 @@ class HomeTest extends \PHPUnit\Framework\TestCase
             'website' => $this->fake('url'),
         ]);
 
-        $this->assertResponse($response, 200, 'Votre message a bien été envoyé.');
-        $this->assertPointer($response, 'home/contact.phtml');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, 'Votre message a bien été envoyé.');
+        $this->assertResponsePointer($response, 'home/contact.phtml');
         $this->assertEmailsCount(0);
     }
 
@@ -204,16 +217,16 @@ class HomeTest extends \PHPUnit\Framework\TestCase
     {
         $response = $this->appRun('GET', '/securite');
 
-        $this->assertResponse($response, 200);
-        $this->assertPointer($response, 'home/security.phtml');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponsePointer($response, 'home/security.phtml');
     }
 
     public function testSecurityTxtRendersCorrectly()
     {
         $response = $this->appRun('GET', '/.well-known/security.txt');
 
-        $this->assertResponse($response, 200);
-        $this->assertPointer($response, 'home/security.txt');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponsePointer($response, 'home/security.txt');
     }
 
     public function tourPagesProvider()

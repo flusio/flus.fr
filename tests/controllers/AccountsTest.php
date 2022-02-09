@@ -31,8 +31,9 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('GET', '/account');
 
-        $this->assertResponse($response, 200, $email);
-        $this->assertPointer($response, 'accounts/show.phtml');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, $email);
+        $this->assertResponsePointer($response, 'accounts/show.phtml');
     }
 
     /**
@@ -53,7 +54,8 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('GET', '/account');
 
-        $this->assertResponse($response, 200, 'Votre abonnement expirera le');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, 'Votre abonnement expirera le');
     }
 
     /**
@@ -74,7 +76,8 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('GET', '/account');
 
-        $this->assertResponse($response, 200, 'Votre abonnement a expiré le');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, 'Votre abonnement a expiré le');
     }
 
     /**
@@ -94,7 +97,8 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('GET', '/account');
 
-        $this->assertResponse($response, 200, 'Vous bénéficiez d’un abonnement gratuit');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, 'Vous bénéficiez d’un abonnement gratuit');
     }
 
     /**
@@ -118,8 +122,9 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('GET', '/account');
 
-        $this->assertResponse($response, 200, 'Votre paiement est en cours de traitement');
-        $this->assertPointer($response, 'accounts/show.phtml');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, 'Votre paiement est en cours de traitement');
+        $this->assertResponsePointer($response, 'accounts/show.phtml');
     }
 
     /**
@@ -159,14 +164,15 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('GET', '/account');
 
-        $this->assertResponse($response, 302, '/account/address');
+        $this->assertResponseCode($response, 302, '/account/address');
     }
 
     public function testShowFailsIfNotConnected()
     {
         $response = $this->appRun('GET', '/account');
 
-        $this->assertResponse($response, 401, 'Désolé, mais vous n’êtes pas connecté‧e');
+        $this->assertResponseCode($response, 401);
+        $this->assertResponseContains($response, 'Désolé, mais vous n’êtes pas connecté‧e');
     }
 
     public function testLoginRedirectsToShow()
@@ -184,7 +190,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
             'access_token' => $token,
         ]);
 
-        $this->assertResponse($response, 302, '/account');
+        $this->assertResponseCode($response, 302, '/account');
         $user = utils\CurrentUser::get();
         $this->assertNotNull($user);
         $this->assertSame($account_id, $user['account_id']);
@@ -226,7 +232,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
             'access_token' => $token,
         ]);
 
-        $this->assertResponse($response, 302, '/account');
+        $this->assertResponseCode($response, 302, '/account');
         $user = utils\CurrentUser::get();
         $this->assertNotNull($user);
         $this->assertSame($account_id, $user['account_id']);
@@ -248,7 +254,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
             'access_token' => $token,
         ]);
 
-        $this->assertResponse($response, 302, '/account');
+        $this->assertResponseCode($response, 302, '/account');
         $user = utils\CurrentUser::get();
         $this->assertNotNull($user);
         $this->assertSame($account_id, $user['account_id']);
@@ -269,7 +275,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
             'access_token' => $token,
         ]);
 
-        $this->assertResponse($response, 404);
+        $this->assertResponseCode($response, 404);
         $user = utils\CurrentUser::get();
         $this->assertNull($user);
     }
@@ -289,7 +295,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
             'access_token' => 'not the token',
         ]);
 
-        $this->assertResponse($response, 400);
+        $this->assertResponseCode($response, 400);
         $user = utils\CurrentUser::get();
         $this->assertNull($user);
     }
@@ -309,7 +315,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
             'access_token' => $token,
         ]);
 
-        $this->assertResponse($response, 400);
+        $this->assertResponseCode($response, 400);
         $user = utils\CurrentUser::get();
         $this->assertNull($user);
     }
@@ -329,7 +335,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
             'access_token' => null,
         ]);
 
-        $this->assertResponse($response, 400);
+        $this->assertResponseCode($response, 400);
         $user = utils\CurrentUser::get();
         $this->assertNull($user);
     }
@@ -350,7 +356,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         } else {
             $expected_location = 'https://flus.io';
         }
-        $this->assertResponse($response, 302, $expected_location);
+        $this->assertResponseCode($response, 302, $expected_location);
         $user = utils\CurrentUser::get();
         $this->assertNull($user);
     }
@@ -363,7 +369,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
             'csrf' => 'not the token',
         ]);
 
-        $this->assertResponse($response, 302, '/');
+        $this->assertResponseCode($response, 302, '/');
         $user = utils\CurrentUser::get();
         $this->assertNotNull($user);
     }
@@ -374,15 +380,15 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('GET', '/account/address');
 
-        $this->assertResponse($response, 200);
-        $this->assertPointer($response, 'accounts/address.phtml');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponsePointer($response, 'accounts/address.phtml');
     }
 
     public function testAddressFailsIfNotConnected()
     {
         $response = $this->appRun('GET', '/account/address');
 
-        $this->assertResponse($response, 401);
+        $this->assertResponseCode($response, 401);
     }
 
     /**
@@ -398,7 +404,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
             'address' => $address,
         ]);
 
-        $this->assertResponse($response, 302, '/account');
+        $this->assertResponseCode($response, 302, '/account');
         $account = models\Account::find($user['account_id']);
         $this->assertSame($email, $account->email);
         $this->assertSame($address['first_name'], $account->address_first_name);
@@ -424,7 +430,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
             'address' => $address,
         ]);
 
-        $this->assertResponse($response, 302, '/account');
+        $this->assertResponseCode($response, 302, '/account');
         $account = models\Account::find($user['account_id']);
         $this->assertSame($email, $account->email);
         $this->assertSame($address['first_name'], $account->address_first_name);
@@ -445,7 +451,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
             'address' => $address,
         ]);
 
-        $this->assertResponse($response, 401);
+        $this->assertResponseCode($response, 401);
     }
 
     /**
@@ -461,7 +467,8 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
             'address' => $address,
         ]);
 
-        $this->assertResponse($response, 400, 'Une vérification de sécurité a échoué');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'Une vérification de sécurité a échoué');
     }
 
     /**
@@ -478,7 +485,8 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
             'address' => $address,
         ]);
 
-        $this->assertResponse($response, 400, 'L’adresse courriel que vous avez fournie est invalide');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'L’adresse courriel que vous avez fournie est invalide');
         $account = models\Account::find($user['account_id']);
         $this->assertNotSame($email, $account->email);
     }
@@ -495,7 +503,8 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
             'address' => $address,
         ]);
 
-        $this->assertResponse($response, 400, 'L’adresse courriel est obligatoire');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'L’adresse courriel est obligatoire');
     }
 
     /**
@@ -512,7 +521,8 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
             'address' => $address,
         ]);
 
-        $this->assertResponse($response, 400, 'Votre prénom est obligatoire');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'Votre prénom est obligatoire');
     }
 
     /**
@@ -529,7 +539,8 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
             'address' => $address,
         ]);
 
-        $this->assertResponse($response, 400, 'Votre nom est obligatoire');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'Votre nom est obligatoire');
     }
 
     /**
@@ -546,7 +557,8 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
             'address' => $address,
         ]);
 
-        $this->assertResponse($response, 400, 'Votre adresse est incomplète');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'Votre adresse est incomplète');
     }
 
     /**
@@ -563,7 +575,8 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
             'address' => $address,
         ]);
 
-        $this->assertResponse($response, 400, 'Votre adresse est incomplète');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'Votre adresse est incomplète');
     }
 
     /**
@@ -580,7 +593,8 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
             'address' => $address,
         ]);
 
-        $this->assertResponse($response, 400, 'Votre adresse est incomplète');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'Votre adresse est incomplète');
     }
 
     /**
@@ -597,7 +611,8 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
             'address' => $address,
         ]);
 
-        $this->assertResponse($response, 400, 'Le pays que vous avez renseigné est invalide.');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'Le pays que vous avez renseigné est invalide.');
     }
 
     public function testSetReminderChangesReminder()
@@ -613,7 +628,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
             'reminder' => $new_reminder,
         ]);
 
-        $this->assertResponse($response, 302, '/account');
+        $this->assertResponseCode($response, 302, '/account');
         $account = models\Account::find($user['account_id']);
         $this->assertSame($new_reminder, $account->reminder);
     }
@@ -631,7 +646,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
             'reminder' => $new_reminder,
         ]);
 
-        $this->assertResponse($response, 401);
+        $this->assertResponseCode($response, 401);
         $account = models\Account::find($account_id);
         $this->assertSame($old_reminder, $account->reminder);
     }
@@ -649,7 +664,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
             'reminder' => $new_reminder,
         ]);
 
-        $this->assertResponse($response, 302, '/account');
+        $this->assertResponseCode($response, 302, '/account');
         $account = models\Account::find($user['account_id']);
         $this->assertSame($old_reminder, $account->reminder);
     }

@@ -27,15 +27,15 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('GET', '/admin');
 
-        $this->assertResponse($response, 200);
-        $this->assertPointer($response, 'admin/payments/index.phtml');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponsePointer($response, 'admin/payments/index.phtml');
     }
 
     public function testIndexFailsIfNotConnected()
     {
         $response = $this->appRun('GET', '/admin');
 
-        $this->assertResponse($response, 302, '/admin/login');
+        $this->assertResponseCode($response, 302, '/admin/login');
     }
 
     public function testInitRendersCorrectly()
@@ -44,15 +44,15 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('GET', '/admin/payments/new');
 
-        $this->assertResponse($response, 200);
-        $this->assertPointer($response, 'admin/payments/init.phtml');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponsePointer($response, 'admin/payments/init.phtml');
     }
 
     public function testInitFailsIfNotConnected()
     {
         $response = $this->appRun('GET', '/admin/payments/new');
 
-        $this->assertResponse($response, 302, '/admin/login?from=admin%2Fpayments%23init');
+        $this->assertResponseCode($response, 302, '/admin/login?from=admin%2Fpayments%23init');
     }
 
     /**
@@ -69,7 +69,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
             'amount' => $amount,
         ]);
 
-        $this->assertResponse($response, 302, '/admin?status=payment_created');
+        $this->assertResponseCode($response, 302, '/admin?status=payment_created');
     }
 
     /**
@@ -86,7 +86,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
             'amount' => $amount,
         ]);
 
-        $this->assertResponse($response, 302, '/admin?status=payment_created');
+        $this->assertResponseCode($response, 302, '/admin?status=payment_created');
         $payment = models\Payment::take();
         $this->assertNotNull($payment->invoice_number);
         $this->assertNull($payment->completed_at);
@@ -107,7 +107,8 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
             'amount' => $amount,
         ]);
 
-        $this->assertResponse($response, 400, 'Le type de paiement est invalide');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'Le type de paiement est invalide');
     }
 
     /**
@@ -124,7 +125,8 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
             'amount' => $amount,
         ]);
 
-        $this->assertResponse($response, 400, 'L’adresse courriel que vous avez fournie est invalide.');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'L’adresse courriel que vous avez fournie est invalide.');
     }
 
     /**
@@ -139,7 +141,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
             'amount' => $amount,
         ]);
 
-        $this->assertResponse($response, 302, '/admin/login?from=admin%2Fpayments%23init');
+        $this->assertResponseCode($response, 302, '/admin/login?from=admin%2Fpayments%23init');
     }
 
     /**
@@ -156,7 +158,8 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
             'amount' => $amount,
         ]);
 
-        $this->assertResponse($response, 400, 'Une vérification de sécurité a échoué');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'Une vérification de sécurité a échoué');
     }
 
     public function testShowRendersCorrectly()
@@ -166,8 +169,8 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('GET', '/admin/payments/' . $payment_id);
 
-        $this->assertResponse($response, 200);
-        $this->assertPointer($response, 'admin/payments/show.phtml');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponsePointer($response, 'admin/payments/show.phtml');
     }
 
     public function testShowFailsIfInvalidId()
@@ -176,7 +179,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('GET', '/admin/payments/invalid');
 
-        $this->assertResponse($response, 404);
+        $this->assertResponseCode($response, 404);
     }
 
     public function testShowFailsIfNotConnected()
@@ -185,7 +188,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('GET', '/admin/payments/' . $payment_id);
 
-        $this->assertResponse($response, 302, '/admin/login?from=admin%2Fpayments%23index');
+        $this->assertResponseCode($response, 302, '/admin/login?from=admin%2Fpayments%23index');
     }
 
     public function testConfirmRendersCorrectly()
@@ -199,7 +202,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
             'csrf' => (new \Minz\CSRF())->generateToken(),
         ]);
 
-        $this->assertResponse($response, 302, '/admin?status=payment_confirmed');
+        $this->assertResponseCode($response, 302, '/admin?status=payment_confirmed');
         $payment = models\Payment::find($payment_id);
         $this->assertTrue($payment->is_paid);
     }
@@ -215,7 +218,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
             'csrf' => (new \Minz\CSRF())->generateToken(),
         ]);
 
-        $this->assertResponse($response, 404);
+        $this->assertResponseCode($response, 404);
     }
 
     public function testConfirmFailsIfAlreadyPaid()
@@ -229,7 +232,8 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
             'csrf' => (new \Minz\CSRF())->generateToken(),
         ]);
 
-        $this->assertResponse($response, 400, 'Ce paiement a déjà été payé');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'Ce paiement a déjà été payé');
     }
 
     public function testConfirmFailsIfNotConnected()
@@ -242,7 +246,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
             'csrf' => (new \Minz\CSRF())->generateToken(),
         ]);
 
-        $this->assertResponse($response, 302, '/admin/login?from=admin%2Fpayments%23index');
+        $this->assertResponseCode($response, 302, '/admin/login?from=admin%2Fpayments%23index');
         $payment = models\Payment::find($payment_id);
         $this->assertFalse($payment->is_paid);
     }
@@ -258,7 +262,8 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
             'csrf' => 'not the token',
         ]);
 
-        $this->assertResponse($response, 400, 'Une vérification de sécurité a échoué');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'Une vérification de sécurité a échoué');
         $payment = models\Payment::find($payment_id);
         $this->assertFalse($payment->is_paid);
     }
@@ -275,7 +280,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
             'csrf' => (new \Minz\CSRF())->generateToken(),
         ]);
 
-        $this->assertResponse($response, 302, '/admin?status=payment_deleted');
+        $this->assertResponseCode($response, 302, '/admin?status=payment_deleted');
         $this->assertFalse(models\Payment::exists($payment_id));
     }
 
@@ -287,7 +292,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
             'csrf' => (new \Minz\CSRF())->generateToken(),
         ]);
 
-        $this->assertResponse($response, 404);
+        $this->assertResponseCode($response, 404);
     }
 
     public function testDestroyFailsIfNotConnected()
@@ -301,7 +306,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
             'csrf' => (new \Minz\CSRF())->generateToken(),
         ]);
 
-        $this->assertResponse($response, 302, '/admin/login?from=admin%2Fpayments%23index');
+        $this->assertResponseCode($response, 302, '/admin/login?from=admin%2Fpayments%23index');
         $this->assertTrue(models\Payment::exists($payment_id));
     }
 
@@ -317,7 +322,8 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
             'csrf' => 'not the token',
         ]);
 
-        $this->assertResponse($response, 400, 'Une vérification de sécurité a échoué');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'Une vérification de sécurité a échoué');
         $this->assertTrue(models\Payment::exists($payment_id));
     }
 
@@ -333,7 +339,8 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
             'csrf' => (new \Minz\CSRF())->generateToken(),
         ]);
 
-        $this->assertResponse($response, 400, 'Ce paiement a déjà été payé');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'Ce paiement a déjà été payé');
         $this->assertTrue(models\Payment::exists($payment_id));
     }
 
@@ -350,7 +357,8 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
             'csrf' => (new \Minz\CSRF())->generateToken(),
         ]);
 
-        $this->assertResponse($response, 400, 'Ce paiement est associé à une facture');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'Ce paiement est associé à une facture');
         $this->assertTrue(models\Payment::exists($payment_id));
     }
 

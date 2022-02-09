@@ -16,8 +16,8 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('GET', "/payments/{$payment_id}/pay");
 
-        $this->assertResponse($response, 200);
-        $this->assertPointer($response, 'stripe/redirection.phtml');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponsePointer($response, 'stripe/redirection.phtml');
     }
 
     public function testPayConfiguresStripe()
@@ -55,7 +55,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     {
         $response = $this->appRun('GET', "/payments/unknown/pay");
 
-        $this->assertResponse($response, 404);
+        $this->assertResponseCode($response, 404);
     }
 
     public function testPayWithPaidPaymentReturnsBadRequest()
@@ -66,20 +66,22 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('GET', "/payments/{$payment_id}/pay");
 
-        $this->assertResponse($response, 400);
+        $this->assertResponseCode($response, 400);
     }
 
     public function testSucceededRendersCorrectly()
     {
         $response = $this->appRun('GET', '/merci');
 
-        $this->assertResponse($response, 200, 'Votre paiement a bien été pris en compte');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, 'Votre paiement a bien été pris en compte');
     }
 
     public function testCanceledRendersCorrectly()
     {
         $response = $this->appRun('GET', '/annulation');
 
-        $this->assertResponse($response, 200, 'Votre paiement a bien été annulé');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, 'Votre paiement a bien été annulé');
     }
 }

@@ -36,8 +36,9 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
 
         $expected_amount = ($common_pot_revenues - $common_pot_expenses) / 100;
         $expected_formatted_amount = number_format($expected_amount, 2, ',', '&nbsp') . '&nbsp;€';
-        $this->assertResponse($response, 200, $expected_formatted_amount);
-        $this->assertPointer($response, 'common_pots/show.phtml');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, $expected_formatted_amount);
+        $this->assertResponsePointer($response, 'common_pots/show.phtml');
     }
 
     /**
@@ -55,8 +56,8 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('GET', '/account/common-pot/contribute');
 
-        $this->assertResponse($response, 200);
-        $this->assertPointer($response, 'common_pots/contribution.phtml');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponsePointer($response, 'common_pots/contribution.phtml');
     }
 
     /**
@@ -78,7 +79,8 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('GET', '/account/common-pot/contribute');
 
-        $this->assertResponse($response, 200, 'Attention, vous avez un paiement en cours de traitement');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, 'Attention, vous avez un paiement en cours de traitement');
     }
 
 
@@ -88,7 +90,7 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('GET', '/account/common-pot/contribute');
 
-        $this->assertResponse($response, 302, '/account/address');
+        $this->assertResponseCode($response, 302, '/account/address');
     }
 
     /**
@@ -106,7 +108,7 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('GET', '/account/common-pot/contribute');
 
-        $this->assertResponse($response, 401);
+        $this->assertResponseCode($response, 401);
     }
 
     /**
@@ -130,7 +132,7 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
 
         $payment = models\Payment::take();
         $redirect_to = "/payments/{$payment->id}/pay";
-        $this->assertResponse($response, 302, $redirect_to);
+        $this->assertResponseCode($response, 302, $redirect_to);
     }
 
     /**
@@ -154,7 +156,7 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
             'accept_cgv' => true,
         ]);
 
-        $this->assertResponse($response, 302);
+        $this->assertResponseCode($response, 302);
     }
 
     /**
@@ -200,7 +202,7 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
             'accept_cgv' => true,
         ]);
 
-        $this->assertResponse($response, 302, '/account/address');
+        $this->assertResponseCode($response, 302, '/account/address');
     }
 
     /**
@@ -222,7 +224,7 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
             'accept_cgv' => true,
         ]);
 
-        $this->assertResponse($response, 401);
+        $this->assertResponseCode($response, 401);
     }
 
     /**
@@ -244,7 +246,8 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
             'accept_cgv' => true,
         ]);
 
-        $this->assertResponse($response, 400, 'Une vérification de sécurité a échoué');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'Une vérification de sécurité a échoué');
     }
 
     /**
@@ -266,11 +269,8 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
             'accept_cgv' => false,
         ]);
 
-        $this->assertResponse(
-            $response,
-            400,
-            'Vous devez accepter ces conditions pour participer à la cagnotte.'
-        );
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'Vous devez accepter ces conditions pour participer à la cagnotte.');
     }
 
     /**
@@ -293,11 +293,8 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
             'accept_cgv' => true,
         ]);
 
-        $this->assertResponse(
-            $response,
-            400,
-            'Le montant doit être compris entre 1 et 1000 €.',
-        );
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'Le montant doit être compris entre 1 et 1000 €.');
     }
 
     /**
@@ -320,11 +317,8 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
             'accept_cgv' => true,
         ]);
 
-        $this->assertResponse(
-            $response,
-            400,
-            'Le montant doit être compris entre 1 et 1000 €.',
-        );
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'Le montant doit être compris entre 1 et 1000 €.');
     }
 
     /**
@@ -347,11 +341,8 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
             'accept_cgv' => true,
         ]);
 
-        $this->assertResponse(
-            $response,
-            400,
-            'Le montant doit être compris entre 1 et 1000 €.',
-        );
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'Le montant doit être compris entre 1 et 1000 €.');
     }
 
     /**
@@ -372,11 +363,8 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
             'accept_cgv' => true,
         ]);
 
-        $this->assertResponse(
-            $response,
-            400,
-            'Le montant doit être compris entre 1 et 1000 €.',
-        );
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'Le montant doit être compris entre 1 et 1000 €.');
     }
 
     /**
@@ -401,8 +389,9 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('GET', '/account/common-pot/use');
 
-        $this->assertResponse($response, 200, 'Vous êtes sur le point de renouveler un mois');
-        $this->assertPointer($response, 'common_pots/usage.phtml');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, 'Vous êtes sur le point de renouveler un mois');
+        $this->assertResponsePointer($response, 'common_pots/usage.phtml');
     }
 
     /**
@@ -430,7 +419,8 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('GET', '/account/common-pot/use');
 
-        $this->assertResponse($response, 200, 'il n’y a plus assez d’argent dans la cagnotte');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, 'il n’y a plus assez d’argent dans la cagnotte');
     }
 
     /**
@@ -455,7 +445,8 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('GET', '/account/common-pot/use');
 
-        $this->assertResponse($response, 200, 'Vous bénéficiez déjà d’un compte gratuit');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, 'Vous bénéficiez déjà d’un compte gratuit');
     }
 
     /**
@@ -480,9 +471,9 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('GET', '/account/common-pot/use');
 
-        $this->assertResponse(
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains(
             $response,
-            200,
             'Vous pourrez utiliser la cagnotte lorsque votre abonnement sera sur le point d’expirer'
         );
     }
@@ -493,7 +484,7 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('GET', '/account/common-pot/use');
 
-        $this->assertResponse($response, 302, '/account/address');
+        $this->assertResponseCode($response, 302, '/account/address');
     }
 
     /**
@@ -511,7 +502,7 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('GET', '/account/common-pot/use');
 
-        $this->assertResponse($response, 401);
+        $this->assertResponseCode($response, 401);
     }
 
     /**
@@ -541,7 +532,7 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
             'accept_cgv' => true,
         ]);
 
-        $this->assertResponse($response, 302, '/account');
+        $this->assertResponseCode($response, 302, '/account');
         $this->assertSame(1, models\PotUsage::count());
         $account = models\Account::find($user['account_id']);
         $this->assertGreaterThan($expired_at->getTimestamp(), $account->expired_at->getTimestamp());
@@ -564,7 +555,7 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
             'accept_cgv' => true,
         ]);
 
-        $this->assertResponse($response, 302, '/account/address');
+        $this->assertResponseCode($response, 302, '/account/address');
         $this->assertSame(0, models\PotUsage::count());
         $account = models\Account::find($user['account_id']);
         $this->assertEquals($account->expired_at->getTimestamp(), $expired_at->getTimestamp());
@@ -595,7 +586,7 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
             'accept_cgv' => true,
         ]);
 
-        $this->assertResponse($response, 401);
+        $this->assertResponseCode($response, 401);
         $this->assertSame(0, models\PotUsage::count());
         $account = models\Account::find($account_id);
         $this->assertEquals($account->expired_at->getTimestamp(), $expired_at->getTimestamp());
@@ -626,7 +617,8 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
             'accept_cgv' => false,
         ]);
 
-        $this->assertResponse($response, 400, 'Vous devez accepter ces conditions');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'Vous devez accepter ces conditions');
         $this->assertSame(0, models\PotUsage::count());
         $account = models\Account::find($user['account_id']);
         $this->assertEquals($account->expired_at->getTimestamp(), $expired_at->getTimestamp());
@@ -657,7 +649,8 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
             'accept_cgv' => true,
         ]);
 
-        $this->assertResponse($response, 400, 'Une vérification de sécurité a échoué');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'Une vérification de sécurité a échoué');
         $this->assertSame(0, models\PotUsage::count());
         $account = models\Account::find($user['account_id']);
         $this->assertEquals($account->expired_at->getTimestamp(), $expired_at->getTimestamp());
@@ -688,7 +681,8 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
             'accept_cgv' => true,
         ]);
 
-        $this->assertResponse($response, 400, 'La cagnotte n’est pas suffisamment fournie');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'La cagnotte n’est pas suffisamment fournie');
         $this->assertSame(0, models\PotUsage::count());
         $account = models\Account::find($user['account_id']);
         $this->assertEquals($account->expired_at->getTimestamp(), $expired_at->getTimestamp());
@@ -719,7 +713,8 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
             'accept_cgv' => true,
         ]);
 
-        $this->assertResponse($response, 400, 'Votre abonnement n’est pas encore prêt d’expirer');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'Votre abonnement n’est pas encore prêt d’expirer');
         $this->assertSame(0, models\PotUsage::count());
         $account = models\Account::find($user['account_id']);
         $this->assertEquals($account->expired_at->getTimestamp(), $expired_at->getTimestamp());
@@ -750,7 +745,8 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
             'accept_cgv' => true,
         ]);
 
-        $this->assertResponse($response, 400, 'Votre abonnement n’est pas encore prêt d’expirer');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'Votre abonnement n’est pas encore prêt d’expirer');
         $this->assertSame(0, models\PotUsage::count());
         $account = models\Account::find($user['account_id']);
         $this->assertEquals($account->expired_at->getTimestamp(), $expired_at->getTimestamp());

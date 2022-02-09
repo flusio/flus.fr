@@ -25,7 +25,8 @@ class SystemTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('cli', '/system/init');
 
-        $this->assertResponse($response, 200, 'The system has been initialized.');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, 'The system has been initialized.');
         $this->assertTrue(file_exists($migration_file));
     }
 
@@ -34,7 +35,8 @@ class SystemTest extends \PHPUnit\Framework\TestCase
         $this->appRun('cli', '/system/init');
         $response = $this->appRun('cli', '/system/init');
 
-        $this->assertResponse($response, 500, 'The system is already initialized.');
+        $this->assertResponseCode($response, 500);
+        $this->assertResponseContains($response, 'The system is already initialized.');
     }
 
     public function testMigrateSucceeds()
@@ -45,7 +47,7 @@ class SystemTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('cli', '/system/migrate');
 
-        $this->assertResponse($response, 200);
+        $this->assertResponseCode($response, 200);
     }
 
     public function testMigrateDoesNothingWhenUptodate()
@@ -57,7 +59,8 @@ class SystemTest extends \PHPUnit\Framework\TestCase
         $this->appRun('cli', '/system/migrate');
         $response = $this->appRun('cli', '/system/migrate');
 
-        $this->assertResponse($response, 200, 'Your system is already up to date.');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, 'Your system is already up to date.');
     }
 
     public function testMigrateFailsWithAFailingMigrationReturningFalse()
@@ -84,7 +87,8 @@ class SystemTest extends \PHPUnit\Framework\TestCase
 
         @unlink($failing_migration_path);
 
-        $this->assertResponse($response, 500, 'TheFailingMigrationWithFalse: KO');
+        $this->assertResponseCode($response, 500);
+        $this->assertResponseContains($response, 'TheFailingMigrationWithFalse: KO');
     }
 
     public function testMigrateFailsWithAFailingMigrationReturningAMessage()
@@ -111,7 +115,8 @@ class SystemTest extends \PHPUnit\Framework\TestCase
 
         @unlink($failing_migration_path);
 
-        $this->assertResponse($response, 500, 'TheFailingMigrationWithMessage: this test fails :(');
+        $this->assertResponseCode($response, 500);
+        $this->assertResponseContains($response, 'TheFailingMigrationWithMessage: this test fails :(');
     }
 
     public function testMigrateFailsIfNotInitialized()
@@ -122,7 +127,8 @@ class SystemTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('cli', '/system/migrate');
 
-        $this->assertResponse($response, 500, 'You must initialize the system first.');
+        $this->assertResponseCode($response, 500);
+        $this->assertResponseContains($response, 'You must initialize the system first.');
     }
 
     public function testAllMigrationsCanBeRollback()
@@ -139,7 +145,7 @@ class SystemTest extends \PHPUnit\Framework\TestCase
             'steps' => $number_migrations,
         ]);
 
-        $this->assertResponse($response, 200);
+        $this->assertResponseCode($response, 200);
     }
 
     public function testRollbackWithAFailingRollback()
@@ -169,6 +175,7 @@ class SystemTest extends \PHPUnit\Framework\TestCase
 
         @unlink($failing_migration_path);
 
-        $this->assertResponse($response, 500, 'TheFailingRollbackWithFalse: KO');
+        $this->assertResponseCode($response, 500);
+        $this->assertResponseContains($response, 'TheFailingRollbackWithFalse: KO');
     }
 }

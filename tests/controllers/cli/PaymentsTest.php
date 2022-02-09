@@ -36,7 +36,8 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('CLI', '/payments/complete');
 
-        $this->assertResponse($response, 200, '1 payments completed');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, '1 payments completed');
         $payment = models\Payment::find($payment_id);
         $this->assertSame($now->getTimestamp(), $payment->completed_at->getTimestamp());
     }
@@ -141,7 +142,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('CLI', '/payments/complete');
 
-        $this->assertResponse($response, 200);
+        $this->assertResponseCode($response, 200);
         $payment = models\Payment::find($payment_id);
         $this->assertSame($completed_at->getTimestamp(), $payment->completed_at->getTimestamp());
     }
@@ -155,7 +156,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('CLI', '/payments/complete');
 
-        $this->assertResponse($response, 200);
+        $this->assertResponseCode($response, 200);
         $payment = models\Payment::find($payment_id);
         $this->assertNull($payment->completed_at);
     }

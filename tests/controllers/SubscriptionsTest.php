@@ -29,8 +29,8 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('GET', '/account/renew');
 
-        $this->assertResponse($response, 200);
-        $this->assertPointer($response, 'subscriptions/init.phtml');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponsePointer($response, 'subscriptions/init.phtml');
     }
 
     /**
@@ -50,7 +50,8 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('GET', '/account/renew');
 
-        $this->assertResponse($response, 200, 'Votre abonnement expirera le');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, 'Votre abonnement expirera le');
     }
 
     /**
@@ -74,7 +75,8 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('GET', '/account/renew');
 
-        $this->assertResponse($response, 200, 'Attention, vous avez un paiement en cours de traitement');
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, 'Attention, vous avez un paiement en cours de traitement');
     }
 
     public function testInitRedirectsIfNoAddress()
@@ -83,7 +85,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('GET', '/account/renew');
 
-        $this->assertResponse($response, 302, '/account/address');
+        $this->assertResponseCode($response, 302, '/account/address');
     }
 
     /**
@@ -101,7 +103,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('GET', '/account/renew');
 
-        $this->assertResponse($response, 401);
+        $this->assertResponseCode($response, 401);
     }
 
     /**
@@ -129,7 +131,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, models\Payment::count());
 
         $payment = models\Payment::take();
-        $this->assertResponse($response, 302, "/payments/{$payment->id}/pay");
+        $this->assertResponseCode($response, 302, "/payments/{$payment->id}/pay");
         $expected_amount = $frequency === 'month' ? 300 : 3000;
         $this->assertNull($payment->completed_at);
         $this->assertSame($expected_amount, $payment->amount);
@@ -178,7 +180,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
             'frequency' => $frequency,
         ]);
 
-        $this->assertResponse($response, 302, '/account/address');
+        $this->assertResponseCode($response, 302, '/account/address');
         $this->assertSame(0, models\Payment::count());
     }
 
@@ -202,7 +204,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
             'frequency' => $frequency,
         ]);
 
-        $this->assertResponse($response, 401);
+        $this->assertResponseCode($response, 401);
         $this->assertSame(0, models\Payment::count());
     }
 
@@ -227,7 +229,8 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
             'frequency' => $frequency,
         ]);
 
-        $this->assertResponse($response, 400, 'Vous devez choisir l’une des deux périodes proposées');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'Vous devez choisir l’une des deux périodes proposées');
         $this->assertSame(0, models\Payment::count());
     }
 
@@ -251,7 +254,8 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
             'frequency' => $frequency,
         ]);
 
-        $this->assertResponse($response, 400, 'Une vérification de sécurité a échoué');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'Une vérification de sécurité a échoué');
         $this->assertSame(0, models\Payment::count());
     }
 
