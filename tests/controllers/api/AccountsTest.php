@@ -306,6 +306,29 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $this->assertArrayNotHasKey($account_id, $result);
     }
 
+    public function testSyncIgnoresNullAccountIds()
+    {
+        $expired_at = $this->fakeUnique('dateTime')->format(\Minz\Model::DATETIME_FORMAT);
+        $account_id = $this->create('account', [
+            'expired_at' => $expired_at,
+        ]);
+
+        $response = $this->appRun('POST', '/api/accounts/sync', [
+            'account_ids' => [null, $account_id],
+        ], [
+            'PHP_AUTH_USER' => \Minz\Configuration::$application['flus_private_key'],
+        ]);
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseHeaders($response, [
+            'Content-Type' => 'application/json',
+        ]);
+        $result = json_decode($response->render(), true);
+        $this->assertFalse(isset($result[null]));
+        $this->assertArrayHasKey($account_id, $result);
+        $this->assertEquals($expired_at, $result[$account_id]);
+    }
+
     public function testSyncFailsIfMissingAuth()
     {
         $expired_at = $this->fakeUnique('dateTime')->format(\Minz\Model::DATETIME_FORMAT);
