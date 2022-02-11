@@ -45,7 +45,7 @@ endif
 
 .PHONY: test
 test: bin/phpunit  ## Run the test suite
-	php ./bin/phpunit \
+	XDEBUG_MODE=coverage php ./bin/phpunit \
 		$(COVERAGE) --whitelist ./src \
 		--bootstrap ./tests/bootstrap.php \
 		--testdox \
