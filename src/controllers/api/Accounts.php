@@ -145,10 +145,13 @@ class Accounts
      * last_sync_at properties.
      *
      * @request_header string PHP_AUTH_USER
-     * @request_param string[] account_ids
+     * @request_param string account_ids
+     *     A JSON array containing the list of account ids to sync
      *
      * @response 401
      *     if the auth header is invalid
+     * @response 400
+     *     if account_ids is not a valid JSON array
      * @response 200
      *     on success
      */
@@ -160,7 +163,13 @@ class Accounts
             return \Minz\Response::unauthorized();
         }
 
-        $account_ids = $request->paramArray('account_ids', []);
+        $account_ids = $request->param('account_ids', '[]');
+        $account_ids = json_decode($account_ids, true);
+        if (!is_array($account_ids)) {
+            return \Minz\Response::json(400, [
+                'error' => 'account_ids is not a valid JSON array',
+            ]);
+        }
 
         models\Account::daoCall('updateLastSyncAt', $account_ids, \Minz\Time::now());
 

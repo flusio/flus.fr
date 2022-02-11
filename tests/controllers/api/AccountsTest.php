@@ -256,7 +256,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/api/accounts/sync', [
-            'account_ids' => [$account_id],
+            'account_ids' => json_encode([$account_id]),
         ], [
             'PHP_AUTH_USER' => \Minz\Configuration::$application['flus_private_key'],
         ]);
@@ -281,7 +281,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/api/accounts/sync', [
-            'account_ids' => [$account_id],
+            'account_ids' => json_encode([$account_id]),
         ], [
             'PHP_AUTH_USER' => \Minz\Configuration::$application['flus_private_key'],
         ]);
@@ -296,7 +296,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $account_id = 'not-an-id';
 
         $response = $this->appRun('POST', '/api/accounts/sync', [
-            'account_ids' => [$account_id],
+            'account_ids' => json_encode([$account_id]),
         ], [
             'PHP_AUTH_USER' => \Minz\Configuration::$application['flus_private_key'],
         ]);
@@ -314,7 +314,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/api/accounts/sync', [
-            'account_ids' => [null, $account_id],
+            'account_ids' => json_encode([null, $account_id]),
         ], [
             'PHP_AUTH_USER' => \Minz\Configuration::$application['flus_private_key'],
         ]);
@@ -329,6 +329,28 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expired_at, $result[$account_id]);
     }
 
+    public function testSyncFailsIfAccountIdsIsNotValidJson()
+    {
+        $expired_at = $this->fakeUnique('dateTime')->format(\Minz\Model::DATETIME_FORMAT);
+        $account_id = $this->create('account', [
+            'expired_at' => $expired_at,
+        ]);
+
+        $response = $this->appRun('POST', '/api/accounts/sync', [
+            'account_ids' => $account_id,
+        ], [
+            'PHP_AUTH_USER' => \Minz\Configuration::$application['flus_private_key'],
+        ]);
+
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseHeaders($response, [
+            'Content-Type' => 'application/json',
+        ]);
+        $result = json_decode($response->render(), true);
+        $this->assertArrayHasKey('error', $result);
+        $this->assertSame('account_ids is not a valid JSON array', $result['error']);
+    }
+
     public function testSyncFailsIfMissingAuth()
     {
         $expired_at = $this->fakeUnique('dateTime')->format(\Minz\Model::DATETIME_FORMAT);
@@ -337,7 +359,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/api/accounts/sync', [
-            'account_ids' => [$account_id],
+            'account_ids' => json_encode([$account_id]),
         ]);
 
         $this->assertResponseCode($response, 401);
