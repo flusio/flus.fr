@@ -33,22 +33,24 @@
             <?php endif; ?>
         </p>
 
-        <form method="post" action="<?= url('account set reminder') ?>">
-            <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-            <input type="hidden" name="from" value="account" />
+        <?php if (!$account->isFree()): ?>
+            <form method="post" action="<?= url('account set reminder') ?>">
+                <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+                <input type="hidden" name="from" value="account" />
 
-            <p class="paragraph--center">
-                <?php if ($account->reminder): ?>
-                    <button type="submit" class="button--ghost" name="reminder" value="false">
-                        Désactiver le rappel
-                    </button>
-                <?php else: ?>
-                    <button type="submit" class="button--default" name="reminder" value="true">
-                        Activer un rappel
-                    </button>
-                <?php endif; ?>
-            </p>
-        </form>
+                <p class="paragraph--center">
+                    <?php if ($account->reminder): ?>
+                        <button type="submit" class="button--ghost" name="reminder" value="false">
+                            Désactiver le rappel
+                        </button>
+                    <?php else: ?>
+                        <button type="submit" class="button--default" name="reminder" value="true">
+                            Activer un rappel
+                        </button>
+                    <?php endif; ?>
+                </p>
+            </form>
+        <?php endif; ?>
     </div>
 
     <nav class="navaccount">
