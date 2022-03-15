@@ -117,7 +117,7 @@ class Account extends \Minz\Model
             'preferred_frequency' => 'month',
             'preferred_payment_type' => 'card',
             'preferred_service' => 'flusio',
-            'reminder' => false,
+            'reminder' => true,
             'address_country' => 'FR',
             'last_sync_at' => \Minz\Time::now(),
         ]);
