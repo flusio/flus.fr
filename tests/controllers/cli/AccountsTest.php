@@ -21,6 +21,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $this->create('account', [
             'reminder' => true,
             'expired_at' => \Minz\Time::fromNow(7, 'days')->format(\Minz\Model::DATETIME_FORMAT),
+            'last_sync_at' => \Minz\Time::now()->format(\Minz\Model::DATETIME_FORMAT),
             'email' => $email,
         ]);
 
@@ -44,6 +45,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $this->create('account', [
             'reminder' => true,
             'expired_at' => \Minz\Time::fromNow(2, 'days')->format(\Minz\Model::DATETIME_FORMAT),
+            'last_sync_at' => \Minz\Time::now()->format(\Minz\Model::DATETIME_FORMAT),
             'email' => $email,
         ]);
 
@@ -67,6 +69,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $this->create('account', [
             'reminder' => true,
             'expired_at' => \Minz\Time::ago(1, 'day')->format(\Minz\Model::DATETIME_FORMAT),
+            'last_sync_at' => \Minz\Time::now()->format(\Minz\Model::DATETIME_FORMAT),
             'email' => $email,
         ]);
 
@@ -91,11 +94,13 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $this->create('account', [
             'reminder' => true,
             'expired_at' => \Minz\Time::ago(1, 'day')->format(\Minz\Model::DATETIME_FORMAT),
+            'last_sync_at' => \Minz\Time::now()->format(\Minz\Model::DATETIME_FORMAT),
             'email' => $email_1,
         ]);
         $this->create('account', [
             'reminder' => true,
             'expired_at' => \Minz\Time::ago(1, 'day')->format(\Minz\Model::DATETIME_FORMAT),
+            'last_sync_at' => \Minz\Time::now()->format(\Minz\Model::DATETIME_FORMAT),
             'email' => $email_2,
         ]);
 
@@ -119,6 +124,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $this->create('account', [
             'reminder' => 0,
             'expired_at' => \Minz\Time::fromNow(7, 'days')->format(\Minz\Model::DATETIME_FORMAT),
+            'last_sync_at' => \Minz\Time::now()->format(\Minz\Model::DATETIME_FORMAT),
             'email' => $email,
         ]);
 
@@ -135,8 +141,29 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $this->create('account', [
             'reminder' => true,
             'expired_at' => (new \DateTime('1970-01-01'))->format(\Minz\Model::DATETIME_FORMAT),
+            'last_sync_at' => \Minz\Time::now()->format(\Minz\Model::DATETIME_FORMAT),
             'email' => $email,
         ]);
+
+        $response = $this->appRun('cli', '/accounts/remind');
+
+        $this->assertResponseCode($response, 200);
+        $this->assertEmailsCount(0);
+    }
+
+    public function testRemindDoesNotSendEmailIfAccountIsNotSynced()
+    {
+        $this->freeze($this->fake('dateTime'));
+        $hours = $this->fake('numberBetween', 25, 90);
+        $email = $this->fake('email');
+        $this->create('account', [
+            'reminder' => true,
+            'expired_at' => \Minz\Time::fromNow(7, 'days')->format(\Minz\Model::DATETIME_FORMAT),
+            'last_sync_at' => \Minz\Time::ago($hours, 'hours')->format(\Minz\Model::DATETIME_FORMAT),
+            'email' => $email,
+        ]);
+
+        $this->assertEmailsCount(0);
 
         $response = $this->appRun('cli', '/accounts/remind');
 

@@ -252,6 +252,19 @@ class Account extends \Minz\Model
     }
 
     /**
+     * Return whether the account is sync or not.
+     *
+     * If the account is not sync, it probably means the user deleted its
+     * account on the connected services (i.e. flusio and/or FreshRSS).
+     *
+     * @return boolean
+     */
+    public function isSync()
+    {
+        return $this->last_sync_at && $this->last_sync_at >= \Minz\Time::ago(24, 'hours');
+    }
+
+    /**
      * Return the list of payments associated to this account
      *
      * @return \Website\models\Payment[]

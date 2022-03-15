@@ -99,7 +99,7 @@ class Accounts
         $number_reminders = 0;
 
         foreach ($accounts as $account) {
-            if ($account->isFree()) {
+            if ($account->isFree() || !$account->isSync()) {
                 continue;
             }
 
