@@ -38,23 +38,6 @@
         <p class="paragraph--center">
             Vous pourrez utiliser la cagnotte lorsque votre abonnement sera sur le point d’expirer (à 7 jours ou moins). Patience&nbsp;!
         </p>
-
-        <form method="post" action="<?= url('account set reminder') ?>">
-            <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
-            <input type="hidden" name="from" value="common pot usage" />
-
-            <p class="paragraph--center">
-                <?php if ($account->reminder): ?>
-                    <button type="submit" class="button--ghost" name="reminder" value="false">
-                        Désactiver le rappel
-                    </button>
-                <?php else: ?>
-                    <button type="submit" class="button--default" name="reminder" value="true">
-                        Activer un rappel
-                    </button>
-                <?php endif; ?>
-            </p>
-        </form>
     <?php elseif (!$full_enough): ?>
         <p class="paragraph--center">
             Malheureusement, il n’y a plus assez d’argent dans la cagnotte pour
