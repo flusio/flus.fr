@@ -111,7 +111,7 @@ class HomeTest extends \PHPUnit\Framework\TestCase
         $this->assertResponsePointer($response, 'home/contact.phtml');
     }
 
-    public function testSendContactEmailSendsTwoEmails()
+    public function testSendContactEmailSendsEmails()
     {
         $email = $this->fake('email');
         $subject = $this->fake('sentence');
@@ -128,19 +128,13 @@ class HomeTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, 'Votre message a bien été envoyé.');
         $this->assertResponsePointer($response, 'home/contact.phtml');
-        $this->assertEmailsCount(2);
+        $this->assertEmailsCount(1);
 
         $email_sent = \Minz\Tests\Mailer::take(0);
         $this->assertEmailSubject($email_sent, '[Flus] Contact : ' . $subject);
         $this->assertEmailContainsTo($email_sent, 'support@example.com');
         $this->assertEmailContainsReplyTo($email_sent, $email);
         $this->assertEmailContainsBody($email_sent, nl2br($content));
-
-        $email_sent = \Minz\Tests\Mailer::take(1);
-        $this->assertEmailSubject($email_sent, '[Flus] Votre message a bien été envoyé');
-        $this->assertEmailFrom($email_sent, 'root@localhost');
-        $this->assertEmailContainsTo($email_sent, $email);
-        $this->assertEmailContainsBody($email_sent, $subject);
     }
 
     public function testSendContactEmailFailsIfEmailIsMissing()
