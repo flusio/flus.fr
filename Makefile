@@ -2,6 +2,14 @@
 
 USER = $(shell id -u):$(shell id -g)
 
+ifdef NODOCKER
+	PHP = php
+	COMPOSER = composer
+else
+	PHP = ./docker/bin/php
+	COMPOSER = ./docker/bin/composer
+endif
+
 ifndef COVERAGE
 	COVERAGE = --coverage-html ./coverage
 endif
@@ -29,23 +37,23 @@ stop: ## Stop and clean Docker server
 
 .PHONY: init
 init: ## Initialize the application
-	php ./cli --request /system/init
+	$(PHP) ./cli --request /system/init
 
 .PHONY: migrate
 migrate: ## Apply pending migrations
-	php ./cli --request /system/migrate
+	$(PHP) ./cli --request /system/migrate
 
 .PHONY: rollback
 rollback: ## Reverse the last migration
 ifdef STEPS
-	php ./cli --request /system/rollback -psteps=$(STEPS)
+	$(PHP) ./cli --request /system/rollback -psteps=$(STEPS)
 else
-	php ./cli --request /system/rollback
+	$(PHP) ./cli --request /system/rollback
 endif
 
 .PHONY: test
 test: bin/phpunit  ## Run the test suite
-	XDEBUG_MODE=coverage php ./bin/phpunit \
+	XDEBUG_MODE=coverage $(PHP) ./bin/phpunit \
 		$(COVERAGE) --whitelist ./src \
 		--bootstrap ./tests/bootstrap.php \
 		--testdox \
@@ -54,11 +62,11 @@ test: bin/phpunit  ## Run the test suite
 
 .PHONY: lint
 lint: bin/phpcs  ## Run the linter on the PHP files
-	php ./bin/phpcs -s --standard=PSR12 ./src ./tests
+	$(PHP) ./bin/phpcs -s --standard=PSR12 ./src ./tests
 
 .PHONY: lint-fix
 lint-fix: bin/phpcbf ## Fix the errors raised by the linter
-	php ./bin/phpcbf --standard=PSR12 ./src ./tests
+	$(PHP) ./bin/phpcbf --standard=PSR12 ./src ./tests
 
 .PHONY: tree
 tree:  ## Display the structure of the application
