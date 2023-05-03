@@ -246,14 +246,7 @@ $ # OR to fix issues
 $ make lint-fix
 ```
 
-To execute the tests, please install [stripe-mock](https://github.com/stripe/stripe-mock)
-first. Then, in a console:
-
-```console
-$ stripe-mock
-```
-
-And in another console:
+To execute the tests, execute:
 
 ```console
 $ make test

@@ -10,6 +10,7 @@ env:
     NODOCKER: true
     NUMBER_OF_DATASETS: 25
     COVERAGE: --coverage-text
+    STRIPE_ENDPOINT: http://localhost:12111
 
 jobs:
     build:

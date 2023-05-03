@@ -8,7 +8,12 @@ include $app_path . '/autoload.php';
 \Minz\Environment::initialize();
 \Minz\Environment::startSession();
 
-\Stripe\Stripe::$apiBase = 'http://localhost:12111';
+$stripe_endpoint = getenv('STRIPE_ENDPOINT');
+if ($stripe_endpoint === false) {
+    \Stripe\Stripe::$apiBase = 'http://stripe-mock:12111';
+} else {
+    \Stripe\Stripe::$apiBase = $stripe_endpoint;
+}
 
 $faker = \Faker\Factory::create();
 
