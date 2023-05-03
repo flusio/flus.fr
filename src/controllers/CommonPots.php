@@ -15,7 +15,7 @@ class CommonPots
      */
     public function show()
     {
-        $common_pot_amount = models\PotUsage::daoCall('findAvailableAmount') / 100;
+        $common_pot_amount = models\PotUsage::findAvailableAmount() / 100;
         return \Minz\Response::ok('common_pots/show.phtml', [
             'common_pot_amount' => number_format($common_pot_amount, 2, ',', '&nbsp;'),
         ]);
@@ -78,8 +78,8 @@ class CommonPots
             return \Minz\Response::redirect('account address');
         }
 
-        $accept_cgv = $request->param('accept_cgv', false);
-        $amount = $request->param('amount', 0);
+        $accept_cgv = $request->paramBoolean('accept_cgv', false);
+        $amount = $request->paramInteger('amount', 0);
 
         if (!$accept_cgv) {
             return \Minz\Response::badRequest('common_pots/contribution.phtml', [
@@ -103,8 +103,7 @@ class CommonPots
             ]);
         }
 
-        $csrf = new \Minz\CSRF();
-        if (!$csrf->validateToken($request->param('csrf'))) {
+        if (!\Minz\Csrf::validate($request->param('csrf'))) {
             return \Minz\Response::badRequest('common_pots/contribution.phtml', [
                 'account' => $account,
                 'ongoing_payment' => $account->ongoingPayment(),
@@ -152,7 +151,7 @@ class CommonPots
             return \Minz\Response::redirect('account address');
         }
 
-        $common_pot_amount = models\PotUsage::daoCall('findAvailableAmount') / 100;
+        $common_pot_amount = models\PotUsage::findAvailableAmount() / 100;
         return \Minz\Response::ok('common_pots/usage.phtml', [
             'account' => $account,
             'common_pot_amount' => number_format($common_pot_amount, 2, ',', '&nbsp;'),
@@ -192,15 +191,14 @@ class CommonPots
             return \Minz\Response::redirect('account address');
         }
 
-        $common_pot_amount = models\PotUsage::daoCall('findAvailableAmount') / 100;
+        $common_pot_amount = models\PotUsage::findAvailableAmount() / 100;
         $full_enough = $common_pot_amount >= 3;
         $common_pot_amount = number_format($common_pot_amount, 2, ',', '&nbsp;');
         $free_account = $account->isFree();
         $expire_soon = $account->expired_at <= \Minz\Time::fromNow(7, 'days');
 
-        $accept_cgv = $request->param('accept_cgv', false);
-        $reminder = $request->param('reminder', false);
-        $reminder = filter_var($reminder, FILTER_VALIDATE_BOOLEAN);
+        $accept_cgv = $request->paramBoolean('accept_cgv', false);
+        $reminder = $request->paramBoolean('reminder', false);
 
         if (!$accept_cgv) {
             return \Minz\Response::badRequest('common_pots/usage.phtml', [
@@ -216,8 +214,7 @@ class CommonPots
             ]);
         }
 
-        $csrf = new \Minz\CSRF();
-        if (!$csrf->validateToken($request->param('csrf'))) {
+        if (!\Minz\Csrf::validate($request->param('csrf'))) {
             return \Minz\Response::badRequest('common_pots/usage.phtml', [
                 'account' => $account,
                 'common_pot_amount' => $common_pot_amount,
@@ -253,7 +250,7 @@ class CommonPots
             ]);
         }
 
-        $pot_usage = models\PotUsage::initFromAccount($account, 'month');
+        $pot_usage = new models\PotUsage($account, 'month');
         $pot_usage->save();
 
         $account->extendSubscription($pot_usage->frequency);

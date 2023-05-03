@@ -25,7 +25,7 @@ class Accounts
             return \Minz\Response::redirect('login');
         }
 
-        $accounts = models\Account::daoToList('listWithCountPayments');
+        $accounts = models\Account::listWithCountPayments();
 
         usort($accounts, function ($account1, $account2) {
             return $account1->email <=> $account2->email;
@@ -98,14 +98,13 @@ class Accounts
         $csrf = $request->param('csrf');
         $expired_at = $request->param('expired-at');
         if ($expired_at === '1970-01-01') {
-            $expired_at = new \DateTime();
-            $expired_at->setTimestamp(0);
+            $expired_at = new \DateTimeImmutable('@0');
         } else {
-            $expired_at = \DateTime::createFromFormat('Y-m-d', $expired_at);
-            $expired_at->setTime(23, 59, 59);
+            $expired_at = \DateTimeImmutable::createFromFormat('Y-m-d', $expired_at);
+            $expired_at = $expired_at->setTime(23, 59, 59);
         }
 
-        if (!\Minz\CSRF::validate($csrf)) {
+        if (!\Minz\Csrf::validate($csrf)) {
             return \Minz\Response::badRequest('admin/accounts/show.phtml', [
                 'account' => $account,
                 'payments' => $account->payments(),

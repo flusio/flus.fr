@@ -27,9 +27,9 @@ class Credits
             return \Minz\Response::notFound('not_found.phtml');
         }
 
-        $already_credited = models\Payment::findBy([
+        $already_credited = models\Payment::existsBy([
             'credited_payment_id' => $credited_payment->id,
-        ]) !== null;
+        ]);
 
         return \Minz\Response::ok('admin/credits/init.phtml', [
             'credited_payment' => $credited_payment,
@@ -63,9 +63,9 @@ class Credits
             return \Minz\Response::notFound('not_found.phtml');
         }
 
-        $already_credited = models\Payment::findBy([
+        $already_credited = models\Payment::existsBy([
             'credited_payment_id' => $credited_payment->id,
-        ]) !== null;
+        ]);
 
         if ($already_credited) {
             return \Minz\Response::badRequest('admin/credits/init.phtml', [
@@ -81,8 +81,7 @@ class Credits
             ]);
         }
 
-        $csrf = new \Minz\CSRF();
-        if (!$csrf->validateToken($request->param('csrf'))) {
+        if (!\Minz\Csrf::validate($request->param('csrf'))) {
             return \Minz\Response::badRequest('admin/credits/init.phtml', [
                 'credited_payment' => $credited_payment,
                 'already_credited' => $already_credited,

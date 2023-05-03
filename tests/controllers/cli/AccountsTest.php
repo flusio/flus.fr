@@ -2,6 +2,9 @@
 
 namespace Website\controllers\cli;
 
+use tests\factories\AccountFactory;
+use tests\factories\PaymentFactory;
+use tests\factories\PotUsageFactory;
 use Website\models;
 
 class AccountsTest extends \PHPUnit\Framework\TestCase
@@ -9,7 +12,6 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     use \tests\FakerHelper;
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\ApplicationHelper;
-    use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\TimeHelper;
     use \Minz\Tests\ResponseAsserts;
     use \Minz\Tests\MailerAsserts;
@@ -18,16 +20,16 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     {
         $this->freeze($this->fake('dateTime'));
         $email = $this->fake('email');
-        $this->create('account', [
+        AccountFactory::create([
             'reminder' => true,
-            'expired_at' => \Minz\Time::fromNow(7, 'days')->format(\Minz\Model::DATETIME_FORMAT),
-            'last_sync_at' => \Minz\Time::now()->format(\Minz\Model::DATETIME_FORMAT),
+            'expired_at' => \Minz\Time::fromNow(7, 'days'),
+            'last_sync_at' => \Minz\Time::now(),
             'email' => $email,
         ]);
 
         $this->assertEmailsCount(0);
 
-        $response = $this->appRun('cli', '/accounts/remind');
+        $response = $this->appRun('CLI', '/accounts/remind');
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, '1 reminders sent');
@@ -42,16 +44,16 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     {
         $this->freeze($this->fake('dateTime'));
         $email = $this->fake('email');
-        $this->create('account', [
+        AccountFactory::create([
             'reminder' => true,
-            'expired_at' => \Minz\Time::fromNow(2, 'days')->format(\Minz\Model::DATETIME_FORMAT),
-            'last_sync_at' => \Minz\Time::now()->format(\Minz\Model::DATETIME_FORMAT),
+            'expired_at' => \Minz\Time::fromNow(2, 'days'),
+            'last_sync_at' => \Minz\Time::now(),
             'email' => $email,
         ]);
 
         $this->assertEmailsCount(0);
 
-        $response = $this->appRun('cli', '/accounts/remind');
+        $response = $this->appRun('CLI', '/accounts/remind');
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, '1 reminders sent');
@@ -66,16 +68,16 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     {
         $this->freeze($this->fake('dateTime'));
         $email = $this->fake('email');
-        $this->create('account', [
+        AccountFactory::create([
             'reminder' => true,
-            'expired_at' => \Minz\Time::ago(1, 'day')->format(\Minz\Model::DATETIME_FORMAT),
-            'last_sync_at' => \Minz\Time::now()->format(\Minz\Model::DATETIME_FORMAT),
+            'expired_at' => \Minz\Time::ago(1, 'day'),
+            'last_sync_at' => \Minz\Time::now(),
             'email' => $email,
         ]);
 
         $this->assertEmailsCount(0);
 
-        $response = $this->appRun('cli', '/accounts/remind');
+        $response = $this->appRun('CLI', '/accounts/remind');
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, '1 reminders sent');
@@ -91,22 +93,22 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $this->freeze($this->fake('dateTime'));
         $email_1 = $this->fakeUnique('email');
         $email_2 = $this->fakeUnique('email');
-        $this->create('account', [
+        AccountFactory::create([
             'reminder' => true,
-            'expired_at' => \Minz\Time::ago(1, 'day')->format(\Minz\Model::DATETIME_FORMAT),
-            'last_sync_at' => \Minz\Time::now()->format(\Minz\Model::DATETIME_FORMAT),
+            'expired_at' => \Minz\Time::ago(1, 'day'),
+            'last_sync_at' => \Minz\Time::now(),
             'email' => $email_1,
         ]);
-        $this->create('account', [
+        AccountFactory::create([
             'reminder' => true,
-            'expired_at' => \Minz\Time::ago(1, 'day')->format(\Minz\Model::DATETIME_FORMAT),
-            'last_sync_at' => \Minz\Time::now()->format(\Minz\Model::DATETIME_FORMAT),
+            'expired_at' => \Minz\Time::ago(1, 'day'),
+            'last_sync_at' => \Minz\Time::now(),
             'email' => $email_2,
         ]);
 
         $this->assertEmailsCount(0);
 
-        $response = $this->appRun('cli', '/accounts/remind');
+        $response = $this->appRun('CLI', '/accounts/remind');
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, '2 reminders sent');
@@ -121,14 +123,14 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     {
         $this->freeze($this->fake('dateTime'));
         $email = $this->fake('email');
-        $this->create('account', [
-            'reminder' => 0,
-            'expired_at' => \Minz\Time::fromNow(7, 'days')->format(\Minz\Model::DATETIME_FORMAT),
-            'last_sync_at' => \Minz\Time::now()->format(\Minz\Model::DATETIME_FORMAT),
+        AccountFactory::create([
+            'reminder' => false,
+            'expired_at' => \Minz\Time::fromNow(7, 'days'),
+            'last_sync_at' => \Minz\Time::now(),
             'email' => $email,
         ]);
 
-        $response = $this->appRun('cli', '/accounts/remind');
+        $response = $this->appRun('CLI', '/accounts/remind');
 
         $this->assertResponseCode($response, 200);
         $this->assertEmailsCount(0);
@@ -138,14 +140,14 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     {
         $this->freeze($this->fake('dateTime'));
         $email = $this->fake('email');
-        $this->create('account', [
+        AccountFactory::create([
             'reminder' => true,
-            'expired_at' => (new \DateTime('1970-01-01'))->format(\Minz\Model::DATETIME_FORMAT),
-            'last_sync_at' => \Minz\Time::now()->format(\Minz\Model::DATETIME_FORMAT),
+            'expired_at' => new \DateTimeImmutable('@0'),
+            'last_sync_at' => \Minz\Time::now(),
             'email' => $email,
         ]);
 
-        $response = $this->appRun('cli', '/accounts/remind');
+        $response = $this->appRun('CLI', '/accounts/remind');
 
         $this->assertResponseCode($response, 200);
         $this->assertEmailsCount(0);
@@ -156,16 +158,16 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $this->freeze($this->fake('dateTime'));
         $hours = $this->fake('numberBetween', 25, 90);
         $email = $this->fake('email');
-        $this->create('account', [
+        AccountFactory::create([
             'reminder' => true,
-            'expired_at' => \Minz\Time::fromNow(7, 'days')->format(\Minz\Model::DATETIME_FORMAT),
-            'last_sync_at' => \Minz\Time::ago($hours, 'hours')->format(\Minz\Model::DATETIME_FORMAT),
+            'expired_at' => \Minz\Time::fromNow(7, 'days'),
+            'last_sync_at' => \Minz\Time::ago($hours, 'hours'),
             'email' => $email,
         ]);
 
         $this->assertEmailsCount(0);
 
-        $response = $this->appRun('cli', '/accounts/remind');
+        $response = $this->appRun('CLI', '/accounts/remind');
 
         $this->assertResponseCode($response, 200);
         $this->assertEmailsCount(0);
@@ -176,30 +178,30 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $now = $this->fake('dateTime');
         $this->freeze($now);
         $days = $this->fake('numberBetween', 3, 30);
-        $account_id = $this->create('account', [
-            'last_sync_at' => \Minz\Time::ago($days, 'days')->format(\Minz\Model::DATETIME_FORMAT),
+        $account = AccountFactory::create([
+            'last_sync_at' => \Minz\Time::ago($days, 'days'),
         ]);
 
-        $response = $this->appRun('cli', '/accounts/clear');
+        $response = $this->appRun('CLI', '/accounts/clear');
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, '1 accounts have been deleted.');
-        $this->assertFalse(models\Account::exists($account_id));
+        $this->assertFalse(models\Account::exists($account->id));
     }
 
     public function testClearRemovesAccountsNeverSync()
     {
         $now = $this->fake('dateTime');
         $this->freeze($now);
-        $account_id = $this->create('account', [
+        $account = AccountFactory::create([
             'last_sync_at' => null,
         ]);
 
-        $response = $this->appRun('cli', '/accounts/clear');
+        $response = $this->appRun('CLI', '/accounts/clear');
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, '1 accounts have been deleted.');
-        $this->assertFalse(models\Account::exists($account_id));
+        $this->assertFalse(models\Account::exists($account->id));
     }
 
     public function testClearMovesPaymentsAndPotUsagesOfNonSyncAccounts()
@@ -208,21 +210,21 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $this->freeze($now);
         $days = $this->fake('numberBetween', 3, 30);
         $default_account = models\Account::defaultAccount();
-        $account_id = $this->create('account', [
-            'last_sync_at' => \Minz\Time::ago($days, 'days')->format(\Minz\Model::DATETIME_FORMAT),
+        $account = AccountFactory::create([
+            'last_sync_at' => \Minz\Time::ago($days, 'days'),
         ]);
-        $payment_id = $this->create('payment', [
-            'account_id' => $account_id,
+        $payment = PaymentFactory::create([
+            'account_id' => $account->id,
         ]);
-        $pot_usage_id = $this->create('pot_usage', [
-            'account_id' => $account_id,
+        $pot_usage = PotUsageFactory::create([
+            'account_id' => $account->id,
         ]);
 
-        $response = $this->appRun('cli', '/accounts/clear');
+        $response = $this->appRun('CLI', '/accounts/clear');
 
         $this->assertResponseCode($response, 200);
-        $payment = models\Payment::find($payment_id);
-        $pot_usage = models\PotUsage::find($pot_usage_id);
+        $payment = $payment->reload();
+        $pot_usage = $pot_usage->reload();
         $this->assertSame($default_account->id, $payment->account_id);
         $this->assertSame($default_account->id, $pot_usage->account_id);
     }
@@ -232,15 +234,15 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $now = $this->fake('dateTime');
         $this->freeze($now);
         $days = $this->fake('numberBetween', 0, 2);
-        $account_id = $this->create('account', [
-            'last_sync_at' => \Minz\Time::ago($days, 'days')->format(\Minz\Model::DATETIME_FORMAT),
+        $account = AccountFactory::create([
+            'last_sync_at' => \Minz\Time::ago($days, 'days'),
         ]);
 
-        $response = $this->appRun('cli', '/accounts/clear');
+        $response = $this->appRun('CLI', '/accounts/clear');
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, '0 accounts have been deleted.');
-        $this->assertTrue(models\Account::exists($account_id));
+        $this->assertTrue(models\Account::exists($account->id));
     }
 
     public function testClearDoesNotMovePaymentsAndPotUsagesOfSyncAccounts()
@@ -249,22 +251,22 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $this->freeze($now);
         $days = $this->fake('numberBetween', 0, 2);
         $default_account = models\Account::defaultAccount();
-        $account_id = $this->create('account', [
-            'last_sync_at' => \Minz\Time::ago($days, 'days')->format(\Minz\Model::DATETIME_FORMAT),
+        $account = AccountFactory::create([
+            'last_sync_at' => \Minz\Time::ago($days, 'days'),
         ]);
-        $payment_id = $this->create('payment', [
-            'account_id' => $account_id,
+        $payment = PaymentFactory::create([
+            'account_id' => $account->id,
         ]);
-        $pot_usage_id = $this->create('pot_usage', [
-            'account_id' => $account_id,
+        $pot_usage = PotUsageFactory::create([
+            'account_id' => $account->id,
         ]);
 
-        $response = $this->appRun('cli', '/accounts/clear');
+        $response = $this->appRun('CLI', '/accounts/clear');
 
         $this->assertResponseCode($response, 200);
-        $payment = models\Payment::find($payment_id);
-        $pot_usage = models\PotUsage::find($pot_usage_id);
-        $this->assertSame($account_id, $payment->account_id);
-        $this->assertSame($account_id, $pot_usage->account_id);
+        $payment = $payment->reload();
+        $pot_usage = $pot_usage->reload();
+        $this->assertSame($account->id, $payment->account_id);
+        $this->assertSame($account->id, $pot_usage->account_id);
     }
 }

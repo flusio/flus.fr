@@ -29,7 +29,7 @@
 <?php foreach ($payments_by_months as $month => $payments): ?>
     <?php $month_amounts = array_column($payments, 'amount'); ?>
     <?php $month_total_amount = array_sum($month_amounts); ?>
-    <h2><?= format_month($month, '%B') ?>&nbsp;—&nbsp;<?= format_amount($month_total_amount) ?></h2>
+    <h2><?= format_month($month, 'MMMM') ?>&nbsp;—&nbsp;<?= format_amount($month_total_amount) ?></h2>
 
     <table>
         <tbody>
@@ -62,7 +62,7 @@
 
                     <td>
                         <?php if ($payment->completed_at): ?>
-                            <?= format_date($payment->completed_at, '%d %b') ?>
+                            <?= _d($payment->completed_at, 'dd MMM') ?>
                             <?php if ($payment->type !== 'credit'): ?>
                                 <a href="<?= url('new admin credit', ['credited_payment_id' => $payment->id]) ?>">
                                     💸

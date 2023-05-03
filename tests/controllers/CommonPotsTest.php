@@ -2,6 +2,9 @@
 
 namespace Website\controllers;
 
+use tests\factories\AccountFactory;
+use tests\factories\PaymentFactory;
+use tests\factories\PotUsageFactory;
 use Website\models;
 
 class CommonPotsTest extends \PHPUnit\Framework\TestCase
@@ -10,7 +13,6 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
     use \tests\LoginHelper;
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\ApplicationHelper;
-    use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\ResponseAsserts;
 
     public function testShowPublicRendersCorrectly()
@@ -18,18 +20,18 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
         $common_pot_expenses = $this->fake('numberBetween', 100, 499);
         $common_pot_revenues = $this->fake('numberBetween', 500, 100000);
         $subscriptions_revenues = $this->fake('numberBetween', 100, 100000);
-        $this->create('pot_usage', [
+        PotUsageFactory::create([
             'amount' => $common_pot_expenses,
         ]);
-        $this->create('payment', [
+        PaymentFactory::create([
             'type' => 'common_pot',
             'amount' => $common_pot_revenues,
-            'completed_at' => $this->fake('dateTime')->getTimestamp(),
+            'completed_at' => $this->fake('dateTime'),
         ]);
-        $this->create('payment', [
+        PaymentFactory::create([
             'type' => 'subscription',
             'amount' => $subscriptions_revenues,
-            'completed_at' => $this->fake('dateTime')->getTimestamp(),
+            'completed_at' => $this->fake('dateTime'),
         ]);
 
         $response = $this->appRun('GET', '/cagnotte');
@@ -72,7 +74,7 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
             'address_postcode' => $address['postcode'],
             'address_city' => $address['city'],
         ]);
-        $this->create('payment', [
+        PaymentFactory::create([
             'account_id' => $user['account_id'],
             'completed_at' => null,
         ]);
@@ -98,7 +100,7 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
      */
     public function testContributionFailsIfNotConnected($address)
     {
-        $this->create('account', [
+        AccountFactory::create([
             'address_first_name' => $address['first_name'],
             'address_last_name' => $address['last_name'],
             'address_address1' => $address['address1'],
@@ -125,12 +127,13 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/account/common-pot/contribute', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => \Minz\Csrf::generate(),
             'amount' => $amount,
             'accept_cgv' => true,
         ]);
 
         $payment = models\Payment::take();
+        $this->assertNotNull($payment);
         $redirect_to = "/payments/{$payment->id}/pay";
         $this->assertResponseCode($response, 302, $redirect_to);
     }
@@ -151,7 +154,7 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
         $amount = $this->fake('randomFloat', 2, 1.00, 1000.0);
 
         $response = $this->appRun('POST', '/account/common-pot/contribute', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => \Minz\Csrf::generate(),
             'amount' => $amount,
             'accept_cgv' => true,
         ]);
@@ -175,7 +178,7 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Payment::count());
 
         $response = $this->appRun('POST', '/account/common-pot/contribute', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => \Minz\Csrf::generate(),
             'amount' => $amount,
             'accept_cgv' => true,
         ]);
@@ -197,7 +200,7 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
         $this->loginUser();
 
         $response = $this->appRun('POST', '/account/common-pot/contribute', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => \Minz\Csrf::generate(),
             'amount' => $amount,
             'accept_cgv' => true,
         ]);
@@ -210,7 +213,7 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
      */
     public function testContributeFailsIfNotConnected($amount, $address)
     {
-        $this->create('account', [
+        AccountFactory::create([
             'address_first_name' => $address['first_name'],
             'address_last_name' => $address['last_name'],
             'address_address1' => $address['address1'],
@@ -219,7 +222,7 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/account/common-pot/contribute', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => \Minz\Csrf::generate(),
             'amount' => $amount,
             'accept_cgv' => true,
         ]);
@@ -264,7 +267,7 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/account/common-pot/contribute', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => \Minz\Csrf::generate(),
             'amount' => $amount,
             'accept_cgv' => false,
         ]);
@@ -288,7 +291,7 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
         $amount = $this->fake('randomFloat', 2, 0.0, 0.99);
 
         $response = $this->appRun('POST', '/account/common-pot/contribute', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => \Minz\Csrf::generate(),
             'amount' => $amount,
             'accept_cgv' => true,
         ]);
@@ -312,7 +315,7 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
         $amount = $this->fake('numberBetween', 1001, PHP_INT_MAX / 100);
 
         $response = $this->appRun('POST', '/account/common-pot/contribute', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => \Minz\Csrf::generate(),
             'amount' => $amount,
             'accept_cgv' => true,
         ]);
@@ -336,7 +339,7 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
         $amount = $this->fake('word');
 
         $response = $this->appRun('POST', '/account/common-pot/contribute', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => \Minz\Csrf::generate(),
             'amount' => $amount,
             'accept_cgv' => true,
         ]);
@@ -359,7 +362,7 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/account/common-pot/contribute', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => \Minz\Csrf::generate(),
             'accept_cgv' => true,
         ]);
 
@@ -372,19 +375,19 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
      */
     public function testUsageRendersCorrectly($address)
     {
-        $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', -42, 7), 'days');
+        $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 0, 7), 'days');
         $this->loginUser([
             'address_first_name' => $address['first_name'],
             'address_last_name' => $address['last_name'],
             'address_address1' => $address['address1'],
             'address_postcode' => $address['postcode'],
             'address_city' => $address['city'],
-            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+            'expired_at' => $expired_at,
         ]);
-        $this->create('payment', [
+        PaymentFactory::create([
             'type' => 'common_pot',
             'amount' => 500,
-            'completed_at' => $this->fake('dateTime')->getTimestamp(),
+            'completed_at' => $this->fake('dateTime'),
         ]);
 
         $response = $this->appRun('GET', '/account/common-pot/use');
@@ -399,21 +402,21 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
      */
     public function testUsageRendersIfCommonPotIsNotFullEnough($address)
     {
-        $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', -42, 7), 'days');
+        $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 0, 7), 'days');
         $this->loginUser([
             'address_first_name' => $address['first_name'],
             'address_last_name' => $address['last_name'],
             'address_address1' => $address['address1'],
             'address_postcode' => $address['postcode'],
             'address_city' => $address['city'],
-            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+            'expired_at' => $expired_at,
         ]);
-        $this->create('payment', [
+        PaymentFactory::create([
             'type' => 'common_pot',
             'amount' => 500,
-            'completed_at' => $this->fake('dateTime')->getTimestamp(),
+            'completed_at' => $this->fake('dateTime'),
         ]);
-        $this->create('pot_usage', [
+        PotUsageFactory::create([
             'amount' => 300,
         ]);
 
@@ -428,19 +431,19 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
      */
     public function testUsageRendersIfFreeAccount($address)
     {
-        $expired_at = new \DateTime('1970-01-01');
+        $expired_at = new \DateTimeImmutable('@0');
         $this->loginUser([
             'address_first_name' => $address['first_name'],
             'address_last_name' => $address['last_name'],
             'address_address1' => $address['address1'],
             'address_postcode' => $address['postcode'],
             'address_city' => $address['city'],
-            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+            'expired_at' => $expired_at,
         ]);
-        $this->create('payment', [
+        PaymentFactory::create([
             'type' => 'common_pot',
             'amount' => 500,
-            'completed_at' => $this->fake('dateTime')->getTimestamp(),
+            'completed_at' => $this->fake('dateTime'),
         ]);
 
         $response = $this->appRun('GET', '/account/common-pot/use');
@@ -461,12 +464,12 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
             'address_address1' => $address['address1'],
             'address_postcode' => $address['postcode'],
             'address_city' => $address['city'],
-            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+            'expired_at' => $expired_at,
         ]);
-        $this->create('payment', [
+        PaymentFactory::create([
             'type' => 'common_pot',
             'amount' => 500,
-            'completed_at' => $this->fake('dateTime')->getTimestamp(),
+            'completed_at' => $this->fake('dateTime'),
         ]);
 
         $response = $this->appRun('GET', '/account/common-pot/use');
@@ -492,7 +495,7 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
      */
     public function testUsageFailsIfNotConnected($address)
     {
-        $this->create('account', [
+        AccountFactory::create([
             'address_first_name' => $address['first_name'],
             'address_last_name' => $address['last_name'],
             'address_address1' => $address['address1'],
@@ -510,25 +513,25 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
      */
     public function testUseExtendsSubscriptionAndRedirectsCorrectly($address)
     {
-        $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', -42, 7), 'days');
+        $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 0, 7), 'days');
         $user = $this->loginUser([
             'address_first_name' => $address['first_name'],
             'address_last_name' => $address['last_name'],
             'address_address1' => $address['address1'],
             'address_postcode' => $address['postcode'],
             'address_city' => $address['city'],
-            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+            'expired_at' => $expired_at,
         ]);
-        $this->create('payment', [
+        PaymentFactory::create([
             'type' => 'common_pot',
             'amount' => 500,
-            'completed_at' => $this->fake('dateTime')->getTimestamp(),
+            'completed_at' => $this->fake('dateTime'),
         ]);
 
         $this->assertSame(0, models\PotUsage::count());
 
         $response = $this->appRun('POST', '/account/common-pot/use', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => \Minz\Csrf::generate(),
             'accept_cgv' => true,
         ]);
 
@@ -540,18 +543,18 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
 
     public function testUseRedirectsIfNoAddress()
     {
-        $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', -42, 7), 'days');
+        $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 0, 7), 'days');
         $user = $this->loginUser([
-            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+            'expired_at' => $expired_at,
         ]);
-        $this->create('payment', [
+        PaymentFactory::create([
             'type' => 'common_pot',
             'amount' => 500,
-            'completed_at' => $this->fake('dateTime')->getTimestamp(),
+            'completed_at' => $this->fake('dateTime'),
         ]);
 
         $response = $this->appRun('POST', '/account/common-pot/use', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => \Minz\Csrf::generate(),
             'accept_cgv' => true,
         ]);
 
@@ -566,29 +569,29 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
      */
     public function testUseFailsIfNotConnected($address)
     {
-        $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', -42, 7), 'days');
-        $account_id = $this->create('account', [
+        $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 0, 7), 'days');
+        $account = AccountFactory::create([
             'address_first_name' => $address['first_name'],
             'address_last_name' => $address['last_name'],
             'address_address1' => $address['address1'],
             'address_postcode' => $address['postcode'],
             'address_city' => $address['city'],
-            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+            'expired_at' => $expired_at,
         ]);
-        $this->create('payment', [
+        PaymentFactory::create([
             'type' => 'common_pot',
             'amount' => 500,
-            'completed_at' => $this->fake('dateTime')->getTimestamp(),
+            'completed_at' => $this->fake('dateTime'),
         ]);
 
         $response = $this->appRun('POST', '/account/common-pot/use', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => \Minz\Csrf::generate(),
             'accept_cgv' => true,
         ]);
 
         $this->assertResponseCode($response, 401);
         $this->assertSame(0, models\PotUsage::count());
-        $account = models\Account::find($account_id);
+        $account = $account->reload();
         $this->assertEquals($account->expired_at->getTimestamp(), $expired_at->getTimestamp());
     }
 
@@ -597,23 +600,23 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
      */
     public function testUseFailsIfAcceptCgvIsFalse($address)
     {
-        $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', -42, 7), 'days');
+        $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 0, 7), 'days');
         $user = $this->loginUser([
             'address_first_name' => $address['first_name'],
             'address_last_name' => $address['last_name'],
             'address_address1' => $address['address1'],
             'address_postcode' => $address['postcode'],
             'address_city' => $address['city'],
-            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+            'expired_at' => $expired_at,
         ]);
-        $this->create('payment', [
+        PaymentFactory::create([
             'type' => 'common_pot',
             'amount' => 500,
-            'completed_at' => $this->fake('dateTime')->getTimestamp(),
+            'completed_at' => $this->fake('dateTime'),
         ]);
 
         $response = $this->appRun('POST', '/account/common-pot/use', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => \Minz\Csrf::generate(),
             'accept_cgv' => false,
         ]);
 
@@ -629,19 +632,19 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
      */
     public function testUseFailsIfCsrfIsInvalid($address)
     {
-        $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', -42, 7), 'days');
+        $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 0, 7), 'days');
         $user = $this->loginUser([
             'address_first_name' => $address['first_name'],
             'address_last_name' => $address['last_name'],
             'address_address1' => $address['address1'],
             'address_postcode' => $address['postcode'],
             'address_city' => $address['city'],
-            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+            'expired_at' => $expired_at,
         ]);
-        $this->create('payment', [
+        PaymentFactory::create([
             'type' => 'common_pot',
             'amount' => 500,
-            'completed_at' => $this->fake('dateTime')->getTimestamp(),
+            'completed_at' => $this->fake('dateTime'),
         ]);
 
         $response = $this->appRun('POST', '/account/common-pot/use', [
@@ -661,23 +664,23 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
      */
     public function testUseFailsIfCommonPotIsNotFullEnough($address)
     {
-        $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', -42, 7), 'days');
+        $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 0, 7), 'days');
         $user = $this->loginUser([
             'address_first_name' => $address['first_name'],
             'address_last_name' => $address['last_name'],
             'address_address1' => $address['address1'],
             'address_postcode' => $address['postcode'],
             'address_city' => $address['city'],
-            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+            'expired_at' => $expired_at,
         ]);
-        $this->create('payment', [
+        PaymentFactory::create([
             'type' => 'common_pot',
             'amount' => 200,
-            'completed_at' => $this->fake('dateTime')->getTimestamp(),
+            'completed_at' => $this->fake('dateTime'),
         ]);
 
         $response = $this->appRun('POST', '/account/common-pot/use', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => \Minz\Csrf::generate(),
             'accept_cgv' => true,
         ]);
 
@@ -693,23 +696,23 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
      */
     public function testUseFailsIfFreeAccount($address)
     {
-        $expired_at = new \DateTime('1970-01-01');
+        $expired_at = new \DateTimeImmutable('@0');
         $user = $this->loginUser([
             'address_first_name' => $address['first_name'],
             'address_last_name' => $address['last_name'],
             'address_address1' => $address['address1'],
             'address_postcode' => $address['postcode'],
             'address_city' => $address['city'],
-            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+            'expired_at' => $expired_at,
         ]);
-        $this->create('payment', [
+        PaymentFactory::create([
             'type' => 'common_pot',
             'amount' => 500,
-            'completed_at' => $this->fake('dateTime')->getTimestamp(),
+            'completed_at' => $this->fake('dateTime'),
         ]);
 
         $response = $this->appRun('POST', '/account/common-pot/use', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => \Minz\Csrf::generate(),
             'accept_cgv' => true,
         ]);
 
@@ -732,16 +735,16 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
             'address_address1' => $address['address1'],
             'address_postcode' => $address['postcode'],
             'address_city' => $address['city'],
-            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+            'expired_at' => $expired_at,
         ]);
-        $this->create('payment', [
+        PaymentFactory::create([
             'type' => 'common_pot',
             'amount' => 500,
-            'completed_at' => $this->fake('dateTime')->getTimestamp(),
+            'completed_at' => $this->fake('dateTime'),
         ]);
 
         $response = $this->appRun('POST', '/account/common-pot/use', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => \Minz\Csrf::generate(),
             'accept_cgv' => true,
         ]);
 

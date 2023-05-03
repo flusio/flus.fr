@@ -145,7 +145,7 @@ class HomeTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponseContains($response, 'L’adresse courriel est obligatoire.');
+        $this->assertResponseContains($response, 'Saisissez une adresse courriel.');
         $this->assertResponsePointer($response, 'home/contact.phtml');
         $this->assertEmailsCount(0);
     }
@@ -159,7 +159,7 @@ class HomeTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponseContains($response, 'L’adresse courriel que vous avez fournie est invalide.');
+        $this->assertResponseContains($response, 'Saisissez une adresse courriel valide.');
         $this->assertResponsePointer($response, 'home/contact.phtml');
         $this->assertEmailsCount(0);
     }
@@ -172,7 +172,7 @@ class HomeTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponseContains($response, 'Le sujet est obligatoire');
+        $this->assertResponseContains($response, 'Saisissez un sujet.');
         $this->assertResponsePointer($response, 'home/contact.phtml');
         $this->assertEmailsCount(0);
     }
@@ -185,7 +185,7 @@ class HomeTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponseContains($response, 'Le message est obligatoire');
+        $this->assertResponseContains($response, 'Saisissez un message.');
         $this->assertResponsePointer($response, 'home/contact.phtml');
         $this->assertEmailsCount(0);
     }

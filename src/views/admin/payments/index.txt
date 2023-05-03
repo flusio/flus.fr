@@ -7,7 +7,7 @@
 
         $line_number += 1;
 
-        echo format_date($payment->completed_at, '%d/%m/%Y') . ';';
+        echo _d($payment->completed_at, 'dd/MM/yyyy') . ';';
         if ($payment->type === 'subscription' && $payment->frequency === 'month'):
             echo 'mensuel;';
         elseif ($payment->type === 'subscription' && $payment->frequency === 'year'):

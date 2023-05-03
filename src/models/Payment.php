@@ -2,6 +2,8 @@
 
 namespace Website\models;
 
+use Minz\Database;
+use Minz\Validable;
 use Website\utils;
 
 /**
@@ -11,89 +13,83 @@ use Website\utils;
  * @author Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class Payment extends \Minz\Model
+#[Database\Table(name: 'payments')]
+class Payment
 {
-    use DaoConnector;
+    use Database\Recordable;
+    use Validable;
 
     public const MIN_AMOUNT = 1 * 100;
     public const MAX_AMOUNT = 1000 * 100;
 
-    public const PROPERTIES = [
-        'id' => [
-            'type' => 'string',
-            'required' => true,
-        ],
+    #[Database\Column]
+    public string $id;
 
-        'created_at' => 'datetime',
+    #[Database\Column]
+    public \DateTimeImmutable $created_at;
 
-        'completed_at' => 'datetime',
+    #[Database\Column]
+    public ?\DateTimeImmutable $completed_at = null;
 
-        'is_paid' => [
-            'type' => 'boolean',
-            'required' => true,
-        ],
+    #[Database\Column]
+    public bool $is_paid = false;
 
-        'invoice_number' => [
-            'type' => 'string',
-            'validator' => '\Website\models\Payment::validateInvoiceNumber',
-        ],
+    #[Validable\Format(
+        pattern: '/^[1-9][0-9]{3}-[0-9]{2}-[0-9]{4}$/',
+        message: 'La génération du numéro de facture a échoué.'
+    )]
+    #[Database\Column]
+    public ?string $invoice_number = null;
 
-        'type' => [
-            'type' => 'string',
-            'required' => true,
-            'validator' => '\Website\models\Payment::validateType',
-        ],
+    #[Validable\Inclusion(
+        in: ['common_pot', 'subscription', 'credit'],
+        message: 'La génération du type de paiement a échoué.'
+    )]
+    #[Database\Column]
+    public string $type;
 
-        'amount' => [
-            'type' => 'integer',
-            'required' => true,
-            'validator' => '\Website\models\Payment::validateAmount',
-        ],
+    #[Validable\Comparison(
+        greater_or_equal: Payment::MIN_AMOUNT,
+        less_or_equal: Payment::MAX_AMOUNT,
+        message: 'Le montant doit être compris entre 1 et 1000 €.',
+    )]
+    #[Database\Column]
+    public int $amount;
 
-        'payment_intent_id' => [
-            'type' => 'string',
-            'validator' => '\Website\models\Payment::validatePaymentIntentId',
-        ],
+    #[Validable\Length(min: 1, message: 'La génération du paiement Stripe a échoué.')]
+    #[Database\Column]
+    public ?string $payment_intent_id = null;
 
-        'session_id' => [
-            'type' => 'string',
-            'validator' => '\Website\models\Payment::validateSessionId',
-        ],
+    #[Validable\Length(min: 1, message: 'La génération du paiement Stripe a échoué.')]
+    #[Database\Column]
+    public ?string $session_id = null;
 
-        'frequency' => [
-            'type' => 'string',
-            'validator' => '\Website\models\Payment::validateFrequency',
-        ],
+    #[Validable\Inclusion(in: ['month', 'year'], message: 'Vous devez choisir l’une des deux périodes proposées.')]
+    #[Database\Column]
+    public ?string $frequency = null;
 
-        'credited_payment_id' => [
-            'type' => 'string',
-        ],
+    #[Database\Column]
+    public ?string $credited_payment_id = null;
 
-        'account_id' => [
-            'required' => true,
-            'type' => 'string',
-        ],
-    ];
+    #[Database\Column]
+    public string $account_id;
 
     /**
      * Initialize a Payment object from user request parameters.
      *
-     * While a Payment object always manipulates amounts as cent values, the
-     * `init` method takes the amount in euros. This is why float are accepted.
+     * Amount is always in cents.
      *
      * @param string $type
-     * @param integer|float $amount
+     * @param integer $amount
      *
      * @return \Website\models\Payment
      */
-    private static function init($type, $amount)
+    private function __construct($type, $amount)
     {
-        return new self([
-            'id' => bin2hex(random_bytes(16)),
-            'type' => $type,
-            'amount' => is_numeric($amount) ? intval($amount * 100) : $amount,
-            'is_paid' => false,
-        ]);
+        $this->id = \Minz\Random::hex(32);
+        $this->type = $type;
+        $this->amount = $amount;
+        $this->is_paid = false;
     }
 
     /**
@@ -109,12 +105,12 @@ class Payment extends \Minz\Model
         $frequency = strtolower(trim($frequency));
         $amount = 0;
         if ($frequency === 'month') {
-            $amount = 3;
+            $amount = 3 * 100;
         } elseif ($frequency === 'year') {
-            $amount = 30;
+            $amount = 30 * 100;
         }
 
-        $payment = self::init('subscription', $amount);
+        $payment = new self('subscription', $amount);
         $payment->frequency = $frequency;
         $payment->account_id = $account->id;
 
@@ -125,13 +121,13 @@ class Payment extends \Minz\Model
      * Init a common pot payment from an account.
      *
      * @param \Website\models\Account $account
-     * @param integer|float $amount
+     * @param integer|float $euros
      *
      * @return \Website\models\Payment
      */
-    public static function initCommonPotFromAccount($account, $amount)
+    public static function initCommonPotFromAccount($account, $euros)
     {
-        $payment = self::init('common_pot', $amount);
+        $payment = new self('common_pot', intval($euros * 100));
         $payment->account_id = $account->id;
 
         return $payment;
@@ -146,14 +142,11 @@ class Payment extends \Minz\Model
      */
     public static function initCreditFromPayment($payment)
     {
-        return new self([
-            'id' => bin2hex(random_bytes(16)),
-            'type' => 'credit',
-            'amount' => $payment->amount,
-            'account_id' => $payment->account_id,
-            'credited_payment_id' => $payment->id,
-            'is_paid' => false,
-        ]);
+        $credit = new self('credit', $payment->amount);
+        $credit->account_id = $payment->account_id;
+        $credit->credited_payment_id = $payment->id;
+
+        return $credit;
     }
 
     /**
@@ -224,34 +217,15 @@ class Payment extends \Minz\Model
      */
     public function isReimbursed()
     {
-        $credited_payment = Payment::findBy([
+        return self::existsBy([
             'credited_payment_id' => $this->id,
         ]);
-        return $credited_payment !== null;
-    }
-
-    /**
-     * @return string
-     */
-    public function toJson()
-    {
-        $attributes = [
-            'id' => $this->id,
-            'created_at' => $this->created_at->getTimestamp(),
-            'completed_at' => null,
-            'frequency' => $this->frequency,
-            'amount' => $this->amount,
-        ];
-        if ($this->completed_at) {
-            $attributes['completed_at'] = $this->completed_at->getTimestamp();
-        }
-        return json_encode($attributes);
     }
 
     /**
      * Mark the payment as completed
      *
-     * @param \DateTime $completed_at
+     * @param \DateTimeImmutable $completed_at
      */
     public function complete($completed_at)
     {
@@ -264,39 +238,13 @@ class Payment extends \Minz\Model
     }
 
     /**
-     * Validate a model and return formated errors
-     *
-     * @return string[]
-     */
-    public function validate()
-    {
-        $formatted_errors = [];
-
-        foreach (parent::validate() as $property => $error) {
-            $code = $error['code'];
-
-            if ($property === 'amount') {
-                $formatted_error = 'Le montant doit être compris entre 1 et 1000 €.';
-            } elseif ($property === 'frequency') {
-                $formatted_error = 'Vous devez choisir l’une des deux périodes proposées.';
-            } else {
-                $formatted_error = $error['description']; // @codeCoverageIgnore
-            }
-
-            $formatted_errors[$property] = $formatted_error;
-        }
-
-        return $formatted_errors;
-    }
-
-    /**
      * @return string
      */
     public static function generateInvoiceNumber()
     {
         $now = \Minz\Time::now();
 
-        $last_invoice_number = Payment::daoCall('findLastInvoiceNumber');
+        $last_invoice_number = self::findLastInvoiceNumber();
         if ($last_invoice_number) {
             list(
                 $last_invoice_year,
@@ -318,64 +266,167 @@ class Payment extends \Minz\Model
     }
 
     /**
-     * @param string $invoice_number
+     * Return an ongoing payment for the given account
      *
-     * @return boolean Returns true if the number is valid
+     * @param string $account_id
+     *
+     * @return ?self
      */
-    public static function validateInvoiceNumber($invoice_number)
+    public static function findOngoingForAccount($account_id)
     {
-        $pattern = '/^[1-9][0-9]{3}-[0-9]{2}-[0-9]{4}$/';
-        return preg_match($pattern, $invoice_number) === 1;
+        $sql = 'SELECT * FROM payments '
+             . 'WHERE account_id = ? '
+             . 'AND completed_at IS NULL '
+             . 'LIMIT 1';
+
+        $database = \Minz\Database::get();
+        $statement = $database->prepare($sql);
+        $statement->execute([$account_id]);
+
+        $result = $statement->fetch();
+        if (is_array($result)) {
+            return self::fromDatabaseRow($result);
+        } else {
+            return null;
+        }
     }
 
     /**
-     * @param string $type
+     * Return the last invoice number saved in the database
      *
-     * @return boolean Returns true if the value is either `common_pot` or
-     *                 `subscription` or `credit`
+     * @return string
      */
-    public static function validateType($type)
+    public static function findLastInvoiceNumber()
     {
-        return $type === 'common_pot' || $type === 'subscription' || $type === 'credit';
+        $sql = 'SELECT invoice_number FROM payments '
+             . 'WHERE invoice_number IS NOT NULL '
+             . 'ORDER BY invoice_number DESC '
+             . 'LIMIT 1';
+
+        $database = \Minz\Database::get();
+        $statement = $database->query($sql);
+        return $statement->fetchColumn();
     }
 
     /**
-     * @param integer $amount
+     * Return the sum of amounts for completed payments
      *
-     * @return boolean Returns true if the value is between MIN_AMOUNT and MAX_AMOUNT
+     * @param integer $year
+     *
+     * @return integer
      */
-    public static function validateAmount($amount)
+    public static function findTotalRevenue($year)
     {
-        return $amount >= self::MIN_AMOUNT && $amount <= self::MAX_AMOUNT;
+        $sql = <<<'SQL'
+            SELECT SUM(amount) FROM payments
+            WHERE completed_at IS NOT NULL
+            AND type != 'credit'
+            AND id NOT IN (
+                SELECT p2.credited_payment_id FROM payments p2
+                WHERE p2.type = 'credit'
+            )
+            AND strftime('%Y', completed_at) = ?
+        SQL;
+
+        $database = \Minz\Database::get();
+        $statement = $database->prepare($sql);
+        $statement->execute([$year]);
+        return intval($statement->fetchColumn());
     }
 
     /**
-     * @param string $id
+     * Return the sum of amounts for completed common pot payments
      *
-     * @return boolean Returns true if the value is not empty
+     * @param integer $year
+     *
+     * @return integer
      */
-    public static function validatePaymentIntentId($id)
+    public static function findCommonPotRevenue($year)
     {
-        return strlen($id) > 0;
+        $sql = <<<'SQL'
+            SELECT SUM(amount) FROM payments
+            WHERE type = "common_pot"
+            AND completed_at IS NOT NULL
+            AND id NOT IN (
+                SELECT p2.credited_payment_id FROM payments p2
+                WHERE p2.type = 'credit'
+            )
+            AND strftime('%Y', completed_at) = ?
+        SQL;
+
+        $database = \Minz\Database::get();
+        $statement = $database->prepare($sql);
+        $statement->execute([$year]);
+        return intval($statement->fetchColumn());
     }
 
     /**
-     * @param string $id
+     * Return the sum of amounts for completed subscriptions payments
      *
-     * @return boolean Returns true if the value is not empty
+     * @param integer $year
+     *
+     * @return integer
      */
-    public static function validateSessionId($id)
+    public static function findSubscriptionsRevenue($year)
     {
-        return strlen($id) > 0;
+        $sql = <<<'SQL'
+            SELECT SUM(amount) FROM payments
+            WHERE type = "subscription"
+            AND completed_at IS NOT NULL
+            AND id NOT IN (
+                SELECT p2.credited_payment_id FROM payments p2
+                WHERE p2.type = 'credit'
+            )
+            AND strftime('%Y', completed_at) = ?
+        SQL;
+
+        $database = \Minz\Database::get();
+        $statement = $database->prepare($sql);
+        $statement->execute([$year]);
+        return intval($statement->fetchColumn());
     }
 
     /**
-     * @param string $frequency
+     * Return the payments for a given year
      *
-     * @return boolean Returns true if the value is either `month` or `year`
+     * @param integer $year
+     *
+     * @return array
      */
-    public static function validateFrequency($frequency)
+    public static function listByYear($year)
     {
-        return $frequency === 'month' || $frequency === 'year';
+        $sql = 'SELECT * FROM payments '
+             . 'WHERE strftime("%Y", datetime(created_at)) = ? '
+             . 'ORDER BY created_at DESC';
+
+        $database = \Minz\Database::get();
+        $statement = $database->prepare($sql);
+        $statement->execute([$year]);
+        return self::fromDatabaseRows($statement->fetchAll());
+    }
+
+    /**
+     * Change account_id of the given payments
+     *
+     * @param string[] $payments_ids
+     * @param string $account_id
+     *
+     * @return boolean
+     */
+    public static function moveToAccountId($payments_ids, $account_id)
+    {
+        $question_marks = array_fill(0, count($payments_ids), '?');
+        $in_statement = implode(',', $question_marks);
+        $sql = <<<SQL
+            UPDATE payments
+            SET account_id = ?
+            WHERE id IN ({$in_statement})
+        SQL;
+
+        $database = \Minz\Database::get();
+        $statement = $database->prepare($sql);
+        $parameters = [$account_id];
+        $parameters = array_merge($parameters, $payments_ids);
+        return $statement->execute($parameters);
     }
 }

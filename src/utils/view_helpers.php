@@ -13,19 +13,6 @@ function format_amount($amount)
 }
 
 /**
- * Format a date with strftime.
- *
- * @param \DateTime $date
- * @param string $format
- *
- * @return string
- */
-function format_date($date, $format)
-{
-    return strftime($format, $date->getTimestamp());
-}
-
-/**
  * Format a month number with strftime.
  *
  * @param integer $month
@@ -35,8 +22,8 @@ function format_date($date, $format)
  */
 function format_month($month, $format)
 {
-    $date = date_create_from_format('n', $month);
-    return strftime($format, $date->getTimestamp());
+    $date = date_create_from_format('n', strval($month));
+    return \Minz\Output\ViewHelpers::formatDate($date, $format);
 }
 
 /**

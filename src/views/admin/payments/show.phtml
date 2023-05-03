@@ -7,7 +7,7 @@
 <section class="section">
     <div class="header">
         <h1 class="header__title">
-            Paiement du <?= format_date($payment->created_at, '%d %B') ?><br />
+            Paiement du <?= _d($payment->created_at, 'dd MMMM') ?><br />
             <?= $payment->account()->email ?>
         </h1>
     </div>
@@ -30,7 +30,7 @@
         <div class="columns columns--center">
             <div class="columns__item">
                 <form method="post" action="<?= url('confirm admin payment', ['id' => $payment->id]) ?>" >
-                    <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+                    <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
 
                     <div class="form__actions">
                         <button type="submit" class="button--primary">
@@ -43,7 +43,7 @@
             <div class="columns__item">
                 <?php if (!$payment->invoice_number): ?>
                     <form method="post" action="<?= url('destroy admin payment', ['id' => $payment->id]) ?>">
-                        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+                        <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
 
                         ou
                         <button type="submit" class="button--ghost">

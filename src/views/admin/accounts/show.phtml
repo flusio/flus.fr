@@ -22,10 +22,10 @@
             Cette personne bénéficie d’un abonnement gratuit.
         <?php elseif ($account->hasExpired()): ?>
             <strong>
-                Son abonnement a expiré le <?= format_date($account->expired_at, '%d %B %Y') ?>.
+                Son abonnement a expiré le <?= _d($account->expired_at, 'dd MMMM yyyy') ?>.
             </strong>
         <?php else: ?>
-            Son abonnement expirera le <strong><?= format_date($account->expired_at, '%d %B %Y') ?>.</strong>
+            Son abonnement expirera le <strong><?= _d($account->expired_at, 'dd MMMM yyyy') ?>.</strong>
         <?php endif; ?>
     </p>
 </div>
@@ -37,7 +37,7 @@
         </p>
     <?php endif; ?>
 
-    <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+    <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
 
     <div class="form-group">
         <label for="expired-at">
@@ -93,7 +93,7 @@
 
                     <td>
                         <?php if ($payment->completed_at): ?>
-                            <?= format_date($payment->completed_at, '%d %b %Y') ?>
+                            <?= _d($payment->completed_at, 'dd MMM yyyy') ?>
                         <?php else: ?>
                             traitement en cours
                         <?php endif; ?>

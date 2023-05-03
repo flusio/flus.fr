@@ -6,7 +6,6 @@ class AccountTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\FakerHelper;
     use \Minz\Tests\InitializerHelper;
-    use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\TimeHelper;
 
     public function testExtendSubscriptionAdds1MonthToCurrentIfExpirationInFuture()
@@ -14,7 +13,7 @@ class AccountTest extends \PHPUnit\Framework\TestCase
         $now = $this->fake('dateTime');
         $this->freeze($now);
         $expired_at = \Minz\Time::fromNow($this->fake('randomDigitNotNull'), 'days');
-        $account = Account::init($this->fake('email'));
+        $account = new Account($this->fake('email'));
         $account->expired_at = $expired_at;
 
         $account->extendSubscription('month');
@@ -28,7 +27,7 @@ class AccountTest extends \PHPUnit\Framework\TestCase
         $now = $this->fake('dateTime');
         $this->freeze($now);
         $expired_at = \Minz\Time::fromNow($this->fake('randomDigitNotNull'), 'days');
-        $account = Account::init($this->fake('email'));
+        $account = new Account($this->fake('email'));
         $account->expired_at = $expired_at;
 
         $account->extendSubscription('year');
@@ -42,7 +41,7 @@ class AccountTest extends \PHPUnit\Framework\TestCase
         $now = $this->fake('dateTime');
         $this->freeze($now);
         $expired_at = \Minz\Time::ago($this->fake('randomDigitNotNull'), 'days');
-        $account = Account::init($this->fake('email'));
+        $account = new Account($this->fake('email'));
         $account->expired_at = $expired_at;
 
         $account->extendSubscription('month');
@@ -56,7 +55,7 @@ class AccountTest extends \PHPUnit\Framework\TestCase
         $now = $this->fake('dateTime');
         $this->freeze($now);
         $expired_at = \Minz\Time::ago($this->fake('randomDigitNotNull'), 'days');
-        $account = Account::init($this->fake('email'));
+        $account = new Account($this->fake('email'));
         $account->expired_at = $expired_at;
 
         $account->extendSubscription('year');
@@ -68,8 +67,8 @@ class AccountTest extends \PHPUnit\Framework\TestCase
     public function testExtendSubscriptionDoesNothingIfFreeAccount()
     {
         $frequency = $this->fake('randomElement', ['month', 'year']);
-        $expired_at = new \DateTime('1970-01-01');
-        $account = Account::init($this->fake('email'));
+        $expired_at = new \DateTimeImmutable('@0');
+        $account = new Account($this->fake('email'));
         $account->expired_at = $expired_at;
 
         $account->extendSubscription($frequency);

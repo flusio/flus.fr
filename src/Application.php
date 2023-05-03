@@ -4,24 +4,24 @@ namespace Website;
 
 class Application
 {
-    /** @var \Minz\Engine **/
-    private $engine;
-
-    public function __construct()
+    public function run($request)
     {
         include_once('utils/view_helpers.php');
 
-        $router = new Router();
-        $this->engine = new \Minz\Engine($router);
-        \Minz\Url::setRouter($router);
-
         setlocale(LC_ALL, 'fr_FR.UTF8');
-    }
 
-    public function run($request)
-    {
+        $router = new Router();
+
+        \Minz\Engine::init($router, [
+            'start_session' => \Minz\Configuration::$environment !== 'test',
+            'not_found_view_pointer' => 'not_found.phtml',
+            'internal_server_error_view_pointer' => 'internal_server_error.phtml',
+            'controller_namespace' => '\\Website\\controllers',
+        ]);
+
         \Minz\Output\View::declareDefaultVariables([
             'environment' => \Minz\Configuration::$environment,
+            'csrf_token' => \Minz\Csrf::generate(),
             'errors' => [],
             'error' => null,
             'load_form_statics' => false,
@@ -29,10 +29,6 @@ class Application
             'current_page' => null,
         ]);
 
-        return $this->engine->run($request, [
-            'not_found_view_pointer' => 'not_found.phtml',
-            'internal_server_error_view_pointer' => 'internal_server_error.phtml',
-            'controller_namespace' => '\\Website\\controllers',
-        ]);
+        return \Minz\Engine::run($request);
     }
 }

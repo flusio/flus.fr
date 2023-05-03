@@ -2,125 +2,99 @@
 
 namespace Website\models;
 
+use Minz\Database;
+use Minz\Validable;
 use Website\utils;
 
 /**
  * @author Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class Account extends \Minz\Model
+#[Database\Table(name: 'accounts')]
+class Account
 {
-    use DaoConnector;
+    use Database\Recordable;
+    use Validable;
 
-    public const PROPERTIES = [
-        'id' => [
-            'type' => 'string',
-            'required' => true,
-        ],
+    #[Database\Column]
+    public string $id;
 
-        'created_at' => [
-            'type' => 'datetime',
-        ],
+    #[Database\Column]
+    public \DateTimeImmutable $created_at;
 
-        'expired_at' => [
-            'type' => 'datetime',
-            'required' => true,
-        ],
+    #[Database\Column]
+    public \DateTimeImmutable $expired_at;
 
-        'email' => [
-            'type' => 'string',
-            'required' => true,
-            'validator' => '\Website\utils\Email::validate',
-        ],
+    #[Validable\Presence(message: 'Saisissez une adresse courriel.')]
+    #[Validable\Email(message: 'Saisissez une adresse courriel valide.')]
+    #[Database\Column]
+    public string $email;
 
-        'access_token' => [
-            'type' => 'string',
-        ],
+    #[Database\Column]
+    public ?string $access_token = null;
 
-        'last_sync_at' => [
-            'type' => 'datetime',
-        ],
+    #[Database\Column]
+    public ?\DateTimeImmutable $last_sync_at = null;
 
-        'preferred_frequency' => [
-            'type' => 'string',
-            'required' => true,
-            'validator' => '\Website\models\Account::validateFrequency',
-        ],
+    #[Validable\Inclusion(in: ['month', 'year'], message: 'Saisissez une fréquence valide.')]
+    #[Database\Column]
+    public string $preferred_frequency;
 
-        'preferred_payment_type' => [
-            'type' => 'string',
-            'required' => true,
-            'validator' => '\Website\models\Account::validatePaymentType',
-        ],
+    #[Validable\Inclusion(in: ['common_pot', 'card'], message: 'Saisissez un mode de paiement valide.')]
+    #[Database\Column]
+    public string $preferred_payment_type;
 
-        'preferred_service' => [
-            'type' => 'string',
-            'required' => true,
-            'validator' => '\Website\models\Account::validateServiceName',
-        ],
+    #[Validable\Inclusion(in: ['flusio', 'freshrss'], message: 'Saisissez un service valide.')]
+    #[Database\Column]
+    public string $preferred_service;
 
-        'reminder' => [
-            'type' => 'boolean',
-            'required' => true,
-        ],
+    #[Database\Column]
+    public bool $reminder;
 
-        'address_first_name' => [
-            'type' => 'string',
-        ],
+    #[Database\Column]
+    public ?string $address_first_name;
 
-        'address_last_name' => [
-            'type' => 'string',
-        ],
+    #[Database\Column]
+    public ?string $address_last_name;
 
-        'address_address1' => [
-            'type' => 'string',
-        ],
+    #[Database\Column]
+    public ?string $address_address1;
 
-        'address_postcode' => [
-            'type' => 'string',
-        ],
+    #[Database\Column]
+    public ?string $address_postcode;
 
-        'address_city' => [
-            'type' => 'string',
-        ],
+    #[Database\Column]
+    public ?string $address_city;
 
-        'address_country' => [
-            'type' => 'string',
-            'required' => true,
-            'validator' => '\Website\utils\Countries::isSupported',
-        ],
+    #[Validable\Inclusion(
+        in: utils\Countries::COUNTRIES,
+        mode: 'keys',
+        message: 'Saisissez un pays de la liste.'
+    )]
+    #[Database\Column]
+    public ?string $address_country;
 
-        'company_vat_number' => [
-            'type' => 'string',
-            'validator' => '\Website\models\Account::validateVatNumber',
-        ],
+    // What a tremendous verification! This could be improved, but I don't
+    // plan to let anyone to set its vat number himself, so this is fine
+    // for now.
+    #[Validable\Length(min: 10, max: 20, message: 'Saisissez un numéro de TVA valide.')]
+    #[Database\Column]
+    public ?string $company_vat_number = null;
 
-        'count_payments' => [
-            'type' => 'integer',
-            'computed' => true,
-        ],
-    ];
+    #[Database\Column(computed: true)]
+    public int $count_payments;
 
-    /**
-     * Initialize an Account
-     *
-     * @param string $email
-     *
-     * @return \Website\models\Account
-     */
-    public static function init($email)
+    public function __construct($email)
     {
-        return new self([
-            'id' => bin2hex(random_bytes(16)),
-            'email' => utils\Email::sanitize($email),
-            'expired_at' => \Minz\Time::fromNow(1, 'month'),
-            'preferred_frequency' => 'month',
-            'preferred_payment_type' => 'card',
-            'preferred_service' => 'flusio',
-            'reminder' => true,
-            'address_country' => 'FR',
-            'last_sync_at' => \Minz\Time::now(),
-        ]);
+        $this->id = \Minz\Random::hex(32);
+        $this->email = \Minz\Email::sanitize($email);
+        $this->expired_at = \Minz\Time::fromNow(1, 'month');
+        $this->preferred_frequency = 'month';
+        $this->preferred_payment_type = 'card';
+        $this->preferred_service = 'flusio';
+        $this->reminder = true;
+        $this->address_country = 'FR';
+        $this->last_sync_at = \Minz\Time::now();
     }
 
     /**
@@ -137,8 +111,8 @@ class Account extends \Minz\Model
 
         $account = self::findBy(['email' => $email]);
         if (!$account) {
-            $account = self::init($email);
-            $account->expired_at = new \DateTime('@0');
+            $account = new self($email);
+            $account->expired_at = new \DateTimeImmutable('@0');
             $account->reminder = false;
         }
 
@@ -161,14 +135,12 @@ class Account extends \Minz\Model
         }
 
         $today = \Minz\Time::now();
-        $new_expired_at = max($today, $this->expired_at);
+        $latest_date = max($today, $this->expired_at);
         if ($frequency === 'year') {
-            $new_expired_at->modify('+1 year');
+            $this->expired_at = $latest_date->modify('+1 year');
         } else {
-            $new_expired_at->modify('+1 month');
+            $this->expired_at = $latest_date->modify('+1 month');
         }
-
-        $this->expired_at = $new_expired_at;
     }
 
     /**
@@ -213,12 +185,12 @@ class Account extends \Minz\Model
      */
     public function setAddress($address)
     {
-        $this->address_first_name = trim($address['first_name']);
-        $this->address_last_name = trim($address['last_name']);
-        $this->address_address1 = trim($address['address1']);
-        $this->address_postcode = trim($address['postcode']);
-        $this->address_city = trim($address['city']);
-        $this->address_country = trim($address['country']);
+        $this->address_first_name = trim($address['first_name'] ?? '');
+        $this->address_last_name = trim($address['last_name'] ?? '');
+        $this->address_address1 = trim($address['address1'] ?? '');
+        $this->address_postcode = trim($address['postcode'] ?? '');
+        $this->address_city = trim($address['city'] ?? '');
+        $this->address_country = trim($address['country'] ?? '');
     }
 
     /**
@@ -279,82 +251,81 @@ class Account extends \Minz\Model
     /**
      * Return an ongoing payment associated to this account, if any
      *
-     * @return \Website\models\Payment|null
+     * @return ?\Website\models\Payment
      */
     public function ongoingPayment()
     {
-        return Payment::daoToModel('findOngoingForAccount', $this->id);
+        return Payment::findOngoingForAccount($this->id);
     }
 
     /**
-     * Validate a model and return formated errors
+     * Return the list of accounts with computed count_payments
      *
-     * @return string[]
+     * @return array
      */
-    public function validate()
+    public static function listWithCountPayments()
     {
-        $formatted_errors = [];
+        $sql = <<<SQL
+            SELECT a.*, (
+                SELECT COUNT(p.id) FROM payments p
+                WHERE p.account_id = a.id
+            ) AS count_payments
+            FROM accounts a
+        SQL;
 
-        foreach (parent::validate() as $property => $error) {
-            $code = $error['code'];
-
-            if ($property === 'email' && $code === \Minz\Model::ERROR_REQUIRED) {
-                $formatted_error = 'L’adresse courriel est obligatoire.';
-            } elseif ($property === 'email') {
-                $formatted_error = 'L’adresse courriel que vous avez fournie est invalide.';
-            } elseif ($property === 'address_country') {
-                $formatted_error = 'Le pays que vous avez renseigné est invalide.';
-            } else {
-                $formatted_error = $error['description']; // @codeCoverageIgnore
-            }
-
-            $formatted_errors[$property] = $formatted_error;
-        }
-
-        return $formatted_errors;
+        $database = Database::get();
+        $statement = $database->query($sql);
+        return self::fromDatabaseRows($statement->fetchAll());
     }
 
     /**
-     * @param string $type
+     * Update the last_sync_at of the given accounts.
      *
-     * @return boolean Returns true if the value is either `common_pot` or `card`
+     * @param string[] $account_ids
+     * @param \DateTimeImmutable $date
+     *
+     * @return boolean True on success or false on failure
      */
-    public static function validatePaymentType($type)
+    public static function updateLastSyncAt($account_ids, $date)
     {
-        return $type === 'common_pot' || $type === 'card';
+        $question_marks = array_fill(0, count($account_ids), '?');
+        $in_statement = implode(',', $question_marks);
+
+        $sql = <<<SQL
+            UPDATE accounts
+            SET last_sync_at = ?
+            WHERE id IN ({$in_statement})
+        SQL;
+
+        $database = \Minz\Database::get();
+        $statement = $database->prepare($sql);
+        $parameters = [
+            $date->format(Database\Column::DATETIME_FORMAT),
+        ];
+        $parameters = array_merge($parameters, $account_ids);
+        return $statement->execute($parameters);
     }
 
     /**
-     * @param string $frequency
+     * List the accounts which have a last_sync_at property older than the
+     * given date.
      *
-     * @return boolean Returns true if the value is either `month` or `year`
+     * @param \DateTimeImmutable $date
+     *
+     * @return array
      */
-    public static function validateFrequency($frequency)
+    public static function listByLastSyncAtOlderThan($date)
     {
-        return $frequency === 'month' || $frequency === 'year';
-    }
+        $sql = <<<SQL
+            SELECT * FROM accounts
+            WHERE last_sync_at < ? OR last_sync_at IS NULL
+        SQL;
 
-    /**
-     * @param string $type
-     *
-     * @return boolean Returns true if the value is either `flusio` or `freshrss`
-     */
-    public static function validateServiceName($service)
-    {
-        return $service === 'flusio' || $service === 'freshrss';
-    }
-
-    /**
-     * @param string $vat_number
-     *
-     * @return boolean Returns true if the number LOOKS good
-     */
-    public static function validateVatNumber($vat_number)
-    {
-        $length = strlen(trim($vat_number));
-        // what a tremendous verification! This could be improved, but I don't
-        // plan to let anyone to set its vat number himself, so this is fine
-        // for now.
-        return $length >= 10 && $length <= 20;
+        $database = Database::get();
+        $statement = $database->prepare($sql);
+        $statement->execute([
+            $date->format(Database\Column::DATETIME_FORMAT),
+        ]);
+        return self::fromDatabaseRows($statement->fetchAll());
     }
 }

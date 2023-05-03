@@ -124,7 +124,7 @@ class Payments
                 // by Stripe on their side.
             }
 
-            models\Payment::delete($ongoing_payment->id);
+            $ongoing_payment->remove();
         }
 
         return $response;

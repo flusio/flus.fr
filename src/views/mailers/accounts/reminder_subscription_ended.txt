@@ -1,6 +1,6 @@
 Bonjour,
 
-Vous recevez ce courriel car vous possédez un compte Flus qui a expiré le <?= format_date($expired_at, '%d %B %Y') ?>.
+Vous recevez ce courriel car vous possédez un compte Flus qui a expiré le <?= _d($expired_at, 'dd MMMM yyyy') ?>.
 Si vous voulez continuer à utiliser le service, vous devez renouveler votre
 abonnement.
 

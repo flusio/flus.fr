@@ -54,8 +54,7 @@ class Auth
         $password = $request->param('password');
         $from = $request->param('from');
 
-        $csrf = new \Minz\CSRF();
-        if (!$csrf->validateToken($request->param('csrf'))) {
+        if (!\Minz\Csrf::validate($request->param('csrf'))) {
             return \Minz\Response::badRequest('admin/auth/login.phtml', [
                 'from' => $from,
                 'error' => 'Une vérification de sécurité a échoué, veuillez réessayer de soumettre le formulaire.',
@@ -89,8 +88,7 @@ class Auth
      */
     public function deleteSession($request)
     {
-        $csrf = new \Minz\CSRF();
-        if ($csrf->validateToken($request->param('csrf')) && utils\CurrentUser::isAdmin()) {
+        if (\Minz\Csrf::validate($request->param('csrf')) && utils\CurrentUser::isAdmin()) {
             utils\CurrentUser::logOut();
         }
 

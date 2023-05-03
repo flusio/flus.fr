@@ -2,6 +2,8 @@
 
 namespace Website\models;
 
+use Minz\Database;
+use Minz\Validable;
 use Website\utils;
 
 /**
@@ -17,54 +19,46 @@ use Website\utils;
  * @author Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class PotUsage extends \Minz\Model
+#[Database\Table(name: 'pot_usages')]
+class PotUsage
 {
-    use DaoConnector;
+    use Database\Recordable;
+    use Validable;
 
-    public const PROPERTIES = [
-        'id' => [
-            'type' => 'string',
-            'required' => true,
-        ],
+    #[Database\Column]
+    public string $id;
 
-        'created_at' => 'datetime',
+    #[Database\Column]
+    public \DateTimeImmutable $created_at;
 
-        'completed_at' => [
-            'type' => 'datetime',
-            'required' => true,
-        ],
+    #[Database\Column]
+    public ?\DateTimeImmutable $completed_at = null;
+    #
+    #[Database\Column]
+    public bool $is_paid = false;
 
-        'is_paid' => [
-            'type' => 'boolean',
-            'required' => true,
-        ],
+    #[Validable\Comparison(
+        greater_or_equal: Payment::MIN_AMOUNT,
+        less_or_equal: Payment::MAX_AMOUNT,
+        message: 'Le montant doit être compris entre 1 et 1000 €.',
+    )]
+    #[Database\Column]
+    public int $amount;
 
-        'amount' => [
-            'type' => 'integer',
-            'required' => true,
-            'validator' => '\Website\models\Payment::validateAmount',
-        ],
+    #[Validable\Inclusion(in: ['month', 'year'], message: 'Vous devez choisir l’une des deux périodes proposées.')]
+    #[Database\Column]
+    public ?string $frequency = null;
 
-        'frequency' => [
-            'type' => 'string',
-            'required' => true,
-            'validator' => '\Website\models\Payment::validateFrequency',
-        ],
-
-        'account_id' => [
-            'type' => 'string',
-        ],
-    ];
+    #[Database\Column]
+    public string $account_id;
 
     /**
-     * Init a subscription payment from an account.
+     * Init a pot usage from an account.
      *
      * @param \Website\models\Account $account
      * @param string $frequency (`month` or `year`)
-     *
-     * @return \Website\models\PotUsage
      */
-    public static function initFromAccount($account, $frequency)
+    public function __construct($account, $frequency)
     {
         $frequency = strtolower(trim($frequency));
         $amount = 0;
@@ -74,14 +68,12 @@ class PotUsage extends \Minz\Model
             $amount = 30;
         }
 
-        return new self([
-            'id' => bin2hex(random_bytes(16)),
-            'completed_at' => \Minz\Time::now(),
-            'is_paid' => true,
-            'amount' => $amount * 100,
-            'frequency' => $frequency,
-            'account_id' => $account->id,
-        ]);
+        $this->id = \Minz\Random::hex(32);
+        $this->completed_at = \Minz\Time::now();
+        $this->is_paid = true;
+        $this->amount = $amount * 100;
+        $this->frequency = $frequency;
+        $this->account_id = $account->id;
     }
 
     /**
@@ -100,46 +92,55 @@ class PotUsage extends \Minz\Model
     }
 
     /**
-     * Validate a model and return formated errors
+     * Return the amount actually available in the common pot
      *
-     * @return string[]
+     * @return integer
      */
-    public function validate()
+    public static function findAvailableAmount()
     {
-        $formatted_errors = [];
+        $sql = <<<'SQL'
+            SELECT COALESCE(SUM(p.amount), 0) - (
+                SELECT COALESCE(SUM(pu.amount), 0)
+                FROM pot_usages pu
+                WHERE pu.completed_at IS NOT NULL
+            )
+            FROM payments p
+            WHERE p.type = "common_pot"
+            AND p.completed_at IS NOT NULL
+            AND p.id NOT IN (
+                SELECT p2.credited_payment_id FROM payments p2
+                WHERE p2.credited_payment_id NOT NULL
+                AND p2.completed_at IS NOT NULL
+            )
+        SQL;
 
-        foreach (parent::validate() as $property => $error) {
-            $code = $error['code'];
-
-            if ($property === 'frequency') {
-                $formatted_error = 'Vous devez choisir l’une des deux périodes proposées.';
-            } else {
-                $formatted_error = $error['description']; // @codeCoverageIgnore
-            }
-
-            $formatted_errors[$property] = $formatted_error;
-        }
-
-        return $formatted_errors;
+        $database = \Minz\Database::get();
+        $statement = $database->query($sql);
+        return intval($statement->fetchColumn());
     }
 
     /**
-     * @param integer $amount
+     * Change account_id of the given pot_usages
      *
-     * @return boolean Returns true if the value is between MIN_AMOUNT and MAX_AMOUNT
+     * @param string[] $pot_usages_ids
+     * @param string $account_id
+     *
+     * @return boolean
      */
-    public static function validateAmount($amount)
+    public static function moveToAccountId($pot_usages_ids, $account_id)
     {
-        return $amount >= self::MIN_AMOUNT && $amount <= self::MAX_AMOUNT;
-    }
+        $question_marks = array_fill(0, count($pot_usages_ids), '?');
+        $in_statement = implode(',', $question_marks);
+        $sql = <<<SQL
+            UPDATE pot_usages
+            SET account_id = ?
+            WHERE id IN ({$in_statement})
+        SQL;
 
-    /**
-     * @param string $frequency
-     *
-     * @return boolean Returns true if the value is either `month` or `year`
-     */
-    public static function validateFrequency($frequency)
-    {
-        return $frequency === 'month' || $frequency === 'year';
+        $database = \Minz\Database::get();
+        $statement = $database->prepare($sql);
+        $parameters = [$account_id];
+        $parameters = array_merge($parameters, $pot_usages_ids);
+        return $statement->execute($parameters);
     }
 }

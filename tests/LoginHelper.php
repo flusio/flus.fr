@@ -30,9 +30,8 @@ trait LoginHelper
      */
     public function loginUser($account_values = [])
     {
-        $account_factory = new \Minz\Tests\DatabaseFactory('account');
-        $account_id = $account_factory->create($account_values);
-        \Website\utils\CurrentUser::logUserIn($account_id);
+        $account = factories\AccountFactory::create($account_values);
+        \Website\utils\CurrentUser::logUserIn($account->id);
         return \Website\utils\CurrentUser::get();
     }
 
@@ -40,7 +39,7 @@ trait LoginHelper
      * Simulate a user who logs out. It is called before each test to make sure
      * to reset the context.
      *
-     * @before
+     * @after
      */
     public function logout()
     {

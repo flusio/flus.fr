@@ -3,6 +3,9 @@
 namespace Website\services;
 
 use PHPUnit\Framework\TestCase;
+use Minz\Output\ViewHelpers;
+use tests\factories\AccountFactory;
+use tests\factories\PaymentFactory;
 use Website\models;
 use Website\utils;
 
@@ -10,12 +13,10 @@ class InvoicePDFTest extends TestCase
 {
     use \tests\FakerHelper;
     use \Minz\Tests\InitializerHelper;
-    use \Minz\Tests\FactoriesHelper;
 
     public function testPdfHasALogo()
     {
-        $payment_id = $this->create('payment');
-        $payment = models\Payment::find($payment_id);
+        $payment = PaymentFactory::create();
 
         $invoice_pdf = new InvoicePDF($payment);
 
@@ -25,16 +26,15 @@ class InvoicePDFTest extends TestCase
 
     public function testPdfHasMetadata()
     {
-        $payment_id = $this->create('payment', [
-            'completed_at' => $this->fake('dateTime')->format(\Minz\Model::DATETIME_FORMAT),
+        $payment = PaymentFactory::create([
+            'completed_at' => $this->fake('dateTime'),
         ]);
-        $payment = models\Payment::find($payment_id);
 
         $invoice_pdf = new InvoicePDF($payment);
 
         $metadata = $invoice_pdf->metadata;
-        $expected_established = $date = strftime('%d %B %Y', $payment->created_at->getTimestamp());
-        $expected_paid = $date = strftime('%d %B %Y', $payment->completed_at->getTimestamp());
+        $expected_established = ViewHelpers::formatDate($payment->created_at, 'dd MMMM yyyy');
+        $expected_paid = ViewHelpers::formatDate($payment->completed_at, 'dd MMMM yyyy');
         $this->assertSame($payment->invoice_number, $metadata['N° facture']);
         $this->assertSame($expected_established, $metadata['Établie le']);
         $this->assertSame($expected_paid, $metadata['Payée le']);
@@ -43,14 +43,13 @@ class InvoicePDFTest extends TestCase
     public function testPdfWithVatNumber()
     {
         $faker = \Faker\Factory::create('fr_FR');
-        $vat_number = $faker->vat;
-        $account_id = $this->create('account', [
+        $vat_number = $faker->vat(); // @phpstan-ignore-line
+        $account = AccountFactory::create([
             'company_vat_number' => $vat_number,
         ]);
-        $payment_id = $this->create('payment', [
-            'account_id' => $account_id,
+        $payment = PaymentFactory::create([
+            'account_id' => $account->id,
         ]);
-        $payment = models\Payment::find($payment_id);
 
         $invoice_pdf = new InvoicePDF($payment);
 
@@ -60,10 +59,9 @@ class InvoicePDFTest extends TestCase
 
     public function testPdfNotCompletedIsDue()
     {
-        $payment_id = $this->create('payment', [
+        $payment = PaymentFactory::create([
             'completed_at' => null,
         ]);
-        $payment = models\Payment::find($payment_id);
 
         $invoice_pdf = new InvoicePDF($payment);
 
@@ -76,16 +74,15 @@ class InvoicePDFTest extends TestCase
         $credited_completed_at = $this->fake('dateTime');
         $random_number = sprintf('-%04d', $this->fake('randomNumber', 4));
         $credited_invoice_number = $credited_completed_at->format('Y-m') . $random_number;
-        $credited_payment_id = $this->create('payment', [
+        $credited_payment = PaymentFactory::create([
             'invoice_number' => $credited_invoice_number,
         ]);
-        $payment_id = $this->create('payment', [
+        $payment = PaymentFactory::create([
             'type' => 'credit',
-            'credited_payment_id' => $credited_payment_id,
-            'completed_at' => $this->fake('dateTime')->format(\Minz\Model::DATETIME_FORMAT),
+            'credited_payment_id' => $credited_payment->id,
+            'completed_at' => $this->fake('dateTime'),
         ]);
-        $payment = models\Payment::find($payment_id);
-        $expected_credited_at = strftime('%d %B %Y', $payment->completed_at->getTimestamp());
+        $expected_credited_at = ViewHelpers::formatDate($payment->completed_at, 'dd MMMM yyyy');
 
         $invoice_pdf = new InvoicePDF($payment);
 
@@ -95,8 +92,7 @@ class InvoicePDFTest extends TestCase
 
     public function testPdfWithCommonPotPaymentHasNoId()
     {
-        $payment_id = $this->create('payment');
-        $payment = models\Payment::find($payment_id);
+        $payment = PaymentFactory::create();
 
         $invoice_pdf = new InvoicePDF($payment);
 
@@ -106,7 +102,7 @@ class InvoicePDFTest extends TestCase
 
     public function testPdfHasCustomer()
     {
-        $account_id = $this->create('account', [
+        $account = AccountFactory::create([
             'address_first_name' => $this->fake('firstName'),
             'address_last_name' => $this->fake('lastName'),
             'address_address1' => $this->fake('streetAddress'),
@@ -114,10 +110,9 @@ class InvoicePDFTest extends TestCase
             'address_city' => $this->fake('city'),
             'address_country' => $this->fake('randomElement', \Website\utils\Countries::codes()),
         ]);
-        $payment_id = $this->create('payment', [
-            'account_id' => $account_id,
+        $payment = PaymentFactory::create([
+            'account_id' => $account->id,
         ]);
-        $payment = models\Payment::find($payment_id);
 
         $invoice_pdf = new InvoicePDF($payment);
 
@@ -135,11 +130,10 @@ class InvoicePDFTest extends TestCase
 
     public function testPdfWithMonthSubscriptionHasCorrespondingPurchase()
     {
-        $payment_id = $this->create('payment', [
+        $payment = PaymentFactory::create([
             'type' => 'subscription',
             'frequency' => 'month',
         ]);
-        $payment = models\Payment::find($payment_id);
 
         $invoice_pdf = new InvoicePDF($payment);
 
@@ -164,11 +158,10 @@ class InvoicePDFTest extends TestCase
 
     public function testPdfWithYearSubscriptionHasCorrespondingPurchase()
     {
-        $payment_id = $this->create('payment', [
+        $payment = PaymentFactory::create([
             'type' => 'subscription',
             'frequency' => 'year',
         ]);
-        $payment = models\Payment::find($payment_id);
 
         $invoice_pdf = new InvoicePDF($payment);
 
@@ -193,10 +186,9 @@ class InvoicePDFTest extends TestCase
 
     public function testPdfWithCommonPotHasCorrespondingPurchase()
     {
-        $payment_id = $this->create('payment', [
+        $payment = PaymentFactory::create([
             'type' => 'common_pot',
         ]);
-        $payment = models\Payment::find($payment_id);
 
         $invoice_pdf = new InvoicePDF($payment);
 
@@ -224,14 +216,13 @@ class InvoicePDFTest extends TestCase
         $credited_completed_at = $this->fake('dateTime');
         $random_number = sprintf('-%04d', $this->fake('randomNumber', 4));
         $credited_invoice_number = $credited_completed_at->format('Y-m') . $random_number;
-        $credited_payment_id = $this->create('payment', [
+        $credited_payment = PaymentFactory::create([
             'invoice_number' => $credited_invoice_number,
         ]);
-        $payment_id = $this->create('payment', [
+        $payment = PaymentFactory::create([
             'type' => 'credit',
-            'credited_payment_id' => $credited_payment_id,
+            'credited_payment_id' => $credited_payment->id,
         ]);
-        $payment = models\Payment::find($payment_id);
 
         $invoice_pdf = new InvoicePDF($payment);
 
@@ -256,8 +247,7 @@ class InvoicePDFTest extends TestCase
 
     public function testPdfHasTotalPurchases()
     {
-        $payment_id = $this->create('payment');
-        $payment = models\Payment::find($payment_id);
+        $payment = PaymentFactory::create();
 
         $invoice_pdf = new InvoicePDF($payment);
 
@@ -277,8 +267,7 @@ class InvoicePDFTest extends TestCase
 
     public function testPdfHasFooter()
     {
-        $payment_id = $this->create('payment');
-        $payment = models\Payment::find($payment_id);
+        $payment = PaymentFactory::create();
 
         $invoice_pdf = new InvoicePDF($payment);
 

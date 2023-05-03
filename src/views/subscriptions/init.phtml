@@ -17,14 +17,14 @@
                 Attention, vous avez un paiement en cours de traitement, vous devriez attendre avant d’en effectuer un nouveau…
             </strong>
         <?php elseif (!$account->isFree() && !$account->hasExpired()): ?>
-            Votre abonnement expirera le <strong><?= format_date($account->expired_at, '%d %B %Y') ?>.</strong>
+            Votre abonnement expirera le <strong><?= _d($account->expired_at, 'dd MMMM yyyy') ?>.</strong>
             Vous pouvez le renouveler dès maintenant, la période de
             renouvellement s’ajoutera à votre abonnement courant.
         <?php endif; ?>
     </p>
 
     <form method="post" action="<?= url('subscription renew') ?>" class="form--renew">
-        <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+        <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
 
         <?php if ($error): ?>
             <p class="form__error">

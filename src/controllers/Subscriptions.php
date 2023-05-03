@@ -69,8 +69,7 @@ class Subscriptions
         }
 
         $frequency = $request->param('frequency');
-        $reminder = $request->param('reminder', false);
-        $reminder = filter_var($reminder, FILTER_VALIDATE_BOOLEAN);
+        $reminder = $request->paramBoolean('reminder', false);
 
         $payment = models\Payment::initSubscriptionFromAccount($account, $frequency);
         $errors = $payment->validate();
@@ -83,8 +82,7 @@ class Subscriptions
             ]);
         }
 
-        $csrf = new \Minz\CSRF();
-        if (!$csrf->validateToken($request->param('csrf'))) {
+        if (!\Minz\Csrf::validate($request->param('csrf'))) {
             return \Minz\Response::badRequest('subscriptions/init.phtml', [
                 'account' => $account,
                 'reminder' => $reminder,

@@ -23,10 +23,10 @@
                 Vous bénéficiez d’un abonnement gratuit, veinard‧e.
             <?php elseif ($account->hasExpired()): ?>
                 <strong>
-                    Votre abonnement a expiré le <?= format_date($account->expired_at, '%d %B %Y') ?>.
+                    Votre abonnement a expiré le <?= _d($account->expired_at, 'dd MMMM yyyy') ?>.
                 </strong>
             <?php else: ?>
-                Votre abonnement expirera le <strong><?= format_date($account->expired_at, '%d %B %Y') ?>.</strong>
+                Votre abonnement expirera le <strong><?= _d($account->expired_at, 'dd MMMM yyyy') ?>.</strong>
                 <?php if ($account->reminder): ?>
                     Vous recevrez un courriel à l’approche de l’échéance.
                 <?php endif; ?>
@@ -35,7 +35,7 @@
 
         <?php if (!$account->isFree()): ?>
             <form method="post" action="<?= url('account set reminder') ?>">
-                <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+                <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
                 <input type="hidden" name="from" value="account" />
 
                 <p class="paragraph--center">
@@ -85,7 +85,7 @@
 
             <li class="navaccount__item">
                 <form method="post" action="<?= url('account logout') ?>">
-                    <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+                    <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
                     <button class="navaccount__button navaccount__button--leave" type="submit">
                         <?php if ($account->preferred_service === 'flusio'): ?>
                             <img alt="" src="<?= url_static('flus.svg') ?>" width="70"/>
@@ -131,7 +131,7 @@
 
                         <td>
                             <?php if ($payment->completed_at): ?>
-                                <?= format_date($payment->completed_at, '%d %b %Y') ?>
+                                <?= _d($payment->completed_at, 'dd MMM yyyy') ?>
                             <?php else: ?>
                                 traitement en cours
                             <?php endif; ?>

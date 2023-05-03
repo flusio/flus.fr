@@ -12,87 +12,88 @@ class Router extends \Minz\Router
     {
         parent::__construct();
 
-        $this->addRoute('get', '/', 'Home#index', 'home');
-        $this->addRoute('get', '/projet', 'Home#project', 'project');
-        $this->addRoute('get', '/tarifs', 'Home#pricing', 'pricing');
-        $this->addRoute('get', '/visite', 'Home#tour', 'tour');
-        $this->addRoute('get', '/visite/:page', 'Home#tour', 'tour page');
-        $this->addRoute('get', '/financement', 'Home#funding', 'funding');
-        $this->addRoute('get', '/credits', 'Home#credits', 'credits');
-        $this->addRoute('get', '/mentions-legales', 'Home#legal', 'legal');
-        $this->addRoute('get', '/cgv', 'Home#cgv', 'cgv');
-        $this->addRoute('get', '/contact', 'Home#contact', 'contact');
-        $this->addRoute('post', '/contact', 'Home#sendContactEmail', 'send contact email');
-        $this->addRoute('get', '/securite', 'Home#security', 'security');
-        $this->addRoute('get', '/cagnotte', 'CommonPots#show', 'common pot');
+        $this->addRoute('GET', '/', 'Home#index', 'home');
+        $this->addRoute('GET', '/projet', 'Home#project', 'project');
+        $this->addRoute('GET', '/tarifs', 'Home#pricing', 'pricing');
+        $this->addRoute('GET', '/visite', 'Home#tour', 'tour');
+        $this->addRoute('GET', '/visite/:page', 'Home#tour', 'tour page');
+        $this->addRoute('GET', '/financement', 'Home#funding', 'funding');
+        $this->addRoute('GET', '/credits', 'Home#credits', 'credits');
+        $this->addRoute('GET', '/mentions-legales', 'Home#legal', 'legal');
+        $this->addRoute('GET', '/cgv', 'Home#cgv', 'cgv');
+        $this->addRoute('GET', '/contact', 'Home#contact', 'contact');
+        $this->addRoute('POST', '/contact', 'Home#sendContactEmail', 'send contact email');
+        $this->addRoute('GET', '/securite', 'Home#security', 'security');
+        $this->addRoute('GET', '/cagnotte', 'CommonPots#show', 'common pot');
 
-        $this->addRoute('get', '/robots.txt', 'Home#robots', 'robots.txt');
-        $this->addRoute('get', '/sitemap.xml', 'Home#sitemap', 'sitemap.xml');
-        $this->addRoute('get', '/.well-known/security.txt', 'Home#securityTxt', 'security.txt');
+        $this->addRoute('GET', '/robots.txt', 'Home#robots', 'robots.txt');
+        $this->addRoute('GET', '/sitemap.xml', 'Home#sitemap', 'sitemap.xml');
+        $this->addRoute('GET', '/.well-known/security.txt', 'Home#securityTxt', 'security.txt');
 
-        $this->addRoute('get', '/addons/updates.json', 'Addons#geckoUpdate');
-        $this->addRoute('get', '/addons/gecko/latest', 'Addons#geckoLatest');
+        $this->addRoute('GET', '/addons/updates.json', 'Addons#geckoUpdate');
+        $this->addRoute('GET', '/addons/gecko/latest', 'Addons#geckoLatest');
 
-        $this->addRoute('get', '/account', 'Accounts#show', 'account');
-        $this->addRoute('get', '/account/login', 'Accounts#login', 'account login');
-        $this->addRoute('post', '/account/logout', 'Accounts#logout', 'account logout');
-        $this->addRoute('post', '/account/reminder', 'Accounts#setReminder', 'account set reminder');
-        $this->addRoute('get', '/account/address', 'Accounts#address', 'account address');
-        $this->addRoute('post', '/account/address', 'Accounts#updateAddress', 'account update address');
-        $this->addRoute('get', '/account/renew', 'Subscriptions#init', 'subscription init');
-        $this->addRoute('post', '/account/renew', 'Subscriptions#renew', 'subscription renew');
-        $this->addRoute('get', '/account/common-pot', 'CommonPots#show', 'common pot account');
+        $this->addRoute('GET', '/account', 'Accounts#show', 'account');
+        $this->addRoute('GET', '/account/login', 'Accounts#login', 'account login');
+        $this->addRoute('POST', '/account/logout', 'Accounts#logout', 'account logout');
+        $this->addRoute('POST', '/account/reminder', 'Accounts#setReminder', 'account set reminder');
+        $this->addRoute('GET', '/account/address', 'Accounts#address', 'account address');
+        $this->addRoute('POST', '/account/address', 'Accounts#updateAddress', 'account update address');
+        $this->addRoute('GET', '/account/renew', 'Subscriptions#init', 'subscription init');
+        $this->addRoute('POST', '/account/renew', 'Subscriptions#renew', 'subscription renew');
+        $this->addRoute('GET', '/account/common-pot', 'CommonPots#show', 'common pot account');
         $this->addRoute(
-            'get',
+            'GET',
             '/account/common-pot/contribute',
             'CommonPots#contribution',
             'common pot contribution'
         );
         $this->addRoute(
-            'post',
+            'POST',
             '/account/common-pot/contribute',
             'CommonPots#contribute',
             'contribute common pot'
         );
-        $this->addRoute('get', '/account/common-pot/use', 'CommonPots#usage', 'common pot usage');
-        $this->addRoute('post', '/account/common-pot/use', 'CommonPots#use', 'use common pot');
+        $this->addRoute('GET', '/account/common-pot/use', 'CommonPots#usage', 'common pot usage');
+        $this->addRoute('POST', '/account/common-pot/use', 'CommonPots#use', 'use common pot');
 
-        $this->addRoute('get', '/payments/:id/pay', 'Payments#pay');
-        $this->addRoute('get', '/merci', 'Payments#succeeded');
-        $this->addRoute('get', '/annulation', 'Payments#canceled');
+        $this->addRoute('GET', '/payments/:id/pay', 'Payments#pay');
+        $this->addRoute('GET', '/merci', 'Payments#succeeded');
+        $this->addRoute('GET', '/annulation', 'Payments#canceled');
 
-        $this->addRoute('get', '/invoices/:id/pdf', 'Invoices#downloadPdf', 'invoice download pdf');
+        $this->addRoute('GET', '/invoices/:id/pdf', 'Invoices#downloadPdf', 'invoice download pdf');
 
-        $this->addRoute('get', '/api/account', 'api/Accounts#show');
-        $this->addRoute('get', '/api/account/login-url', 'api/Accounts#loginUrl');
-        $this->addRoute('get', '/api/account/expired-at', 'api/Accounts#expiredAt');
-        $this->addRoute('post', '/api/accounts/sync', 'api/Accounts#sync');
+        $this->addRoute('GET', '/api/account', 'api/Accounts#show');
+        $this->addRoute('GET', '/api/account/login-url', 'api/Accounts#loginUrl');
+        $this->addRoute('GET', '/api/account/expired-at', 'api/Accounts#expiredAt');
+        $this->addRoute('POST', '/api/accounts/sync', 'api/Accounts#sync');
 
-        $this->addRoute('get', '/admin', 'admin/Payments#index', 'admin');
-        $this->addRoute('get', '/admin/login', 'admin/Auth#login', 'login');
-        $this->addRoute('post', '/admin/login', 'admin/Auth#createSession', 'create_session');
-        $this->addRoute('post', '/admin/logout', 'admin/Auth#deleteSession', 'logout');
-        $this->addRoute('get', '/admin/credits/new', 'admin/Credits#init', 'new admin credit');
-        $this->addRoute('post', '/admin/credits/new', 'admin/Credits#create', 'create admin credit');
-        $this->addRoute('get', '/admin/payments/new', 'admin/Payments#init', 'new admin payment');
-        $this->addRoute('post', '/admin/payments/new', 'admin/Payments#create', 'create admin payment');
-        $this->addRoute('get', '/admin/payments/:id', 'admin/Payments#show', 'admin payment');
-        $this->addRoute('post', '/admin/payments/:id/confirm', 'admin/Payments#confirm', 'confirm admin payment');
-        $this->addRoute('post', '/admin/payments/:id/destroy', 'admin/Payments#destroy', 'destroy admin payment');
-        $this->addRoute('get', '/admin/accounts', 'admin/Accounts#index', 'admin accounts');
-        $this->addRoute('get', '/admin/accounts/:id', 'admin/Accounts#show', 'admin account');
-        $this->addRoute('post', '/admin/accounts/:id', 'admin/Accounts#update', 'update admin account');
+        $this->addRoute('GET', '/admin', 'admin/Payments#index', 'admin');
+        $this->addRoute('GET', '/admin/login', 'admin/Auth#login', 'login');
+        $this->addRoute('POST', '/admin/login', 'admin/Auth#createSession', 'create_session');
+        $this->addRoute('POST', '/admin/logout', 'admin/Auth#deleteSession', 'logout');
+        $this->addRoute('GET', '/admin/credits/new', 'admin/Credits#init', 'new admin credit');
+        $this->addRoute('POST', '/admin/credits/new', 'admin/Credits#create', 'create admin credit');
+        $this->addRoute('GET', '/admin/payments/new', 'admin/Payments#init', 'new admin payment');
+        $this->addRoute('POST', '/admin/payments/new', 'admin/Payments#create', 'create admin payment');
+        $this->addRoute('GET', '/admin/payments/:id', 'admin/Payments#show', 'admin payment');
+        $this->addRoute('POST', '/admin/payments/:id/confirm', 'admin/Payments#confirm', 'confirm admin payment');
+        $this->addRoute('POST', '/admin/payments/:id/destroy', 'admin/Payments#destroy', 'destroy admin payment');
+        $this->addRoute('GET', '/admin/accounts', 'admin/Accounts#index', 'admin accounts');
+        $this->addRoute('GET', '/admin/accounts/:id', 'admin/Accounts#show', 'admin account');
+        $this->addRoute('POST', '/admin/accounts/:id', 'admin/Accounts#update', 'update admin account');
 
-        $this->addRoute('post', '/stripe/hooks', 'Stripe#hooks');
+        $this->addRoute('POST', '/stripe/hooks', 'Stripe#hooks');
 
-        $this->addRoute('cli', '/system/init', 'cli/System#init');
-        $this->addRoute('cli', '/system/migrate', 'cli/System#migrate');
-        $this->addRoute('cli', '/system/rollback', 'cli/System#rollback');
-        $this->addRoute('cli', '/payments/complete', 'cli/Payments#complete');
-        $this->addRoute('cli', '/accounts', 'cli/Accounts#index');
-        $this->addRoute('cli', '/accounts/create', 'cli/Accounts#create');
-        $this->addRoute('cli', '/accounts/login-url', 'cli/Accounts#loginUrl');
-        $this->addRoute('cli', '/accounts/remind', 'cli/Accounts#remind');
-        $this->addRoute('cli', '/accounts/clear', 'cli/Accounts#clear');
+        $this->addRoute('CLI', '/migrations', 'cli/Migrations#index');
+        $this->addRoute('CLI', '/migrations/setup', 'cli/Migrations#setup');
+        $this->addRoute('CLI', '/migrations/rollback', 'cli/Migrations#rollback');
+        $this->addRoute('CLI', '/migrations/create', 'cli/Migrations#create');
+        $this->addRoute('CLI', '/payments/complete', 'cli/Payments#complete');
+        $this->addRoute('CLI', '/accounts', 'cli/Accounts#index');
+        $this->addRoute('CLI', '/accounts/create', 'cli/Accounts#create');
+        $this->addRoute('CLI', '/accounts/login-url', 'cli/Accounts#loginUrl');
+        $this->addRoute('CLI', '/accounts/remind', 'cli/Accounts#remind');
+        $this->addRoute('CLI', '/accounts/clear', 'cli/Accounts#clear');
     }
 }

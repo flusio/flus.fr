@@ -3,7 +3,6 @@
 namespace Website\controllers\api;
 
 use Website\models;
-use Website\utils;
 
 /**
  * @author Marien Fressinaud <dev@marienfressinaud.fr>
@@ -30,14 +29,15 @@ class Accounts
             return \Minz\Response::unauthorized();
         }
 
-        $email = utils\Email::sanitize($request->param('email', ''));
+        $email = \Minz\Email::sanitize($request->param('email', ''));
         $account = models\Account::findBy([
             'email' => $email,
         ]);
 
         if (!$account) {
-            $account = models\Account::init($email);
+            $account = new models\Account($email);
 
+            /** @var array<string, string> */
             $errors = $account->validate();
             if ($errors) {
                 return \Minz\Response::text(400, implode(' ', $errors));
@@ -51,7 +51,7 @@ class Accounts
 
         return \Minz\Response::json(200, [
             'id' => $account->id,
-            'expired_at' => $account->expired_at->format(\Minz\Model::DATETIME_FORMAT),
+            'expired_at' => $account->expired_at->format(\Minz\Database\Column::DATETIME_FORMAT),
         ]);
     }
 
@@ -89,7 +89,7 @@ class Accounts
             $service = 'flusio';
         }
 
-        $token = models\Token::init(10, 'minutes');
+        $token = new models\Token(10, 'minutes');
         $token->save();
 
         $account->access_token = $token->token;
@@ -136,7 +136,7 @@ class Accounts
         $account->save();
 
         return \Minz\Response::json(200, [
-            'expired_at' => $account->expired_at->format(\Minz\Model::DATETIME_FORMAT),
+            'expired_at' => $account->expired_at->format(\Minz\Database\Column::DATETIME_FORMAT),
         ]);
     }
 
@@ -163,20 +163,19 @@ class Accounts
             return \Minz\Response::unauthorized();
         }
 
-        $account_ids = $request->param('account_ids', '[]');
-        $account_ids = json_decode($account_ids, true);
+        $account_ids = $request->paramJson('account_ids');
         if (!is_array($account_ids)) {
             return \Minz\Response::json(400, [
                 'error' => 'account_ids is not a valid JSON array',
             ]);
         }
 
-        models\Account::daoCall('updateLastSyncAt', $account_ids, \Minz\Time::now());
+        models\Account::updateLastSyncAt($account_ids, \Minz\Time::now());
 
         $result = [];
         $accounts = models\Account::listBy(['id' => $account_ids]);
         foreach ($accounts as $account) {
-            $result[$account->id] = $account->expired_at->format(\Minz\Model::DATETIME_FORMAT);
+            $result[$account->id] = $account->expired_at->format(\Minz\Database\Column::DATETIME_FORMAT);
         }
 
         return \Minz\Response::json(200, $result);

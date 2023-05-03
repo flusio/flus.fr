@@ -2,6 +2,9 @@
 
 namespace Website\controllers;
 
+use tests\factories\AccountFactory;
+use tests\factories\PaymentFactory;
+use tests\factories\TokenFactory;
 use Website\models;
 use Website\utils;
 
@@ -12,7 +15,6 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\ResponseAsserts;
-    use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\TimeHelper;
 
     /**
@@ -44,7 +46,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $this->freeze($this->fake('dateTime'));
         $expired_at = \Minz\Time::fromNow($this->fake('randomDigitNotNull'), 'days');
         $this->loginUser([
-            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+            'expired_at' => $expired_at,
             'address_first_name' => $address['first_name'],
             'address_last_name' => $address['last_name'],
             'address_address1' => $address['address1'],
@@ -66,7 +68,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $this->freeze($this->fake('dateTime'));
         $expired_at = \Minz\Time::ago($this->fake('randomDigitNotNull'), 'days');
         $this->loginUser([
-            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+            'expired_at' => $expired_at,
             'address_first_name' => $address['first_name'],
             'address_last_name' => $address['last_name'],
             'address_address1' => $address['address1'],
@@ -85,9 +87,9 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
      */
     public function testShowRendersIfNoExpiration($email, $address)
     {
-        $expired_at = new \DateTime('1970-01-01');
+        $expired_at = new \DateTime('@0');
         $this->loginUser([
-            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+            'expired_at' => $expired_at,
             'address_first_name' => $address['first_name'],
             'address_last_name' => $address['last_name'],
             'address_address1' => $address['address1'],
@@ -114,7 +116,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
             'address_postcode' => $address['postcode'],
             'address_city' => $address['city'],
         ]);
-        $this->create('payment', [
+        PaymentFactory::create([
             'account_id' => $user['account_id'],
             'completed_at' => null,
             'is_paid' => false,
@@ -140,7 +142,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
             'address_postcode' => $address['postcode'],
             'address_city' => $address['city'],
         ]);
-        $payment_id = $this->create('payment', [
+        $payment = PaymentFactory::create([
             'account_id' => $user['account_id'],
             'completed_at' => null,
             'is_paid' => true,
@@ -148,9 +150,8 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('GET', '/account');
 
-        $output = $response->render();
-        $this->assertStringNotContainsString('Votre paiement est en cours de traitement', $output);
-        $payment = models\Payment::find($payment_id);
+        $this->assertResponseNotContains($response, 'Votre paiement est en cours de traitement');
+        $payment = $payment->reload();
         $this->assertNotNull($payment->completed_at);
     }
 
@@ -177,59 +178,56 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
     public function testLoginRedirectsToShow()
     {
-        $expired_at = \Minz\Time::fromNow(30, 'days');
-        $token = $this->create('token', [
-            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+        $token = TokenFactory::create([
+            'expired_at' => \Minz\Time::fromNow(30, 'days'),
         ]);
-        $account_id = $this->create('account', [
-            'access_token' => $token,
+        $account = AccountFactory::create([
+            'access_token' => $token->token,
         ]);
 
         $response = $this->appRun('GET', '/account/login', [
-            'account_id' => $account_id,
-            'access_token' => $token,
+            'account_id' => $account->id,
+            'access_token' => $token->token,
         ]);
 
         $this->assertResponseCode($response, 302, '/account');
         $user = utils\CurrentUser::get();
         $this->assertNotNull($user);
-        $this->assertSame($account_id, $user['account_id']);
+        $this->assertSame($account->id, $user['account_id']);
     }
 
     public function testLoginDeletesTheAccessToken()
     {
-        $expired_at = \Minz\Time::fromNow(30, 'days');
-        $token = $this->create('token', [
-            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+        $token = TokenFactory::create([
+            'expired_at' => \Minz\Time::fromNow(30, 'days'),
         ]);
-        $account_id = $this->create('account', [
-            'access_token' => $token,
+        $account = AccountFactory::create([
+            'access_token' => $token->token,
         ]);
 
         $response = $this->appRun('GET', '/account/login', [
-            'account_id' => $account_id,
-            'access_token' => $token,
+            'account_id' => $account->id,
+            'access_token' => $token->token,
         ]);
 
-        $account = models\Account::find($account_id);
+        $account = $account->reload();
         $this->assertNull($account->access_token);
-        $this->assertFalse(models\Token::exists($token));
+        $this->assertFalse(models\Token::exists($token->token));
     }
 
     public function testLoginRedirectsIfAlreadyConnected()
     {
-        $expired_at = \Minz\Time::fromNow(30, 'days');
-        $token = $this->create('token', [
-            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+        $token = TokenFactory::create([
+            'expired_at' => \Minz\Time::fromNow(30, 'days'),
         ]);
         $user = $this->loginUser([
-            'access_token' => $token,
+            'access_token' => $token->token,
         ]);
         $account_id = $user['account_id'];
 
         $response = $this->appRun('GET', '/account/login', [
             'account_id' => $account_id,
-            'access_token' => $token,
+            'access_token' => $token->token,
         ]);
 
         $this->assertResponseCode($response, 302, '/account');
@@ -241,38 +239,36 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     public function testLoginRedirectsIfAlreadyConnectedAsAdmin()
     {
         $user = $this->loginAdmin();
-        $expired_at = \Minz\Time::fromNow(30, 'days');
-        $token = $this->create('token', [
-            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+        $token = TokenFactory::create([
+            'expired_at' => \Minz\Time::fromNow(30, 'days'),
         ]);
-        $account_id = $this->create('account', [
-            'access_token' => $token,
+        $account = AccountFactory::create([
+            'access_token' => $token->token,
         ]);
 
         $response = $this->appRun('GET', '/account/login', [
-            'account_id' => $account_id,
-            'access_token' => $token,
+            'account_id' => $account->id,
+            'access_token' => $token->token,
         ]);
 
         $this->assertResponseCode($response, 302, '/account');
         $user = utils\CurrentUser::get();
         $this->assertNotNull($user);
-        $this->assertSame($account_id, $user['account_id']);
+        $this->assertSame($account->id, $user['account_id']);
     }
 
     public function testLoginFailsIfAccountIdIsInvalid()
     {
-        $expired_at = \Minz\Time::fromNow(30, 'days');
-        $token = $this->create('token', [
-            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+        $token = TokenFactory::create([
+            'expired_at' => \Minz\Time::fromNow(30, 'days'),
         ]);
-        $account_id = $this->create('account', [
-            'access_token' => $token,
+        $account = AccountFactory::create([
+            'access_token' => $token->token,
         ]);
 
         $response = $this->appRun('GET', '/account/login', [
             'account_id' => 'not the id',
-            'access_token' => $token,
+            'access_token' => $token->token,
         ]);
 
         $this->assertResponseCode($response, 404);
@@ -282,16 +278,15 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
     public function testLoginFailsIfAccessTokenIsInvalid()
     {
-        $expired_at = \Minz\Time::fromNow(30, 'days');
-        $token = $this->create('token', [
-            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+        $token = TokenFactory::create([
+            'expired_at' => \Minz\Time::fromNow(30, 'days'),
         ]);
-        $account_id = $this->create('account', [
-            'access_token' => $token,
+        $account = AccountFactory::create([
+            'access_token' => $token->token,
         ]);
 
         $response = $this->appRun('GET', '/account/login', [
-            'account_id' => $account_id,
+            'account_id' => $account->id,
             'access_token' => 'not the token',
         ]);
 
@@ -302,17 +297,16 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
     public function testLoginFailsIfAccessTokenIsExpired()
     {
-        $expired_at = \Minz\Time::ago(30, 'days');
-        $token = $this->create('token', [
-            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+        $token = TokenFactory::create([
+            'expired_at' => \Minz\Time::ago(30, 'days'),
         ]);
-        $account_id = $this->create('account', [
-            'access_token' => $token,
+        $account = AccountFactory::create([
+            'access_token' => $token->token,
         ]);
 
         $response = $this->appRun('GET', '/account/login', [
-            'account_id' => $account_id,
-            'access_token' => $token,
+            'account_id' => $account->id,
+            'access_token' => $token->token,
         ]);
 
         $this->assertResponseCode($response, 400);
@@ -322,16 +316,15 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
     public function testLoginFailsIfAccessTokenIsNotSet()
     {
-        $expired_at = \Minz\Time::ago(30, 'days');
-        $token = $this->create('token', [
-            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+        $token = TokenFactory::create([
+            'expired_at' => \Minz\Time::fromNow(30, 'days'),
         ]);
-        $account_id = $this->create('account', [
+        $account = AccountFactory::create([
             'access_token' => null,
         ]);
 
         $response = $this->appRun('GET', '/account/login', [
-            'account_id' => $account_id,
+            'account_id' => $account->id,
             'access_token' => null,
         ]);
 
@@ -348,7 +341,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/account/logout', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => \Minz\Csrf::generate(),
         ]);
 
         if ($service === 'flusio') {
@@ -399,7 +392,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $user = $this->loginUser();
 
         $response = $this->appRun('POST', '/account/address', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => \Minz\Csrf::generate(),
             'email' => $email,
             'address' => $address,
         ]);
@@ -425,7 +418,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         unset($address['city']);
 
         $response = $this->appRun('POST', '/account/address', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => \Minz\Csrf::generate(),
             'email' => $email,
             'address' => $address,
         ]);
@@ -446,7 +439,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     public function testUpdateAddressFailsIfNotConnected($email, $address)
     {
         $response = $this->appRun('POST', '/account/address', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => \Minz\Csrf::generate(),
             'email' => $email,
             'address' => $address,
         ]);
@@ -480,13 +473,13 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $email = $this->fake('domainName');
 
         $response = $this->appRun('POST', '/account/address', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => \Minz\Csrf::generate(),
             'email' => $email,
             'address' => $address,
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponseContains($response, 'L’adresse courriel que vous avez fournie est invalide');
+        $this->assertResponseContains($response, 'Saisissez une adresse courriel valide.');
         $account = models\Account::find($user['account_id']);
         $this->assertNotSame($email, $account->email);
     }
@@ -499,12 +492,12 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $user = $this->loginUser();
 
         $response = $this->appRun('POST', '/account/address', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => \Minz\Csrf::generate(),
             'address' => $address,
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponseContains($response, 'L’adresse courriel est obligatoire');
+        $this->assertResponseContains($response, 'Saisissez une adresse courriel.');
     }
 
     /**
@@ -516,7 +509,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         unset($address['first_name']);
 
         $response = $this->appRun('POST', '/account/address', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => \Minz\Csrf::generate(),
             'email' => $email,
             'address' => $address,
         ]);
@@ -534,7 +527,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         unset($address['last_name']);
 
         $response = $this->appRun('POST', '/account/address', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => \Minz\Csrf::generate(),
             'email' => $email,
             'address' => $address,
         ]);
@@ -552,7 +545,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         unset($address['address1']);
 
         $response = $this->appRun('POST', '/account/address', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => \Minz\Csrf::generate(),
             'email' => $email,
             'address' => $address,
         ]);
@@ -570,7 +563,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         unset($address['postcode']);
 
         $response = $this->appRun('POST', '/account/address', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => \Minz\Csrf::generate(),
             'email' => $email,
             'address' => $address,
         ]);
@@ -588,7 +581,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         unset($address['city']);
 
         $response = $this->appRun('POST', '/account/address', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => \Minz\Csrf::generate(),
             'email' => $email,
             'address' => $address,
         ]);
@@ -606,13 +599,13 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $address['country'] = 'invalid';
 
         $response = $this->appRun('POST', '/account/address', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => \Minz\Csrf::generate(),
             'email' => $email,
             'address' => $address,
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponseContains($response, 'Le pays que vous avez renseigné est invalide.');
+        $this->assertResponseContains($response, 'Saisissez un pays de la liste.');
     }
 
     public function testSetReminderChangesReminder()
@@ -624,7 +617,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/account/reminder', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => \Minz\Csrf::generate(),
             'reminder' => $new_reminder,
         ]);
 
@@ -637,17 +630,17 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     {
         $old_reminder = $this->fake('boolean');
         $new_reminder = !$old_reminder;
-        $account_id = $this->create('account', [
+        $account = AccountFactory::create([
             'reminder' => $old_reminder,
         ]);
 
         $response = $this->appRun('POST', '/account/reminder', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => \Minz\Csrf::generate(),
             'reminder' => $new_reminder,
         ]);
 
         $this->assertResponseCode($response, 401);
-        $account = models\Account::find($account_id);
+        $account = $account->reload();
         $this->assertSame($old_reminder, $account->reminder);
     }
 

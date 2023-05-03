@@ -12,7 +12,7 @@ class Invoices extends \Minz\Mailer
 {
     /**
      * @param string $to A valid email address
-     * @param string $invoices_path A path to an existing invoice PDF
+     * @param string $invoice_path A path to an existing invoice PDF
      *
      * @return boolean
      */

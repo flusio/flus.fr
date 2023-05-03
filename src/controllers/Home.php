@@ -19,13 +19,12 @@ class Home
 
     public function pricing()
     {
-        $payment_dao = new models\dao\Payment();
         $current_year = intval(\Minz\Time::now()->format('Y'));
-        $total_revenue = $payment_dao->findTotalRevenue($current_year) / 100;
+        $total_revenue = models\Payment::findTotalRevenue($current_year) / 100;
         $revenue_target = 5000;
         $percent_target = min(100, max(5, $total_revenue * 100 / $revenue_target));
-        $common_pot_revenue = $payment_dao->findCommonPotRevenue($current_year) / 100;
-        $subscriptions_revenue = $payment_dao->findSubscriptionsRevenue($current_year) / 100;
+        $common_pot_revenue = models\Payment::findCommonPotRevenue($current_year) / 100;
+        $subscriptions_revenue = models\Payment::findSubscriptionsRevenue($current_year) / 100;
 
         $response = \Minz\Response::ok('home/pricing.phtml', [
             'total_revenue' => number_format($total_revenue, 2, ',', '&nbsp;'),
@@ -104,11 +103,11 @@ class Home
 
     public function sendContactEmail($request)
     {
-        $email = $request->param('email');
-        $subject = $request->param('subject');
-        $content = $request->param('content');
+        $email = $request->param('email', '');
+        $subject = $request->param('subject', '');
+        $content = $request->param('content', '');
 
-        $message = models\Message::init($email, $subject, $content);
+        $message = new models\Message($email, $subject, $content);
         $errors = $message->validate();
         if ($errors) {
             return \Minz\Response::badRequest('home/contact.phtml', [

@@ -2,33 +2,28 @@
 
 namespace Website\models;
 
+use Minz\Database;
+
 /**
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class Token extends \Minz\Model
+#[Database\Table(name: 'tokens', primary_key: 'token')]
+class Token
 {
-    use DaoConnector;
+    use Database\Recordable;
 
-    public const PROPERTIES = [
-        'token' => [
-            'type' => 'string',
-            'required' => true,
-        ],
+    #[Database\Column]
+    public string $token;
 
-        'created_at' => [
-            'type' => 'datetime',
-        ],
+    #[Database\Column]
+    public \DateTimeImmutable $created_at;
 
-        'invalidated_at' => [
-            'type' => 'datetime',
-        ],
+    #[Database\Column]
+    public \DateTimeImmutable $expired_at;
 
-        'expired_at' => [
-            'type' => 'datetime',
-            'required' => true,
-        ],
-    ];
+    #[Database\Column]
+    public ?\DateTimeImmutable $invalidated_at = null;
 
     /**
      * Initialize a token valid for a certain amount of time.
@@ -38,15 +33,11 @@ class Token extends \Minz\Model
      * @param integer $number
      * @param string $duration
      * @param integer $complexity default is 32
-     *
-     * @return \Website\models\Token
      */
-    public static function init($number, $duration, $complexity = 32)
+    public function __construct($number, $duration, $complexity = 32)
     {
-        return new self([
-            'token' => bin2hex(random_bytes($complexity)),
-            'expired_at' => \Minz\Time::fromNow($number, $duration),
-        ]);
+        $this->token = \Minz\Random::hex($complexity);
+        $this->expired_at = \Minz\Time::fromNow($number, $duration);
     }
 
     /**

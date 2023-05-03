@@ -27,7 +27,7 @@ class Payments
         }
 
         $year = $request->param('year', \Minz\Time::now()->format('Y'));
-        $payments = models\Payment::daoToList('listByYear', $year);
+        $payments = models\Payment::listByYear($year);
         $payments_by_months = [];
         foreach ($payments as $payment) {
             $month = intval($payment->created_at->format('n'));
@@ -100,11 +100,10 @@ class Payments
         }
 
         $type = $request->param('type');
-        $email = utils\Email::sanitize($request->param('email', ''));
-        $amount = $request->param('amount', 0);
+        $email = \Minz\Email::sanitize($request->param('email', ''));
+        $amount = $request->paramInteger('amount', 0);
 
-        $csrf = new \Minz\CSRF();
-        if (!$csrf->validateToken($request->param('csrf'))) {
+        if (!\Minz\Csrf::validate($request->param('csrf'))) {
             return \Minz\Response::badRequest('admin/payments/init.phtml', [
                 'type' => $type,
                 'email' => $email,
@@ -113,7 +112,7 @@ class Payments
             ]);
         }
 
-        if (!utils\Email::validate($email)) {
+        if (!\Minz\Email::validate($email)) {
             return \Minz\Response::badRequest('admin/payments/init.phtml', [
                 'type' => $type,
                 'email' => $email,
@@ -126,7 +125,7 @@ class Payments
 
         $account = models\Account::findBy(['email' => $email]);
         if (!$account) {
-            $account = models\Account::init($email);
+            $account = new models\Account($email);
             $account->save();
         }
 
@@ -226,8 +225,7 @@ class Payments
             ]);
         }
 
-        $csrf = new \Minz\CSRF();
-        if (!$csrf->validateToken($request->param('csrf'))) {
+        if (!\Minz\Csrf::validate($request->param('csrf'))) {
             return \Minz\Response::badRequest('admin/payments/show.phtml', [
                 'payment' => $payment,
                 'error' => 'Une vérification de sécurité a échoué, veuillez réessayer de soumettre le formulaire.',
@@ -288,8 +286,7 @@ class Payments
             ]);
         }
 
-        $csrf = new \Minz\CSRF();
-        if (!$csrf->validateToken($request->param('csrf'))) {
+        if (!\Minz\Csrf::validate($request->param('csrf'))) {
             return \Minz\Response::badRequest('admin/payments/show.phtml', [
                 'completed_at' => \Minz\Time::now(),
                 'payment' => $payment,

@@ -2,12 +2,14 @@
 
 namespace Website\controllers;
 
+use tests\factories\AccountFactory;
+use tests\factories\PaymentFactory;
+
 class InvoicesTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\LoginHelper;
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\ApplicationHelper;
-    use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\ResponseAsserts;
 
     /**
@@ -28,12 +30,12 @@ class InvoicesTest extends \PHPUnit\Framework\TestCase
     {
         $this->loginAdmin();
 
-        $payment_id = $this->create('payment', [
-            'completed_at' => $completed_at->format(\Minz\Model::DATETIME_FORMAT),
+        $payment = PaymentFactory::create([
+            'completed_at' => $completed_at,
             'invoice_number' => $invoice_number,
         ]);
 
-        $response = $this->appRun('GET', "/invoices/{$payment_id}/pdf");
+        $response = $this->appRun('GET', "/invoices/{$payment->id}/pdf");
 
         $expected_filename = "facture_{$invoice_number}.pdf";
         $this->assertResponseCode($response, 200);
@@ -50,13 +52,13 @@ class InvoicesTest extends \PHPUnit\Framework\TestCase
     {
         $user = $this->loginUser();
 
-        $payment_id = $this->create('payment', [
-            'completed_at' => $completed_at->format(\Minz\Model::DATETIME_FORMAT),
+        $payment = PaymentFactory::create([
+            'completed_at' => $completed_at,
             'invoice_number' => $invoice_number,
             'account_id' => $user['account_id'],
         ]);
 
-        $response = $this->appRun('GET', "/invoices/{$payment_id}/pdf");
+        $response = $this->appRun('GET', "/invoices/{$payment->id}/pdf");
 
         $expected_filename = "facture_{$invoice_number}.pdf";
         $this->assertResponseCode($response, 200);
@@ -78,11 +80,11 @@ class InvoicesTest extends \PHPUnit\Framework\TestCase
     public function testDownloadPdfWithPaymentWithNoInvoiceNumberReturnsNotFound()
     {
         $this->loginAdmin();
-        $payment_id = $this->create('payment', [
+        $payment = PaymentFactory::create([
             'invoice_number' => null,
         ]);
 
-        $response = $this->appRun('GET', "/invoices/{$payment_id}/pdf");
+        $response = $this->appRun('GET', "/invoices/{$payment->id}/pdf");
 
         $this->assertResponseCode($response, 404);
     }
@@ -92,12 +94,12 @@ class InvoicesTest extends \PHPUnit\Framework\TestCase
      */
     public function testDownloadPdfWithMissingAuthenticationReturnsUnauthorized($completed_at, $invoice_number)
     {
-        $payment_id = $this->create('payment', [
-            'completed_at' => $completed_at->format(\Minz\Model::DATETIME_FORMAT),
+        $payment = PaymentFactory::create([
+            'completed_at' => $completed_at,
             'invoice_number' => $invoice_number,
         ]);
 
-        $response = $this->appRun('GET', "/invoices/{$payment_id}/pdf");
+        $response = $this->appRun('GET', "/invoices/{$payment->id}/pdf");
 
         $this->assertResponseCode($response, 401);
     }
@@ -108,14 +110,14 @@ class InvoicesTest extends \PHPUnit\Framework\TestCase
     public function testDownloadPdfWithAuthenticatedNotOwningUserReturnsUnauthorized($completed_at, $invoice_number)
     {
         $user = $this->loginUser();
-        $account_id = $this->create('account');
-        $payment_id = $this->create('payment', [
-            'completed_at' => $completed_at->format(\Minz\Model::DATETIME_FORMAT),
+        $account = AccountFactory::create();
+        $payment = PaymentFactory::create([
+            'completed_at' => $completed_at,
             'invoice_number' => $invoice_number,
-            'account_id' => $account_id,
+            'account_id' => $account->id,
         ]);
 
-        $response = $this->appRun('GET', "/invoices/{$payment_id}/pdf");
+        $response = $this->appRun('GET', "/invoices/{$payment->id}/pdf");
 
         $this->assertResponseCode($response, 401);
     }

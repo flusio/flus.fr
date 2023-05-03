@@ -25,7 +25,7 @@
             action="<?= url('create admin credit') ?>"
             class="form--common-pot"
         >
-            <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+            <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
             <input type="hidden" name="credited_payment_id" value="<?= $credited_payment->id ?>" />
 
             <?php if ($error): ?>
@@ -34,11 +34,13 @@
                 </p>
             <?php endif; ?>
 
+            <?php $account = $credited_payment->account(); ?>
             <p>
                 <strong>
                     Vous êtes sur le point de rembourser le paiement de
-                    <?= $credited_payment->address_first_name ?> <?= $credited_payment->address_last_name ?>
-                    du <?= format_date($credited_payment->completed_at, '%d %b %Y') ?>
+                    <?= $account->address_first_name ?> <?= $account->address_last_name ?>
+                    (<?= $account->email ?>)
+                    du <?= _d($credited_payment->completed_at, 'dd MMM yyyy') ?>
                     correspondant à la facture <?= $credited_payment->invoice_number ?>.
                 </strong>
             </p>

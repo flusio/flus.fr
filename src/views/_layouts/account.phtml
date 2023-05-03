@@ -31,7 +31,7 @@
                 <div class="layout__header-separator"></div>
 
                 <form method="post" action="<?= url('account logout') ?>">
-                    <input type="hidden" name="csrf" value="<?= csrf_token() ?>" />
+                    <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
                     <button class="button--default" type="submit">
                         Revenir à l’application
                     </button>

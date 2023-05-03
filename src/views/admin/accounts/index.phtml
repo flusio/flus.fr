@@ -31,7 +31,7 @@
                         <?php if ($account->isFree()): ?>
                             gratuit
                         <?php else: ?>
-                            <?= format_date($account->expired_at, '%d %B %Y') ?>
+                            <?= _d($account->expired_at, 'dd MMMM yyyy') ?>
                         <?php endif; ?>
                     </td>
 

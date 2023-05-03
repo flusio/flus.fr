@@ -13,7 +13,7 @@ class PaymentCompleter
     /**
      * Complete a payment, send an invoice and extend the subscription
      *
-     * @param \Website\models\Payment
+     * @param \Website\models\Payment $payment
      */
     public function complete($payment)
     {

@@ -2,21 +2,21 @@
 
 namespace Website\models;
 
+use tests\factories\PaymentFactory;
+
 class PaymentTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\FakerHelper;
     use \Minz\Tests\InitializerHelper;
-    use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\TimeHelper;
 
     public function testComplete()
     {
         $completed_at = $this->fake('dateTime');
-        $payment_id = $this->create('payment', [
-            'is_paid' => 1,
+        $payment = PaymentFactory::create([
+            'is_paid' => true,
             'completed_at' => null,
         ]);
-        $payment = Payment::find($payment_id);
 
         $payment->complete($completed_at);
 
@@ -27,12 +27,11 @@ class PaymentTest extends \PHPUnit\Framework\TestCase
     {
         $now = $this->fake('dateTime');
         $this->freeze($now);
-        $payment_id = $this->create('payment', [
-            'is_paid' => 1,
+        $payment = PaymentFactory::create([
+            'is_paid' => true,
             'completed_at' => null,
             'invoice_number' => null,
         ]);
-        $payment = Payment::find($payment_id);
 
         $payment->complete($now);
 
@@ -45,18 +44,17 @@ class PaymentTest extends \PHPUnit\Framework\TestCase
         $now = $this->fake('dateTime');
         $this->freeze($now);
 
-        $this->create('payment', [
+        PaymentFactory::create([
             'invoice_number' => $now->format('Y') . '-01-0001',
         ]);
-        $this->create('payment', [
+        PaymentFactory::create([
             'invoice_number' => $now->format('Y') . '-01-0002',
         ]);
-        $payment_id = $this->create('payment', [
-            'is_paid' => 1,
+        $payment = PaymentFactory::create([
+            'is_paid' => true,
             'completed_at' => null,
             'invoice_number' => null,
         ]);
-        $payment = Payment::find($payment_id);
 
         $payment->complete($now);
 
@@ -70,18 +68,17 @@ class PaymentTest extends \PHPUnit\Framework\TestCase
         $this->freeze($now);
 
         $previous_year = \Minz\Time::ago(1, 'year');
-        $this->create('payment', [
+        PaymentFactory::create([
             'invoice_number' => $previous_year->format('Y-m') . '-0001',
         ]);
-        $this->create('payment', [
+        PaymentFactory::create([
             'invoice_number' => $previous_year->format('Y-m') . '-0002',
         ]);
-        $payment_id = $this->create('payment', [
-            'is_paid' => 1,
+        $payment = PaymentFactory::create([
+            'is_paid' => true,
             'completed_at' => null,
             'invoice_number' => null,
         ]);
-        $payment = Payment::find($payment_id);
 
         $payment->complete($now);
 
@@ -94,18 +91,17 @@ class PaymentTest extends \PHPUnit\Framework\TestCase
         $now = $this->fake('dateTime');
         $this->freeze($now);
 
-        $this->create('payment', [
+        PaymentFactory::create([
             'invoice_number' => null,
         ]);
-        $this->create('payment', [
+        PaymentFactory::create([
             'invoice_number' => $now->format('Y') . '-01-0001',
         ]);
-        $payment_id = $this->create('payment', [
-            'is_paid' => 1,
+        $payment = PaymentFactory::create([
+            'is_paid' => true,
             'completed_at' => null,
             'invoice_number' => null,
         ]);
-        $payment = Payment::find($payment_id);
 
         $payment->complete($now);
 
@@ -116,11 +112,10 @@ class PaymentTest extends \PHPUnit\Framework\TestCase
     public function testCompleteDoesNothingIfNotIsPaid()
     {
         $completed_at = $this->fake('dateTime');
-        $payment_id = $this->create('payment', [
-            'is_paid' => 0,
+        $payment = PaymentFactory::create([
+            'is_paid' => false,
             'completed_at' => null,
         ]);
-        $payment = Payment::find($payment_id);
 
         $payment->complete($completed_at);
 

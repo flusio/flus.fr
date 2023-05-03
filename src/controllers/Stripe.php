@@ -36,7 +36,7 @@ class Stripe
         }
 
         if ($event->type === 'checkout.session.completed') {
-            $session = $event->data->object;
+            $session = $event->data->object; // @phpstan-ignore-line
 
             $payment = models\Payment::findBy([
                 'payment_intent_id' => $session->payment_intent,

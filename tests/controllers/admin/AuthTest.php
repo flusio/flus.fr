@@ -27,12 +27,15 @@ class AuthTest extends \PHPUnit\Framework\TestCase
 
     public function testLoginWithFromParameter()
     {
+        /** @var \Minz\Response */
         $response = $this->appRun('GET', '/admin/login', [
             'from' => 'home',
         ]);
 
         $this->assertResponseCode($response, 200);
-        $variables = $response->output()->variables();
+        /** @var \Minz\Output\View */
+        $output = $response->output();
+        $variables = $output->variables();
         $this->assertArrayHasKey('from', $variables);
         $this->assertSame('home', $variables['from']);
     }
@@ -40,7 +43,7 @@ class AuthTest extends \PHPUnit\Framework\TestCase
     public function testCreateSession()
     {
         $response = $this->appRun('POST', '/admin/login', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => \Minz\Csrf::generate(),
             'password' => 'secret',
         ]);
 
@@ -53,7 +56,7 @@ class AuthTest extends \PHPUnit\Framework\TestCase
         $this->loginAdmin();
 
         $response = $this->appRun('POST', '/admin/login', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => \Minz\Csrf::generate(),
             'password' => 'secret',
         ]);
 
@@ -63,7 +66,7 @@ class AuthTest extends \PHPUnit\Framework\TestCase
     public function testCreateSessionWithFromParameter()
     {
         $response = $this->appRun('POST', '/admin/login', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => \Minz\Csrf::generate(),
             'password' => 'secret',
             'from' => urlencode('home'),
         ]);
@@ -87,7 +90,7 @@ class AuthTest extends \PHPUnit\Framework\TestCase
     public function testCreateSessionFailsIfPasswordIsInvalid()
     {
         $response = $this->appRun('POST', '/admin/login', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => \Minz\Csrf::generate(),
             'password' => 'not the secret',
         ]);
 
@@ -100,7 +103,7 @@ class AuthTest extends \PHPUnit\Framework\TestCase
         $this->loginAdmin();
 
         $response = $this->appRun('POST', '/admin/logout', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => \Minz\Csrf::generate(),
         ]);
 
         $this->assertResponseCode($response, 302, '/');
@@ -110,7 +113,7 @@ class AuthTest extends \PHPUnit\Framework\TestCase
     public function testDeleteSessionWhenUnconnected()
     {
         $response = $this->appRun('POST', '/admin/logout', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => \Minz\Csrf::generate(),
         ]);
 
         $this->assertResponseCode($response, 302, '/');

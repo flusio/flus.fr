@@ -1,7 +1,7 @@
 Bonjour,
 
 Vous recevez ce courriel car vous possédez un compte Flus qui arrive à
-échéance le <?= format_date($expired_at, '%d %B %Y') ?>.
+échéance le <?= _d($expired_at, 'dd MMMM yyyy') ?>.
 Si vous voulez continuer à utiliser le service après cette date, vous devrez
 renouveler votre abonnement.
 

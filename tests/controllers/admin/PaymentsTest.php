@@ -3,6 +3,7 @@
 namespace Website\controllers\admin;
 
 use Website\models;
+use tests\factories\PaymentFactory;
 
 class PaymentsTest extends \PHPUnit\Framework\TestCase
 {
@@ -10,19 +11,11 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     use \tests\LoginHelper;
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\ApplicationHelper;
-    use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\TimeHelper;
     use \Minz\Tests\ResponseAsserts;
 
     public function testIndexRendersCorrectly()
     {
-        $created_at = $this->fake('dateTime');
-        $this->freeze($created_at);
-
-        $this->create('payment', [
-            'created_at' => $created_at->format(\Minz\Model::DATETIME_FORMAT),
-        ]);
-
         $this->loginAdmin();
 
         $response = $this->appRun('GET', '/admin');
@@ -63,7 +56,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         $this->loginAdmin();
 
         $response = $this->appRun('POST', '/admin/payments/new', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => \Minz\Csrf::generate(),
             'type' => $type,
             'email' => $email,
             'amount' => $amount,
@@ -80,7 +73,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         $this->loginAdmin();
 
         $response = $this->appRun('POST', '/admin/payments/new', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => \Minz\Csrf::generate(),
             'type' => $type,
             'email' => $email,
             'amount' => $amount,
@@ -101,7 +94,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         $this->loginAdmin();
 
         $response = $this->appRun('POST', '/admin/payments/new', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => \Minz\Csrf::generate(),
             'type' => 'invalid',
             'email' => $email,
             'amount' => $amount,
@@ -119,7 +112,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         $this->loginAdmin();
 
         $response = $this->appRun('POST', '/admin/payments/new', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => \Minz\Csrf::generate(),
             'type' => $type,
             'email' => 'not an email',
             'amount' => $amount,
@@ -135,7 +128,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     public function testCreateFailsIfNotConnected($type, $email, $amount)
     {
         $response = $this->appRun('POST', '/admin/payments/new', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => \Minz\Csrf::generate(),
             'type' => $type,
             'email' => $email,
             'amount' => $amount,
@@ -165,9 +158,9 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     public function testShowRendersCorrectly()
     {
         $this->loginAdmin();
-        $payment_id = $this->create('payment');
+        $payment = PaymentFactory::create();
 
-        $response = $this->appRun('GET', '/admin/payments/' . $payment_id);
+        $response = $this->appRun('GET', '/admin/payments/' . $payment->id);
 
         $this->assertResponseCode($response, 200);
         $this->assertResponsePointer($response, 'admin/payments/show.phtml');
@@ -184,9 +177,9 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
 
     public function testShowFailsIfNotConnected()
     {
-        $payment_id = $this->create('payment');
+        $payment = PaymentFactory::create();
 
-        $response = $this->appRun('GET', '/admin/payments/' . $payment_id);
+        $response = $this->appRun('GET', '/admin/payments/' . $payment->id);
 
         $this->assertResponseCode($response, 302, '/admin/login?from=admin%2Fpayments%23index');
     }
@@ -194,28 +187,28 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     public function testConfirmRendersCorrectly()
     {
         $this->loginAdmin();
-        $payment_id = $this->create('payment', [
+        $payment = PaymentFactory::create([
             'is_paid' => false,
         ]);
 
-        $response = $this->appRun('POST', "/admin/payments/{$payment_id}/confirm", [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+        $response = $this->appRun('POST', "/admin/payments/{$payment->id}/confirm", [
+            'csrf' => \Minz\Csrf::generate(),
         ]);
 
         $this->assertResponseCode($response, 302, '/admin?status=payment_confirmed');
-        $payment = models\Payment::find($payment_id);
+        $payment = $payment->reload();
         $this->assertTrue($payment->is_paid);
     }
 
     public function testConfirmFailsIfInvalidId()
     {
         $this->loginAdmin();
-        $payment_id = $this->create('payment', [
+        $payment = PaymentFactory::create([
             'is_paid' => false,
         ]);
 
         $response = $this->appRun('POST', "/admin/payments/not-an-id/confirm", [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => \Minz\Csrf::generate(),
         ]);
 
         $this->assertResponseCode($response, 404);
@@ -224,12 +217,12 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     public function testConfirmFailsIfAlreadyPaid()
     {
         $this->loginAdmin();
-        $payment_id = $this->create('payment', [
+        $payment = PaymentFactory::create([
             'is_paid' => true,
         ]);
 
-        $response = $this->appRun('POST', "/admin/payments/{$payment_id}/confirm", [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+        $response = $this->appRun('POST', "/admin/payments/{$payment->id}/confirm", [
+            'csrf' => \Minz\Csrf::generate(),
         ]);
 
         $this->assertResponseCode($response, 400);
@@ -238,50 +231,50 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
 
     public function testConfirmFailsIfNotConnected()
     {
-        $payment_id = $this->create('payment', [
+        $payment = PaymentFactory::create([
             'is_paid' => false,
         ]);
 
-        $response = $this->appRun('POST', "/admin/payments/{$payment_id}/confirm", [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+        $response = $this->appRun('POST', "/admin/payments/{$payment->id}/confirm", [
+            'csrf' => \Minz\Csrf::generate(),
         ]);
 
         $this->assertResponseCode($response, 302, '/admin/login?from=admin%2Fpayments%23index');
-        $payment = models\Payment::find($payment_id);
+        $payment = $payment->reload();
         $this->assertFalse($payment->is_paid);
     }
 
     public function testConfirmFailsIfCsrfIsInvalid()
     {
         $this->loginAdmin();
-        $payment_id = $this->create('payment', [
+        $payment = PaymentFactory::create([
             'is_paid' => false,
         ]);
 
-        $response = $this->appRun('POST', "/admin/payments/{$payment_id}/confirm", [
+        $response = $this->appRun('POST', "/admin/payments/{$payment->id}/confirm", [
             'csrf' => 'not the token',
         ]);
 
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'Une vérification de sécurité a échoué');
-        $payment = models\Payment::find($payment_id);
+        $payment = $payment->reload();
         $this->assertFalse($payment->is_paid);
     }
 
     public function testDestroyRendersCorrectly()
     {
         $this->loginAdmin();
-        $payment_id = $this->create('payment', [
+        $payment = PaymentFactory::create([
             'is_paid' => false,
             'invoice_number' => null,
         ]);
 
-        $response = $this->appRun('POST', '/admin/payments/' . $payment_id . '/destroy', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+        $response = $this->appRun('POST', '/admin/payments/' . $payment->id . '/destroy', [
+            'csrf' => \Minz\Csrf::generate(),
         ]);
 
         $this->assertResponseCode($response, 302, '/admin?status=payment_deleted');
-        $this->assertFalse(models\Payment::exists($payment_id));
+        $this->assertFalse(models\Payment::exists($payment->id));
     }
 
     public function testDestroyFailsIfInvalidId()
@@ -289,7 +282,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         $this->loginAdmin();
 
         $response = $this->appRun('POST', '/admin/payments/invalid/destroy', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => \Minz\Csrf::generate(),
         ]);
 
         $this->assertResponseCode($response, 404);
@@ -297,69 +290,69 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
 
     public function testDestroyFailsIfNotConnected()
     {
-        $payment_id = $this->create('payment', [
+        $payment = PaymentFactory::create([
             'is_paid' => false,
             'invoice_number' => null,
         ]);
 
-        $response = $this->appRun('POST', '/admin/payments/' . $payment_id . '/destroy', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+        $response = $this->appRun('POST', '/admin/payments/' . $payment->id . '/destroy', [
+            'csrf' => \Minz\Csrf::generate(),
         ]);
 
         $this->assertResponseCode($response, 302, '/admin/login?from=admin%2Fpayments%23index');
-        $this->assertTrue(models\Payment::exists($payment_id));
+        $this->assertTrue(models\Payment::exists($payment->id));
     }
 
     public function testDestroyFailsIfCsrfIsInvalid()
     {
         $this->loginAdmin();
-        $payment_id = $this->create('payment', [
+        $payment = PaymentFactory::create([
             'is_paid' => false,
             'invoice_number' => null,
         ]);
 
-        $response = $this->appRun('POST', '/admin/payments/' . $payment_id . '/destroy', [
+        $response = $this->appRun('POST', '/admin/payments/' . $payment->id . '/destroy', [
             'csrf' => 'not the token',
         ]);
 
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'Une vérification de sécurité a échoué');
-        $this->assertTrue(models\Payment::exists($payment_id));
+        $this->assertTrue(models\Payment::exists($payment->id));
     }
 
     public function testDestroyFailsIfIsPaidIsTrue()
     {
         $this->loginAdmin();
-        $payment_id = $this->create('payment', [
+        $payment = PaymentFactory::create([
             'is_paid' => true,
             'invoice_number' => null,
         ]);
 
-        $response = $this->appRun('POST', '/admin/payments/' . $payment_id . '/destroy', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+        $response = $this->appRun('POST', '/admin/payments/' . $payment->id . '/destroy', [
+            'csrf' => \Minz\Csrf::generate(),
         ]);
 
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'Ce paiement a déjà été payé');
-        $this->assertTrue(models\Payment::exists($payment_id));
+        $this->assertTrue(models\Payment::exists($payment->id));
     }
 
     public function testDestroyFailsIfInvoiceNumberIsNotNull()
     {
         $this->loginAdmin();
         $invoice_number = $this->fake('dateTime')->format('Y-m') . sprintf('-%04d', $this->fake('randomNumber', 4));
-        $payment_id = $this->create('payment', [
+        $payment = PaymentFactory::create([
             'is_paid' => false,
             'invoice_number' => $invoice_number,
         ]);
 
-        $response = $this->appRun('POST', '/admin/payments/' . $payment_id . '/destroy', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+        $response = $this->appRun('POST', '/admin/payments/' . $payment->id . '/destroy', [
+            'csrf' => \Minz\Csrf::generate(),
         ]);
 
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'Ce paiement est associé à une facture');
-        $this->assertTrue(models\Payment::exists($payment_id));
+        $this->assertTrue(models\Payment::exists($payment->id));
     }
 
     public function createProvider()

@@ -44,19 +44,15 @@ install: ## Install the dependencies
 	$(COMPOSER) install
 
 .PHONY: init
-init: ## Initialize the application
-	$(PHP) ./cli --request /system/init
-
-.PHONY: migrate
-migrate: ## Apply pending migrations
-	$(PHP) ./cli --request /system/migrate
+setup: ## Initialize or migration the application
+	$(PHP) ./cli migrations setup
 
 .PHONY: rollback
 rollback: ## Reverse the last migration
 ifdef STEPS
-	$(PHP) ./cli --request /system/rollback -psteps=$(STEPS)
+	$(PHP) ./cli migrations rollback --steps=$(STEPS)
 else
-	$(PHP) ./cli --request /system/rollback
+	$(PHP) ./cli migrations rollback
 endif
 
 .PHONY: test

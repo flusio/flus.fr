@@ -24,7 +24,7 @@ trait FakerHelper
     /**
      * Return the result of faker->$factory_name
      *
-     * @see https://github.com/fzaninotto/Faker#faker
+     * @see https://fakerphp.github.io/
      *
      * @param string $factory_name
      * @param mixed $args,... Parameter to pass to the Faker factory
@@ -33,13 +33,21 @@ trait FakerHelper
      */
     public function fake($factory_name, ...$args)
     {
-        return call_user_func_array([self::$faker, $factory_name], $args);
+        $result = call_user_func_array([self::$faker, $factory_name], $args);
+
+        if ($result instanceof \DateTime) {
+            // We always use DateTimeImmutable but faker is only able to
+            // generate DateTime.
+            $result = \DateTimeImmutable::createFromMutable($result);
+        }
+
+        return $result;
     }
 
     /**
      * Return the result of faker->unique()->$factory_name
      *
-     * @see https://github.com/fzaninotto/Faker#faker
+     * @see https://fakerphp.github.io/
      *
      * @param string $factory_name
      * @param mixed $args,... Parameter to pass to the Faker factory
@@ -49,6 +57,14 @@ trait FakerHelper
     public function fakeUnique($factory_name, ...$args)
     {
         $unique_generator = self::$faker->unique();
-        return call_user_func_array([$unique_generator, $factory_name], $args);
+        $result = call_user_func_array([$unique_generator, $factory_name], $args);
+
+        if ($result instanceof \DateTime) {
+            // We always use DateTimeImmutable but faker is only able to
+            // generate DateTime.
+            $result = \DateTimeImmutable::createFromMutable($result);
+        }
+
+        return $result;
     }
 }

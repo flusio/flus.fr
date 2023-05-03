@@ -2,6 +2,8 @@
 
 namespace Website\controllers\cli;
 
+use tests\factories\AccountFactory;
+use tests\factories\PaymentFactory;
 use Website\models;
 
 class PaymentsTest extends \PHPUnit\Framework\TestCase
@@ -9,7 +11,6 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     use \tests\FakerHelper;
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\ApplicationHelper;
-    use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\TimeHelper;
     use \Minz\Tests\ResponseAsserts;
     use \Minz\Tests\MailerAsserts;
@@ -29,16 +30,16 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     {
         $now = $this->fake('dateTime');
         $this->freeze($now);
-        $payment_id = $this->create('payment', [
+        $payment = PaymentFactory::create([
             'completed_at' => null,
-            'is_paid' => 1,
+            'is_paid' => true,
         ]);
 
         $response = $this->appRun('CLI', '/payments/complete');
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, '1 payments completed');
-        $payment = models\Payment::find($payment_id);
+        $payment = $payment->reload();
         $this->assertSame($now->getTimestamp(), $payment->completed_at->getTimestamp());
     }
 
@@ -49,14 +50,14 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     {
         $now = $this->fake('dateTime');
         $this->freeze($now);
-        $account_id = $this->create('account', [
-            'expired_at' => \Minz\Time::now()->format(\Minz\Model::DATETIME_FORMAT),
+        $account = AccountFactory::create([
+            'expired_at' => \Minz\Time::now(),
         ]);
-        $payment_id = $this->create('payment', [
+        $payment = PaymentFactory::create([
             'type' => 'subscription',
             'completed_at' => null,
-            'is_paid' => 1,
-            'account_id' => $account_id,
+            'is_paid' => true,
+            'account_id' => $account->id,
             'frequency' => $frequency,
         ]);
         if ($frequency === 'month') {
@@ -67,7 +68,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('CLI', '/payments/complete');
 
-        $account = models\Account::find($account_id);
+        $account = $account->reload();
         $this->assertSame($expected_expired_at->getTimestamp(), $account->expired_at->getTimestamp());
     }
 
@@ -76,33 +77,33 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         $now = $this->fake('dateTime');
         $this->freeze($now);
         $expired_at = \Minz\Time::now();
-        $account_id = $this->create('account', [
-            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+        $account = AccountFactory::create([
+            'expired_at' => $expired_at,
         ]);
         $type = $this->fake('randomElement', ['common_pot', 'credit']);
-        $payment_id = $this->create('payment', [
+        $payment = PaymentFactory::create([
             'type' => $type,
             'completed_at' => null,
-            'is_paid' => 1,
-            'account_id' => $account_id,
+            'is_paid' => true,
+            'account_id' => $account->id,
         ]);
 
         $response = $this->appRun('CLI', '/payments/complete');
 
-        $account = models\Account::find($account_id);
+        $account = $account->reload();
         $this->assertSame($expired_at->getTimestamp(), $account->expired_at->getTimestamp());
     }
 
     public function testCompleteCreatesAnInvoice()
     {
-        $payment_id = $this->create('payment', [
+        $payment = PaymentFactory::create([
             'completed_at' => null,
-            'is_paid' => 1,
+            'is_paid' => true,
         ]);
 
         $response = $this->appRun('CLI', '/payments/complete');
 
-        $payment = models\Payment::find($payment_id);
+        $payment = $payment->reload();
         $this->assertNotNull($payment->invoice_number);
         $this->assertTrue($payment->invoiceExists());
     }
@@ -110,13 +111,13 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     public function testCompleteSendsAnEmail()
     {
         $email = $this->fake('email');
-        $account_id = $this->create('account', [
+        $account = AccountFactory::create([
             'email' => $email,
         ]);
-        $payment_id = $this->create('payment', [
-            'account_id' => $account_id,
+        $payment = PaymentFactory::create([
+            'account_id' => $account->id,
             'completed_at' => null,
-            'is_paid' => 1,
+            'is_paid' => true,
         ]);
 
         $this->assertEmailsCount(0);
@@ -135,29 +136,29 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     public function testCompleteDoesNothingIfAlreadyCompleted()
     {
         $completed_at = $this->fake('dateTime');
-        $payment_id = $this->create('payment', [
-            'completed_at' => $completed_at->format(\Minz\Model::DATETIME_FORMAT),
-            'is_paid' => 1,
+        $payment = PaymentFactory::create([
+            'completed_at' => $completed_at,
+            'is_paid' => true,
         ]);
 
         $response = $this->appRun('CLI', '/payments/complete');
 
         $this->assertResponseCode($response, 200);
-        $payment = models\Payment::find($payment_id);
+        $payment = $payment->reload();
         $this->assertSame($completed_at->getTimestamp(), $payment->completed_at->getTimestamp());
     }
 
     public function testCompleteDoesNothingIfNotIsPaid()
     {
-        $payment_id = $this->create('payment', [
+        $payment = PaymentFactory::create([
             'completed_at' => null,
-            'is_paid' => 0,
+            'is_paid' => false,
         ]);
 
         $response = $this->appRun('CLI', '/payments/complete');
 
         $this->assertResponseCode($response, 200);
-        $payment = models\Payment::find($payment_id);
+        $payment = $payment->reload();
         $this->assertNull($payment->completed_at);
     }
 

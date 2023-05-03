@@ -2,19 +2,20 @@
 
 namespace Website\controllers;
 
+use tests\factories\PaymentFactory;
+
 class PaymentsTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\FakerHelper;
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\ApplicationHelper;
-    use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\ResponseAsserts;
 
     public function testPayRendersCorrectly()
     {
-        $payment_id = $this->create('payment');
+        $payment = PaymentFactory::create();
 
-        $response = $this->appRun('GET', "/payments/{$payment_id}/pay");
+        $response = $this->appRun('GET', "/payments/{$payment->id}/pay");
 
         $this->assertResponseCode($response, 200);
         $this->assertResponsePointer($response, 'stripe/redirection.phtml');
@@ -23,13 +24,16 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     public function testPayConfiguresStripe()
     {
         $session_id = $this->fake('regexify', 'cs_test_[\w\d]{56}');
-        $payment_id = $this->create('payment', [
+        $payment = PaymentFactory::create([
             'session_id' => $session_id,
         ]);
 
-        $response = $this->appRun('GET', "/payments/{$payment_id}/pay");
+        /** @var \Minz\Response */
+        $response = $this->appRun('GET', "/payments/{$payment->id}/pay");
 
-        $variables = $response->output()->variables();
+        /** @var \Minz\Output\View */
+        $output = $response->output();
+        $variables = $output->variables();
         $headers = $response->headers(true);
         $csp = $headers['Content-Security-Policy'];
 
@@ -60,11 +64,11 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
 
     public function testPayWithPaidPaymentReturnsBadRequest()
     {
-        $payment_id = $this->create('payment', [
-            'completed_at' => $this->fake('dateTime')->getTimestamp(),
+        $payment = PaymentFactory::create([
+            'completed_at' => $this->fake('dateTime'),
         ]);
 
-        $response = $this->appRun('GET', "/payments/{$payment_id}/pay");
+        $response = $this->appRun('GET', "/payments/{$payment->id}/pay");
 
         $this->assertResponseCode($response, 400);
     }

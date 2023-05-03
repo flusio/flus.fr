@@ -35,7 +35,9 @@ class Accounts
     public function create($request)
     {
         $email = $request->param('email', '');
-        $account = models\Account::init($email);
+        $account = new models\Account($email);
+
+        /** @var array<string, string> */
         $errors = $account->validate();
         if ($errors) {
             return \Minz\Response::text(400, implode(' ', $errors));
@@ -71,7 +73,7 @@ class Accounts
             $service = 'flusio';
         }
 
-        $token = models\Token::init(10, 'minutes');
+        $token = new models\Token(10, 'minutes');
         $token->save();
 
         $account->access_token = $token->token;
@@ -111,7 +113,7 @@ class Accounts
                 // subscription ended yesterday
 
                 // First create a login token
-                $token = models\Token::init(24, 'hours');
+                $token = new models\Token(24, 'hours');
                 $token->save();
 
                 $account->access_token = $token->token;
@@ -124,7 +126,7 @@ class Accounts
                 // subscription end in 2 or 7 days
 
                 // First create a login token
-                $token = models\Token::init(24, 'hours');
+                $token = new models\Token(24, 'hours');
                 $token->save();
 
                 $account->access_token = $token->token;
@@ -158,7 +160,7 @@ class Accounts
     {
         $date = \Minz\Time::ago(2, 'days');
 
-        $accounts_to_delete = models\Account::daoToList('listByLastSyncAtOlderThan', $date);
+        $accounts_to_delete = models\Account::listByLastSyncAtOlderThan($date);
         $accounts_ids = array_column($accounts_to_delete, 'id');
 
         $payments = models\Payment::listBy([
@@ -173,9 +175,9 @@ class Accounts
 
         $default_account = models\Account::defaultAccount();
 
-        models\Payment::daoCall('moveToAccountId', $payments_ids, $default_account->id);
-        models\PotUsage::daoCall('moveToAccountId', $pot_usages_ids, $default_account->id);
-        models\Account::delete($accounts_ids);
+        models\Payment::moveToAccountId($payments_ids, $default_account->id);
+        models\PotUsage::moveToAccountId($pot_usages_ids, $default_account->id);
+        models\Account::deleteBy(['id' => $accounts_ids]);
 
         $number_accounts = count($accounts_ids);
         return \Minz\Response::text(200, "{$number_accounts} accounts have been deleted.");

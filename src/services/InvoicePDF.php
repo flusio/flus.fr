@@ -2,6 +2,7 @@
 
 namespace Website\services;
 
+use Minz\Output\ViewHelpers;
 use Website\models;
 use Website\utils;
 
@@ -36,7 +37,7 @@ class InvoicePDF extends \FPDF
     ];
 
     /**
-     * @param \Minz\models\Payment
+     * @param \Website\models\Payment $payment
      */
     public function __construct($payment)
     {
@@ -46,7 +47,7 @@ class InvoicePDF extends \FPDF
 
         $this->logo = \Minz\Configuration::$app_path . '/public/static/logo-512px.png';
 
-        $established_at = strftime('%d %B %Y', $payment->created_at->getTimestamp());
+        $established_at = ViewHelpers::formatDate($payment->created_at, 'dd MMMM yyyy');
         $this->metadata = [
             'N° facture' => $payment->invoice_number,
             'Établie le' => $established_at,
@@ -54,13 +55,13 @@ class InvoicePDF extends \FPDF
 
         if ($payment->type === 'credit') {
             if ($payment->completed_at) {
-                $this->metadata['Créditée le'] = strftime('%d %B %Y', $payment->completed_at->getTimestamp());
+                $this->metadata['Créditée le'] = ViewHelpers::formatDate($payment->completed_at, 'dd MMMM yyyy');
             } else {
                 $this->metadata['Créditée le'] = 'à créditer';
             }
         } else {
             if ($payment->completed_at) {
-                $this->metadata['Payée le'] = strftime('%d %B %Y', $payment->completed_at->getTimestamp());
+                $this->metadata['Payée le'] = ViewHelpers::formatDate($payment->completed_at, 'dd MMMM yyyy');
             } else {
                 $this->metadata['Payée le'] = 'à payer';
             }
@@ -139,6 +140,10 @@ class InvoicePDF extends \FPDF
         $this->addCustomerInformation($this->customer, $this->GetY());
         $this->addPurchases($this->purchases, $this->GetY() + 20);
         $this->addTotalPurchases($this->total_purchases, $this->GetY() + 20);
+
+        // Make sure that the parent directories exist
+        $path_parts = pathinfo($filepath);
+        @mkdir($path_parts['dirname'], 0775, true);
 
         $this->Output('F', $filepath);
     }

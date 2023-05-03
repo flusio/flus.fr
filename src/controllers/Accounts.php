@@ -87,8 +87,7 @@ class Accounts
     {
         $user = utils\CurrentUser::get();
 
-        $csrf = new \Minz\CSRF();
-        if ($csrf->validateToken($request->param('csrf')) && $user) {
+        if (\Minz\Csrf::validate($request->param('csrf')) && $user) {
             $account = models\Account::find($user['account_id']);
             utils\CurrentUser::logOut();
             if ($account->preferred_service === 'flusio') {
@@ -140,7 +139,7 @@ class Accounts
 
         $account = models\Account::find($user['account_id']);
 
-        $email = $request->param('email');
+        $email = $request->param('email', '');
         $address = $request->paramArray('address', $account->address());
         $account->email = $email;
         $account->setAddress($address);
@@ -175,8 +174,7 @@ class Accounts
             ]);
         }
 
-        $csrf = new \Minz\CSRF();
-        if (!$csrf->validateToken($request->param('csrf'))) {
+        if (!\Minz\Csrf::validate($request->param('csrf'))) {
             return \Minz\Response::badRequest('accounts/address.phtml', [
                 'account' => $account,
                 'email' => $email,
@@ -212,12 +210,11 @@ class Accounts
 
         $account = models\Account::find($user['account_id']);
 
-        $reminder = $request->param('reminder', false);
+        $reminder = $request->paramBoolean('reminder', false);
         $from = $request->param('from', 'account');
 
-        $csrf = new \Minz\CSRF();
-        if ($csrf->validateToken($request->param('csrf'))) {
-            $account->reminder = filter_var($reminder, FILTER_VALIDATE_BOOLEAN);
+        if (\Minz\Csrf::validate($request->param('csrf'))) {
+            $account->reminder = $reminder;
             $account->save();
         }
 

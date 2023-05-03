@@ -2,6 +2,8 @@
 
 namespace Website\controllers;
 
+use tests\factories\AccountFactory;
+use tests\factories\PaymentFactory;
 use Website\models;
 
 class SubscriptionsTest extends \PHPUnit\Framework\TestCase
@@ -11,7 +13,6 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\ResponseAsserts;
-    use \Minz\Tests\FactoriesHelper;
     use \Minz\Tests\TimeHelper;
 
     /**
@@ -45,7 +46,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
             'address_address1' => $address['address1'],
             'address_postcode' => $address['postcode'],
             'address_city' => $address['city'],
-            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+            'expired_at' => $expired_at,
         ]);
 
         $response = $this->appRun('GET', '/account/renew');
@@ -66,9 +67,9 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
             'address_address1' => $address['address1'],
             'address_postcode' => $address['postcode'],
             'address_city' => $address['city'],
-            'expired_at' => $expired_at->format(\Minz\Model::DATETIME_FORMAT),
+            'expired_at' => $expired_at,
         ]);
-        $this->create('payment', [
+        PaymentFactory::create([
             'account_id' => $user['account_id'],
             'completed_at' => null,
         ]);
@@ -93,7 +94,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
      */
     public function testInitFailsIfNotConnected($address)
     {
-        $this->create('account', [
+        AccountFactory::create([
             'address_first_name' => $address['first_name'],
             'address_last_name' => $address['last_name'],
             'address_address1' => $address['address1'],
@@ -123,7 +124,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Payment::count());
 
         $response = $this->appRun('POST', '/account/renew', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => \Minz\Csrf::generate(),
             'account_id' => $account->id,
             'frequency' => $frequency,
         ]);
@@ -157,7 +158,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/account/renew', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => \Minz\Csrf::generate(),
             'account_id' => $user['account_id'],
             'frequency' => $frequency,
         ]);
@@ -175,7 +176,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
         $account = models\Account::find($user['account_id']);
 
         $response = $this->appRun('POST', '/account/renew', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => \Minz\Csrf::generate(),
             'account_id' => $account->id,
             'frequency' => $frequency,
         ]);
@@ -189,17 +190,16 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
      */
     public function testRenewFailsIfNotConnected($address, $frequency)
     {
-        $account_id = $this->create('account', [
+        $account = AccountFactory::create([
             'address_first_name' => $address['first_name'],
             'address_last_name' => $address['last_name'],
             'address_address1' => $address['address1'],
             'address_postcode' => $address['postcode'],
             'address_city' => $address['city'],
         ]);
-        $account = models\Account::find($account_id);
 
         $response = $this->appRun('POST', '/account/renew', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => \Minz\Csrf::generate(),
             'account_id' => $account->id,
             'frequency' => $frequency,
         ]);
@@ -224,7 +224,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
         $frequency = $this->fake('word');
 
         $response = $this->appRun('POST', '/account/renew', [
-            'csrf' => (new \Minz\CSRF())->generateToken(),
+            'csrf' => \Minz\Csrf::generate(),
             'account_id' => $account->id,
             'frequency' => $frequency,
         ]);
