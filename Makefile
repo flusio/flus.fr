@@ -78,7 +78,7 @@ lint-fix: ## Fix the errors raised by the linter
 
 .PHONY: tree
 tree:  ## Display the structure of the application
-	tree -I 'Minz|Faker|stripe-php|fpdf|coverage|vendor' --dirsfirst -CA
+	tree -I 'Minz|stripe-php|fpdf|coverage|vendor' --dirsfirst -CA
 
 .PHONY: help
 help:

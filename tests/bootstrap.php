@@ -10,8 +10,6 @@ include $app_path . '/autoload.php';
 
 \Stripe\Stripe::$apiBase = 'http://localhost:12111';
 
-include($app_path . '/lib/Faker/src/autoload.php');
-
 $faker = \Faker\Factory::create();
 
 $faker_seed = getenv('SEED');
