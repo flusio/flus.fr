@@ -26,13 +26,17 @@ else
 	PHPUNIT_FILE = ./tests
 endif
 
-.PHONY: start
-start: ## Start a development server (use Docker)
+.PHONY: docker-start
+docker-start: ## Start a development server
 	@echo "Running webserver on http://localhost:8000"
 	docker-compose -p flusfr -f docker/docker-compose.yml up
 
-.PHONY: stop
-stop: ## Stop and clean Docker server
+.PHONY: docker-build
+docker-build: ## Rebuild the Docker containers
+	docker-compose -p flusfr -f docker/docker-compose.yml build
+
+.PHONY: docker-clean
+docker-clean: ## Clean the Docker stuff
 	docker-compose -p flusfr -f docker/docker-compose.yml down
 
 .PHONY: init
