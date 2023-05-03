@@ -7,6 +7,7 @@ on:
         branches: [ main ]
 
 env:
+    NODOCKER: true
     NUMBER_OF_DATASETS: 25
     COVERAGE: --coverage-text
 
@@ -37,10 +38,13 @@ jobs:
           with:
               php-version: ${{ matrix.php-versions }}
               coverage: xdebug
-              extensions: pdo, pdo_pgsql
+              extensions: pdo
+
+        - name: Install the dependencies
+          run: make install
 
         - name: Run the linters
           run: make lint
 
-        - name: Run the test suite (SQLite)
+        - name: Run the test suite
           run: make test
