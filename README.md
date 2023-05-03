@@ -13,7 +13,7 @@ flus.fr is licensed under [AGPL 3](https://github.com/flusio/flus.fr/blob/main/L
 ## Setup the development environment
 
 The development environment is managed with Docker and PHP in CLI mode. It
-requires PHP 7.4 or 8.0 to work properly.
+requires PHP 8.2 to work properly.
 
 You’ll also need an account on [Stripe](https://stripe.com/).
 
@@ -69,7 +69,7 @@ Installing flus.fr on your own server is quite simple but still requires basic
 notions in sysadmin. First, make sure you match with the following
 requirements:
 
-- Git, Nginx, PHP 7.4 or 8.0 are installed on your server;
+- Git, Nginx, PHP 8.2 are installed on your server;
 - PHP requires `intl` extension;
 - flus.fr must be served over <abbr>HTTPS</abbr>.
 
