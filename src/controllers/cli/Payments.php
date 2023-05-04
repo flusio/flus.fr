@@ -2,6 +2,8 @@
 
 namespace Website\controllers\cli;
 
+use Minz\Request;
+use Minz\Response;
 use Website\models;
 use Website\services;
 
@@ -14,7 +16,7 @@ class Payments
     /**
      * @response 200
      */
-    public function complete($request)
+    public function complete(Request $request): Response
     {
         $payments = models\Payment::listBy([
             'completed_at' => null,
@@ -28,9 +30,9 @@ class Payments
         }
 
         if ($number_payments > 0) {
-            return \Minz\Response::text(200, "{$number_payments} payments completed");
+            return Response::text(200, "{$number_payments} payments completed");
         } else {
-            return \Minz\Response::text(200, '');
+            return Response::text(200, '');
         }
     }
 }

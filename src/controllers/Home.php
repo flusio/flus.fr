@@ -2,22 +2,24 @@
 
 namespace Website\controllers;
 
+use Minz\Request;
+use Minz\Response;
 use Website\mailers;
 use Website\models;
 
 class Home
 {
-    public function index()
+    public function index(Request $request): Response
     {
-        return \Minz\Response::ok('home/index.phtml');
+        return Response::ok('home/index.phtml');
     }
 
-    public function project()
+    public function project(Request $request): Response
     {
-        return \Minz\Response::ok('home/project.phtml');
+        return Response::ok('home/project.phtml');
     }
 
-    public function pricing()
+    public function pricing(Request $request): Response
     {
         $current_year = intval(\Minz\Time::now()->format('Y'));
         $total_revenue = models\Payment::findTotalRevenue($current_year) / 100;
@@ -26,7 +28,7 @@ class Home
         $common_pot_revenue = models\Payment::findCommonPotRevenue($current_year) / 100;
         $subscriptions_revenue = models\Payment::findSubscriptionsRevenue($current_year) / 100;
 
-        $response = \Minz\Response::ok('home/pricing.phtml', [
+        $response = Response::ok('home/pricing.phtml', [
             'total_revenue' => number_format($total_revenue, 2, ',', '&nbsp;'),
             'revenue_target' => number_format($revenue_target, 0, ',', '&nbsp;'),
             'percent_target' => intval($percent_target),
@@ -37,11 +39,11 @@ class Home
         return $response;
     }
 
-    public function tour($request)
+    public function tour(Request $request): Response
     {
         $page = $request->param('page');
         if (!$page) {
-            return \Minz\Response::redirect('tour page', ['page' => 'journal']);
+            return Response::redirect('tour page', ['page' => 'journal']);
         }
 
         $pages_to_views = [
@@ -53,55 +55,55 @@ class Home
             'opml' => 'opml',
         ];
         if (!isset($pages_to_views[$page])) {
-            return \Minz\Response::notFound('not_found.phtml');
+            return Response::notFound('not_found.phtml');
         }
 
         $view = $pages_to_views[$page];
-        $response = \Minz\Response::ok("home/tour/{$view}.phtml");
+        $response = Response::ok("home/tour/{$view}.phtml");
         $response->setContentSecurityPolicy('media-src', "'self' flus.fr");
         return $response;
     }
 
-    public function funding()
+    public function funding(Request $request): Response
     {
-        return \Minz\Response::redirect('pricing');
+        return Response::redirect('pricing');
     }
 
-    public function credits()
+    public function credits(Request $request): Response
     {
-        return \Minz\Response::ok('home/credits.phtml');
+        return Response::ok('home/credits.phtml');
     }
 
-    public function legal()
+    public function legal(Request $request): Response
     {
-        return \Minz\Response::ok('home/legal.phtml');
+        return Response::ok('home/legal.phtml');
     }
 
-    public function cgv()
+    public function cgv(Request $request): Response
     {
-        return \Minz\Response::ok('home/cgv.phtml');
+        return Response::ok('home/cgv.phtml');
     }
 
-    public function robots()
+    public function robots(Request $request): Response
     {
-        return \Minz\Response::ok('home/robots.txt');
+        return Response::ok('home/robots.txt');
     }
 
-    public function sitemap()
+    public function sitemap(Request $request): Response
     {
-        return \Minz\Response::ok('home/sitemap.xml');
+        return Response::ok('home/sitemap.xml');
     }
 
-    public function contact($request)
+    public function contact(Request $request): Response
     {
-        return \Minz\Response::ok('home/contact.phtml', [
+        return Response::ok('home/contact.phtml', [
             'email' => '',
             'subject' => $request->param('subject', ''),
             'content' => '',
         ]);
     }
 
-    public function sendContactEmail($request)
+    public function sendContactEmail(Request $request): Response
     {
         $email = $request->param('email', '');
         $subject = $request->param('subject', '');
@@ -110,7 +112,7 @@ class Home
         $message = new models\Message($email, $subject, $content);
         $errors = $message->validate();
         if ($errors) {
-            return \Minz\Response::badRequest('home/contact.phtml', [
+            return Response::badRequest('home/contact.phtml', [
                 'email' => $email,
                 'subject' => $subject,
                 'content' => $content,
@@ -125,18 +127,18 @@ class Home
             $mailer->sendMessage($message);
         }
 
-        return \Minz\Response::ok('home/contact.phtml', [
+        return Response::ok('home/contact.phtml', [
             'email_sent' => true,
         ]);
     }
 
-    public function security()
+    public function security(Request $request): Response
     {
-        return \Minz\Response::ok('home/security.phtml');
+        return Response::ok('home/security.phtml');
     }
 
-    public function securityTxt()
+    public function securityTxt(Request $request): Response
     {
-        return \Minz\Response::ok('home/security.txt');
+        return Response::ok('home/security.txt');
     }
 }

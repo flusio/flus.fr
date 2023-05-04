@@ -47,7 +47,7 @@ class PotUsage
 
     #[Validable\Inclusion(in: ['month', 'year'], message: 'Vous devez choisir l’une des deux périodes proposées.')]
     #[Database\Column]
-    public ?string $frequency = null;
+    public string $frequency;
 
     #[Database\Column]
     public string $account_id;

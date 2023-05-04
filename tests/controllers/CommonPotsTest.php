@@ -6,7 +6,11 @@ use tests\factories\AccountFactory;
 use tests\factories\PaymentFactory;
 use tests\factories\PotUsageFactory;
 use Website\models;
+use Website\utils;
 
+/**
+ * @phpstan-import-type AccountAddress from models\Account
+ */
 class CommonPotsTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\FakerHelper;
@@ -15,7 +19,7 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\ResponseAsserts;
 
-    public function testShowPublicRendersCorrectly()
+    public function testShowPublicRendersCorrectly(): void
     {
         $common_pot_expenses = $this->fake('numberBetween', 100, 499);
         $common_pot_revenues = $this->fake('numberBetween', 500, 100000);
@@ -45,8 +49,10 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider addressProvider
+     *
+     * @param AccountAddress $address
      */
-    public function testContributionRendersCorrectly($address)
+    public function testContributionRendersCorrectly(array $address): void
     {
         $this->loginUser([
             'address_first_name' => $address['first_name'],
@@ -64,8 +70,10 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider addressProvider
+     *
+     * @param AccountAddress $address
      */
-    public function testContributionRendersIfOngoingPayment($address)
+    public function testContributionRendersIfOngoingPayment(array $address): void
     {
         $user = $this->loginUser([
             'address_first_name' => $address['first_name'],
@@ -86,7 +94,7 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
     }
 
 
-    public function testContributionRedirectsIfNoAddress()
+    public function testContributionRedirectsIfNoAddress(): void
     {
         $this->loginUser();
 
@@ -97,8 +105,10 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider addressProvider
+     *
+     * @param AccountAddress $address
      */
-    public function testContributionFailsIfNotConnected($address)
+    public function testContributionFailsIfNotConnected(array $address): void
     {
         AccountFactory::create([
             'address_first_name' => $address['first_name'],
@@ -115,8 +125,10 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider contributeProvider
+     *
+     * @param AccountAddress $address
      */
-    public function testContributeRedirectsCorrectly($amount, $address)
+    public function testContributeRedirectsCorrectly(int $amount, array $address): void
     {
         $this->loginUser([
             'address_first_name' => $address['first_name'],
@@ -140,8 +152,10 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider contributeProvider
+     *
+     * @param AccountAddress $address
      */
-    public function testContributeAcceptsFloatAmounts($amount, $address)
+    public function testContributeAcceptsFloatAmounts(int $amount, array $address): void
     {
         $this->loginUser([
             'address_first_name' => $address['first_name'],
@@ -164,8 +178,10 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider contributeProvider
+     *
+     * @param AccountAddress $address
      */
-    public function testContributeCreatesAPayment($amount, $address)
+    public function testContributeCreatesAPayment(int $amount, array $address): void
     {
         $user = $this->loginUser([
             'address_first_name' => $address['first_name'],
@@ -186,6 +202,7 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, models\Payment::count());
 
         $payment = models\Payment::take();
+        $this->assertNotNull($payment);
         $this->assertSame('common_pot', $payment->type);
         $this->assertSame($amount * 100, $payment->amount);
         $this->assertNull($payment->completed_at);
@@ -194,8 +211,10 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider contributeProvider
+     *
+     * @param AccountAddress $address
      */
-    public function testContributeRedirectsIfNoAddress($amount, $address)
+    public function testContributeRedirectsIfNoAddress(int $amount, array $address): void
     {
         $this->loginUser();
 
@@ -210,8 +229,10 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider contributeProvider
+     *
+     * @param AccountAddress $address
      */
-    public function testContributeFailsIfNotConnected($amount, $address)
+    public function testContributeFailsIfNotConnected(int $amount, array $address): void
     {
         AccountFactory::create([
             'address_first_name' => $address['first_name'],
@@ -232,8 +253,10 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider contributeProvider
+     *
+     * @param AccountAddress $address
      */
-    public function testContributeWithInvalidCsrfReturnsABadRequest($amount, $address)
+    public function testContributeWithInvalidCsrfReturnsABadRequest(int $amount, array $address): void
     {
         $this->loginUser([
             'address_first_name' => $address['first_name'],
@@ -255,8 +278,10 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider contributeProvider
+     *
+     * @param AccountAddress $address
      */
-    public function testContributeWithoutAcceptingCgvReturnsABadRequest($amount, $address)
+    public function testContributeWithoutAcceptingCgvReturnsABadRequest(int $amount, array $address): void
     {
         $this->loginUser([
             'address_first_name' => $address['first_name'],
@@ -278,8 +303,10 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider contributeProvider
+     *
+     * @param AccountAddress $address
      */
-    public function testContributeWithAmountLessThan1ReturnsABadRequest($amount, $address)
+    public function testContributeWithAmountLessThan1ReturnsABadRequest(int $amount, array $address): void
     {
         $this->loginUser([
             'address_first_name' => $address['first_name'],
@@ -302,8 +329,10 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider contributeProvider
+     *
+     * @param AccountAddress $address
      */
-    public function testContributeWithAmountMoreThan1000ReturnsABadRequest($amount, $address)
+    public function testContributeWithAmountMoreThan1000ReturnsABadRequest(int $amount, array $address): void
     {
         $this->loginUser([
             'address_first_name' => $address['first_name'],
@@ -326,8 +355,10 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider contributeProvider
+     *
+     * @param AccountAddress $address
      */
-    public function testContributeWithAmountAsStringReturnsABadRequest($amount, $address)
+    public function testContributeWithAmountAsStringReturnsABadRequest(int $amount, array $address): void
     {
         $this->loginUser([
             'address_first_name' => $address['first_name'],
@@ -350,8 +381,10 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider contributeProvider
+     *
+     * @param AccountAddress $address
      */
-    public function testContributeWithMissingAmountReturnsABadRequest($amount, $address)
+    public function testContributeWithMissingAmountReturnsABadRequest(int $amount, array $address): void
     {
         $this->loginUser([
             'address_first_name' => $address['first_name'],
@@ -372,8 +405,10 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider addressProvider
+     *
+     * @param AccountAddress $address
      */
-    public function testUsageRendersCorrectly($address)
+    public function testUsageRendersCorrectly(array $address): void
     {
         $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 0, 7), 'days');
         $this->loginUser([
@@ -399,8 +434,10 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider addressProvider
+     *
+     * @param AccountAddress $address
      */
-    public function testUsageRendersIfCommonPotIsNotFullEnough($address)
+    public function testUsageRendersIfCommonPotIsNotFullEnough(array $address): void
     {
         $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 0, 7), 'days');
         $this->loginUser([
@@ -428,8 +465,10 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider addressProvider
+     *
+     * @param AccountAddress $address
      */
-    public function testUsageRendersIfFreeAccount($address)
+    public function testUsageRendersIfFreeAccount(array $address): void
     {
         $expired_at = new \DateTimeImmutable('@0');
         $this->loginUser([
@@ -454,8 +493,10 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider addressProvider
+     *
+     * @param AccountAddress $address
      */
-    public function testUsageRendersNotExpiringSoon($address)
+    public function testUsageRendersNotExpiringSoon(array $address): void
     {
         $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 8, 42), 'days');
         $this->loginUser([
@@ -481,7 +522,7 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testUsageRedirectsIfNoAddress()
+    public function testUsageRedirectsIfNoAddress(): void
     {
         $this->loginUser();
 
@@ -492,8 +533,10 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider addressProvider
+     *
+     * @param AccountAddress $address
      */
-    public function testUsageFailsIfNotConnected($address)
+    public function testUsageFailsIfNotConnected(array $address): void
     {
         AccountFactory::create([
             'address_first_name' => $address['first_name'],
@@ -510,8 +553,10 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider addressProvider
+     *
+     * @param AccountAddress $address
      */
-    public function testUseExtendsSubscriptionAndRedirectsCorrectly($address)
+    public function testUseExtendsSubscriptionAndRedirectsCorrectly(array $address): void
     {
         $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 0, 7), 'days');
         $user = $this->loginUser([
@@ -538,10 +583,11 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/account');
         $this->assertSame(1, models\PotUsage::count());
         $account = models\Account::find($user['account_id']);
+        $this->assertNotNull($account);
         $this->assertGreaterThan($expired_at->getTimestamp(), $account->expired_at->getTimestamp());
     }
 
-    public function testUseRedirectsIfNoAddress()
+    public function testUseRedirectsIfNoAddress(): void
     {
         $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 0, 7), 'days');
         $user = $this->loginUser([
@@ -561,13 +607,16 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/account/address');
         $this->assertSame(0, models\PotUsage::count());
         $account = models\Account::find($user['account_id']);
+        $this->assertNotNull($account);
         $this->assertEquals($account->expired_at->getTimestamp(), $expired_at->getTimestamp());
     }
 
     /**
      * @dataProvider addressProvider
+     *
+     * @param AccountAddress $address
      */
-    public function testUseFailsIfNotConnected($address)
+    public function testUseFailsIfNotConnected(array $address): void
     {
         $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 0, 7), 'days');
         $account = AccountFactory::create([
@@ -592,13 +641,16 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 401);
         $this->assertSame(0, models\PotUsage::count());
         $account = $account->reload();
+        $this->assertNotNull($account);
         $this->assertEquals($account->expired_at->getTimestamp(), $expired_at->getTimestamp());
     }
 
     /**
      * @dataProvider addressProvider
+     *
+     * @param AccountAddress $address
      */
-    public function testUseFailsIfAcceptCgvIsFalse($address)
+    public function testUseFailsIfAcceptCgvIsFalse(array $address): void
     {
         $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 0, 7), 'days');
         $user = $this->loginUser([
@@ -624,13 +676,16 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, 'Vous devez accepter ces conditions');
         $this->assertSame(0, models\PotUsage::count());
         $account = models\Account::find($user['account_id']);
+        $this->assertNotNull($account);
         $this->assertEquals($account->expired_at->getTimestamp(), $expired_at->getTimestamp());
     }
 
     /**
      * @dataProvider addressProvider
+     *
+     * @param AccountAddress $address
      */
-    public function testUseFailsIfCsrfIsInvalid($address)
+    public function testUseFailsIfCsrfIsInvalid(array $address): void
     {
         $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 0, 7), 'days');
         $user = $this->loginUser([
@@ -656,13 +711,16 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, 'Une vérification de sécurité a échoué');
         $this->assertSame(0, models\PotUsage::count());
         $account = models\Account::find($user['account_id']);
+        $this->assertNotNull($account);
         $this->assertEquals($account->expired_at->getTimestamp(), $expired_at->getTimestamp());
     }
 
     /**
      * @dataProvider addressProvider
+     *
+     * @param AccountAddress $address
      */
-    public function testUseFailsIfCommonPotIsNotFullEnough($address)
+    public function testUseFailsIfCommonPotIsNotFullEnough(array $address): void
     {
         $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 0, 7), 'days');
         $user = $this->loginUser([
@@ -688,13 +746,16 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, 'La cagnotte n’est pas suffisamment fournie');
         $this->assertSame(0, models\PotUsage::count());
         $account = models\Account::find($user['account_id']);
+        $this->assertNotNull($account);
         $this->assertEquals($account->expired_at->getTimestamp(), $expired_at->getTimestamp());
     }
 
     /**
      * @dataProvider addressProvider
+     *
+     * @param AccountAddress $address
      */
-    public function testUseFailsIfFreeAccount($address)
+    public function testUseFailsIfFreeAccount(array $address): void
     {
         $expired_at = new \DateTimeImmutable('@0');
         $user = $this->loginUser([
@@ -720,13 +781,16 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, 'Votre abonnement n’est pas encore prêt d’expirer');
         $this->assertSame(0, models\PotUsage::count());
         $account = models\Account::find($user['account_id']);
+        $this->assertNotNull($account);
         $this->assertEquals($account->expired_at->getTimestamp(), $expired_at->getTimestamp());
     }
 
     /**
      * @dataProvider addressProvider
+     *
+     * @param AccountAddress $address
      */
-    public function testUseFailsIfNotExpiringSoon($address)
+    public function testUseFailsIfNotExpiringSoon(array $address): void
     {
         $expired_at = \Minz\Time::fromNow($this->fake('numberBetween', 8, 42), 'days');
         $user = $this->loginUser([
@@ -752,10 +816,14 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, 'Votre abonnement n’est pas encore prêt d’expirer');
         $this->assertSame(0, models\PotUsage::count());
         $account = models\Account::find($user['account_id']);
+        $this->assertNotNull($account);
         $this->assertEquals($account->expired_at->getTimestamp(), $expired_at->getTimestamp());
     }
 
-    public function addressProvider()
+    /**
+     * @return array<array{AccountAddress}>
+     */
+    public function addressProvider(): array
     {
         $faker = \Faker\Factory::create();
         $datasets = [];
@@ -767,6 +835,7 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
                     'address1' => $faker->streetAddress,
                     'postcode' => $faker->postcode,
                     'city' => $faker->city,
+                    'country' => $faker->randomElement(utils\Countries::codes()),
                 ],
             ];
         }
@@ -774,7 +843,10 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
         return $datasets;
     }
 
-    public function contributeProvider()
+    /**
+     * @return array<array{int, AccountAddress}>
+     */
+    public function contributeProvider(): array
     {
         $faker = \Faker\Factory::create();
         $datasets = [];
@@ -787,6 +859,7 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
                     'address1' => $faker->streetAddress,
                     'postcode' => $faker->postcode,
                     'city' => $faker->city,
+                    'country' => $faker->randomElement(utils\Countries::codes()),
                 ],
             ];
         }

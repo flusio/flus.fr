@@ -2,6 +2,8 @@
 
 namespace Website\controllers;
 
+use Minz\Request;
+use Minz\Response;
 use Website\models;
 use Website\services;
 use Website\utils;
@@ -13,10 +15,10 @@ class CommonPots
      *
      * @response 200
      */
-    public function show()
+    public function show(Request $request): Response
     {
         $common_pot_amount = models\PotUsage::findAvailableAmount() / 100;
-        return \Minz\Response::ok('common_pots/show.phtml', [
+        return Response::ok('common_pots/show.phtml', [
             'common_pot_amount' => number_format($common_pot_amount, 2, ',', '&nbsp;'),
         ]);
     }
@@ -31,19 +33,23 @@ class CommonPots
      * @response 200
      *     on success
      */
-    public function contribution()
+    public function contribution(Request $request): Response
     {
         $user = utils\CurrentUser::get();
         if (!$user || utils\CurrentUser::isAdmin()) {
-            return \Minz\Response::unauthorized('unauthorized.phtml');
+            return Response::unauthorized('unauthorized.phtml');
         }
 
         $account = models\Account::find($user['account_id']);
-        if ($account->mustSetAddress()) {
-            return \Minz\Response::redirect('account address');
+        if (!$account) {
+            return Response::unauthorized('unauthorized.phtml');
         }
 
-        return \Minz\Response::ok('common_pots/contribution.phtml', [
+        if ($account->mustSetAddress()) {
+            return Response::redirect('account address');
+        }
+
+        return Response::ok('common_pots/contribution.phtml', [
             'account' => $account,
             'ongoing_payment' => $account->ongoingPayment(),
             'amount' => 30,
@@ -66,23 +72,28 @@ class CommonPots
      * @response 302 /payments/:id/pay
      *     on success
      */
-    public function contribute($request)
+    public function contribute(Request $request): Response
     {
         $user = utils\CurrentUser::get();
         if (!$user || utils\CurrentUser::isAdmin()) {
-            return \Minz\Response::unauthorized('unauthorized.phtml');
+            return Response::unauthorized('unauthorized.phtml');
         }
 
         $account = models\Account::find($user['account_id']);
+        if (!$account) {
+            return Response::unauthorized('unauthorized.phtml');
+        }
+
         if ($account->mustSetAddress()) {
-            return \Minz\Response::redirect('account address');
+            return Response::redirect('account address');
         }
 
         $accept_cgv = $request->paramBoolean('accept_cgv', false);
+        /** @var int */
         $amount = $request->paramInteger('amount', 0);
 
         if (!$accept_cgv) {
-            return \Minz\Response::badRequest('common_pots/contribution.phtml', [
+            return Response::badRequest('common_pots/contribution.phtml', [
                 'account' => $account,
                 'ongoing_payment' => $account->ongoingPayment(),
                 'amount' => $amount,
@@ -95,7 +106,7 @@ class CommonPots
         $payment = models\Payment::initCommonPotFromAccount($account, $amount);
         $errors = $payment->validate();
         if ($errors) {
-            return \Minz\Response::badRequest('common_pots/contribution.phtml', [
+            return Response::badRequest('common_pots/contribution.phtml', [
                 'account' => $account,
                 'ongoing_payment' => $account->ongoingPayment(),
                 'amount' => $amount,
@@ -104,7 +115,7 @@ class CommonPots
         }
 
         if (!\Minz\Csrf::validate($request->param('csrf'))) {
-            return \Minz\Response::badRequest('common_pots/contribution.phtml', [
+            return Response::badRequest('common_pots/contribution.phtml', [
                 'account' => $account,
                 'ongoing_payment' => $account->ongoingPayment(),
                 'amount' => $amount,
@@ -120,11 +131,17 @@ class CommonPots
             \Minz\Url::absoluteFor('Payments#canceled')
         );
 
+        if (!$stripe_session) {
+            return Response::internalServerError('internal_server_error.phtml', [
+                'error' => 'La session Stripe n’a pas pu être initialisée',
+            ]);
+        }
+
         $payment->payment_intent_id = $stripe_session->payment_intent;
         $payment->session_id = $stripe_session->id;
         $payment->save();
 
-        return \Minz\Response::redirect('Payments#pay', [
+        return Response::redirect('Payments#pay', [
             'id' => $payment->id,
         ]);
     }
@@ -139,20 +156,24 @@ class CommonPots
      * @response 200
      *     on success
      */
-    public function usage()
+    public function usage(Request $request): Response
     {
         $user = utils\CurrentUser::get();
         if (!$user || utils\CurrentUser::isAdmin()) {
-            return \Minz\Response::unauthorized('unauthorized.phtml');
+            return Response::unauthorized('unauthorized.phtml');
         }
 
         $account = models\Account::find($user['account_id']);
+        if (!$account) {
+            return Response::unauthorized('unauthorized.phtml');
+        }
+
         if ($account->mustSetAddress()) {
-            return \Minz\Response::redirect('account address');
+            return Response::redirect('account address');
         }
 
         $common_pot_amount = models\PotUsage::findAvailableAmount() / 100;
-        return \Minz\Response::ok('common_pots/usage.phtml', [
+        return Response::ok('common_pots/usage.phtml', [
             'account' => $account,
             'common_pot_amount' => number_format($common_pot_amount, 2, ',', '&nbsp;'),
             'full_enough' => $common_pot_amount >= 3,
@@ -179,16 +200,20 @@ class CommonPots
      * @response 302 /account
      *     on success
      */
-    public function use($request)
+    public function use(Request $request): Response
     {
         $user = utils\CurrentUser::get();
         if (!$user || utils\CurrentUser::isAdmin()) {
-            return \Minz\Response::unauthorized('unauthorized.phtml');
+            return Response::unauthorized('unauthorized.phtml');
         }
 
         $account = models\Account::find($user['account_id']);
+        if (!$account) {
+            return Response::unauthorized('unauthorized.phtml');
+        }
+
         if ($account->mustSetAddress()) {
-            return \Minz\Response::redirect('account address');
+            return Response::redirect('account address');
         }
 
         $common_pot_amount = models\PotUsage::findAvailableAmount() / 100;
@@ -201,7 +226,7 @@ class CommonPots
         $reminder = $request->paramBoolean('reminder', false);
 
         if (!$accept_cgv) {
-            return \Minz\Response::badRequest('common_pots/usage.phtml', [
+            return Response::badRequest('common_pots/usage.phtml', [
                 'account' => $account,
                 'common_pot_amount' => $common_pot_amount,
                 'full_enough' => $full_enough,
@@ -215,7 +240,7 @@ class CommonPots
         }
 
         if (!\Minz\Csrf::validate($request->param('csrf'))) {
-            return \Minz\Response::badRequest('common_pots/usage.phtml', [
+            return Response::badRequest('common_pots/usage.phtml', [
                 'account' => $account,
                 'common_pot_amount' => $common_pot_amount,
                 'full_enough' => $full_enough,
@@ -227,7 +252,7 @@ class CommonPots
         }
 
         if (!$full_enough) {
-            return \Minz\Response::badRequest('common_pots/usage.phtml', [
+            return Response::badRequest('common_pots/usage.phtml', [
                 'account' => $account,
                 'common_pot_amount' => $common_pot_amount,
                 'full_enough' => $full_enough,
@@ -239,7 +264,7 @@ class CommonPots
         }
 
         if ($free_account || !$expire_soon) {
-            return \Minz\Response::badRequest('common_pots/usage.phtml', [
+            return Response::badRequest('common_pots/usage.phtml', [
                 'account' => $account,
                 'common_pot_amount' => $common_pot_amount,
                 'full_enough' => $full_enough,
@@ -257,6 +282,6 @@ class CommonPots
         $account->reminder = $reminder;
         $account->save();
 
-        return \Minz\Response::redirect('account');
+        return Response::redirect('account');
     }
 }

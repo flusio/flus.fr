@@ -11,7 +11,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\ResponseAsserts;
 
-    public function testPayRendersCorrectly()
+    public function testPayRendersCorrectly(): void
     {
         $payment = PaymentFactory::create();
 
@@ -21,7 +21,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponsePointer($response, 'stripe/redirection.phtml');
     }
 
-    public function testPayConfiguresStripe()
+    public function testPayConfiguresStripe(): void
     {
         $session_id = $this->fake('regexify', 'cs_test_[\w\d]{56}');
         $payment = PaymentFactory::create([
@@ -35,6 +35,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         $output = $response->output();
         $variables = $output->variables();
         $headers = $response->headers(true);
+        /** @var array<string, string> */
         $csp = $headers['Content-Security-Policy'];
 
         $this->assertSame(
@@ -55,14 +56,14 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testPayWithUnknownIdReturnsANotFound()
+    public function testPayWithUnknownIdReturnsANotFound(): void
     {
         $response = $this->appRun('GET', "/payments/unknown/pay");
 
         $this->assertResponseCode($response, 404);
     }
 
-    public function testPayWithPaidPaymentReturnsBadRequest()
+    public function testPayWithPaidPaymentReturnsBadRequest(): void
     {
         $payment = PaymentFactory::create([
             'completed_at' => $this->fake('dateTime'),
@@ -73,7 +74,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 400);
     }
 
-    public function testSucceededRendersCorrectly()
+    public function testSucceededRendersCorrectly(): void
     {
         $response = $this->appRun('GET', '/merci');
 
@@ -81,7 +82,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, 'Votre paiement a bien été pris en compte');
     }
 
-    public function testCanceledRendersCorrectly()
+    public function testCanceledRendersCorrectly(): void
     {
         $response = $this->appRun('GET', '/annulation');
 

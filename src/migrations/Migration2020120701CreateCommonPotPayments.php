@@ -4,7 +4,7 @@ namespace Website\migrations;
 
 class Migration2020120701CreateCommonPotPayments
 {
-    public function migrate()
+    public function migrate(): bool
     {
         $database = \Minz\Database::get();
 
@@ -27,7 +27,7 @@ class Migration2020120701CreateCommonPotPayments
         return true;
     }
 
-    public function rollback()
+    public function rollback(): bool
     {
         $database = \Minz\Database::get();
 

@@ -2,6 +2,8 @@
 
 namespace Website\controllers;
 
+use Minz\Request;
+use Minz\Response;
 use Website\models;
 use Website\services;
 use Website\utils;
@@ -20,20 +22,20 @@ class Payments
      * @response 200
      *     On success
      */
-    public function pay($request)
+    public function pay(Request $request): Response
     {
         $payment_id = $request->param('id');
         $payment = models\Payment::find($payment_id);
 
         if (!$payment) {
-            return \Minz\Response::notFound('not_found.phtml');
+            return Response::notFound('not_found.phtml');
         }
 
         if ($payment->completed_at) {
-            return \Minz\Response::badRequest();
+            return Response::badRequest();
         }
 
-        $response = \Minz\Response::ok('stripe/redirection.phtml', [
+        $response = Response::ok('stripe/redirection.phtml', [
             'stripe_public_key' => \Minz\Configuration::$application['stripe_public_key'],
             'stripe_session_id' => $payment->session_id,
         ]);
@@ -47,9 +49,9 @@ class Payments
      *
      * @response 200
      */
-    public function succeeded()
+    public function succeeded(Request $request): Response
     {
-        $response = \Minz\Response::ok('payments/succeeded.phtml');
+        $response = Response::ok('payments/succeeded.phtml');
         $response->removeCookie('__stripe_mid', [
             'secure' => false,
             'httponly' => false,
@@ -67,6 +69,10 @@ class Payments
         }
 
         $account = models\Account::find($user['account_id']);
+        if (!$account) {
+            return $response;
+        }
+
         $ongoing_payment = $account->ongoingPayment();
         if (!$ongoing_payment || $ongoing_payment->is_paid || !$ongoing_payment->session_id) {
             return $response;
@@ -74,6 +80,7 @@ class Payments
 
         $stripe_service = new services\Stripe();
         $session = $stripe_service->retrieveSession($ongoing_payment->session_id);
+        // @phpstan-ignore-next-line
         if ($session->payment_intent->status === 'succeeded') {
             $ongoing_payment->is_paid = true;
             $ongoing_payment->save();
@@ -87,9 +94,9 @@ class Payments
      *
      * @response 200
      */
-    public function canceled()
+    public function canceled(Request $request): Response
     {
-        $response = \Minz\Response::ok('payments/canceled.phtml');
+        $response = Response::ok('payments/canceled.phtml');
         $response->removeCookie('__stripe_mid', [
             'secure' => false,
             'httponly' => false,
@@ -107,6 +114,10 @@ class Payments
         }
 
         $account = models\Account::find($user['account_id']);
+        if (!$account) {
+            return $response;
+        }
+
         $ongoing_payment = $account->ongoingPayment();
         if (!$ongoing_payment || $ongoing_payment->is_paid || !$ongoing_payment->session_id) {
             return $response;
@@ -116,8 +127,10 @@ class Payments
         $session = $stripe_service->retrieveSession($ongoing_payment->session_id);
         $payment_intent = $session->payment_intent;
         // see statuses lifecycle at https://stripe.com/docs/payments/intents#intent-statuses
+        // @phpstan-ignore-next-line
         if ($payment_intent->status !== 'processing' && $payment_intent->status !== 'succeeded') {
             try {
+                // @phpstan-ignore-next-line
                 $payment_intent->cancel();
             } catch (\Stripe\Exception\ApiErrorException $e) {
                 // do nothing on purpose: the payment was already canceled

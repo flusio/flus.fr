@@ -4,7 +4,7 @@ namespace Website\migrations;
 
 class Migration2021020201AddCreditedPaymentIdToPayments
 {
-    public function migrate()
+    public function migrate(): bool
     {
         $database = \Minz\Database::get();
 
@@ -17,7 +17,7 @@ class Migration2021020201AddCreditedPaymentIdToPayments
         return true;
     }
 
-    public function rollback()
+    public function rollback(): bool
     {
         $database = \Minz\Database::get();
 

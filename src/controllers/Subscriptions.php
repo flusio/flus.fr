@@ -2,6 +2,8 @@
 
 namespace Website\controllers;
 
+use Minz\Request;
+use Minz\Response;
 use Website\models;
 use Website\services;
 use Website\utils;
@@ -20,19 +22,23 @@ class Subscriptions
      * @response 200
      *     on success
      */
-    public function init($request)
+    public function init(Request $request): Response
     {
         $user = utils\CurrentUser::get();
         if (!$user || utils\CurrentUser::isAdmin()) {
-            return \Minz\Response::unauthorized('unauthorized.phtml');
+            return Response::unauthorized('unauthorized.phtml');
         }
 
         $account = models\Account::find($user['account_id']);
-        if ($account->mustSetAddress()) {
-            return \Minz\Response::redirect('account address');
+        if (!$account) {
+            return Response::unauthorized('unauthorized.phtml');
         }
 
-        return \Minz\Response::ok('subscriptions/init.phtml', [
+        if ($account->mustSetAddress()) {
+            return Response::redirect('account address');
+        }
+
+        return Response::ok('subscriptions/init.phtml', [
             'account' => $account,
             'reminder' => $account->reminder,
             'ongoing_payment' => $account->ongoingPayment(),
@@ -56,16 +62,20 @@ class Subscriptions
      * @response 302 /payments/:id/pay
      *     on success
      */
-    public function renew($request)
+    public function renew(Request $request): Response
     {
         $user = utils\CurrentUser::get();
         if (!$user || utils\CurrentUser::isAdmin()) {
-            return \Minz\Response::unauthorized('unauthorized.phtml');
+            return Response::unauthorized('unauthorized.phtml');
         }
 
         $account = models\Account::find($user['account_id']);
+        if (!$account) {
+            return Response::unauthorized('unauthorized.phtml');
+        }
+
         if ($account->mustSetAddress()) {
-            return \Minz\Response::redirect('account address');
+            return Response::redirect('account address');
         }
 
         $frequency = $request->param('frequency');
@@ -74,7 +84,7 @@ class Subscriptions
         $payment = models\Payment::initSubscriptionFromAccount($account, $frequency);
         $errors = $payment->validate();
         if ($errors) {
-            return \Minz\Response::badRequest('subscriptions/init.phtml', [
+            return Response::badRequest('subscriptions/init.phtml', [
                 'account' => $account,
                 'reminder' => $reminder,
                 'ongoing_payment' => $account->ongoingPayment(),
@@ -83,7 +93,7 @@ class Subscriptions
         }
 
         if (!\Minz\Csrf::validate($request->param('csrf'))) {
-            return \Minz\Response::badRequest('subscriptions/init.phtml', [
+            return Response::badRequest('subscriptions/init.phtml', [
                 'account' => $account,
                 'reminder' => $reminder,
                 'ongoing_payment' => $account->ongoingPayment(),
@@ -100,15 +110,21 @@ class Subscriptions
             $request->param('cancel_url', \Minz\Url::absoluteFor('Payments#canceled'))
         );
 
+        if (!$stripe_session) {
+            return Response::internalServerError('internal_server_error.phtml', [
+                'error' => 'La session Stripe n’a pas pu être initialisée',
+            ]);
+        }
+
         $payment->payment_intent_id = $stripe_session->payment_intent;
         $payment->session_id = $stripe_session->id;
         $payment->save();
 
-        $account->preferred_frequency = $payment->frequency;
+        $account->preferred_frequency = $payment->frequency ?? 'year';
         $account->reminder = $reminder;
         $account->save();
 
-        return \Minz\Response::redirect('Payments#pay', [
+        return Response::redirect('Payments#pay', [
             'id' => $payment->id,
         ]);
     }

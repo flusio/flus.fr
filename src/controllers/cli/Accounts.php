@@ -2,6 +2,8 @@
 
 namespace Website\controllers\cli;
 
+use Minz\Request;
+use Minz\Response;
 use Website\models;
 use Website\mailers;
 
@@ -14,14 +16,14 @@ class Accounts
     /**
      * @response 200
      */
-    public function index($request)
+    public function index(Request $request): Response
     {
         $accounts = models\Account::listAll();
         $formatted_accounts = array_map(function ($account) {
             return "{$account->id} {$account->email}";
         }, $accounts);
 
-        return \Minz\Response::text(200, implode("\n", $formatted_accounts));
+        return Response::text(200, implode("\n", $formatted_accounts));
     }
 
     /**
@@ -32,7 +34,7 @@ class Accounts
      * @response 200
      *     on success
      */
-    public function create($request)
+    public function create(Request $request): Response
     {
         $email = $request->param('email', '');
         $account = new models\Account($email);
@@ -40,12 +42,12 @@ class Accounts
         /** @var array<string, string> */
         $errors = $account->validate();
         if ($errors) {
-            return \Minz\Response::text(400, implode(' ', $errors));
+            return Response::text(400, implode(' ', $errors));
         }
 
         $account->save();
 
-        return \Minz\Response::text(200, "Account {$account->id} ({$account->email}) created.");
+        return Response::text(200, "Account {$account->id} ({$account->email}) created.");
     }
 
     /**
@@ -59,14 +61,14 @@ class Accounts
      * @response 200
      *     on success
      */
-    public function loginUrl($request)
+    public function loginUrl(Request $request): Response
     {
         $account_id = $request->param('account_id');
         $service = $request->param('service');
 
         $account = models\Account::find($account_id);
         if (!$account) {
-            return \Minz\Response::text(404, 'This account doesn’t exist.');
+            return Response::text(404, 'This account doesn’t exist.');
         }
 
         if ($service !== 'flusio' && $service !== 'freshrss') {
@@ -85,13 +87,13 @@ class Accounts
             'access_token' => $account->access_token,
         ]);
 
-        return \Minz\Response::text(200, $login_url);
+        return Response::text(200, $login_url);
     }
 
     /**
      * @response 200
      */
-    public function remind($request)
+    public function remind(Request $request): Response
     {
         $mailer = new mailers\Accounts();
 
@@ -139,9 +141,9 @@ class Accounts
         }
 
         if ($number_reminders > 0) {
-            return \Minz\Response::text(200, "{$number_reminders} reminders sent");
+            return Response::text(200, "{$number_reminders} reminders sent");
         } else {
-            return \Minz\Response::text(200, '');
+            return Response::text(200, '');
         }
     }
 
@@ -156,7 +158,7 @@ class Accounts
      *
      * @response 200
      */
-    public function clear($request)
+    public function clear(Request $request): Response
     {
         $date = \Minz\Time::ago(2, 'days');
 
@@ -180,6 +182,6 @@ class Accounts
         models\Account::deleteBy(['id' => $accounts_ids]);
 
         $number_accounts = count($accounts_ids);
-        return \Minz\Response::text(200, "{$number_accounts} accounts have been deleted.");
+        return Response::text(200, "{$number_accounts} accounts have been deleted.");
     }
 }

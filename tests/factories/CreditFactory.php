@@ -5,6 +5,9 @@ namespace tests\factories;
 use Minz\Database;
 use Website\models;
 
+/**
+ * @extends Database\Factory<models\Payment>
+ */
 class CreditFactory extends Database\Factory
 {
     public static function model(): string

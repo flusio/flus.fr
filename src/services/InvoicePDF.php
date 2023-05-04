@@ -9,66 +9,79 @@ use Website\utils;
 /**
  * Generate a PDF invoice for a given payment.
  *
+ * @phpstan-type InvoicePurchase array{
+ *     'description': string,
+ *     'number': string,
+ *     'price': string,
+ *     'total': string,
+ * }
+ *
+ * @phpstan-type InvoiceTotal array{
+ *     'ht': string,
+ *     'tva': 'non applicable',
+ *     'ttc': string,
+ * }
+ *
  * @author Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
 class InvoicePDF extends \FPDF
 {
-    /** @var string */
-    public $logo;
+    public string $logo;
 
-    /** @var array */
-    public $metadata;
+    /** @var array<string, string> */
+    public array $global_info;
 
-    /** @var array */
-    public $customer;
+    /** @var string[] */
+    public array $customer;
 
-    /** @var array */
-    public $purchases;
+    /** @var InvoicePurchase[] */
+    public array $purchases;
 
-    /** @var array */
-    public $total_purchases;
+    /** @var InvoiceTotal */
+    public array $total_purchases;
 
-    /** @var array */
-    public $footer = [
+    /** @var string[] */
+    public array $footer = [
         'Marien Fressinaud Mas de Feix / Flus – 57 rue du Vercors, 38000 Grenoble – support@flus.io',
         'micro-entreprise – N° Siret 878 196 278 00013 – 878 196 278 R.C.S. Grenoble',
         'TVA non applicable, art. 293 B du CGI',
     ];
 
-    /**
-     * @param \Website\models\Payment $payment
-     */
-    public function __construct($payment)
+    public function __construct(models\Payment $payment)
     {
         parent::__construct();
 
         $account = models\Account::find($payment->account_id);
 
+        if (!$account) {
+            throw new \RuntimeException("Can’t build invoice for payment {$payment->id} (no account).");
+        }
+
         $this->logo = \Minz\Configuration::$app_path . '/public/static/logo-512px.png';
 
         $established_at = ViewHelpers::formatDate($payment->created_at, 'dd MMMM yyyy');
-        $this->metadata = [
-            'N° facture' => $payment->invoice_number,
+        $this->global_info = [
+            'N° facture' => $payment->invoice_number ?? '',
             'Établie le' => $established_at,
         ];
 
         if ($payment->type === 'credit') {
             if ($payment->completed_at) {
-                $this->metadata['Créditée le'] = ViewHelpers::formatDate($payment->completed_at, 'dd MMMM yyyy');
+                $this->global_info['Créditée le'] = ViewHelpers::formatDate($payment->completed_at, 'dd MMMM yyyy');
             } else {
-                $this->metadata['Créditée le'] = 'à créditer';
+                $this->global_info['Créditée le'] = 'à créditer';
             }
         } else {
             if ($payment->completed_at) {
-                $this->metadata['Payée le'] = ViewHelpers::formatDate($payment->completed_at, 'dd MMMM yyyy');
+                $this->global_info['Payée le'] = ViewHelpers::formatDate($payment->completed_at, 'dd MMMM yyyy');
             } else {
-                $this->metadata['Payée le'] = 'à payer';
+                $this->global_info['Payée le'] = 'à payer';
             }
         }
 
         if ($account->company_vat_number) {
-            $this->metadata['N° TVA client'] = $account->company_vat_number;
+            $this->global_info['N° TVA client'] = $account->company_vat_number;
         }
 
         $address = $account->address();
@@ -94,7 +107,7 @@ class InvoicePDF extends \FPDF
             $this->purchases = [
                 [
                     'description' => "Participation à la cagnotte commune\nde Flus",
-                    'number' => 1,
+                    'number' => '1',
                     'price' => $amount,
                     'total' => $amount,
                 ],
@@ -104,18 +117,25 @@ class InvoicePDF extends \FPDF
             $this->purchases = [
                 [
                     'description' => "Renouvellement d'un abonnement\nde " . $period . " à Flus",
-                    'number' => 1,
+                    'number' => '1',
                     'price' => $amount,
                     'total' => $amount,
                 ],
             ];
         } elseif ($payment->type === 'credit') {
-            $credited_payment = models\Payment::find($payment->credited_payment_id);
+            $credited_payment = models\Payment::find($payment->credited_payment_id ?? '');
+
+            if (!$credited_payment) {
+                throw new \RuntimeException(
+                    "Can’t build invoice for payment {$payment->id} (credited payment doesn’t exist)."
+                );
+            }
+
             $invoice_number = $credited_payment->invoice_number;
             $this->purchases = [
                 [
                     'description' => "Remboursement de la facture\n{$invoice_number}",
-                    'number' => 1,
+                    'number' => '1',
                     'price' => $amount,
                     'total' => $amount,
                 ],
@@ -125,10 +145,8 @@ class InvoicePDF extends \FPDF
 
     /**
      * Create a PDF at the given path.
-     *
-     * @param string $filepath
      */
-    public function createPDF($filepath)
+    public function createPDF(string $filepath): void
     {
         $this->AddPage();
         $this->SetFont('helvetica', '', 12);
@@ -136,19 +154,24 @@ class InvoicePDF extends \FPDF
 
         $this->Image($this->logo, 20, 20, 60);
 
-        $this->addMetadataInformation($this->metadata, 20);
+        $this->addGlobalInformation($this->global_info, 20);
         $this->addCustomerInformation($this->customer, $this->GetY());
         $this->addPurchases($this->purchases, $this->GetY() + 20);
         $this->addTotalPurchases($this->total_purchases, $this->GetY() + 20);
 
         // Make sure that the parent directories exist
-        $path_parts = pathinfo($filepath);
-        @mkdir($path_parts['dirname'], 0775, true);
+        $dirname = pathinfo($filepath, PATHINFO_DIRNAME);
+        if ($dirname) {
+            @mkdir($dirname, 0775, true);
+        }
 
         $this->Output('F', $filepath);
     }
 
-    private function addMetadataInformation($infos, $y_position)
+    /**
+     * @param array<string, string> $infos
+     */
+    private function addGlobalInformation(array $infos, int $y_position): void
     {
         $this->SetY($y_position);
         foreach ($infos as $info_key => $info_value) {
@@ -160,7 +183,10 @@ class InvoicePDF extends \FPDF
         }
     }
 
-    private function addCustomerInformation($infos, $y_position)
+    /**
+     * @param string[] $infos
+     */
+    private function addCustomerInformation(array $infos, int $y_position): void
     {
         $this->SetY($y_position);
         $this->SetX(-100);
@@ -175,7 +201,10 @@ class InvoicePDF extends \FPDF
         }
     }
 
-    private function addPurchases($purchases, $y_position)
+    /**
+     * @param InvoicePurchase[] $purchases
+     */
+    private function addPurchases(array $purchases, int $y_position): void
     {
         $this->SetXY(20, $y_position);
         $this->SetFont('', 'B');
@@ -198,7 +227,10 @@ class InvoicePDF extends \FPDF
         }
     }
 
-    private function addTotalPurchases($infos, $y_position)
+    /**
+     * @param InvoiceTotal $infos
+     */
+    private function addTotalPurchases(array $infos, int $y_position): void
     {
         $this->SetY($y_position);
         $this->SetFont('', 'B');
@@ -217,7 +249,7 @@ class InvoicePDF extends \FPDF
     }
 
     // phpcs:disable PSR1.Methods.CamelCapsMethodName.NotCamelCaps
-    public function Footer()
+    public function Footer(): void
     {
         $offset = count($this->footer) * 5 + 20;
         $this->SetY(-$offset);
@@ -227,7 +259,7 @@ class InvoicePDF extends \FPDF
         }
     }
 
-    private function pdfDecode($string)
+    private function pdfDecode(string $string): string
     {
         return mb_convert_encoding($string, 'windows-1252', 'utf-8');
     }

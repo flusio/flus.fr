@@ -5,6 +5,9 @@ namespace Website\utils;
 /**
  * Allow easy manipulation of supported countries.
  *
+ * @phpstan-type CountryCode key-of<Countries::COUNTRIES>
+ * @phpstan-type CountryLabel value-of<Countries::COUNTRIES>
+ *
  * @author Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
@@ -41,7 +44,10 @@ class Countries
         'SK' => 'Slovaquie',
     ];
 
-    public static function listSorted()
+    /**
+     * @return self::COUNTRIES
+     */
+    public static function listSorted(): array
     {
         $countries = self::COUNTRIES;
         uasort($countries, function ($country_1, $country_2) {
@@ -56,17 +62,25 @@ class Countries
         return $countries;
     }
 
-    public static function codes()
+    /**
+     * @return CountryCode[]
+     */
+    public static function codes(): array
     {
         return array_keys(self::COUNTRIES);
     }
 
-    public static function codeToLabel($country_code)
+    /**
+     * @param CountryCode $country_code
+     *
+     * @return CountryLabel
+     */
+    public static function codeToLabel(string $country_code): string
     {
         return self::COUNTRIES[$country_code];
     }
 
-    public static function isSupported($country_code)
+    public static function isSupported(string $country_code): bool
     {
         return isset(self::COUNTRIES[$country_code]);
     }

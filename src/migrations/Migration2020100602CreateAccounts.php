@@ -4,7 +4,7 @@ namespace Website\migrations;
 
 class Migration2020100602CreateAccounts
 {
-    public function migrate()
+    public function migrate(): bool
     {
         $database = \Minz\Database::get();
 
@@ -34,7 +34,7 @@ class Migration2020100602CreateAccounts
         return true;
     }
 
-    public function rollback()
+    public function rollback(): bool
     {
         $database = \Minz\Database::get();
 

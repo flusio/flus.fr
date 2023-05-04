@@ -7,6 +7,17 @@ use Minz\Validable;
 use Website\utils;
 
 /**
+ * @phpstan-import-type CountryCode from utils\Countries
+ *
+ * @phpstan-type AccountAddress array{
+ *     'first_name': string,
+ *     'last_name': string,
+ *     'address1': string,
+ *     'postcode': string,
+ *     'city': string,
+ *     'country': CountryCode,
+ * }
+ *
  * @author Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
@@ -66,6 +77,7 @@ class Account
     #[Database\Column]
     public ?string $address_city;
 
+    /** @var ?CountryCode */
     #[Validable\Inclusion(
         in: utils\Countries::COUNTRIES,
         mode: 'keys',
@@ -84,7 +96,7 @@ class Account
     #[Database\Column(computed: true)]
     public int $count_payments;
 
-    public function __construct($email)
+    public function __construct(string $email)
     {
         $this->id = \Minz\Random::hex(32);
         $this->email = \Minz\Email::sanitize($email);
@@ -102,10 +114,8 @@ class Account
      * deleted accounts).
      *
      * last_sync_at is updated each time the method is called.
-     *
-     * @return \Website\models\Account
      */
-    public static function defaultAccount()
+    public static function defaultAccount(): self
     {
         $email = \Minz\Configuration::$application['support_email'];
 
@@ -124,10 +134,8 @@ class Account
 
     /**
      * Extend the subscription period by the given frequency
-     *
-     * @param string $frequency (`month` or `year`)
      */
-    public function extendSubscription($frequency)
+    public function extendSubscription(string $frequency): void
     {
         if ($this->isFree()) {
             // Free accounts don't need to be extended
@@ -143,12 +151,7 @@ class Account
         }
     }
 
-    /**
-     * @param string $access_token
-     *
-     * @return boolean True if the given token is valid, false else
-     */
-    public function checkAccess($access_token)
+    public function checkAccess(string $access_token): bool
     {
         if (!$this->access_token || !$access_token) {
             return false;
@@ -160,65 +163,70 @@ class Account
         }
 
         $token = Token::find($this->access_token);
+        if (!$token) {
+            return false;
+        }
+
         return $token->isValid();
     }
 
     /**
      * Return the address information as an array
      *
-     * @return array
+     * @return AccountAddress
      */
     public function address()
     {
         return [
-            'first_name' => $this->address_first_name,
-            'last_name' => $this->address_last_name,
-            'address1' => $this->address_address1,
-            'postcode' => $this->address_postcode,
-            'city' => $this->address_city,
-            'country' => $this->address_country,
+            'first_name' => $this->address_first_name ?? '',
+            'last_name' => $this->address_last_name ?? '',
+            'address1' => $this->address_address1 ?? '',
+            'postcode' => $this->address_postcode ?? '',
+            'city' => $this->address_city ?? '',
+            'country' => $this->address_country ?? 'FR',
         ];
     }
 
     /**
-     * @param array $address
+     * @param array{
+     *     'first_name'?: string,
+     *     'last_name'?: string,
+     *     'address1'?: string,
+     *     'postcode'?: string,
+     *     'city'?: string,
+     *     'country'?: CountryCode,
+     * } $address
      */
-    public function setAddress($address)
+    public function setAddress(array $address): void
     {
         $this->address_first_name = trim($address['first_name'] ?? '');
         $this->address_last_name = trim($address['last_name'] ?? '');
         $this->address_address1 = trim($address['address1'] ?? '');
         $this->address_postcode = trim($address['postcode'] ?? '');
         $this->address_city = trim($address['city'] ?? '');
-        $this->address_country = trim($address['country'] ?? '');
+        $this->address_country = $address['country'] ?? 'FR';
     }
 
     /**
      * Return whether the user needs to set its address or not.
-     *
-     * @return boolean
      */
-    public function mustSetAddress()
+    public function mustSetAddress(): bool
     {
         return !$this->address_first_name;
     }
 
     /**
      * Return whether the account has a free subscription or not
-     *
-     * @return boolean
      */
-    public function isFree()
+    public function isFree(): bool
     {
         return $this->expired_at->getTimestamp() === 0;
     }
 
     /**
      * Return whether the subscription has expired or not
-     *
-     * @return boolean
      */
-    public function hasExpired()
+    public function hasExpired(): bool
     {
         return !$this->isFree() && $this->expired_at <= \Minz\Time::now();
     }
@@ -228,10 +236,8 @@ class Account
      *
      * If the account is not sync, it probably means the user deleted its
      * account on the connected services (i.e. flusio and/or FreshRSS).
-     *
-     * @return boolean
      */
-    public function isSync()
+    public function isSync(): bool
     {
         return $this->last_sync_at && $this->last_sync_at >= \Minz\Time::ago(24, 'hours');
     }
@@ -239,9 +245,9 @@ class Account
     /**
      * Return the list of payments associated to this account
      *
-     * @return \Website\models\Payment[]
+     * @return Payment[]
      */
-    public function payments()
+    public function payments(): array
     {
         return Payment::listBy([
             'account_id' => $this->id,
@@ -250,10 +256,8 @@ class Account
 
     /**
      * Return an ongoing payment associated to this account, if any
-     *
-     * @return ?\Website\models\Payment
      */
-    public function ongoingPayment()
+    public function ongoingPayment(): ?Payment
     {
         return Payment::findOngoingForAccount($this->id);
     }
@@ -261,9 +265,9 @@ class Account
     /**
      * Return the list of accounts with computed count_payments
      *
-     * @return array
+     * @return self[]
      */
-    public static function listWithCountPayments()
+    public static function listWithCountPayments(): array
     {
         $sql = <<<SQL
             SELECT a.*, (
@@ -282,11 +286,8 @@ class Account
      * Update the last_sync_at of the given accounts.
      *
      * @param string[] $account_ids
-     * @param \DateTimeImmutable $date
-     *
-     * @return boolean True on success or false on failure
      */
-    public static function updateLastSyncAt($account_ids, $date)
+    public static function updateLastSyncAt(array $account_ids, \DateTimeImmutable $date): bool
     {
         $question_marks = array_fill(0, count($account_ids), '?');
         $in_statement = implode(',', $question_marks);
@@ -310,11 +311,9 @@ class Account
      * List the accounts which have a last_sync_at property older than the
      * given date.
      *
-     * @param \DateTimeImmutable $date
-     *
-     * @return array
+     * @return self[]
      */
-    public static function listByLastSyncAtOlderThan($date)
+    public static function listByLastSyncAtOlderThan(\DateTimeImmutable $date): array
     {
         $sql = <<<SQL
             SELECT * FROM accounts

@@ -14,7 +14,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\TimeHelper;
     use \Minz\Tests\ResponseAsserts;
 
-    public function testIndexRendersCorrectly()
+    public function testIndexRendersCorrectly(): void
     {
         $this->loginAdmin();
 
@@ -24,14 +24,14 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponsePointer($response, 'admin/payments/index.phtml');
     }
 
-    public function testIndexFailsIfNotConnected()
+    public function testIndexFailsIfNotConnected(): void
     {
         $response = $this->appRun('GET', '/admin');
 
         $this->assertResponseCode($response, 302, '/admin/login');
     }
 
-    public function testInitRendersCorrectly()
+    public function testInitRendersCorrectly(): void
     {
         $this->loginAdmin();
 
@@ -41,7 +41,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponsePointer($response, 'admin/payments/init.phtml');
     }
 
-    public function testInitFailsIfNotConnected()
+    public function testInitFailsIfNotConnected(): void
     {
         $response = $this->appRun('GET', '/admin/payments/new');
 
@@ -51,7 +51,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider createProvider
      */
-    public function testCreateRedirectsCorrectly($type, $email, $amount)
+    public function testCreateRedirectsCorrectly(string $type, string $email, int $amount): void
     {
         $this->loginAdmin();
 
@@ -68,7 +68,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider createProvider
      */
-    public function testCreateGenerateAnInvoiceNumber($type, $email, $amount)
+    public function testCreateGenerateAnInvoiceNumber(string $type, string $email, int $amount): void
     {
         $this->loginAdmin();
 
@@ -81,6 +81,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 302, '/admin?status=payment_created');
         $payment = models\Payment::take();
+        $this->assertNotNull($payment);
         $this->assertNotNull($payment->invoice_number);
         $this->assertNull($payment->completed_at);
         $this->assertFalse($payment->is_paid);
@@ -89,7 +90,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider createProvider
      */
-    public function testCreateFailsIfTypeIsInvalid($type, $email, $amount)
+    public function testCreateFailsIfTypeIsInvalid(string $type, string $email, int $amount): void
     {
         $this->loginAdmin();
 
@@ -107,7 +108,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider createProvider
      */
-    public function testCreateFailsIfEmailIsInvalid($type, $email, $amount)
+    public function testCreateFailsIfEmailIsInvalid(string $type, string $email, int $amount): void
     {
         $this->loginAdmin();
 
@@ -125,7 +126,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider createProvider
      */
-    public function testCreateFailsIfNotConnected($type, $email, $amount)
+    public function testCreateFailsIfNotConnected(string $type, string $email, int $amount): void
     {
         $response = $this->appRun('POST', '/admin/payments/new', [
             'csrf' => \Minz\Csrf::generate(),
@@ -140,7 +141,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider createProvider
      */
-    public function testCreateFailsIfCsrfIsInvalid($type, $email, $amount)
+    public function testCreateFailsIfCsrfIsInvalid(string $type, string $email, int $amount): void
     {
         $this->loginAdmin();
 
@@ -155,7 +156,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, 'Une vérification de sécurité a échoué');
     }
 
-    public function testShowRendersCorrectly()
+    public function testShowRendersCorrectly(): void
     {
         $this->loginAdmin();
         $payment = PaymentFactory::create();
@@ -166,7 +167,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponsePointer($response, 'admin/payments/show.phtml');
     }
 
-    public function testShowFailsIfInvalidId()
+    public function testShowFailsIfInvalidId(): void
     {
         $this->loginAdmin();
 
@@ -175,7 +176,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 404);
     }
 
-    public function testShowFailsIfNotConnected()
+    public function testShowFailsIfNotConnected(): void
     {
         $payment = PaymentFactory::create();
 
@@ -184,7 +185,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/admin/login?from=admin%2Fpayments%23index');
     }
 
-    public function testConfirmRendersCorrectly()
+    public function testConfirmRendersCorrectly(): void
     {
         $this->loginAdmin();
         $payment = PaymentFactory::create([
@@ -196,11 +197,12 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/admin?status=payment_confirmed');
+        /** @var models\Payment */
         $payment = $payment->reload();
         $this->assertTrue($payment->is_paid);
     }
 
-    public function testConfirmFailsIfInvalidId()
+    public function testConfirmFailsIfInvalidId(): void
     {
         $this->loginAdmin();
         $payment = PaymentFactory::create([
@@ -214,7 +216,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 404);
     }
 
-    public function testConfirmFailsIfAlreadyPaid()
+    public function testConfirmFailsIfAlreadyPaid(): void
     {
         $this->loginAdmin();
         $payment = PaymentFactory::create([
@@ -229,7 +231,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, 'Ce paiement a déjà été payé');
     }
 
-    public function testConfirmFailsIfNotConnected()
+    public function testConfirmFailsIfNotConnected(): void
     {
         $payment = PaymentFactory::create([
             'is_paid' => false,
@@ -240,11 +242,12 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/admin/login?from=admin%2Fpayments%23index');
+        /** @var models\Payment */
         $payment = $payment->reload();
         $this->assertFalse($payment->is_paid);
     }
 
-    public function testConfirmFailsIfCsrfIsInvalid()
+    public function testConfirmFailsIfCsrfIsInvalid(): void
     {
         $this->loginAdmin();
         $payment = PaymentFactory::create([
@@ -257,11 +260,12 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'Une vérification de sécurité a échoué');
+        /** @var models\Payment */
         $payment = $payment->reload();
         $this->assertFalse($payment->is_paid);
     }
 
-    public function testDestroyRendersCorrectly()
+    public function testDestroyRendersCorrectly(): void
     {
         $this->loginAdmin();
         $payment = PaymentFactory::create([
@@ -277,7 +281,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse(models\Payment::exists($payment->id));
     }
 
-    public function testDestroyFailsIfInvalidId()
+    public function testDestroyFailsIfInvalidId(): void
     {
         $this->loginAdmin();
 
@@ -288,7 +292,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 404);
     }
 
-    public function testDestroyFailsIfNotConnected()
+    public function testDestroyFailsIfNotConnected(): void
     {
         $payment = PaymentFactory::create([
             'is_paid' => false,
@@ -303,7 +307,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(models\Payment::exists($payment->id));
     }
 
-    public function testDestroyFailsIfCsrfIsInvalid()
+    public function testDestroyFailsIfCsrfIsInvalid(): void
     {
         $this->loginAdmin();
         $payment = PaymentFactory::create([
@@ -320,7 +324,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(models\Payment::exists($payment->id));
     }
 
-    public function testDestroyFailsIfIsPaidIsTrue()
+    public function testDestroyFailsIfIsPaidIsTrue(): void
     {
         $this->loginAdmin();
         $payment = PaymentFactory::create([
@@ -337,7 +341,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(models\Payment::exists($payment->id));
     }
 
-    public function testDestroyFailsIfInvoiceNumberIsNotNull()
+    public function testDestroyFailsIfInvoiceNumberIsNotNull(): void
     {
         $this->loginAdmin();
         $invoice_number = $this->fake('dateTime')->format('Y-m') . sprintf('-%04d', $this->fake('randomNumber', 4));
@@ -355,7 +359,10 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(models\Payment::exists($payment->id));
     }
 
-    public function createProvider()
+    /**
+     * @return array<array{string, string, int}>
+     */
+    public function createProvider(): array
     {
         $faker = \Faker\Factory::create();
         $datasets = [];

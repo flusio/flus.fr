@@ -4,7 +4,7 @@ namespace Website\migrations;
 
 class Migration2020120501DropUsernameFromPayments
 {
-    public function migrate()
+    public function migrate(): bool
     {
         $database = \Minz\Database::get();
 
@@ -97,7 +97,7 @@ class Migration2020120501DropUsernameFromPayments
         return true;
     }
 
-    public function rollback()
+    public function rollback(): bool
     {
         $database = \Minz\Database::get();
 

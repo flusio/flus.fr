@@ -2,6 +2,7 @@
 
 namespace Website\controllers;
 
+use Minz\Request;
 use Minz\Response;
 
 /**
@@ -13,9 +14,9 @@ class Addons
     /**
      * @response 200
      */
-    public function geckoUpdate($request)
+    public function geckoUpdate(Request $request): Response
     {
-        return \Minz\Response::ok('addons/gecko_update.json');
+        return Response::ok('addons/gecko_update.json');
     }
 
     /**
@@ -24,7 +25,7 @@ class Addons
      * @response 302
      *     On success
      */
-    public function geckoLatest($request)
+    public function geckoLatest(Request $request): Response
     {
         $addons_path = \Minz\Configuration::$app_path . '/public/addons';
         $files = glob($addons_path . '/*.xpi');

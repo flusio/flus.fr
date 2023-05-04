@@ -2,6 +2,8 @@
 
 namespace Website\controllers\admin;
 
+use Minz\Request;
+use Minz\Response;
 use Website\utils;
 use Website\models;
 
@@ -20,10 +22,10 @@ class Payments
      * @response 200
      *     On success
      */
-    public function index($request)
+    public function index(Request $request): Response
     {
         if (!utils\CurrentUser::isAdmin()) {
-            return \Minz\Response::redirect('login');
+            return Response::redirect('login');
         }
 
         $year = $request->param('year', \Minz\Time::now()->format('Y'));
@@ -36,17 +38,17 @@ class Payments
 
         $format = $request->param('format', 'html');
         if ($format === 'csv') {
-            return \Minz\Response::ok('admin/payments/index.txt', [
+            return Response::ok('admin/payments/index.txt', [
                 'year' => $year,
                 'payments' => $payments,
             ]);
         } elseif ($format === 'recettes') {
-            return \Minz\Response::ok('admin/payments/recettes.phtml', [
+            return Response::ok('admin/payments/recettes.phtml', [
                 'year' => $year,
                 'payments' => $payments,
             ]);
         } else {
-            return \Minz\Response::ok('admin/payments/index.phtml', [
+            return Response::ok('admin/payments/index.phtml', [
                 'year' => $year,
                 'payments_by_months' => $payments_by_months,
             ]);
@@ -61,13 +63,13 @@ class Payments
      * @response 200
      *     On success
      */
-    public function init()
+    public function init(Request $request): Response
     {
         if (!utils\CurrentUser::isAdmin()) {
-            return \Minz\Response::redirect('login', ['from' => 'admin/payments#init']);
+            return Response::redirect('login', ['from' => 'admin/payments#init']);
         }
 
-        return \Minz\Response::ok('admin/payments/init.phtml', [
+        return Response::ok('admin/payments/init.phtml', [
             'type' => 'common_pot',
             'email' => '',
             'amount' => 30,
@@ -93,18 +95,19 @@ class Payments
      * @response 302 /admin
      *     On success
      */
-    public function create($request)
+    public function create(Request $request): Response
     {
         if (!utils\CurrentUser::isAdmin()) {
-            return \Minz\Response::redirect('login', ['from' => 'admin/payments#init']);
+            return Response::redirect('login', ['from' => 'admin/payments#init']);
         }
 
         $type = $request->param('type');
         $email = \Minz\Email::sanitize($request->param('email', ''));
+        /** @var int */
         $amount = $request->paramInteger('amount', 0);
 
         if (!\Minz\Csrf::validate($request->param('csrf'))) {
-            return \Minz\Response::badRequest('admin/payments/init.phtml', [
+            return Response::badRequest('admin/payments/init.phtml', [
                 'type' => $type,
                 'email' => $email,
                 'amount' => $amount,
@@ -113,7 +116,7 @@ class Payments
         }
 
         if (!\Minz\Email::validate($email)) {
-            return \Minz\Response::badRequest('admin/payments/init.phtml', [
+            return Response::badRequest('admin/payments/init.phtml', [
                 'type' => $type,
                 'email' => $email,
                 'amount' => $amount,
@@ -136,7 +139,7 @@ class Payments
         } elseif ($type === 'subscription_year') {
             $payment = models\Payment::initSubscriptionFromAccount($account, 'year');
         } else {
-            return \Minz\Response::badRequest('admin/payments/init.phtml', [
+            return Response::badRequest('admin/payments/init.phtml', [
                 'type' => $type,
                 'email' => $email,
                 'amount' => $amount,
@@ -148,7 +151,7 @@ class Payments
 
         $errors = $payment->validate();
         if ($errors) {
-            return \Minz\Response::badRequest('admin/payments/init.phtml', [
+            return Response::badRequest('admin/payments/init.phtml', [
                 'type' => $type,
                 'email' => $email,
                 'amount' => $amount,
@@ -159,7 +162,7 @@ class Payments
         $payment->invoice_number = models\Payment::generateInvoiceNumber();
         $payment->save();
 
-        return \Minz\Response::redirect('admin', ['status' => 'payment_created']);
+        return Response::redirect('admin', ['status' => 'payment_created']);
     }
 
     /**
@@ -174,19 +177,19 @@ class Payments
      * @response 200
      *     On success
      */
-    public function show($request)
+    public function show(Request $request): Response
     {
         if (!utils\CurrentUser::isAdmin()) {
-            return \Minz\Response::redirect('login', ['from' => 'admin/payments#index']);
+            return Response::redirect('login', ['from' => 'admin/payments#index']);
         }
 
         $payment_id = $request->param('id');
         $payment = models\Payment::find($payment_id);
         if (!$payment) {
-            return \Minz\Response::notFound('not_found.phtml');
+            return Response::notFound('not_found.phtml');
         }
 
-        return \Minz\Response::ok('admin/payments/show.phtml', [
+        return Response::ok('admin/payments/show.phtml', [
             'payment' => $payment,
         ]);
     }
@@ -206,27 +209,27 @@ class Payments
      * @response 302 /admin
      *     On success
      */
-    public function confirm($request)
+    public function confirm(Request $request): Response
     {
         if (!utils\CurrentUser::isAdmin()) {
-            return \Minz\Response::redirect('login', ['from' => 'admin/payments#index']);
+            return Response::redirect('login', ['from' => 'admin/payments#index']);
         }
 
         $payment_id = $request->param('id');
         $payment = models\Payment::find($payment_id);
         if (!$payment) {
-            return \Minz\Response::notFound('not_found.phtml');
+            return Response::notFound('not_found.phtml');
         }
 
         if ($payment->is_paid) {
-            return \Minz\Response::badRequest('admin/payments/show.phtml', [
+            return Response::badRequest('admin/payments/show.phtml', [
                 'payment' => $payment,
                 'error' => 'Ce paiement a déjà été payé… qu’est-ce que vous essayez de faire ?',
             ]);
         }
 
         if (!\Minz\Csrf::validate($request->param('csrf'))) {
-            return \Minz\Response::badRequest('admin/payments/show.phtml', [
+            return Response::badRequest('admin/payments/show.phtml', [
                 'payment' => $payment,
                 'error' => 'Une vérification de sécurité a échoué, veuillez réessayer de soumettre le formulaire.',
             ]);
@@ -235,9 +238,12 @@ class Payments
         $payment->is_paid = true;
         $payment->save();
 
-        @unlink($payment->invoiceFilepath());
+        $invoice_filepath = $payment->invoiceFilepath();
+        if ($invoice_filepath) {
+            @unlink($invoice_filepath);
+        }
 
-        return \Minz\Response::redirect('admin', [
+        return Response::redirect('admin', [
             'status' => 'payment_confirmed',
         ]);
     }
@@ -258,20 +264,20 @@ class Payments
      * @response 302 /admin
      *     On success
      */
-    public function destroy($request)
+    public function destroy(Request $request): Response
     {
         if (!utils\CurrentUser::isAdmin()) {
-            return \Minz\Response::redirect('login', ['from' => 'admin/payments#index']);
+            return Response::redirect('login', ['from' => 'admin/payments#index']);
         }
 
         $payment_id = $request->param('id');
         $payment = models\Payment::find($payment_id);
         if (!$payment) {
-            return \Minz\Response::notFound('not_found.phtml');
+            return Response::notFound('not_found.phtml');
         }
 
         if ($payment->is_paid) {
-            return \Minz\Response::badRequest('admin/payments/show.phtml', [
+            return Response::badRequest('admin/payments/show.phtml', [
                 'completed_at' => \Minz\Time::now(),
                 'payment' => $payment,
                 'error' => 'Ce paiement a déjà été payé… qu’est-ce que vous essayez de faire ?',
@@ -279,7 +285,7 @@ class Payments
         }
 
         if ($payment->invoice_number) {
-            return \Minz\Response::badRequest('admin/payments/show.phtml', [
+            return Response::badRequest('admin/payments/show.phtml', [
                 'completed_at' => \Minz\Time::now(),
                 'payment' => $payment,
                 'error' => 'Ce paiement est associé à une facture et ne peut être supprimé.',
@@ -287,7 +293,7 @@ class Payments
         }
 
         if (!\Minz\Csrf::validate($request->param('csrf'))) {
-            return \Minz\Response::badRequest('admin/payments/show.phtml', [
+            return Response::badRequest('admin/payments/show.phtml', [
                 'completed_at' => \Minz\Time::now(),
                 'payment' => $payment,
                 'error' => 'Une vérification de sécurité a échoué, veuillez réessayer de soumettre le formulaire.',
@@ -296,7 +302,7 @@ class Payments
 
         models\Payment::delete($payment->id);
 
-        return \Minz\Response::redirect('admin', [
+        return Response::redirect('admin', [
             'status' => 'payment_deleted',
         ]);
     }

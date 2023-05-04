@@ -10,7 +10,7 @@ class PaymentTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\TimeHelper;
 
-    public function testComplete()
+    public function testComplete(): void
     {
         $completed_at = $this->fake('dateTime');
         $payment = PaymentFactory::create([
@@ -23,7 +23,7 @@ class PaymentTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($completed_at, $payment->completed_at);
     }
 
-    public function testCompleteSetsInvoiceNumber()
+    public function testCompleteSetsInvoiceNumber(): void
     {
         $now = $this->fake('dateTime');
         $this->freeze($now);
@@ -39,7 +39,7 @@ class PaymentTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($expected_invoice_number, $payment->invoice_number);
     }
 
-    public function testCompleteIncrementsInvoiceNumberOverMonths()
+    public function testCompleteIncrementsInvoiceNumberOverMonths(): void
     {
         $now = $this->fake('dateTime');
         $this->freeze($now);
@@ -62,7 +62,7 @@ class PaymentTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($expected_invoice_number, $payment->invoice_number);
     }
 
-    public function testCompleteResetsInvoiceNumberOverYears()
+    public function testCompleteResetsInvoiceNumberOverYears(): void
     {
         $now = $this->fake('dateTime');
         $this->freeze($now);
@@ -86,7 +86,7 @@ class PaymentTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($expected_invoice_number, $payment->invoice_number);
     }
 
-    public function testCompleteIgnoresNullInvoiceNumbers()
+    public function testCompleteIgnoresNullInvoiceNumbers(): void
     {
         $now = $this->fake('dateTime');
         $this->freeze($now);
@@ -109,7 +109,7 @@ class PaymentTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($expected_invoice_number, $payment->invoice_number);
     }
 
-    public function testCompleteDoesNothingIfNotIsPaid()
+    public function testCompleteDoesNothingIfNotIsPaid(): void
     {
         $completed_at = $this->fake('dateTime');
         $payment = PaymentFactory::create([

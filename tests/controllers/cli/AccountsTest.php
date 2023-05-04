@@ -16,7 +16,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\ResponseAsserts;
     use \Minz\Tests\MailerAsserts;
 
-    public function testRemindSendsEmailAt7DaysBeforeExpiration()
+    public function testRemindSendsEmailAt7DaysBeforeExpiration(): void
     {
         $this->freeze($this->fake('dateTime'));
         $email = $this->fake('email');
@@ -35,12 +35,13 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, '1 reminders sent');
         $this->assertEmailsCount(1);
         $email_sent = \Minz\Tests\Mailer::take();
+        $this->assertNotNull($email_sent);
         $this->assertEmailSubject($email_sent, '[Flus] Votre abonnement arrive à échéance');
         $this->assertEmailContainsTo($email_sent, $email);
         $this->assertEmailContainsBody($email_sent, 'En vous remerciant de votre soutien');
     }
 
-    public function testRemindSendsEmailAt2DaysBeforeExpiration()
+    public function testRemindSendsEmailAt2DaysBeforeExpiration(): void
     {
         $this->freeze($this->fake('dateTime'));
         $email = $this->fake('email');
@@ -59,12 +60,13 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, '1 reminders sent');
         $this->assertEmailsCount(1);
         $email_sent = \Minz\Tests\Mailer::take();
+        $this->assertNotNull($email_sent);
         $this->assertEmailSubject($email_sent, '[Flus] Votre abonnement arrive à échéance');
         $this->assertEmailContainsTo($email_sent, $email);
         $this->assertEmailContainsBody($email_sent, 'En vous remerciant de votre soutien');
     }
 
-    public function testRemindSendsEmailTheDayAfterExpiration()
+    public function testRemindSendsEmailTheDayAfterExpiration(): void
     {
         $this->freeze($this->fake('dateTime'));
         $email = $this->fake('email');
@@ -83,12 +85,13 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, '1 reminders sent');
         $this->assertEmailsCount(1);
         $email_sent = \Minz\Tests\Mailer::take();
+        $this->assertNotNull($email_sent);
         $this->assertEmailSubject($email_sent, '[Flus] Votre abonnement a expiré');
         $this->assertEmailContainsTo($email_sent, $email);
         $this->assertEmailContainsBody($email_sent, 'En vous remerciant de votre soutien');
     }
 
-    public function testRemindSendsDifferentEmailsToDifferentPeople()
+    public function testRemindSendsDifferentEmailsToDifferentPeople(): void
     {
         $this->freeze($this->fake('dateTime'));
         $email_1 = $this->fakeUnique('email');
@@ -114,12 +117,14 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, '2 reminders sent');
         $this->assertEmailsCount(2);
         $email_sent_1 = \Minz\Tests\Mailer::take(0);
+        $this->assertNotNull($email_sent_1);
         $this->assertEmailEqualsTo($email_sent_1, [$email_1]);
         $email_sent_2 = \Minz\Tests\Mailer::take(1);
+        $this->assertNotNull($email_sent_2);
         $this->assertEmailEqualsTo($email_sent_2, [$email_2]);
     }
 
-    public function testRemindDoesNotSendEmailIfReminderIsFalse()
+    public function testRemindDoesNotSendEmailIfReminderIsFalse(): void
     {
         $this->freeze($this->fake('dateTime'));
         $email = $this->fake('email');
@@ -136,7 +141,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $this->assertEmailsCount(0);
     }
 
-    public function testRemindDoesNotSendEmailIfAccountIsFree()
+    public function testRemindDoesNotSendEmailIfAccountIsFree(): void
     {
         $this->freeze($this->fake('dateTime'));
         $email = $this->fake('email');
@@ -153,7 +158,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $this->assertEmailsCount(0);
     }
 
-    public function testRemindDoesNotSendEmailIfAccountIsNotSynced()
+    public function testRemindDoesNotSendEmailIfAccountIsNotSynced(): void
     {
         $this->freeze($this->fake('dateTime'));
         $hours = $this->fake('numberBetween', 25, 90);
@@ -173,7 +178,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $this->assertEmailsCount(0);
     }
 
-    public function testClearRemovesNonSyncAccounts()
+    public function testClearRemovesNonSyncAccounts(): void
     {
         $now = $this->fake('dateTime');
         $this->freeze($now);
@@ -189,7 +194,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse(models\Account::exists($account->id));
     }
 
-    public function testClearRemovesAccountsNeverSync()
+    public function testClearRemovesAccountsNeverSync(): void
     {
         $now = $this->fake('dateTime');
         $this->freeze($now);
@@ -204,7 +209,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse(models\Account::exists($account->id));
     }
 
-    public function testClearMovesPaymentsAndPotUsagesOfNonSyncAccounts()
+    public function testClearMovesPaymentsAndPotUsagesOfNonSyncAccounts(): void
     {
         $now = $this->fake('dateTime');
         $this->freeze($now);
@@ -223,13 +228,15 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('CLI', '/accounts/clear');
 
         $this->assertResponseCode($response, 200);
+        /** @var models\Payment */
         $payment = $payment->reload();
+        /** @var models\PotUsage */
         $pot_usage = $pot_usage->reload();
         $this->assertSame($default_account->id, $payment->account_id);
         $this->assertSame($default_account->id, $pot_usage->account_id);
     }
 
-    public function testClearKeepsSyncAccounts()
+    public function testClearKeepsSyncAccounts(): void
     {
         $now = $this->fake('dateTime');
         $this->freeze($now);
@@ -245,7 +252,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(models\Account::exists($account->id));
     }
 
-    public function testClearDoesNotMovePaymentsAndPotUsagesOfSyncAccounts()
+    public function testClearDoesNotMovePaymentsAndPotUsagesOfSyncAccounts(): void
     {
         $now = $this->fake('dateTime');
         $this->freeze($now);
@@ -264,7 +271,9 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('CLI', '/accounts/clear');
 
         $this->assertResponseCode($response, 200);
+        /** @var models\Payment */
         $payment = $payment->reload();
+        /** @var models\PotUsage */
         $pot_usage = $pot_usage->reload();
         $this->assertSame($account->id, $payment->account_id);
         $this->assertSame($account->id, $pot_usage->account_id);

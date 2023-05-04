@@ -14,7 +14,7 @@ class InvoicePDFTest extends TestCase
     use \tests\FakerHelper;
     use \Minz\Tests\InitializerHelper;
 
-    public function testPdfHasALogo()
+    public function testPdfHasALogo(): void
     {
         $payment = PaymentFactory::create();
 
@@ -24,23 +24,26 @@ class InvoicePDFTest extends TestCase
         $this->assertTrue(file_exists($invoice_pdf->logo));
     }
 
-    public function testPdfHasMetadata()
+    public function testPdfHasGlobalInfo(): void
     {
         $payment = PaymentFactory::create([
-            'completed_at' => $this->fake('dateTime'),
+            'is_paid' => true,
         ]);
+        $payment->complete(\Minz\Time::now());
+        $payment->save();
 
         $invoice_pdf = new InvoicePDF($payment);
 
-        $metadata = $invoice_pdf->metadata;
+        $global_info = $invoice_pdf->global_info;
         $expected_established = ViewHelpers::formatDate($payment->created_at, 'dd MMMM yyyy');
+        assert($payment->completed_at !== null);
         $expected_paid = ViewHelpers::formatDate($payment->completed_at, 'dd MMMM yyyy');
-        $this->assertSame($payment->invoice_number, $metadata['N° facture']);
-        $this->assertSame($expected_established, $metadata['Établie le']);
-        $this->assertSame($expected_paid, $metadata['Payée le']);
+        $this->assertSame($payment->invoice_number, $global_info['N° facture']);
+        $this->assertSame($expected_established, $global_info['Établie le']);
+        $this->assertSame($expected_paid, $global_info['Payée le']);
     }
 
-    public function testPdfWithVatNumber()
+    public function testPdfWithVatNumber(): void
     {
         $faker = \Faker\Factory::create('fr_FR');
         $vat_number = $faker->vat(); // @phpstan-ignore-line
@@ -53,11 +56,11 @@ class InvoicePDFTest extends TestCase
 
         $invoice_pdf = new InvoicePDF($payment);
 
-        $metadata = $invoice_pdf->metadata;
-        $this->assertSame($metadata['N° TVA client'], $vat_number);
+        $global_info = $invoice_pdf->global_info;
+        $this->assertSame($global_info['N° TVA client'], $vat_number);
     }
 
-    public function testPdfNotCompletedIsDue()
+    public function testPdfNotCompletedIsDue(): void
     {
         $payment = PaymentFactory::create([
             'completed_at' => null,
@@ -65,11 +68,11 @@ class InvoicePDFTest extends TestCase
 
         $invoice_pdf = new InvoicePDF($payment);
 
-        $metadata = $invoice_pdf->metadata;
-        $this->assertSame('à payer', $metadata['Payée le']);
+        $global_info = $invoice_pdf->global_info;
+        $this->assertSame('à payer', $global_info['Payée le']);
     }
 
-    public function testPdfToCredit()
+    public function testPdfToCredit(): void
     {
         $credited_completed_at = $this->fake('dateTime');
         $random_number = sprintf('-%04d', $this->fake('randomNumber', 4));
@@ -82,25 +85,26 @@ class InvoicePDFTest extends TestCase
             'credited_payment_id' => $credited_payment->id,
             'completed_at' => $this->fake('dateTime'),
         ]);
+        assert($payment->completed_at !== null);
         $expected_credited_at = ViewHelpers::formatDate($payment->completed_at, 'dd MMMM yyyy');
 
         $invoice_pdf = new InvoicePDF($payment);
 
-        $metadata = $invoice_pdf->metadata;
-        $this->assertSame($expected_credited_at, $metadata['Créditée le']);
+        $global_info = $invoice_pdf->global_info;
+        $this->assertSame($expected_credited_at, $global_info['Créditée le']);
     }
 
-    public function testPdfWithCommonPotPaymentHasNoId()
+    public function testPdfWithCommonPotPaymentHasNoId(): void
     {
         $payment = PaymentFactory::create();
 
         $invoice_pdf = new InvoicePDF($payment);
 
-        $metadata = $invoice_pdf->metadata;
-        $this->assertArrayNotHasKey('Identifiant client', $metadata);
+        $global_info = $invoice_pdf->global_info;
+        $this->assertArrayNotHasKey('Identifiant client', $global_info);
     }
 
-    public function testPdfHasCustomer()
+    public function testPdfHasCustomer(): void
     {
         $account = AccountFactory::create([
             'address_first_name' => $this->fake('firstName'),
@@ -116,7 +120,9 @@ class InvoicePDFTest extends TestCase
 
         $invoice_pdf = new InvoicePDF($payment);
 
-        $address = $payment->account()->address();
+        $account = $payment->account();
+        assert($account !== null);
+        $address = $account->address();
         $expected_line1 = $address['first_name'] . ' ' . $address['last_name'];
         $expected_line2 = $address['address1'];
         $expected_line3 = $address['postcode'] . ' ' . $address['city'];
@@ -128,7 +134,7 @@ class InvoicePDFTest extends TestCase
         $this->assertSame($expected_line4, $invoice_pdf->customer[3]);
     }
 
-    public function testPdfWithMonthSubscriptionHasCorrespondingPurchase()
+    public function testPdfWithMonthSubscriptionHasCorrespondingPurchase(): void
     {
         $payment = PaymentFactory::create([
             'type' => 'subscription',
@@ -143,7 +149,7 @@ class InvoicePDFTest extends TestCase
             $invoice_pdf->purchases[0]['description']
         );
         $this->assertSame(
-            1,
+            '1',
             $invoice_pdf->purchases[0]['number']
         );
         $this->assertSame(
@@ -156,7 +162,7 @@ class InvoicePDFTest extends TestCase
         );
     }
 
-    public function testPdfWithYearSubscriptionHasCorrespondingPurchase()
+    public function testPdfWithYearSubscriptionHasCorrespondingPurchase(): void
     {
         $payment = PaymentFactory::create([
             'type' => 'subscription',
@@ -171,7 +177,7 @@ class InvoicePDFTest extends TestCase
             $invoice_pdf->purchases[0]['description']
         );
         $this->assertSame(
-            1,
+            '1',
             $invoice_pdf->purchases[0]['number']
         );
         $this->assertSame(
@@ -184,7 +190,7 @@ class InvoicePDFTest extends TestCase
         );
     }
 
-    public function testPdfWithCommonPotHasCorrespondingPurchase()
+    public function testPdfWithCommonPotHasCorrespondingPurchase(): void
     {
         $payment = PaymentFactory::create([
             'type' => 'common_pot',
@@ -198,7 +204,7 @@ class InvoicePDFTest extends TestCase
             $invoice_pdf->purchases[0]['description']
         );
         $this->assertSame(
-            1,
+            '1',
             $invoice_pdf->purchases[0]['number']
         );
         $this->assertSame(
@@ -211,7 +217,7 @@ class InvoicePDFTest extends TestCase
         );
     }
 
-    public function testPdfWithCreditHasCorrespondingPurchase()
+    public function testPdfWithCreditHasCorrespondingPurchase(): void
     {
         $credited_completed_at = $this->fake('dateTime');
         $random_number = sprintf('-%04d', $this->fake('randomNumber', 4));
@@ -232,7 +238,7 @@ class InvoicePDFTest extends TestCase
             $invoice_pdf->purchases[0]['description']
         );
         $this->assertSame(
-            1,
+            '1',
             $invoice_pdf->purchases[0]['number']
         );
         $this->assertSame(
@@ -245,7 +251,7 @@ class InvoicePDFTest extends TestCase
         );
     }
 
-    public function testPdfHasTotalPurchases()
+    public function testPdfHasTotalPurchases(): void
     {
         $payment = PaymentFactory::create();
 
@@ -265,7 +271,7 @@ class InvoicePDFTest extends TestCase
         );
     }
 
-    public function testPdfHasFooter()
+    public function testPdfHasFooter(): void
     {
         $payment = PaymentFactory::create();
 

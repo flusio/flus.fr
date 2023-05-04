@@ -4,7 +4,7 @@ namespace Website\migrations;
 
 class Migration20200526ChangeDateTimeColumnsIntoText
 {
-    public function migrate()
+    public function migrate(): bool
     {
         $database = \Minz\Database::get();
         $sql = <<<SQL
@@ -81,7 +81,7 @@ class Migration20200526ChangeDateTimeColumnsIntoText
         return true;
     }
 
-    public function rollback()
+    public function rollback(): bool
     {
         $database = \Minz\Database::get();
 

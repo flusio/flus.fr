@@ -2,9 +2,18 @@
 
 namespace Website;
 
+use Minz\Request;
+use Minz\Response;
+
+/**
+ * @phpstan-import-type ResponseReturnable from Response
+ */
 class Application
 {
-    public function run($request)
+    /**
+     * @return ResponseReturnable
+     */
+    public function run(Request $request): mixed
     {
         include_once('utils/view_helpers.php');
 

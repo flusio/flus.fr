@@ -78,13 +78,8 @@ class Payment
      * Initialize a Payment object from user request parameters.
      *
      * Amount is always in cents.
-     *
-     * @param string $type
-     * @param integer $amount
-     *
-     * @return \Website\models\Payment
      */
-    private function __construct($type, $amount)
+    private function __construct(string $type, int $amount)
     {
         $this->id = \Minz\Random::hex(32);
         $this->type = $type;
@@ -94,13 +89,8 @@ class Payment
 
     /**
      * Init a subscription payment from an account.
-     *
-     * @param \Website\models\Account $account
-     * @param string $frequency (`month` or `year`)
-     *
-     * @return \Website\models\Payment
      */
-    public static function initSubscriptionFromAccount($account, $frequency)
+    public static function initSubscriptionFromAccount(Account $account, string $frequency): self
     {
         $frequency = strtolower(trim($frequency));
         $amount = 0;
@@ -120,12 +110,9 @@ class Payment
     /**
      * Init a common pot payment from an account.
      *
-     * @param \Website\models\Account $account
      * @param integer|float $euros
-     *
-     * @return \Website\models\Payment
      */
-    public static function initCommonPotFromAccount($account, $euros)
+    public static function initCommonPotFromAccount(Account $account, mixed $euros): self
     {
         $payment = new self('common_pot', intval($euros * 100));
         $payment->account_id = $account->id;
@@ -135,12 +122,8 @@ class Payment
 
     /**
      * Init a credit payment from a payment.
-     *
-     * @param \Website\models\Payment $payment
-     *
-     * @return \Website\models\Payment
      */
-    public static function initCreditFromPayment($payment)
+    public static function initCreditFromPayment(self $payment): self
     {
         $credit = new self('credit', $payment->amount);
         $credit->account_id = $payment->account_id;
@@ -151,10 +134,8 @@ class Payment
 
     /**
      * Return the account associated to the payment if any
-     *
-     * @return \Website\models\Account|null
      */
-    public function account()
+    public function account(): ?Account
     {
         if (!$this->account_id) {
             return null;
@@ -163,10 +144,7 @@ class Payment
         return Account::find($this->account_id);
     }
 
-    /**
-     * @return string|null
-     */
-    public function invoiceFilepath()
+    public function invoiceFilepath(): ?string
     {
         if (!$this->invoice_number) {
             return null;
@@ -176,10 +154,7 @@ class Payment
         return $invoices_path . '/' . $this->invoiceFilename();
     }
 
-    /**
-     * @return string|null
-     */
-    public function invoiceFilename()
+    public function invoiceFilename(): ?string
     {
         if (!$this->invoice_number) {
             return null;
@@ -188,22 +163,18 @@ class Payment
         return "facture_{$this->invoice_number}.pdf";
     }
 
-    /**
-     * @return boolean
-     */
-    public function invoiceExists()
+    public function invoiceExists(): bool
     {
-        if (!$this->invoice_number) {
+        $invoice_filepath = $this->invoiceFilepath();
+
+        if (!$invoice_filepath) {
             return false;
         }
 
-        return file_exists($this->invoiceFilepath());
+        return file_exists($invoice_filepath);
     }
 
-    /**
-     * @return integer
-     */
-    public function stripeFees()
+    public function stripeFees(): int
     {
         if ($this->payment_intent_id) {
             return intval(floor($this->amount * 0.014) + 25);
@@ -212,10 +183,7 @@ class Payment
         }
     }
 
-    /**
-     * @return boolean
-     */
-    public function isReimbursed()
+    public function isReimbursed(): bool
     {
         return self::existsBy([
             'credited_payment_id' => $this->id,
@@ -224,10 +192,8 @@ class Payment
 
     /**
      * Mark the payment as completed
-     *
-     * @param \DateTimeImmutable $completed_at
      */
-    public function complete($completed_at)
+    public function complete(\DateTimeImmutable $completed_at): void
     {
         if ($this->is_paid) {
             $this->completed_at = $completed_at;
@@ -237,10 +203,7 @@ class Payment
         }
     }
 
-    /**
-     * @return string
-     */
-    public static function generateInvoiceNumber()
+    public static function generateInvoiceNumber(): string
     {
         $now = \Minz\Time::now();
 
@@ -267,12 +230,8 @@ class Payment
 
     /**
      * Return an ongoing payment for the given account
-     *
-     * @param string $account_id
-     *
-     * @return ?self
      */
-    public static function findOngoingForAccount($account_id)
+    public static function findOngoingForAccount(string $account_id): ?self
     {
         $sql = 'SELECT * FROM payments '
              . 'WHERE account_id = ? '
@@ -293,10 +252,8 @@ class Payment
 
     /**
      * Return the last invoice number saved in the database
-     *
-     * @return string
      */
-    public static function findLastInvoiceNumber()
+    public static function findLastInvoiceNumber(): ?string
     {
         $sql = 'SELECT invoice_number FROM payments '
              . 'WHERE invoice_number IS NOT NULL '
@@ -305,17 +262,19 @@ class Payment
 
         $database = \Minz\Database::get();
         $statement = $database->query($sql);
-        return $statement->fetchColumn();
+
+        $invoice_number = $statement->fetchColumn();
+        if (is_string($invoice_number) && $invoice_number) {
+            return $invoice_number;
+        } else {
+            return null;
+        }
     }
 
     /**
      * Return the sum of amounts for completed payments
-     *
-     * @param integer $year
-     *
-     * @return integer
      */
-    public static function findTotalRevenue($year)
+    public static function findTotalRevenue(int $year): int
     {
         $sql = <<<'SQL'
             SELECT SUM(amount) FROM payments
@@ -336,12 +295,8 @@ class Payment
 
     /**
      * Return the sum of amounts for completed common pot payments
-     *
-     * @param integer $year
-     *
-     * @return integer
      */
-    public static function findCommonPotRevenue($year)
+    public static function findCommonPotRevenue(int $year): int
     {
         $sql = <<<'SQL'
             SELECT SUM(amount) FROM payments
@@ -362,12 +317,8 @@ class Payment
 
     /**
      * Return the sum of amounts for completed subscriptions payments
-     *
-     * @param integer $year
-     *
-     * @return integer
      */
-    public static function findSubscriptionsRevenue($year)
+    public static function findSubscriptionsRevenue(int $year): int
     {
         $sql = <<<'SQL'
             SELECT SUM(amount) FROM payments
@@ -389,11 +340,9 @@ class Payment
     /**
      * Return the payments for a given year
      *
-     * @param integer $year
-     *
-     * @return array
+     * @return self[]
      */
-    public static function listByYear($year)
+    public static function listByYear(int $year): array
     {
         $sql = 'SELECT * FROM payments '
              . 'WHERE strftime("%Y", datetime(created_at)) = ? '
@@ -409,11 +358,8 @@ class Payment
      * Change account_id of the given payments
      *
      * @param string[] $payments_ids
-     * @param string $account_id
-     *
-     * @return boolean
      */
-    public static function moveToAccountId($payments_ids, $account_id)
+    public static function moveToAccountId(array $payments_ids, string $account_id): bool
     {
         $question_marks = array_fill(0, count($payments_ids), '?');
         $in_statement = implode(',', $question_marks);

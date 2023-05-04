@@ -4,7 +4,7 @@ namespace Website\migrations;
 
 class Migration20200000CreatePayments
 {
-    public function migrate()
+    public function migrate(): bool
     {
         $database = \Minz\Database::get();
 
@@ -32,7 +32,7 @@ class Migration20200000CreatePayments
         return true;
     }
 
-    public function rollback()
+    public function rollback(): bool
     {
         $database = \Minz\Database::get();
 

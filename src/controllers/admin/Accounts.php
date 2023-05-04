@@ -2,6 +2,8 @@
 
 namespace Website\controllers\admin;
 
+use Minz\Request;
+use Minz\Response;
 use Website\models;
 use Website\utils;
 
@@ -19,10 +21,10 @@ class Accounts
      * @response 200
      *     On success
      */
-    public function index()
+    public function index(Request $request): Response
     {
         if (!utils\CurrentUser::isAdmin()) {
-            return \Minz\Response::redirect('login');
+            return Response::redirect('login');
         }
 
         $accounts = models\Account::listWithCountPayments();
@@ -31,7 +33,7 @@ class Accounts
             return $account1->email <=> $account2->email;
         });
 
-        return \Minz\Response::ok('admin/accounts/index.phtml', [
+        return Response::ok('admin/accounts/index.phtml', [
             'accounts' => $accounts,
         ]);
     }
@@ -48,19 +50,19 @@ class Accounts
      * @response 200
      *     On success
      */
-    public function show($request)
+    public function show(Request $request): Response
     {
         if (!utils\CurrentUser::isAdmin()) {
-            return \Minz\Response::redirect('login');
+            return Response::redirect('login');
         }
 
         $account_id = $request->param('id');
         $account = models\Account::find($account_id);
         if (!$account) {
-            return \Minz\Response::notFound('not_found.phtml');
+            return Response::notFound('not_found.phtml');
         }
 
-        return \Minz\Response::ok('admin/accounts/show.phtml', [
+        return Response::ok('admin/accounts/show.phtml', [
             'account' => $account,
             'payments' => $account->payments(),
             'expired_at' => $account->expired_at,
@@ -83,29 +85,38 @@ class Accounts
      * @response 200
      *     On success
      */
-    public function update($request)
+    public function update(Request $request): Response
     {
         if (!utils\CurrentUser::isAdmin()) {
-            return \Minz\Response::redirect('login');
+            return Response::redirect('login');
         }
 
         $account_id = $request->param('id');
         $account = models\Account::find($account_id);
         if (!$account) {
-            return \Minz\Response::notFound('not_found.phtml');
+            return Response::notFound('not_found.phtml');
         }
 
         $csrf = $request->param('csrf');
         $expired_at = $request->param('expired-at');
+
         if ($expired_at === '1970-01-01') {
             $expired_at = new \DateTimeImmutable('@0');
         } else {
             $expired_at = \DateTimeImmutable::createFromFormat('Y-m-d', $expired_at);
-            $expired_at = $expired_at->setTime(23, 59, 59);
+        }
+
+        if (!$expired_at) {
+            return Response::badRequest('admin/accounts/show.phtml', [
+                'account' => $account,
+                'payments' => $account->payments(),
+                'expired_at' => $expired_at,
+                'error' => 'Saisissez une date d’expiration au format YYYY-MM-DD',
+            ]);
         }
 
         if (!\Minz\Csrf::validate($csrf)) {
-            return \Minz\Response::badRequest('admin/accounts/show.phtml', [
+            return Response::badRequest('admin/accounts/show.phtml', [
                 'account' => $account,
                 'payments' => $account->payments(),
                 'expired_at' => $expired_at,
@@ -113,9 +124,14 @@ class Accounts
             ]);
         }
 
+        if ($expired_at->getTimestamp() !== 0) {
+            // Be nice, set the expiration date to the end of the day.
+            $expired_at = $expired_at->setTime(23, 59, 59);
+        }
+
         $account->expired_at = $expired_at;
         $account->save();
 
-        return \Minz\Response::redirect('admin account', ['id' => $account->id]);
+        return Response::redirect('admin account', ['id' => $account->id]);
     }
 }

@@ -9,14 +9,14 @@ class AuthTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\ResponseAsserts;
 
-    public function testLogin()
+    public function testLogin(): void
     {
         $response = $this->appRun('GET', '/admin/login');
 
         $this->assertResponseCode($response, 200);
     }
 
-    public function testLoginWhenConnected()
+    public function testLoginWhenConnected(): void
     {
         $this->loginAdmin();
 
@@ -25,7 +25,7 @@ class AuthTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/admin');
     }
 
-    public function testLoginWithFromParameter()
+    public function testLoginWithFromParameter(): void
     {
         /** @var \Minz\Response */
         $response = $this->appRun('GET', '/admin/login', [
@@ -40,7 +40,7 @@ class AuthTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('home', $variables['from']);
     }
 
-    public function testCreateSession()
+    public function testCreateSession(): void
     {
         $response = $this->appRun('POST', '/admin/login', [
             'csrf' => \Minz\Csrf::generate(),
@@ -51,7 +51,7 @@ class AuthTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('the administrator', $_SESSION['account_id']);
     }
 
-    public function testCreateSessionWhenConnected()
+    public function testCreateSessionWhenConnected(): void
     {
         $this->loginAdmin();
 
@@ -63,7 +63,7 @@ class AuthTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/admin');
     }
 
-    public function testCreateSessionWithFromParameter()
+    public function testCreateSessionWithFromParameter(): void
     {
         $response = $this->appRun('POST', '/admin/login', [
             'csrf' => \Minz\Csrf::generate(),
@@ -75,7 +75,7 @@ class AuthTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('the administrator', $_SESSION['account_id']);
     }
 
-    public function testCreateSessionFailsIfCsrfIsWrong()
+    public function testCreateSessionFailsIfCsrfIsWrong(): void
     {
         $response = $this->appRun('POST', '/admin/login', [
             'csrf' => 'not the token',
@@ -87,7 +87,7 @@ class AuthTest extends \PHPUnit\Framework\TestCase
         $this->assertArrayNotHasKey('account_id', $_SESSION);
     }
 
-    public function testCreateSessionFailsIfPasswordIsInvalid()
+    public function testCreateSessionFailsIfPasswordIsInvalid(): void
     {
         $response = $this->appRun('POST', '/admin/login', [
             'csrf' => \Minz\Csrf::generate(),
@@ -98,7 +98,7 @@ class AuthTest extends \PHPUnit\Framework\TestCase
         $this->assertArrayNotHasKey('account_id', $_SESSION, 'Le mot de passe semble invalide');
     }
 
-    public function testDeleteSession()
+    public function testDeleteSession(): void
     {
         $this->loginAdmin();
 
@@ -110,7 +110,7 @@ class AuthTest extends \PHPUnit\Framework\TestCase
         $this->assertArrayNotHasKey('account_id', $_SESSION);
     }
 
-    public function testDeleteSessionWhenUnconnected()
+    public function testDeleteSessionWhenUnconnected(): void
     {
         $response = $this->appRun('POST', '/admin/logout', [
             'csrf' => \Minz\Csrf::generate(),
@@ -119,7 +119,7 @@ class AuthTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/');
     }
 
-    public function testDeleteSessionFailsIfCsrfIsWrong()
+    public function testDeleteSessionFailsIfCsrfIsWrong(): void
     {
         $this->loginAdmin();
 

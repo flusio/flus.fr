@@ -2,6 +2,8 @@
 
 namespace Website\controllers\admin;
 
+use Minz\Request;
+use Minz\Response;
 use Website\utils;
 
 class Auth
@@ -18,13 +20,13 @@ class Auth
      * @response 200
      *     On success
      */
-    public function login($request)
+    public function login(Request $request): Response
     {
         if (utils\CurrentUser::isAdmin()) {
-            return \Minz\Response::redirect('admin');
+            return Response::redirect('admin');
         }
 
-        return \Minz\Response::ok('admin/auth/login.phtml', [
+        return Response::ok('admin/auth/login.phtml', [
             'from' => $request->param('from'),
         ]);
     }
@@ -45,17 +47,17 @@ class Auth
      * @response 302 :from
      *     On success
      */
-    public function createSession($request)
+    public function createSession(Request $request): Response
     {
         if (utils\CurrentUser::isAdmin()) {
-            return \Minz\Response::redirect('admin');
+            return Response::redirect('admin');
         }
 
         $password = $request->param('password');
         $from = $request->param('from');
 
         if (!\Minz\Csrf::validate($request->param('csrf'))) {
-            return \Minz\Response::badRequest('admin/auth/login.phtml', [
+            return Response::badRequest('admin/auth/login.phtml', [
                 'from' => $from,
                 'error' => 'Une vérification de sécurité a échoué, veuillez réessayer de soumettre le formulaire.',
             ]);
@@ -65,14 +67,18 @@ class Auth
         if (\password_verify($password, $hash)) {
             utils\CurrentUser::logAdminIn();
 
+            $location = '';
             if ($from) {
                 $location = urldecode($from);
-            } else {
+            }
+
+            if (!$location) {
                 $location = 'admin';
             }
-            return \Minz\Response::redirect($location, ['status' => 'connected']);
+
+            return Response::redirect($location, ['status' => 'connected']);
         } else {
-            return \Minz\Response::badRequest('admin/auth/login.phtml', [
+            return Response::badRequest('admin/auth/login.phtml', [
                 'from' => $from,
                 'error' => 'Le mot de passe semble invalide, désolé.',
             ]);
@@ -86,12 +92,12 @@ class Auth
      *
      * @response 302 /
      */
-    public function deleteSession($request)
+    public function deleteSession(Request $request): Response
     {
         if (\Minz\Csrf::validate($request->param('csrf')) && utils\CurrentUser::isAdmin()) {
             utils\CurrentUser::logOut();
         }
 
-        return \Minz\Response::redirect('home');
+        return Response::redirect('home');
     }
 }

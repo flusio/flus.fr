@@ -3,6 +3,7 @@
 namespace Website\services;
 
 use Website\mailers;
+use Website\models;
 
 /**
  * @author Marien Fressinaud <dev@marienfressinaud.fr>
@@ -12,27 +13,34 @@ class PaymentCompleter
 {
     /**
      * Complete a payment, send an invoice and extend the subscription
-     *
-     * @param \Website\models\Payment $payment
      */
-    public function complete($payment)
+    public function complete(models\Payment $payment): void
     {
         $payment->complete(\Minz\Time::now());
         $payment->save();
 
-        $invoice_pdf_service = new InvoicePDF($payment);
-        $invoice_pdf_service->createPDF($payment->invoiceFilepath());
-
         $account = $payment->account();
         if ($account && $payment->type === 'subscription') {
-            $account->extendSubscription($payment->frequency);
-            $account->save();
+            if ($payment->frequency) {
+                $account->extendSubscription($payment->frequency);
+                $account->save();
+            } else {
+                \Minz\Log::error("[PaymentCompleter#complete] Payment {$payment->id} has no frequency.");
+            }
         }
 
-        if ($account) {
-            $email = $account->email;
-            $invoice_mailer = new mailers\Invoices();
-            $invoice_mailer->sendInvoice($email, $payment->invoiceFilepath());
+        $invoice_filepath = $payment->invoiceFilepath();
+
+        if ($invoice_filepath) {
+            $invoice_pdf_service = new InvoicePDF($payment);
+            $invoice_pdf_service->createPDF($invoice_filepath);
+
+            if ($account) {
+                $invoice_mailer = new mailers\Invoices();
+                $invoice_mailer->sendInvoice($account->email, $invoice_filepath);
+            }
+        } else {
+            \Minz\Log::error("[PaymentCompleter#complete] Payment {$payment->id} has no invoice filepath.");
         }
     }
 }

@@ -23,11 +23,16 @@ class Stripe
      * @param string $success_url
      * @param string $cancel_url
      *
-     * @return \Stripe\Checkout\Session
+     * @return ?\Stripe\Checkout\Session
      */
     public function createSession($payment, $name, $success_url, $cancel_url)
     {
         $account = $payment->account();
+
+        if (!$account) {
+            return null;
+        }
+
         return \Stripe\Checkout\Session::create([
             'customer_email' => $account->email,
             'payment_method_types' => ['card'],

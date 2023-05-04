@@ -2,38 +2,29 @@
 
 /**
  * Format an amount to euros
- *
- * @param integer $amount
- *
- * @return string
  */
-function format_amount($amount)
+function format_amount(int $amount): string
 {
     return number_format($amount / 100, 2, ',', '&nbsp;') . '&nbsp;€';
 }
 
 /**
- * Format a month number with strftime.
- *
- * @param integer $month
- * @param string $format
- *
- * @return string
+ * Format a month number.
  */
-function format_month($month, $format)
+function format_month(int $month, string $format): string
 {
-    $date = date_create_from_format('n', strval($month));
-    return \Minz\Output\ViewHelpers::formatDate($date, $format);
+    $date = \DateTimeImmutable::createFromFormat('n', strval($month));
+    if ($date === false) {
+        return strval($month);
+    } else {
+        return \Minz\Output\ViewHelpers::formatDate($date, $format);
+    }
 }
 
 /**
- * Format a message into hmtl
- *
- * @param string $message
- *
- * @return string
+ * Format a message into hmtl.
  */
-function format_message($message)
+function format_message(string $message): string
 {
     return nl2br($message);
 }

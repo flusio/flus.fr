@@ -10,7 +10,7 @@ class HomeTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\ResponseAsserts;
     use \Minz\Tests\MailerAsserts;
 
-    public function testIndexRendersCorrectly()
+    public function testIndexRendersCorrectly(): void
     {
         $response = $this->appRun('GET', '/');
 
@@ -19,7 +19,7 @@ class HomeTest extends \PHPUnit\Framework\TestCase
         $this->assertResponsePointer($response, 'home/index.phtml');
     }
 
-    public function testProjectRendersCorrectly()
+    public function testProjectRendersCorrectly(): void
     {
         $response = $this->appRun('GET', '/projet');
 
@@ -28,7 +28,7 @@ class HomeTest extends \PHPUnit\Framework\TestCase
         $this->assertResponsePointer($response, 'home/project.phtml');
     }
 
-    public function testPricingRendersCorrectly()
+    public function testPricingRendersCorrectly(): void
     {
         $response = $this->appRun('GET', '/tarifs');
 
@@ -37,7 +37,7 @@ class HomeTest extends \PHPUnit\Framework\TestCase
         $this->assertResponsePointer($response, 'home/pricing.phtml');
     }
 
-    public function testTourRedirectsToTourNews()
+    public function testTourRedirectsToTourNews(): void
     {
         $response = $this->appRun('GET', '/visite');
 
@@ -47,7 +47,7 @@ class HomeTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider tourPagesProvider
      */
-    public function testTourPageRendersCorrectly($page)
+    public function testTourPageRendersCorrectly(string $page): void
     {
         $response = $this->appRun('GET', "/visite/{$page}");
 
@@ -55,14 +55,14 @@ class HomeTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, 'Visite guidée');
     }
 
-    public function testTourPageFailsIfPageUnknown()
+    public function testTourPageFailsIfPageUnknown(): void
     {
         $response = $this->appRun('GET', '/visite/unknown');
 
         $this->assertResponseCode($response, 404);
     }
 
-    public function testCreditsRendersCorrectly()
+    public function testCreditsRendersCorrectly(): void
     {
         $response = $this->appRun('GET', '/credits');
 
@@ -71,7 +71,7 @@ class HomeTest extends \PHPUnit\Framework\TestCase
         $this->assertResponsePointer($response, 'home/credits.phtml');
     }
 
-    public function testLegalRendersCorrectly()
+    public function testLegalRendersCorrectly(): void
     {
         $response = $this->appRun('GET', '/mentions-legales');
 
@@ -80,7 +80,7 @@ class HomeTest extends \PHPUnit\Framework\TestCase
         $this->assertResponsePointer($response, 'home/legal.phtml');
     }
 
-    public function testCgvRendersCorrectly()
+    public function testCgvRendersCorrectly(): void
     {
         $response = $this->appRun('GET', '/cgv');
 
@@ -89,21 +89,21 @@ class HomeTest extends \PHPUnit\Framework\TestCase
         $this->assertResponsePointer($response, 'home/cgv.phtml');
     }
 
-    public function testRobotsRendersCorrectly()
+    public function testRobotsRendersCorrectly(): void
     {
         $response = $this->appRun('GET', '/robots.txt');
 
         $this->assertResponseCode($response, 200);
     }
 
-    public function testSitemapRendersCorrectly()
+    public function testSitemapRendersCorrectly(): void
     {
         $response = $this->appRun('GET', '/sitemap.xml');
 
         $this->assertResponseCode($response, 200);
     }
 
-    public function testContactRendersCorrectly()
+    public function testContactRendersCorrectly(): void
     {
         $response = $this->appRun('GET', '/contact');
 
@@ -111,7 +111,7 @@ class HomeTest extends \PHPUnit\Framework\TestCase
         $this->assertResponsePointer($response, 'home/contact.phtml');
     }
 
-    public function testSendContactEmailSendsEmails()
+    public function testSendContactEmailSendsEmails(): void
     {
         $email = $this->fake('email');
         $subject = $this->fake('sentence');
@@ -131,13 +131,14 @@ class HomeTest extends \PHPUnit\Framework\TestCase
         $this->assertEmailsCount(1);
 
         $email_sent = \Minz\Tests\Mailer::take(0);
+        $this->assertNotNull($email_sent);
         $this->assertEmailSubject($email_sent, '[Flus] Contact : ' . $subject);
         $this->assertEmailContainsTo($email_sent, 'support@example.com');
         $this->assertEmailContainsReplyTo($email_sent, $email);
         $this->assertEmailContainsBody($email_sent, nl2br($content));
     }
 
-    public function testSendContactEmailFailsIfEmailIsMissing()
+    public function testSendContactEmailFailsIfEmailIsMissing(): void
     {
         $response = $this->appRun('POST', '/contact', [
             'subject' => $this->fake('sentence'),
@@ -150,7 +151,7 @@ class HomeTest extends \PHPUnit\Framework\TestCase
         $this->assertEmailsCount(0);
     }
 
-    public function testSendContactEmailFailsIfEmailIsInvalid()
+    public function testSendContactEmailFailsIfEmailIsInvalid(): void
     {
         $response = $this->appRun('POST', '/contact', [
             'email' => $this->fake('word'),
@@ -164,7 +165,7 @@ class HomeTest extends \PHPUnit\Framework\TestCase
         $this->assertEmailsCount(0);
     }
 
-    public function testSendContactEmailFailsIfSubjectIsMissing()
+    public function testSendContactEmailFailsIfSubjectIsMissing(): void
     {
         $response = $this->appRun('POST', '/contact', [
             'email' => $this->fake('email'),
@@ -177,7 +178,7 @@ class HomeTest extends \PHPUnit\Framework\TestCase
         $this->assertEmailsCount(0);
     }
 
-    public function testSendContactEmailFailsIfContentIsMissing()
+    public function testSendContactEmailFailsIfContentIsMissing(): void
     {
         $response = $this->appRun('POST', '/contact', [
             'email' => $this->fake('email'),
@@ -190,7 +191,7 @@ class HomeTest extends \PHPUnit\Framework\TestCase
         $this->assertEmailsCount(0);
     }
 
-    public function testSendContactEmailFailsIfWebsiteIsPresent()
+    public function testSendContactEmailFailsIfWebsiteIsPresent(): void
     {
         // The website parameter MUST NOT be sent: it’s a trap for the bots.
         // The field is hidden with CSS so people don't fill it.
@@ -207,7 +208,7 @@ class HomeTest extends \PHPUnit\Framework\TestCase
         $this->assertEmailsCount(0);
     }
 
-    public function testSecurityRendersCorrectly()
+    public function testSecurityRendersCorrectly(): void
     {
         $response = $this->appRun('GET', '/securite');
 
@@ -215,7 +216,7 @@ class HomeTest extends \PHPUnit\Framework\TestCase
         $this->assertResponsePointer($response, 'home/security.phtml');
     }
 
-    public function testSecurityTxtRendersCorrectly()
+    public function testSecurityTxtRendersCorrectly(): void
     {
         $response = $this->appRun('GET', '/.well-known/security.txt');
 
@@ -223,7 +224,10 @@ class HomeTest extends \PHPUnit\Framework\TestCase
         $this->assertResponsePointer($response, 'home/security.txt');
     }
 
-    public function tourPagesProvider()
+    /**
+     * @return array<array{string}>
+     */
+    public function tourPagesProvider(): array
     {
         return [
             ['flux'],

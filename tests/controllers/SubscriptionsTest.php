@@ -5,7 +5,11 @@ namespace Website\controllers;
 use tests\factories\AccountFactory;
 use tests\factories\PaymentFactory;
 use Website\models;
+use Website\utils;
 
+/**
+ * @phpstan-import-type AccountAddress from models\Account
+ */
 class SubscriptionsTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\LoginHelper;
@@ -17,8 +21,10 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider initParamsProvider
+     *
+     * @param AccountAddress $address
      */
-    public function testInitRendersCorrectly($address)
+    public function testInitRendersCorrectly(array $address): void
     {
         $this->loginUser([
             'address_first_name' => $address['first_name'],
@@ -36,8 +42,10 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider initParamsProvider
+     *
+     * @param AccountAddress $address
      */
-    public function testInitShowsInfoIfNotExpired($address)
+    public function testInitShowsInfoIfNotExpired(array $address): void
     {
         $expired_at = \Minz\Time::fromNow($this->fake('randomDigitNotNull'), 'days');
         $this->loginUser([
@@ -57,8 +65,10 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider initParamsProvider
+     *
+     * @param AccountAddress $address
      */
-    public function testInitRendersIfOngoingPayment($address)
+    public function testInitRendersIfOngoingPayment(array $address): void
     {
         $expired_at = \Minz\Time::fromNow($this->fake('randomDigitNotNull'), 'days');
         $user = $this->loginUser([
@@ -80,7 +90,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, 'Attention, vous avez un paiement en cours de traitement');
     }
 
-    public function testInitRedirectsIfNoAddress()
+    public function testInitRedirectsIfNoAddress(): void
     {
         $this->loginUser();
 
@@ -91,8 +101,10 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider initParamsProvider
+     *
+     * @param AccountAddress $address
      */
-    public function testInitFailsIfNotConnected($address)
+    public function testInitFailsIfNotConnected(array $address): void
     {
         AccountFactory::create([
             'address_first_name' => $address['first_name'],
@@ -109,8 +121,10 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider renewParamsProvider
+     *
+     * @param AccountAddress $address
      */
-    public function testRenewCreatesAPaymentAndRedirects($address, $frequency)
+    public function testRenewCreatesAPaymentAndRedirects(array $address, string $frequency): void
     {
         $user = $this->loginUser([
             'address_first_name' => $address['first_name'],
@@ -122,6 +136,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
         $account = models\Account::find($user['account_id']);
 
         $this->assertSame(0, models\Payment::count());
+        $this->assertNotNull($account);
 
         $response = $this->appRun('POST', '/account/renew', [
             'csrf' => \Minz\Csrf::generate(),
@@ -132,6 +147,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, models\Payment::count());
 
         $payment = models\Payment::take();
+        $this->assertNotNull($payment);
         $this->assertResponseCode($response, 302, "/payments/{$payment->id}/pay");
         $expected_amount = $frequency === 'month' ? 300 : 3000;
         $this->assertNull($payment->completed_at);
@@ -144,8 +160,10 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider renewParamsProvider
+     *
+     * @param AccountAddress $address
      */
-    public function testRenewSavesPreferredFrequency($address, $frequency)
+    public function testRenewSavesPreferredFrequency(array $address, string $frequency): void
     {
         $frequency = 'year';
         $user = $this->loginUser([
@@ -164,16 +182,21 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $account = models\Account::find($user['account_id']);
+        $this->assertNotNull($account);
         $this->assertSame('year', $account->preferred_frequency);
     }
 
     /**
      * @dataProvider renewParamsProvider
+     *
+     * @param AccountAddress $address
      */
-    public function testRenewRedirectsIfNoAddress($address, $frequency)
+    public function testRenewRedirectsIfNoAddress(array $address, string $frequency): void
     {
         $user = $this->loginUser();
         $account = models\Account::find($user['account_id']);
+
+        $this->assertNotNull($account);
 
         $response = $this->appRun('POST', '/account/renew', [
             'csrf' => \Minz\Csrf::generate(),
@@ -187,8 +210,10 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider renewParamsProvider
+     *
+     * @param AccountAddress $address
      */
-    public function testRenewFailsIfNotConnected($address, $frequency)
+    public function testRenewFailsIfNotConnected(array $address, string $frequency): void
     {
         $account = AccountFactory::create([
             'address_first_name' => $address['first_name'],
@@ -210,8 +235,10 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider renewParamsProvider
+     *
+     * @param AccountAddress $address
      */
-    public function testRenewFailsIfFrequencyIsInvalid($address, $frequency)
+    public function testRenewFailsIfFrequencyIsInvalid(array $address, string $frequency): void
     {
         $user = $this->loginUser([
             'address_first_name' => $address['first_name'],
@@ -222,6 +249,8 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
         ]);
         $account = models\Account::find($user['account_id']);
         $frequency = $this->fake('word');
+
+        $this->assertNotNull($account);
 
         $response = $this->appRun('POST', '/account/renew', [
             'csrf' => \Minz\Csrf::generate(),
@@ -236,8 +265,10 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider renewParamsProvider
+     *
+     * @param AccountAddress $address
      */
-    public function testRenewFailsIfCsrfIsInvalid($address, $frequency)
+    public function testRenewFailsIfCsrfIsInvalid(array $address, string $frequency): void
     {
         $user = $this->loginUser([
             'address_first_name' => $address['first_name'],
@@ -247,6 +278,8 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
             'address_city' => $address['city'],
         ]);
         $account = models\Account::find($user['account_id']);
+
+        $this->assertNotNull($account);
 
         $response = $this->appRun('POST', '/account/renew', [
             'csrf' => 'not the token',
@@ -259,7 +292,10 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Payment::count());
     }
 
-    public function initParamsProvider()
+    /**
+     * @return array<array{AccountAddress}>
+     */
+    public function initParamsProvider(): array
     {
         $faker = \Faker\Factory::create();
         $datasets = [];
@@ -271,6 +307,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
                     'address1' => $faker->streetAddress,
                     'postcode' => $faker->postcode,
                     'city' => $faker->city,
+                    'country' => $faker->randomElement(utils\Countries::codes()),
                 ],
             ];
         }
@@ -278,7 +315,10 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
         return $datasets;
     }
 
-    public function renewParamsProvider()
+    /**
+     * @return array<array{AccountAddress, string}>
+     */
+    public function renewParamsProvider(): array
     {
         $faker = \Faker\Factory::create();
         $datasets = [];
@@ -290,6 +330,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
                     'address1' => $faker->streetAddress,
                     'postcode' => $faker->postcode,
                     'city' => $faker->city,
+                    'country' => $faker->randomElement(utils\Countries::codes()),
                 ],
                 $faker->randomElement(['month', 'year']),
             ];

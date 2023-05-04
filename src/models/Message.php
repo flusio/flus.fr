@@ -24,7 +24,7 @@ class Message
     #[Validable\Presence(message: 'Saisissez un message.')]
     public string $content;
 
-    public function __construct($email, $subject, $content)
+    public function __construct(string $email, string $subject, string $content)
     {
         $this->email = \Minz\Email::sanitize($email);
         $this->subject = trim($subject);

@@ -2,6 +2,8 @@
 
 namespace Website\controllers;
 
+use Minz\Request;
+use Minz\Response;
 use Website\models;
 
 class Stripe
@@ -19,7 +21,7 @@ class Stripe
      * @response 200
      *     On success
      */
-    public function hooks($request)
+    public function hooks(Request $request): Response
     {
         $payload = $request->param('@input');
         $signature = $request->header('HTTP_STRIPE_SIGNATURE');
@@ -29,10 +31,10 @@ class Stripe
             $event = \Stripe\Webhook::constructEvent($payload, $signature, $hook_secret);
         } catch (\UnexpectedValueException $e) {
             \Minz\Log::error($e->getMessage());
-            return \Minz\Response::badRequest();
+            return Response::badRequest();
         } catch (\Stripe\Exception\SignatureVerificationException $e) {
             \Minz\Log::error($e->getMessage());
-            return \Minz\Response::badRequest();
+            return Response::badRequest();
         }
 
         if ($event->type === 'checkout.session.completed') {
@@ -44,18 +46,18 @@ class Stripe
 
             if (!$payment) {
                 \Minz\Log::warning("Payment {$session->payment_intent} completed, not in database.");
-                return \Minz\Response::ok();
+                return Response::ok();
             }
 
             if ($payment->is_paid) {
                 // We already know that the payment is paid
-                return \Minz\Response::ok();
+                return Response::ok();
             }
 
             $payment->is_paid = true;
             $payment->save();
         }
 
-        return \Minz\Response::ok();
+        return Response::ok();
     }
 }

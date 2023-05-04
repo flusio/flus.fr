@@ -4,7 +4,7 @@ namespace Website\migrations;
 
 class Migration2020121701AddPreferredServiceToAccounts
 {
-    public function migrate()
+    public function migrate(): bool
     {
         $database = \Minz\Database::get();
 
@@ -16,7 +16,7 @@ class Migration2020121701AddPreferredServiceToAccounts
         return true;
     }
 
-    public function rollback()
+    public function rollback(): bool
     {
         // Removing a column in accounts with dependent payments is too
         // complicated.

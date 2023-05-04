@@ -16,7 +16,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider showParamsProvider
      */
-    public function testShowReturnsAccountId($email)
+    public function testShowReturnsAccountId(string $email): void
     {
         $account = AccountFactory::create([
             'email' => $email,
@@ -40,7 +40,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider showParamsProvider
      */
-    public function testShowCreatesAccountIfDoesNotExist($email)
+    public function testShowCreatesAccountIfDoesNotExist(string $email): void
     {
         $this->assertSame(0, models\Account::count());
 
@@ -57,12 +57,13 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         ]);
         $this->assertSame(1, models\Account::count());
         $account = models\Account::take();
+        $this->assertNotNull($account);
         $this->assertSame($email, $account->email);
         $output = json_decode($response->render(), true);
         $this->assertSame($account->id, $output['id']);
     }
 
-    public function testShowUpdatesLastSyncAt()
+    public function testShowUpdatesLastSyncAt(): void
     {
         $now = $this->fake('dateTime');
         $this->freeze($now);
@@ -79,6 +80,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 200);
+        /** @var models\Account */
         $account = $account->reload();
         $this->assertEquals($now, $account->last_sync_at);
     }
@@ -86,7 +88,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider showParamsProvider
      */
-    public function testShowFailsIfMissingAuth($email)
+    public function testShowFailsIfMissingAuth(string $email): void
     {
         $account = AccountFactory::create([
             'email' => $email,
@@ -99,7 +101,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 401);
     }
 
-    public function testShowFailsIfEmailIsInvalid()
+    public function testShowFailsIfEmailIsInvalid(): void
     {
         $email = $this->fake('word');
 
@@ -113,7 +115,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, 'Saisissez une adresse courriel valide.');
     }
 
-    public function testLoginUrlSetsAccessTokenReturnsAUrl()
+    public function testLoginUrlSetsAccessTokenReturnsAUrl(): void
     {
         $this->freeze();
         $account = AccountFactory::create([
@@ -132,8 +134,11 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
             'Content-Type' => 'application/json'
         ]);
 
+        /** @var models\Account */
         $account = $account->reload();
+        $this->assertNotEmpty($account->access_token);
         $token = models\Token::find($account->access_token);
+        $this->assertNotNull($token);
         $this->assertTrue($token->isValid());
         $this->assertTrue($token->expiresIn(10, 'minutes'));
 
@@ -145,7 +150,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($expected_url, $output['url']);
     }
 
-    public function testLoginUrlFailsIfMissingAuth()
+    public function testLoginUrlFailsIfMissingAuth(): void
     {
         $this->freeze();
         $account = AccountFactory::create([
@@ -157,11 +162,12 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 401);
+        /** @var models\Account */
         $account = $account->reload();
         $this->assertNull($account->access_token);
     }
 
-    public function testLoginUrlFailsIfAccountIsInvalid()
+    public function testLoginUrlFailsIfAccountIsInvalid(): void
     {
         $this->freeze();
         $account = AccountFactory::create([
@@ -175,11 +181,12 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 404);
+        /** @var models\Account */
         $account = $account->reload();
         $this->assertNull($account->access_token);
     }
 
-    public function testExpiredAtReturnsExpiredAt()
+    public function testExpiredAtReturnsExpiredAt(): void
     {
         $expired_at = $this->fake('dateTime');
         $account = AccountFactory::create([
@@ -204,7 +211,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testExpiredAtUpdatesLastSyncAt()
+    public function testExpiredAtUpdatesLastSyncAt(): void
     {
         $now = $this->fake('dateTime');
         $this->freeze($now);
@@ -219,11 +226,12 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 200);
+        /** @var models\Account */
         $account = $account->reload();
         $this->assertEquals($now, $account->last_sync_at);
     }
 
-    public function testExpiredAtFailsIfMissingAuth()
+    public function testExpiredAtFailsIfMissingAuth(): void
     {
         $account = AccountFactory::create();
 
@@ -234,7 +242,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 401);
     }
 
-    public function testExpiredAtFailsIfAccountIsInvalid()
+    public function testExpiredAtFailsIfAccountIsInvalid(): void
     {
         $account = AccountFactory::create();
 
@@ -247,7 +255,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 404);
     }
 
-    public function testSyncReturnsExpiredAt()
+    public function testSyncReturnsExpiredAt(): void
     {
         $expired_at = $this->fakeUnique('dateTime');
         $account = AccountFactory::create([
@@ -273,7 +281,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testSyncUpdatesLastSyncAt()
+    public function testSyncUpdatesLastSyncAt(): void
     {
         $now = $this->fake('dateTime');
         $this->freeze($now);
@@ -288,11 +296,12 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 200);
+        /** @var models\Account */
         $account = $account->reload();
         $this->assertEquals($now, $account->last_sync_at);
     }
 
-    public function testSyncDoesNotReturnUnknownAccounts()
+    public function testSyncDoesNotReturnUnknownAccounts(): void
     {
         $account_id = 'not-an-id';
 
@@ -308,7 +317,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $this->assertArrayNotHasKey($account_id, $result);
     }
 
-    public function testSyncIgnoresNullAccountIds()
+    public function testSyncIgnoresNullAccountIds(): void
     {
         $expired_at = $this->fakeUnique('dateTime');
         $account = AccountFactory::create([
@@ -335,7 +344,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testSyncFailsIfAccountIdsIsNotValidJson()
+    public function testSyncFailsIfAccountIdsIsNotValidJson(): void
     {
         $account = AccountFactory::create();
 
@@ -355,7 +364,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('account_ids is not a valid JSON array', $result['error']);
     }
 
-    public function testSyncFailsIfMissingAuth()
+    public function testSyncFailsIfMissingAuth(): void
     {
         $account = AccountFactory::create();
 
@@ -366,7 +375,10 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 401);
     }
 
-    public function showParamsProvider()
+    /**
+     * @return array<array{string}>
+     */
+    public function showParamsProvider(): array
     {
         $faker = \Faker\Factory::create();
         $datasets = [];

@@ -2,6 +2,8 @@
 
 namespace Website\controllers;
 
+use Minz\Request;
+use Minz\Response;
 use Website\models;
 use Website\services;
 use Website\utils;
@@ -20,16 +22,20 @@ class Accounts
      * @response 200
      *     on success
      */
-    public function show($request)
+    public function show(Request $request): Response
     {
         $user = utils\CurrentUser::get();
         if (!$user || utils\CurrentUser::isAdmin()) {
-            return \Minz\Response::unauthorized('unauthorized.phtml');
+            return Response::unauthorized('unauthorized.phtml');
         }
 
         $account = models\Account::find($user['account_id']);
+        if (!$account) {
+            return Response::unauthorized('unauthorized.phtml');
+        }
+
         if ($account->mustSetAddress()) {
-            return \Minz\Response::redirect('account address');
+            return Response::redirect('account address');
         }
 
         $ongoing_payment = $account->ongoingPayment();
@@ -41,7 +47,7 @@ class Accounts
             $ongoing_payment = null;
         }
 
-        return \Minz\Response::ok('accounts/show.phtml', [
+        return Response::ok('accounts/show.phtml', [
             'account' => $account,
             'payments' => $account->payments(),
             'ongoing_payment' => $ongoing_payment,
@@ -59,45 +65,49 @@ class Accounts
      * @response 302 /account
      *     on success
      */
-    public function login($request)
+    public function login(Request $request): Response
     {
         $account_id = $request->param('account_id');
-        $access_token = $request->param('access_token');
+        $access_token = $request->param('access_token', '');
 
         $account = models\Account::find($account_id);
         if (!$account) {
-            return \Minz\Response::notFound('not_found.phtml');
+            return Response::notFound('not_found.phtml');
         }
 
         if (!$account->checkAccess($access_token)) {
-            return \Minz\Response::badRequest('bad_request.phtml');
+            return Response::badRequest('bad_request.phtml');
         }
 
         utils\CurrentUser::logUserIn($account->id);
 
-        models\Token::delete($account->access_token);
+        // Reset the access token immediately.
+        if ($account->access_token) {
+            models\Token::delete($account->access_token);
+        }
 
-        return \Minz\Response::redirect('account');
+        return Response::redirect('account');
     }
 
     /**
      * @response 302
      */
-    public function logout($request)
+    public function logout(Request $request): Response
     {
         $user = utils\CurrentUser::get();
 
         if (\Minz\Csrf::validate($request->param('csrf')) && $user) {
-            $account = models\Account::find($user['account_id']);
             utils\CurrentUser::logOut();
-            if ($account->preferred_service === 'flusio') {
-                return \Minz\Response::found('https://app.flus.fr');
+
+            $account = models\Account::find($user['account_id']);
+            if ($account && $account->preferred_service === 'freshrss') {
+                return Response::found('https://flus.io');
             } else {
-                return \Minz\Response::found('https://flus.io');
+                return Response::found('https://app.flus.fr');
             }
         }
 
-        return \Minz\Response::redirect('home');
+        return Response::redirect('home');
     }
 
     /**
@@ -106,15 +116,19 @@ class Accounts
      * @response 200
      *     on success
      */
-    public function address($request)
+    public function address(Request $request): Response
     {
         $user = utils\CurrentUser::get();
         if (!$user || utils\CurrentUser::isAdmin()) {
-            return \Minz\Response::unauthorized('unauthorized.phtml');
+            return Response::unauthorized('unauthorized.phtml');
         }
 
         $account = models\Account::find($user['account_id']);
-        return \Minz\Response::ok('accounts/address.phtml', [
+        if (!$account) {
+            return Response::unauthorized('unauthorized.phtml');
+        }
+
+        return Response::ok('accounts/address.phtml', [
             'account' => $account,
             'email' => $account->email,
             'address' => $account->address(),
@@ -130,14 +144,17 @@ class Accounts
      * @response 302 /account
      *     on success
      */
-    public function updateAddress($request)
+    public function updateAddress(Request $request): Response
     {
         $user = utils\CurrentUser::get();
         if (!$user || utils\CurrentUser::isAdmin()) {
-            return \Minz\Response::unauthorized('unauthorized.phtml');
+            return Response::unauthorized('unauthorized.phtml');
         }
 
         $account = models\Account::find($user['account_id']);
+        if (!$account) {
+            return Response::unauthorized('unauthorized.phtml');
+        }
 
         $email = $request->param('email', '');
         $address = $request->paramArray('address', $account->address());
@@ -165,7 +182,7 @@ class Accounts
         }
 
         if ($errors) {
-            return \Minz\Response::badRequest('accounts/address.phtml', [
+            return Response::badRequest('accounts/address.phtml', [
                 'account' => $account,
                 'email' => $email,
                 'address' => $address,
@@ -175,7 +192,7 @@ class Accounts
         }
 
         if (!\Minz\Csrf::validate($request->param('csrf'))) {
-            return \Minz\Response::badRequest('accounts/address.phtml', [
+            return Response::badRequest('accounts/address.phtml', [
                 'account' => $account,
                 'email' => $email,
                 'address' => $address,
@@ -186,7 +203,7 @@ class Accounts
 
         $account->save();
 
-        return \Minz\Response::redirect('account');
+        return Response::redirect('account');
     }
 
     /**
@@ -201,14 +218,17 @@ class Accounts
      * @response 302 /account
      *     on success
      */
-    public function setReminder($request)
+    public function setReminder(Request $request): Response
     {
         $user = utils\CurrentUser::get();
         if (!$user || utils\CurrentUser::isAdmin()) {
-            return \Minz\Response::unauthorized('unauthorized.phtml');
+            return Response::unauthorized('unauthorized.phtml');
         }
 
         $account = models\Account::find($user['account_id']);
+        if (!$account) {
+            return Response::unauthorized('unauthorized.phtml');
+        }
 
         $reminder = $request->paramBoolean('reminder', false);
         $from = $request->param('from', 'account');
@@ -218,6 +238,6 @@ class Accounts
             $account->save();
         }
 
-        return \Minz\Response::redirect($from);
+        return Response::redirect($from);
     }
 }

@@ -8,7 +8,7 @@ class AccountTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\TimeHelper;
 
-    public function testExtendSubscriptionAdds1MonthToCurrentIfExpirationInFuture()
+    public function testExtendSubscriptionAdds1MonthToCurrentIfExpirationInFuture(): void
     {
         $now = $this->fake('dateTime');
         $this->freeze($now);
@@ -22,7 +22,7 @@ class AccountTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($expected_expired_at->getTimestamp(), $account->expired_at->getTimestamp());
     }
 
-    public function testExtendSubscriptionAdds1YearToCurrentIfExpirationInFuture()
+    public function testExtendSubscriptionAdds1YearToCurrentIfExpirationInFuture(): void
     {
         $now = $this->fake('dateTime');
         $this->freeze($now);
@@ -36,7 +36,7 @@ class AccountTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($expected_expired_at->getTimestamp(), $account->expired_at->getTimestamp());
     }
 
-    public function testExtendSubscriptionAdds1MonthToTodayIfExpirationInPast()
+    public function testExtendSubscriptionAdds1MonthToTodayIfExpirationInPast(): void
     {
         $now = $this->fake('dateTime');
         $this->freeze($now);
@@ -50,7 +50,7 @@ class AccountTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($expected_expired_at->getTimestamp(), $account->expired_at->getTimestamp());
     }
 
-    public function testExtendSubscriptionAdds1YearToTodayIfExpirationInPast()
+    public function testExtendSubscriptionAdds1YearToTodayIfExpirationInPast(): void
     {
         $now = $this->fake('dateTime');
         $this->freeze($now);
@@ -64,7 +64,7 @@ class AccountTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($expected_expired_at->getTimestamp(), $account->expired_at->getTimestamp());
     }
 
-    public function testExtendSubscriptionDoesNothingIfFreeAccount()
+    public function testExtendSubscriptionDoesNothingIfFreeAccount(): void
     {
         $frequency = $this->fake('randomElement', ['month', 'year']);
         $expired_at = new \DateTimeImmutable('@0');

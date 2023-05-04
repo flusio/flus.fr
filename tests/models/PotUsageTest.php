@@ -11,7 +11,7 @@ class PotUsageTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\TimeHelper;
 
-    public function testFindAvailableAmount()
+    public function testFindAvailableAmount(): void
     {
         $revenues = $this->fake('numberBetween', 500, 1000);
         $expenses = $this->fake('numberBetween', 100, 499);
@@ -31,7 +31,7 @@ class PotUsageTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($expected_amount, $amount);
     }
 
-    public function testFindAvailableAmountWhenNoExpenses()
+    public function testFindAvailableAmountWhenNoExpenses(): void
     {
         $revenues = $this->fake('numberBetween', 500, 1000);
         PaymentFactory::create([
@@ -46,7 +46,7 @@ class PotUsageTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($expected_amount, $amount);
     }
 
-    public function testFindAvailableAmountWhenRevenueIsNotCompleted()
+    public function testFindAvailableAmountWhenRevenueIsNotCompleted(): void
     {
         $revenues = $this->fake('numberBetween', 500, 1000);
         $expenses = $this->fake('numberBetween', 100, 499);
@@ -66,7 +66,7 @@ class PotUsageTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($expected_amount, $amount);
     }
 
-    public function testFindAvailableAmountWhenRevenueIsSubscription()
+    public function testFindAvailableAmountWhenRevenueIsSubscription(): void
     {
         $revenues = $this->fake('numberBetween', 500, 1000);
         $expenses = $this->fake('numberBetween', 100, 499);
@@ -86,7 +86,7 @@ class PotUsageTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($expected_amount, $amount);
     }
 
-    public function testFindAvailableAmountWhenExpenseIsNotCompleted()
+    public function testFindAvailableAmountWhenExpenseIsNotCompleted(): void
     {
         // Note this case should never happen in real life (pot_usages
         // are always completed)

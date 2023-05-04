@@ -2,6 +2,8 @@
 
 namespace Website\controllers\api;
 
+use Minz\Request;
+use Minz\Response;
 use Website\models;
 
 /**
@@ -21,12 +23,12 @@ class Accounts
      * @response 200
      *     on success
      */
-    public function show($request)
+    public function show(Request $request): Response
     {
         $auth_token = $request->header('PHP_AUTH_USER', '');
         $private_key = \Minz\Configuration::$application['flus_private_key'];
         if (!hash_equals($private_key, $auth_token)) {
-            return \Minz\Response::unauthorized();
+            return Response::unauthorized();
         }
 
         $email = \Minz\Email::sanitize($request->param('email', ''));
@@ -40,7 +42,7 @@ class Accounts
             /** @var array<string, string> */
             $errors = $account->validate();
             if ($errors) {
-                return \Minz\Response::text(400, implode(' ', $errors));
+                return Response::text(400, implode(' ', $errors));
             }
 
             $account->save();
@@ -49,7 +51,7 @@ class Accounts
             $account->save();
         }
 
-        return \Minz\Response::json(200, [
+        return Response::json(200, [
             'id' => $account->id,
             'expired_at' => $account->expired_at->format(\Minz\Database\Column::DATETIME_FORMAT),
         ]);
@@ -69,12 +71,12 @@ class Accounts
      * @response 200
      *     on success
      */
-    public function loginUrl($request)
+    public function loginUrl(Request $request): Response
     {
         $auth_token = $request->header('PHP_AUTH_USER', '');
         $private_key = \Minz\Configuration::$application['flus_private_key'];
         if (!hash_equals($private_key, $auth_token)) {
-            return \Minz\Response::unauthorized();
+            return Response::unauthorized();
         }
 
         $account_id = $request->param('account_id');
@@ -82,7 +84,7 @@ class Accounts
 
         $account = models\Account::find($account_id);
         if (!$account) {
-            return \Minz\Response::notFound();
+            return Response::notFound();
         }
 
         if ($service !== 'flusio' && $service !== 'freshrss') {
@@ -101,7 +103,7 @@ class Accounts
             'access_token' => $account->access_token,
         ]);
 
-        return \Minz\Response::json(200, [
+        return Response::json(200, [
             'url' => $login_url,
         ]);
     }
@@ -117,25 +119,25 @@ class Accounts
      * @response 200
      *     on success
      */
-    public function expiredAt($request)
+    public function expiredAt(Request $request): Response
     {
         $auth_token = $request->header('PHP_AUTH_USER', '');
         $private_key = \Minz\Configuration::$application['flus_private_key'];
         if (!hash_equals($private_key, $auth_token)) {
-            return \Minz\Response::unauthorized();
+            return Response::unauthorized();
         }
 
         $account_id = $request->param('account_id');
 
         $account = models\Account::find($account_id);
         if (!$account) {
-            return \Minz\Response::notFound();
+            return Response::notFound();
         }
 
         $account->last_sync_at = \Minz\Time::now();
         $account->save();
 
-        return \Minz\Response::json(200, [
+        return Response::json(200, [
             'expired_at' => $account->expired_at->format(\Minz\Database\Column::DATETIME_FORMAT),
         ]);
     }
@@ -155,17 +157,17 @@ class Accounts
      * @response 200
      *     on success
      */
-    public function sync($request)
+    public function sync(Request $request): Response
     {
         $auth_token = $request->header('PHP_AUTH_USER', '');
         $private_key = \Minz\Configuration::$application['flus_private_key'];
         if (!hash_equals($private_key, $auth_token)) {
-            return \Minz\Response::unauthorized();
+            return Response::unauthorized();
         }
 
         $account_ids = $request->paramJson('account_ids');
         if (!is_array($account_ids)) {
-            return \Minz\Response::json(400, [
+            return Response::json(400, [
                 'error' => 'account_ids is not a valid JSON array',
             ]);
         }
@@ -178,6 +180,6 @@ class Accounts
             $result[$account->id] = $account->expired_at->format(\Minz\Database\Column::DATETIME_FORMAT);
         }
 
-        return \Minz\Response::json(200, $result);
+        return Response::json(200, $result);
     }
 }

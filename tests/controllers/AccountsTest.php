@@ -8,6 +8,9 @@ use tests\factories\TokenFactory;
 use Website\models;
 use Website\utils;
 
+/**
+ * @phpstan-import-type AccountAddress from models\Account
+ */
 class AccountsTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\LoginHelper;
@@ -19,8 +22,10 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider addressesProvider
+     *
+     * @param AccountAddress $address
      */
-    public function testShowRendersCorrectly($email, $address)
+    public function testShowRendersCorrectly(string $email, array $address): void
     {
         $this->loginUser([
             'email' => $email,
@@ -40,8 +45,10 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider addressesProvider
+     *
+     * @param AccountAddress $address
      */
-    public function testShowRendersFutureExpiration($email, $address)
+    public function testShowRendersFutureExpiration(string $email, array $address): void
     {
         $this->freeze($this->fake('dateTime'));
         $expired_at = \Minz\Time::fromNow($this->fake('randomDigitNotNull'), 'days');
@@ -62,8 +69,10 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider addressesProvider
+     *
+     * @param AccountAddress $address
      */
-    public function testShowRendersPriorExpiration($email, $address)
+    public function testShowRendersPriorExpiration(string $email, array $address): void
     {
         $this->freeze($this->fake('dateTime'));
         $expired_at = \Minz\Time::ago($this->fake('randomDigitNotNull'), 'days');
@@ -84,10 +93,12 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider addressesProvider
+     *
+     * @param AccountAddress $address
      */
-    public function testShowRendersIfNoExpiration($email, $address)
+    public function testShowRendersIfNoExpiration(string $email, array $address): void
     {
-        $expired_at = new \DateTime('@0');
+        $expired_at = new \DateTimeImmutable('@0');
         $this->loginUser([
             'expired_at' => $expired_at,
             'address_first_name' => $address['first_name'],
@@ -105,8 +116,10 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider addressesProvider
+     *
+     * @param AccountAddress $address
      */
-    public function testShowRendersIfOngoingAndUnpaidPayment($email, $address)
+    public function testShowRendersIfOngoingAndUnpaidPayment(string $email, array $address): void
     {
         $user = $this->loginUser([
             'email' => $email,
@@ -131,8 +144,10 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider addressesProvider
+     *
+     * @param AccountAddress $address
      */
-    public function testShowCompletesAnOngoingAndPaidPayment($email, $address)
+    public function testShowCompletesAnOngoingAndPaidPayment(string $email, array $address): void
     {
         $user = $this->loginUser([
             'email' => $email,
@@ -146,16 +161,18 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
             'account_id' => $user['account_id'],
             'completed_at' => null,
             'is_paid' => true,
+            'frequency' => 'year',
         ]);
 
         $response = $this->appRun('GET', '/account');
 
         $this->assertResponseNotContains($response, 'Votre paiement est en cours de traitement');
         $payment = $payment->reload();
+        $this->assertNotNull($payment);
         $this->assertNotNull($payment->completed_at);
     }
 
-    public function testShowRedirectsIfNoAddress()
+    public function testShowRedirectsIfNoAddress(): void
     {
         $email = $this->fake('email');
         $this->loginUser([
@@ -168,7 +185,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/account/address');
     }
 
-    public function testShowFailsIfNotConnected()
+    public function testShowFailsIfNotConnected(): void
     {
         $response = $this->appRun('GET', '/account');
 
@@ -176,7 +193,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, 'Désolé, mais vous n’êtes pas connecté‧e');
     }
 
-    public function testLoginRedirectsToShow()
+    public function testLoginRedirectsToShow(): void
     {
         $token = TokenFactory::create([
             'expired_at' => \Minz\Time::fromNow(30, 'days'),
@@ -196,7 +213,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($account->id, $user['account_id']);
     }
 
-    public function testLoginDeletesTheAccessToken()
+    public function testLoginDeletesTheAccessToken(): void
     {
         $token = TokenFactory::create([
             'expired_at' => \Minz\Time::fromNow(30, 'days'),
@@ -211,11 +228,12 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $account = $account->reload();
+        $this->assertNotNull($account);
         $this->assertNull($account->access_token);
         $this->assertFalse(models\Token::exists($token->token));
     }
 
-    public function testLoginRedirectsIfAlreadyConnected()
+    public function testLoginRedirectsIfAlreadyConnected(): void
     {
         $token = TokenFactory::create([
             'expired_at' => \Minz\Time::fromNow(30, 'days'),
@@ -236,7 +254,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($account_id, $user['account_id']);
     }
 
-    public function testLoginRedirectsIfAlreadyConnectedAsAdmin()
+    public function testLoginRedirectsIfAlreadyConnectedAsAdmin(): void
     {
         $user = $this->loginAdmin();
         $token = TokenFactory::create([
@@ -257,7 +275,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($account->id, $user['account_id']);
     }
 
-    public function testLoginFailsIfAccountIdIsInvalid()
+    public function testLoginFailsIfAccountIdIsInvalid(): void
     {
         $token = TokenFactory::create([
             'expired_at' => \Minz\Time::fromNow(30, 'days'),
@@ -276,7 +294,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($user);
     }
 
-    public function testLoginFailsIfAccessTokenIsInvalid()
+    public function testLoginFailsIfAccessTokenIsInvalid(): void
     {
         $token = TokenFactory::create([
             'expired_at' => \Minz\Time::fromNow(30, 'days'),
@@ -295,7 +313,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($user);
     }
 
-    public function testLoginFailsIfAccessTokenIsExpired()
+    public function testLoginFailsIfAccessTokenIsExpired(): void
     {
         $token = TokenFactory::create([
             'expired_at' => \Minz\Time::ago(30, 'days'),
@@ -314,7 +332,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($user);
     }
 
-    public function testLoginFailsIfAccessTokenIsNotSet()
+    public function testLoginFailsIfAccessTokenIsNotSet(): void
     {
         $token = TokenFactory::create([
             'expired_at' => \Minz\Time::fromNow(30, 'days'),
@@ -333,7 +351,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($user);
     }
 
-    public function testLogoutRedirectsToShow()
+    public function testLogoutRedirectsToShow(): void
     {
         $service = $this->fake('randomElement', ['flusio', 'freshrss']);
         $this->loginUser([
@@ -354,7 +372,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($user);
     }
 
-    public function testLogoutDoesNotLogOutIfCsrfIsInvalid()
+    public function testLogoutDoesNotLogOutIfCsrfIsInvalid(): void
     {
         $this->loginUser();
 
@@ -367,7 +385,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($user);
     }
 
-    public function testAddressRendersCorrectly()
+    public function testAddressRendersCorrectly(): void
     {
         $this->loginUser();
 
@@ -377,7 +395,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponsePointer($response, 'accounts/address.phtml');
     }
 
-    public function testAddressFailsIfNotConnected()
+    public function testAddressFailsIfNotConnected(): void
     {
         $response = $this->appRun('GET', '/account/address');
 
@@ -386,8 +404,10 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider addressesProvider
+     *
+     * @param AccountAddress $address
      */
-    public function testUpdateAddressChangesAddressAndRedirects($email, $address)
+    public function testUpdateAddressChangesAddressAndRedirects(string $email, array $address): void
     {
         $user = $this->loginUser();
 
@@ -399,6 +419,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 302, '/account');
         $account = models\Account::find($user['account_id']);
+        $this->assertNotNull($account);
         $this->assertSame($email, $account->email);
         $this->assertSame($address['first_name'], $account->address_first_name);
         $this->assertSame($address['last_name'], $account->address_last_name);
@@ -409,8 +430,10 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider addressesProvider
+     *
+     * @param AccountAddress $address
      */
-    public function testUpdateAddressAcceptsNoPhysicalAddress($email, $address)
+    public function testUpdateAddressAcceptsNoPhysicalAddress(string $email, array $address): void
     {
         $user = $this->loginUser();
         unset($address['address1']);
@@ -425,6 +448,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 302, '/account');
         $account = models\Account::find($user['account_id']);
+        $this->assertNotNull($account);
         $this->assertSame($email, $account->email);
         $this->assertSame($address['first_name'], $account->address_first_name);
         $this->assertSame($address['last_name'], $account->address_last_name);
@@ -435,8 +459,10 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider addressesProvider
+     *
+     * @param AccountAddress $address
      */
-    public function testUpdateAddressFailsIfNotConnected($email, $address)
+    public function testUpdateAddressFailsIfNotConnected(string $email, array $address): void
     {
         $response = $this->appRun('POST', '/account/address', [
             'csrf' => \Minz\Csrf::generate(),
@@ -449,8 +475,10 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider addressesProvider
+     *
+     * @param AccountAddress $address
      */
-    public function testUpdateAddressFailsIfCsrfIsInvalid($email, $address)
+    public function testUpdateAddressFailsIfCsrfIsInvalid(string $email, array $address): void
     {
         $user = $this->loginUser();
 
@@ -466,8 +494,10 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider addressesProvider
+     *
+     * @param AccountAddress $address
      */
-    public function testUpdateAddressFailsWithInvalidEmail($email, $address)
+    public function testUpdateAddressFailsWithInvalidEmail(string $email, array $address): void
     {
         $user = $this->loginUser();
         $email = $this->fake('domainName');
@@ -481,13 +511,16 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'Saisissez une adresse courriel valide.');
         $account = models\Account::find($user['account_id']);
+        $this->assertNotNull($account);
         $this->assertNotSame($email, $account->email);
     }
 
     /**
      * @dataProvider addressesProvider
+     *
+     * @param AccountAddress $address
      */
-    public function testUpdateAddressFailsWithMissingEmail($email, $address)
+    public function testUpdateAddressFailsWithMissingEmail(string $email, array $address): void
     {
         $user = $this->loginUser();
 
@@ -502,8 +535,10 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider addressesProvider
+     *
+     * @param AccountAddress $address
      */
-    public function testUpdateAddressFailsWithMissingFirstName($email, $address)
+    public function testUpdateAddressFailsWithMissingFirstName(string $email, array $address): void
     {
         $user = $this->loginUser();
         unset($address['first_name']);
@@ -520,8 +555,10 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider addressesProvider
+     *
+     * @param AccountAddress $address
      */
-    public function testUpdateAddressFailsWithMissingLastName($email, $address)
+    public function testUpdateAddressFailsWithMissingLastName(string $email, array $address): void
     {
         $user = $this->loginUser();
         unset($address['last_name']);
@@ -538,8 +575,10 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider addressesProvider
+     *
+     * @param AccountAddress $address
      */
-    public function testUpdateAddressFailsWithMissingAddress1($email, $address)
+    public function testUpdateAddressFailsWithMissingAddress1(string $email, array $address): void
     {
         $user = $this->loginUser();
         unset($address['address1']);
@@ -556,8 +595,10 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider addressesProvider
+     *
+     * @param AccountAddress $address
      */
-    public function testUpdateAddressFailsWithMissingPostcode($email, $address)
+    public function testUpdateAddressFailsWithMissingPostcode(string $email, array $address): void
     {
         $user = $this->loginUser();
         unset($address['postcode']);
@@ -574,8 +615,10 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider addressesProvider
+     *
+     * @param AccountAddress $address
      */
-    public function testUpdateAddressFailsWithMissingCity($email, $address)
+    public function testUpdateAddressFailsWithMissingCity(string $email, array $address): void
     {
         $user = $this->loginUser();
         unset($address['city']);
@@ -592,8 +635,10 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider addressesProvider
+     *
+     * @param AccountAddress $address
      */
-    public function testUpdateAddressFailsWithInvalidCountry($email, $address)
+    public function testUpdateAddressFailsWithInvalidCountry(string $email, array $address): void
     {
         $user = $this->loginUser();
         $address['country'] = 'invalid';
@@ -608,7 +653,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, 'Saisissez un pays de la liste.');
     }
 
-    public function testSetReminderChangesReminder()
+    public function testSetReminderChangesReminder(): void
     {
         $old_reminder = $this->fake('boolean');
         $new_reminder = !$old_reminder;
@@ -623,10 +668,11 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 302, '/account');
         $account = models\Account::find($user['account_id']);
+        $this->assertNotNull($account);
         $this->assertSame($new_reminder, $account->reminder);
     }
 
-    public function testSetReminderFailsIfNotConnected()
+    public function testSetReminderFailsIfNotConnected(): void
     {
         $old_reminder = $this->fake('boolean');
         $new_reminder = !$old_reminder;
@@ -641,10 +687,11 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 401);
         $account = $account->reload();
+        $this->assertNotNull($account);
         $this->assertSame($old_reminder, $account->reminder);
     }
 
-    public function testSetReminderFailsIfCsrfIsInvalid()
+    public function testSetReminderFailsIfCsrfIsInvalid(): void
     {
         $old_reminder = $this->fake('boolean');
         $new_reminder = !$old_reminder;
@@ -659,10 +706,14 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 302, '/account');
         $account = models\Account::find($user['account_id']);
+        $this->assertNotNull($account);
         $this->assertSame($old_reminder, $account->reminder);
     }
 
-    public function addressesProvider()
+    /**
+     * @return array<array{string, AccountAddress}>
+     */
+    public function addressesProvider(): array
     {
         $faker = \Faker\Factory::create();
         $datasets = [];
@@ -675,6 +726,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
                     'address1' => $faker->streetAddress,
                     'postcode' => $faker->postcode,
                     'city' => $faker->city,
+                    'country' => $faker->randomElement(utils\Countries::codes()),
                 ],
             ];
         }

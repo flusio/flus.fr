@@ -15,9 +15,12 @@ class InvoicesTest extends \PHPUnit\Framework\TestCase
     /**
      * @afterClass
      */
-    public static function dropInvoices()
+    public static function dropInvoices(): void
     {
-        $files = glob(\Minz\Configuration::$data_path . '/invoices/*');
+        $files = @glob(\Minz\Configuration::$data_path . '/invoices/*');
+
+        assert($files !== false);
+
         foreach ($files as $file) {
             @unlink($file);
         }
@@ -26,8 +29,10 @@ class InvoicesTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider completedParametersProvider
      */
-    public function testDownloadPdfWithAuthenticatedAdminRendersAPdf($completed_at, $invoice_number)
-    {
+    public function testDownloadPdfWithAuthenticatedAdminRendersAPdf(
+        \DateTimeImmutable $completed_at,
+        string $invoice_number
+    ): void {
         $this->loginAdmin();
 
         $payment = PaymentFactory::create([
@@ -48,8 +53,10 @@ class InvoicesTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider completedParametersProvider
      */
-    public function testDownloadPdfWithAuthenticatedUserRendersAPdf($completed_at, $invoice_number)
-    {
+    public function testDownloadPdfWithAuthenticatedUserRendersAPdf(
+        \DateTimeImmutable $completed_at,
+        string $invoice_number
+    ): void {
         $user = $this->loginUser();
 
         $payment = PaymentFactory::create([
@@ -68,7 +75,7 @@ class InvoicesTest extends \PHPUnit\Framework\TestCase
         ]);
     }
 
-    public function testDownloadPdfWithNonExistingPaymentReturnsNotFound()
+    public function testDownloadPdfWithNonExistingPaymentReturnsNotFound(): void
     {
         $this->loginAdmin();
 
@@ -77,7 +84,7 @@ class InvoicesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 404);
     }
 
-    public function testDownloadPdfWithPaymentWithNoInvoiceNumberReturnsNotFound()
+    public function testDownloadPdfWithPaymentWithNoInvoiceNumberReturnsNotFound(): void
     {
         $this->loginAdmin();
         $payment = PaymentFactory::create([
@@ -92,8 +99,10 @@ class InvoicesTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider completedParametersProvider
      */
-    public function testDownloadPdfWithMissingAuthenticationReturnsUnauthorized($completed_at, $invoice_number)
-    {
+    public function testDownloadPdfWithMissingAuthenticationReturnsUnauthorized(
+        \DateTimeImmutable $completed_at,
+        string $invoice_number
+    ): void {
         $payment = PaymentFactory::create([
             'completed_at' => $completed_at,
             'invoice_number' => $invoice_number,
@@ -107,8 +116,10 @@ class InvoicesTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider completedParametersProvider
      */
-    public function testDownloadPdfWithAuthenticatedNotOwningUserReturnsUnauthorized($completed_at, $invoice_number)
-    {
+    public function testDownloadPdfWithAuthenticatedNotOwningUserReturnsUnauthorized(
+        \DateTimeImmutable $completed_at,
+        string $invoice_number
+    ): void {
         $user = $this->loginUser();
         $account = AccountFactory::create();
         $payment = PaymentFactory::create([
@@ -122,12 +133,15 @@ class InvoicesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 401);
     }
 
-    public function completedParametersProvider()
+    /**
+     * @return array<array{\DateTimeImmutable, string}>
+     */
+    public function completedParametersProvider(): array
     {
         $faker = \Faker\Factory::create();
         $datasets = [];
         foreach (range(1, \Minz\Configuration::$application['number_of_datasets']) as $n) {
-            $date = $faker->dateTime;
+            $date = \DateTimeImmutable::createFromMutable($faker->dateTime);
             $datasets[] = [
                 $date,
                 $date->format('Y-m') . sprintf('-%04d', $faker->randomNumber(4)),

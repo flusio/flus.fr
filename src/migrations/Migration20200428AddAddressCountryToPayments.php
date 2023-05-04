@@ -4,7 +4,7 @@ namespace Website\migrations;
 
 class Migration20200428AddAddressCountryToPayments
 {
-    public function migrate()
+    public function migrate(): bool
     {
         $database = \Minz\Database::get();
 
@@ -16,7 +16,7 @@ class Migration20200428AddAddressCountryToPayments
         return true;
     }
 
-    public function rollback()
+    public function rollback(): bool
     {
         $database = \Minz\Database::get();
 
