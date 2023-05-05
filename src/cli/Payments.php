@@ -1,6 +1,6 @@
 <?php
 
-namespace Website\controllers\cli;
+namespace Website\cli;
 
 use Minz\Request;
 use Minz\Response;

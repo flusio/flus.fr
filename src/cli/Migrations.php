@@ -1,6 +1,6 @@
 <?php
 
-namespace Website\controllers\cli;
+namespace Website\cli;
 
 class Migrations extends \Minz\Migration\Controller
 {

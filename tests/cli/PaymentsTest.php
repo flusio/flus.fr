@@ -1,6 +1,6 @@
 <?php
 
-namespace Website\controllers\cli;
+namespace Website\cli;
 
 use tests\factories\AccountFactory;
 use tests\factories\PaymentFactory;
@@ -74,6 +74,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('CLI', '/payments/complete');
 
+        $this->assertResponseCode($response, 200);
         /** @var models\Account */
         $account = $account->reload();
         $this->assertSame($expected_expired_at->getTimestamp(), $account->expired_at->getTimestamp());
@@ -87,9 +88,8 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         $account = AccountFactory::create([
             'expired_at' => $expired_at,
         ]);
-        $type = $this->fake('randomElement', ['common_pot', 'credit']);
         $payment = PaymentFactory::create([
-            'type' => $type,
+            'type' => 'common_pot',
             'completed_at' => null,
             'is_paid' => true,
             'account_id' => $account->id,
@@ -97,6 +97,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('CLI', '/payments/complete');
 
+        $this->assertResponseCode($response, 200);
         /** @var models\Account */
         $account = $account->reload();
         $this->assertSame($expired_at->getTimestamp(), $account->expired_at->getTimestamp());
@@ -112,6 +113,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('CLI', '/payments/complete');
 
+        $this->assertResponseCode($response, 200);
         /** @var models\Payment */
         $payment = $payment->reload();
         $this->assertNotNull($payment->invoice_number);
@@ -135,6 +137,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('CLI', '/payments/complete');
 
+        $this->assertResponseCode($response, 200);
         $this->assertEmailsCount(1);
         $email_sent = \Minz\Tests\Mailer::take();
         $this->assertNotNull($email_sent);

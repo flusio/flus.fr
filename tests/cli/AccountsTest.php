@@ -1,6 +1,6 @@
 <?php
 
-namespace Website\controllers\cli;
+namespace Website\cli;
 
 use tests\factories\AccountFactory;
 use tests\factories\PaymentFactory;

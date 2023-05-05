@@ -15,11 +15,22 @@ class Application
      */
     public function run(Request $request): mixed
     {
-        include_once('utils/view_helpers.php');
-
         setlocale(LC_ALL, 'fr_FR.UTF8');
 
-        $router = new Router();
+        if ($request->method() === 'CLI') {
+            $this->initCli($request);
+        } else {
+            $this->initApp($request);
+        }
+
+        return \Minz\Engine::run($request);
+    }
+
+    private function initApp(Request $request): void
+    {
+        include_once('utils/view_helpers.php');
+
+        $router = Router::loadApp();
 
         \Minz\Engine::init($router, [
             'start_session' => \Minz\Configuration::$environment !== 'test',
@@ -37,7 +48,30 @@ class Application
             'current_user' => utils\CurrentUser::get(),
             'current_page' => null,
         ]);
+    }
 
-        return \Minz\Engine::run($request);
+    private function initCli(Request $request): void
+    {
+        $router = Router::loadCli();
+
+        \Minz\Engine::init($router, [
+            'not_found_view_pointer' => 'cli/not_found.txt',
+            'internal_server_error_view_pointer' => 'cli/internal_server_error.txt',
+            'controller_namespace' => '\\Website\\cli',
+        ]);
+
+        $bin = $request->param('bin');
+        $bin = $bin === 'cli' ? 'php cli' : $bin;
+
+        $current_command = $request->path();
+        $current_command = trim(str_replace('/', ' ', $current_command));
+
+        \Minz\Output\View::declareDefaultVariables([
+            'environment' => \Minz\Configuration::$environment,
+            'errors' => [],
+            'error' => null,
+            'bin' => $bin,
+            'current_command' => $current_command,
+        ]);
     }
 }
