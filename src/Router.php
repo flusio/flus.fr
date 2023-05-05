@@ -94,18 +94,21 @@ class Router
 
         $router->addRoute('CLI', '/help', 'Help#show');
 
+        $router->addRoute('CLI', '/jobs', 'Jobs#index');
+        $router->addRoute('CLI', '/jobs/watch', 'Jobs#watch');
+        $router->addRoute('CLI', '/jobs/run', 'Jobs#run');
+        $router->addRoute('CLI', '/jobs/show', 'Jobs#show');
+        $router->addRoute('CLI', '/jobs/unfail', 'Jobs#unfail');
+        $router->addRoute('CLI', '/jobs/unlock', 'Jobs#unlock');
+
         $router->addRoute('CLI', '/migrations', 'Migrations#index');
         $router->addRoute('CLI', '/migrations/setup', 'Migrations#setup');
         $router->addRoute('CLI', '/migrations/rollback', 'Migrations#rollback');
         $router->addRoute('CLI', '/migrations/create', 'Migrations#create');
 
-        $router->addRoute('CLI', '/payments/complete', 'Payments#complete');
-
         $router->addRoute('CLI', '/accounts', 'Accounts#index');
         $router->addRoute('CLI', '/accounts/create', 'Accounts#create');
         $router->addRoute('CLI', '/accounts/login-url', 'Accounts#loginUrl');
-        $router->addRoute('CLI', '/accounts/remind', 'Accounts#remind');
-        $router->addRoute('CLI', '/accounts/clear', 'Accounts#clear');
 
         return $router;
     }

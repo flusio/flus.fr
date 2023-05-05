@@ -2,17 +2,25 @@ version: '3'
 
 services:
     php:
+        image: flusfr:dev
         build: .
         restart: unless-stopped
         ports:
             - "9000:9000"
         volumes:
             - ..:/var/www/html:z
-        env_file:
-            - ../.env
         user: $USER
         links:
             - stripe-mock
+
+    job_worker:
+        image: flusfr:dev
+        build: .
+        restart: unless-stopped
+        command: php cli jobs watch
+        volumes:
+            - ..:/var/www/html:z
+        user: $USER
 
     nginx:
         image: nginx:alpine

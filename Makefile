@@ -45,7 +45,7 @@ install: ## Install the dependencies
 
 .PHONY: init
 setup: ## Initialize or migration the application
-	$(PHP) ./cli migrations setup
+	$(PHP) ./cli migrations setup --seed
 
 .PHONY: rollback
 rollback: ## Reverse the last migration
