@@ -92,6 +92,8 @@ class Router
     {
         $router = self::loadApp();
 
+        $router->addRoute('CLI', '/help', 'Help#show');
+
         $router->addRoute('CLI', '/migrations', 'Migrations#index');
         $router->addRoute('CLI', '/migrations/setup', 'Migrations#setup');
         $router->addRoute('CLI', '/migrations/rollback', 'Migrations#rollback');
