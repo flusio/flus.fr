@@ -61,7 +61,7 @@ notions in sysadmin. First, make sure you match with the following
 requirements:
 
 - Git, Nginx, PHP 8.2 are installed on your server;
-- PHP requires `intl` extension;
+- PHP requires `intl` and `pcntl` extensions;
 - flus.fr must be served over <abbr>HTTPS</abbr>.
 
 **Other configurations might work but aren’t officialy supported.**

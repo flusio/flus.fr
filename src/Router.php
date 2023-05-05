@@ -94,6 +94,13 @@ class Router
 
         $router->addRoute('CLI', '/help', 'Help#show');
 
+        $router->addRoute('CLI', '/jobs', 'Jobs#index');
+        $router->addRoute('CLI', '/jobs/watch', 'Jobs#watch');
+        $router->addRoute('CLI', '/jobs/run', 'Jobs#run');
+        $router->addRoute('CLI', '/jobs/show', 'Jobs#show');
+        $router->addRoute('CLI', '/jobs/unfail', 'Jobs#unfail');
+        $router->addRoute('CLI', '/jobs/unlock', 'Jobs#unlock');
+
         $router->addRoute('CLI', '/migrations', 'Migrations#index');
         $router->addRoute('CLI', '/migrations/setup', 'Migrations#setup');
         $router->addRoute('CLI', '/migrations/rollback', 'Migrations#rollback');
