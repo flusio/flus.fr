@@ -227,6 +227,51 @@ That’s all!
 Obviously, if you made changes in your own working directory, things might not
 go so easily. Please always check the current status of the Git repository.
 
+## Setup the Jobs Watcher
+
+To work fully properly, you’ll need to setup the Jobs Watcher.
+It is in charge of executing some jobs in background, such as completing the
+paid payments, or sending reminders emails.
+
+The preferred way is to use systemd.
+For instance, create the file `/etc/systemd/system/flusfr-worker.service`:
+
+```systemd
+[Unit]
+Description=A job worker for flus.fr
+
+[Service]
+ExecStart=php /var/www/flus.fr/cli jobs watch
+User=www-data
+Group=www-data
+
+Restart=on-failure
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Then, reload the systemd daemon and start the service:
+
+```console
+# systemctl daemon-reload
+# systemctl enable flusfr-worker
+# systemctl start flusfr-worker
+```
+
+Each time you update the app, remember to restart the service:
+
+```console
+# systemctl restart flusfr-worker
+```
+
+An alternative is to setup a cron task:
+
+```cron
+* * * * * www-data php /var/www/flus.fr/cli jobs watch --stop-after=5 >>/var/log/flusfr-watcher.txt 2>&1
+```
+
 ## Execute the tests and linters
 
 First, install the dev dependencies with:
