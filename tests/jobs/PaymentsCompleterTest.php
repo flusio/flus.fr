@@ -1,16 +1,15 @@
 <?php
 
-namespace Website\cli;
+namespace Website\jobs;
 
 use tests\factories\AccountFactory;
 use tests\factories\PaymentFactory;
 use Website\models;
 
-class PaymentsTest extends \PHPUnit\Framework\TestCase
+class PaymentsCompleterTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\FakerHelper;
     use \Minz\Tests\InitializerHelper;
-    use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\TimeHelper;
     use \Minz\Tests\ResponseAsserts;
     use \Minz\Tests\MailerAsserts;
@@ -29,7 +28,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         }
     }
 
-    public function testCompleteCompletesPaidButNotCompletedPayments(): void
+    public function testPerformCompletesPaidButNotCompletedPayments(): void
     {
         $now = $this->fake('dateTime');
         $this->freeze($now);
@@ -39,10 +38,9 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
             'frequency' => 'year',
         ]);
 
-        $response = $this->appRun('CLI', '/payments/complete');
+        $completer = new PaymentsCompleter();
+        $completer->perform();
 
-        $this->assertResponseCode($response, 200);
-        $this->assertResponseContains($response, '1 payments completed');
         /** @var models\Payment */
         $payment = $payment->reload();
         $this->assertNotNull($payment->completed_at);
@@ -52,7 +50,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider frequencyProvider
      */
-    public function testCompleteExtendsSubscriptionIfAccountIsAttached(string $frequency): void
+    public function testPerformExtendsSubscriptionIfAccountIsAttached(string $frequency): void
     {
         $now = $this->fake('dateTime');
         $this->freeze($now);
@@ -72,15 +70,15 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
             $expected_expired_at = \Minz\Time::fromNow(1, 'year');
         }
 
-        $response = $this->appRun('CLI', '/payments/complete');
+        $completer = new PaymentsCompleter();
+        $completer->perform();
 
-        $this->assertResponseCode($response, 200);
         /** @var models\Account */
         $account = $account->reload();
         $this->assertSame($expected_expired_at->getTimestamp(), $account->expired_at->getTimestamp());
     }
 
-    public function testCompleteDontExtendsSubscriptionIfNotSubscription(): void
+    public function testPerformDontExtendsSubscriptionIfNotSubscription(): void
     {
         $now = $this->fake('dateTime');
         $this->freeze($now);
@@ -95,15 +93,15 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
             'account_id' => $account->id,
         ]);
 
-        $response = $this->appRun('CLI', '/payments/complete');
+        $completer = new PaymentsCompleter();
+        $completer->perform();
 
-        $this->assertResponseCode($response, 200);
         /** @var models\Account */
         $account = $account->reload();
         $this->assertSame($expired_at->getTimestamp(), $account->expired_at->getTimestamp());
     }
 
-    public function testCompleteCreatesAnInvoice(): void
+    public function testPerformCreatesAnInvoice(): void
     {
         $payment = PaymentFactory::create([
             'completed_at' => null,
@@ -111,16 +109,16 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
             'frequency' => 'year',
         ]);
 
-        $response = $this->appRun('CLI', '/payments/complete');
+        $completer = new PaymentsCompleter();
+        $completer->perform();
 
-        $this->assertResponseCode($response, 200);
         /** @var models\Payment */
         $payment = $payment->reload();
         $this->assertNotNull($payment->invoice_number);
         $this->assertTrue($payment->invoiceExists());
     }
 
-    public function testCompleteSendsAnEmail(): void
+    public function testPerformSendsAnEmail(): void
     {
         $email = $this->fake('email');
         $account = AccountFactory::create([
@@ -135,9 +133,9 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEmailsCount(0);
 
-        $response = $this->appRun('CLI', '/payments/complete');
+        $completer = new PaymentsCompleter();
+        $completer->perform();
 
-        $this->assertResponseCode($response, 200);
         $this->assertEmailsCount(1);
         $email_sent = \Minz\Tests\Mailer::take();
         $this->assertNotNull($email_sent);
@@ -148,7 +146,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(1, count($attachments));
     }
 
-    public function testCompleteDoesNothingIfAlreadyCompleted(): void
+    public function testPerformDoesNothingIfAlreadyCompleted(): void
     {
         $completed_at = $this->fake('dateTime');
         $payment = PaymentFactory::create([
@@ -156,25 +154,25 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
             'is_paid' => true,
         ]);
 
-        $response = $this->appRun('CLI', '/payments/complete');
+        $completer = new PaymentsCompleter();
+        $completer->perform();
 
-        $this->assertResponseCode($response, 200);
         /** @var models\Payment */
         $payment = $payment->reload();
         $this->assertNotNull($payment->completed_at);
         $this->assertSame($completed_at->getTimestamp(), $payment->completed_at->getTimestamp());
     }
 
-    public function testCompleteDoesNothingIfNotIsPaid(): void
+    public function testPerformDoesNothingIfNotIsPaid(): void
     {
         $payment = PaymentFactory::create([
             'completed_at' => null,
             'is_paid' => false,
         ]);
 
-        $response = $this->appRun('CLI', '/payments/complete');
+        $completer = new PaymentsCompleter();
+        $completer->perform();
 
-        $this->assertResponseCode($response, 200);
         /** @var models\Payment */
         $payment = $payment->reload();
         $this->assertNull($payment->completed_at);

@@ -27,13 +27,10 @@ class Help
         $usage .= "  accounts login-url       Generate a URL to login as a user\n";
         $usage .= "      --account_id=ID      The ID of the account\n";
         $usage .= "      [--service=TEXT]     The name of the service to redirect to (freshrss or flusio)\n";
-        $usage .= "  accounts remind          Send the remind emails\n";
-        $usage .= "  accounts clear           Clear the non-synced accounts\n";
-        $usage .= "\n";
-        $usage .= "  payments complete        Complete the paid payments\n";
         $usage .= "\n";
         $usage .= "  migrations               List the migrations\n";
         $usage .= "  migrations setup         Initialize or migrate the application\n";
+        $usage .= "      [--seed=BOOL]        Whether you want to seed the application or not (default: false)\n";
         $usage .= "  migrations rollback      Rollback the latest migrations\n";
         $usage .= "      [--steps=INT]        The number of migrations to rollback\n";
         $usage .= "  migrations create        Create a new migration\n";

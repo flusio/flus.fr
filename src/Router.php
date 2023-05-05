@@ -106,13 +106,9 @@ class Router
         $router->addRoute('CLI', '/migrations/rollback', 'Migrations#rollback');
         $router->addRoute('CLI', '/migrations/create', 'Migrations#create');
 
-        $router->addRoute('CLI', '/payments/complete', 'Payments#complete');
-
         $router->addRoute('CLI', '/accounts', 'Accounts#index');
         $router->addRoute('CLI', '/accounts/create', 'Accounts#create');
         $router->addRoute('CLI', '/accounts/login-url', 'Accounts#loginUrl');
-        $router->addRoute('CLI', '/accounts/remind', 'Accounts#remind');
-        $router->addRoute('CLI', '/accounts/clear', 'Accounts#clear');
 
         return $router;
     }
