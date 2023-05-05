@@ -39,13 +39,13 @@ be used with an existing email account.
 Initialize the database with:
 
 ```console
-$ make init
+$ make setup
 ```
 
 Then, start the services:
 
 ```console
-$ make start
+$ make docker-start
 ```
 
 This command calls `docker-compose` with the file under the `docker/` folder.
@@ -53,15 +53,6 @@ The first time you call it, it will download the Docker images and build the
 `php` one with the information from the `docker/Dockerfile` file.
 
 Now, you should be able to access flus.fr at [localhost:8000](http://localhost:8000).
-
-The containers can be stopped and cleaned with:
-
-```console
-$ make stop
-```
-
-Most of the time, you can settle for <kbd>CTRL + C</kbd> (the Docker network
-and containers aren’t deleted this way).
 
 ## Deploy in production
 
@@ -121,7 +112,7 @@ credentials being stolen. The `www-data` user only needs `read` permission:
 You must now load the SQL schema to your database. You can do it with:
 
 ```console
-# sudo -u www-data make init
+# sudo -u www-data make setup NODOCKER=true
 ```
 
 If the permissions are correct, you should have a message to tell you the
@@ -218,17 +209,17 @@ $ git pull --recurse-submodules
 Then, apply the migrations:
 
 ```console
-$ sudo -u www-data make migrate
+$ sudo -u www-data make setup NODOCKER=true
 ```
 
 If the migrations go wrong and you need to reset the application to
 its previous state, you can reverse the migrations with:
 
 ```console
-$ sudo -u www-data make rollback STEP=1
+$ sudo -u www-data make rollback STEPS=1 NODOCKER=true
 ```
 
-You can increase `STEP` to rollback more migrations (its default value is `1`
+You can increase `STEPS` to rollback more migrations (its default value is `1`
 so its optional).
 
 That’s all!
@@ -238,7 +229,13 @@ go so easily. Please always check the current status of the Git repository.
 
 ## Execute the tests and linters
 
-Execute the linter with:
+First, install the dev dependencies with:
+
+```console
+$ make install
+```
+
+Execute the linters with:
 
 ```console
 $ make lint
