@@ -40,6 +40,7 @@ class Subscriptions
 
         return Response::ok('subscriptions/init.phtml', [
             'account' => $account,
+            'amount' => 30,
             'reminder' => $account->reminder,
             'ongoing_payment' => $account->ongoingPayment(),
         ]);
@@ -51,6 +52,7 @@ class Subscriptions
      *
      * @request_param string csrf
      * @request_param boolean reminder
+     * @request_param integer amount must be between 0 and 1000
      *
      * @response 401
      *     if the user is not connected
@@ -78,12 +80,16 @@ class Subscriptions
         }
 
         $reminder = $request->paramBoolean('reminder', false);
+        /** @var int */
+        $amount = $request->paramInteger('amount', 0);
 
-        $payment = models\Payment::initSubscriptionFromAccount($account, 30);
+        $payment = models\Payment::initSubscriptionFromAccount($account, $amount);
+
         $errors = $payment->validate();
         if ($errors) {
             return Response::badRequest('subscriptions/init.phtml', [
                 'account' => $account,
+                'amount' => $amount,
                 'reminder' => $reminder,
                 'ongoing_payment' => $account->ongoingPayment(),
                 'errors' => $errors,
@@ -93,6 +99,7 @@ class Subscriptions
         if (!\Minz\Csrf::validate($request->param('csrf'))) {
             return Response::badRequest('subscriptions/init.phtml', [
                 'account' => $account,
+                'amount' => $amount,
                 'reminder' => $reminder,
                 'ongoing_payment' => $account->ongoingPayment(),
                 'error' => 'Une vérification de sécurité a échoué, veuillez réessayer de soumettre le formulaire.',

@@ -308,7 +308,7 @@ legend {
 .form--contact,
 .form--common-pot,
 .form--renew {
-    max-width: 50ch;
+    max-width: 60ch;
     margin-right: auto;
     margin-left: auto;
 }
@@ -342,89 +342,55 @@ legend {
 }
 
 /**
- * Amount selector on the "cagnotte" page
+ * Amount selector on the subscription renewing page
  */
 .amount-selector {
-    margin-top: var(--space-large);
     margin-bottom: var(--space-large);
 
     text-align: center;
+}
+
+.amount-selector__choose-label {
+    margin-top: var(--space-medium);
+
+    font-size: 1.2em;
 }
 
 .amount-selector__input {
     max-width: 5em;
-    margin-right: .25em;
-
-    text-align: center;
 }
 
 .amount-selector__container {
-    margin-top: var(--space-medium);
-    margin-bottom: var(--space-medium);
-}
-
-/**
- * These are displayed with JavaScript, so the form doesn't look broken with JS
- * disabled.
- */
-.amount-selector__container,
-.amount-selector__choose-label {
-    display: none;
-}
-
-.amount-selector__button {
-    padding: var(--space-small) var(--space-medium);
-
-    color: var(--color-text);
-    font-size: var(--size-large);
-
-    background-color: var(--color-turquoise-1);
-    border: .2rem solid var(--color-text);
-    border-radius: .25em;
-
-    transition: background-color .2s ease-in-out;
-}
-
-.amount-selector__button + .amount-selector__button {
-    margin-left: var(--space-medium);
- }
-
-.amount-selector__button:hover,
-.amount-selector__button:focus,
-.amount-selector__button--active {
-    background-color: var(--color-purple-1);
-}
-
-.amount-selector__button--active {
-    color: var(--color-white);
-}
-
-.amount-selector--disable-buttons .amount-selector__button {
-    color: var(--color-text-secondary);
-
-    background-color: var(--color-grey-3);
-    border-color: var(--color-grey-2);
-}
-
-/**
- * Frequency selector on the subscription renewing page
- */
-.frequency-selector {
     display: flex;
-    margin-bottom: var(--space-large);
+    margin-bottom: var(--space-medium);
 
+    flex-direction: column;
     justify-content: center;
     align-items: center;
 }
 
-.frequency-selector__item {
+.amount-selector__container > * + * {
+    margin-top: var(--space-medium);
+}
+
+@media (min-width: 48em) {
+    .amount-selector__container {
+        flex-direction: row;
+    }
+
+    .amount-selector__container > * + * {
+        margin-top: 0;
+    }
+}
+
+.amount-selector__item {
     margin-right: var(--space-medium);
     margin-left: var(--space-medium);
 
     text-align: center;
 }
 
-.frequency-selector__label {
+.amount-selector__label {
     padding: var(--space-medium);
 
     flex-direction: column;
@@ -441,29 +407,30 @@ legend {
         border-color .2s ease-in-out;
 }
 
-.frequency-selector__radio:checked + .frequency-selector__label {
+.amount-selector__radio:checked + .amount-selector__label {
     background-color: var(--color-turquoise-1);
     border-color: var(--color-turquoise-2);
 }
 
-.frequency-selector__radio + .frequency-selector__label::before {
+.amount-selector__radio + .amount-selector__label::before {
     margin-right: 0;
     margin-bottom: var(--space-small);
 }
 
-.frequency-selector__radio + .frequency-selector__label::after {
+.amount-selector__radio + .amount-selector__label::after {
     margin-top: 0.5rem;
     margin-left: 0;
 }
 
-.frequency-selector__frequency {
+.amount-selector__amount {
     display: block;
 
     font-size: var(--size-large);
     font-weight: bold;
 }
 
-.frequency-selector__price {
+.amount-selector__title {
+    font-size: 0.9em;
     font-style: italic;
 }
 

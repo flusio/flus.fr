@@ -141,6 +141,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('POST', '/account/renew', [
             'csrf' => \Minz\Csrf::generate(),
             'account_id' => $account->id,
+            'amount' => 10,
         ]);
 
         $this->assertSame(1, models\Payment::count());
@@ -149,7 +150,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($payment);
         $this->assertResponseCode($response, 302, "/payments/{$payment->id}/pay");
         $this->assertNull($payment->completed_at);
-        $this->assertSame(3000, $payment->amount);
+        $this->assertSame(1000, $payment->amount);
         $this->assertSame('year', $payment->frequency);
         $this->assertSame($account->id, $payment->account_id);
         $this->assertNotNull($payment->payment_intent_id);
@@ -171,9 +172,39 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('POST', '/account/renew', [
             'csrf' => \Minz\Csrf::generate(),
             'account_id' => $account->id,
+            'amount' => 10,
         ]);
 
         $this->assertResponseCode($response, 302, '/account/address');
+        $this->assertSame(0, models\Payment::count());
+    }
+
+    /**
+     * @dataProvider addressProvider
+     *
+     * @param AccountAddress $address
+     */
+    public function testRenewFailsIfAmountIsInvalid(array $address): void
+    {
+        $user = $this->loginUser([
+            'address_first_name' => $address['first_name'],
+            'address_last_name' => $address['last_name'],
+            'address_address1' => $address['address1'],
+            'address_postcode' => $address['postcode'],
+            'address_city' => $address['city'],
+        ]);
+        $account = models\Account::find($user['account_id']);
+
+        $this->assertNotNull($account);
+
+        $response = $this->appRun('POST', '/account/renew', [
+            'csrf' => \Minz\Csrf::generate(),
+            'account_id' => $account->id,
+            'amount' => 1001,
+        ]);
+
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'Le montant doit être compris entre 1 et 1000 €.');
         $this->assertSame(0, models\Payment::count());
     }
 
@@ -195,6 +226,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('POST', '/account/renew', [
             'csrf' => \Minz\Csrf::generate(),
             'account_id' => $account->id,
+            'amount' => 10,
         ]);
 
         $this->assertResponseCode($response, 401);
@@ -222,6 +254,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('POST', '/account/renew', [
             'csrf' => 'not the token',
             'account_id' => $account->id,
+            'amount' => 10,
         ]);
 
         $this->assertResponseCode($response, 400);
