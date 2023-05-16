@@ -89,19 +89,15 @@ class Payment
 
     /**
      * Init a subscription payment from an account.
+     *
+     * @param integer|float $euros
      */
-    public static function initSubscriptionFromAccount(Account $account, string $frequency): self
+    public static function initSubscriptionFromAccount(Account $account, mixed $euros): self
     {
-        $frequency = strtolower(trim($frequency));
-        $amount = 0;
-        if ($frequency === 'month') {
-            $amount = 3 * 100;
-        } elseif ($frequency === 'year') {
-            $amount = 30 * 100;
-        }
+        $amount = intval($euros * 100);
 
         $payment = new self('subscription', $amount);
-        $payment->frequency = $frequency;
+        $payment->frequency = 'year';
         $payment->account_id = $account->id;
 
         return $payment;

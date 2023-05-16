@@ -26,8 +26,6 @@
 
         <fieldset
             class="form-group <?= isset($errors['type']) ? 'form-group--invalid' : '' ?>"
-            data-controller="payment-type-selector"
-            data-payment-type-selector-initial-type="<?= $type ?>"
         >
             <legend>Type de paiement</legend>
 
@@ -39,8 +37,6 @@
                     value="common_pot"
                     <?= $type === 'common_pot' ? 'checked' : '' ?>
                     required
-                    data-action="payment-type-selector#change"
-                    data-target="payment-type-selector.input"
                 />
 
                 <label for="type_common_pot">
@@ -50,34 +46,15 @@
 
             <div class="form-group">
                 <input
-                    id="type_subscription_month"
+                    id="type_subscription"
                     type="radio"
                     name="type"
-                    value="subscription_month"
-                    <?= $type === 'subscription_month' ? 'checked' : '' ?>
+                    value="subscription"
+                    <?= $type === 'subscription' ? 'checked' : '' ?>
                     required
-                    data-action="payment-type-selector#change"
-                    data-target="payment-type-selector.input"
                 />
 
-                <label for="type_subscription_month">
-                    Abonnement 1 mois
-                </label>
-            </div>
-
-            <div class="form-group">
-                <input
-                    id="type_subscription_year"
-                    type="radio"
-                    name="type"
-                    value="subscription_year"
-                    <?= $type === 'subscription_year' ? 'checked' : '' ?>
-                    required
-                    data-action="payment-type-selector#change"
-                    data-target="payment-type-selector.input"
-                />
-
-                <label for="type_subscription_year">
+                <label for="type_subscription">
                     Abonnement 1 an
                 </label>
             </div>

@@ -134,10 +134,8 @@ class Payments
 
         if ($type === 'common_pot') {
             $payment = models\Payment::initCommonPotFromAccount($account, $amount);
-        } elseif ($type === 'subscription_month') {
-            $payment = models\Payment::initSubscriptionFromAccount($account, 'month');
-        } elseif ($type === 'subscription_year') {
-            $payment = models\Payment::initSubscriptionFromAccount($account, 'year');
+        } elseif ($type === 'subscription') {
+            $payment = models\Payment::initSubscriptionFromAccount($account, $amount);
         } else {
             return Response::badRequest('admin/payments/init.phtml', [
                 'type' => $type,

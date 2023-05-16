@@ -134,34 +134,6 @@ class InvoicePDFTest extends TestCase
         $this->assertSame($expected_line4, $invoice_pdf->customer[3]);
     }
 
-    public function testPdfWithMonthSubscriptionHasCorrespondingPurchase(): void
-    {
-        $payment = PaymentFactory::create([
-            'type' => 'subscription',
-            'frequency' => 'month',
-        ]);
-
-        $invoice_pdf = new InvoicePDF($payment);
-
-        $this->assertSame(1, count($invoice_pdf->purchases));
-        $this->assertSame(
-            "Renouvellement d'un abonnement\nde 1 mois à Flus",
-            $invoice_pdf->purchases[0]['description']
-        );
-        $this->assertSame(
-            '1',
-            $invoice_pdf->purchases[0]['number']
-        );
-        $this->assertSame(
-            ($payment->amount / 100) . ' €',
-            $invoice_pdf->purchases[0]['price']
-        );
-        $this->assertSame(
-            ($payment->amount / 100) . ' €',
-            $invoice_pdf->purchases[0]['total']
-        );
-    }
-
     public function testPdfWithYearSubscriptionHasCorrespondingPurchase(): void
     {
         $payment = PaymentFactory::create([

@@ -35,39 +35,14 @@
         <div class="form-group frequency-selector">
             <div class="frequency-selector__item">
                 <input
-                    id="frequency-month"
+                    id="frequency"
                     class="frequency-selector__radio"
                     type="radio"
-                    name="frequency"
-                    value="month"
-                    <?= $account->preferred_frequency === 'month' ? 'checked' : '' ?>
+                    checked
                 />
 
                 <label
-                    for="frequency-month"
-                    class="frequency-selector__label"
-                >
-                    <span class="frequency-selector__frequency">
-                        1 mois
-                    </span>
-                    <span class="frequency-selector__price">
-                        soit 3 €
-                    </span>
-                </label>
-            </div>
-
-            <div class="frequency-selector__item">
-                <input
-                    id="frequency-year"
-                    class="frequency-selector__radio"
-                    type="radio"
-                    name="frequency"
-                    value="year"
-                    <?= $account->preferred_frequency === 'year' ? 'checked' : '' ?>
-                />
-
-                <label
-                    for="frequency-year"
+                    for="frequency"
                     class="frequency-selector__label"
                 >
                     <span class="frequency-selector__frequency">

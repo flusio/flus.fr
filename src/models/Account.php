@@ -101,7 +101,7 @@ class Account
         $this->id = \Minz\Random::hex(32);
         $this->email = \Minz\Email::sanitize($email);
         $this->expired_at = \Minz\Time::fromNow(1, 'month');
-        $this->preferred_frequency = 'month';
+        $this->preferred_frequency = 'year';
         $this->preferred_payment_type = 'card';
         $this->preferred_service = 'flusio';
         $this->reminder = true;
@@ -133,9 +133,9 @@ class Account
     }
 
     /**
-     * Extend the subscription period by the given frequency
+     * Extend the subscription period by 1 year
      */
-    public function extendSubscription(string $frequency): void
+    public function extendSubscription(): void
     {
         if ($this->isFree()) {
             // Free accounts don't need to be extended
@@ -144,11 +144,7 @@ class Account
 
         $today = \Minz\Time::now();
         $latest_date = max($today, $this->expired_at);
-        if ($frequency === 'year') {
-            $this->expired_at = $latest_date->modify('+1 year');
-        } else {
-            $this->expired_at = $latest_date->modify('+1 month');
-        }
+        $this->expired_at = $latest_date->modify('+1 year');
     }
 
     public function checkAccess(string $access_token): bool

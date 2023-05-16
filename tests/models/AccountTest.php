@@ -8,20 +8,6 @@ class AccountTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\TimeHelper;
 
-    public function testExtendSubscriptionAdds1MonthToCurrentIfExpirationInFuture(): void
-    {
-        $now = $this->fake('dateTime');
-        $this->freeze($now);
-        $expired_at = \Minz\Time::fromNow($this->fake('randomDigitNotNull'), 'days');
-        $account = new Account($this->fake('email'));
-        $account->expired_at = $expired_at;
-
-        $account->extendSubscription('month');
-
-        $expected_expired_at = $expired_at->modify('+1 month');
-        $this->assertSame($expected_expired_at->getTimestamp(), $account->expired_at->getTimestamp());
-    }
-
     public function testExtendSubscriptionAdds1YearToCurrentIfExpirationInFuture(): void
     {
         $now = $this->fake('dateTime');
@@ -30,23 +16,9 @@ class AccountTest extends \PHPUnit\Framework\TestCase
         $account = new Account($this->fake('email'));
         $account->expired_at = $expired_at;
 
-        $account->extendSubscription('year');
+        $account->extendSubscription();
 
         $expected_expired_at = $expired_at->modify('+1 year');
-        $this->assertSame($expected_expired_at->getTimestamp(), $account->expired_at->getTimestamp());
-    }
-
-    public function testExtendSubscriptionAdds1MonthToTodayIfExpirationInPast(): void
-    {
-        $now = $this->fake('dateTime');
-        $this->freeze($now);
-        $expired_at = \Minz\Time::ago($this->fake('randomDigitNotNull'), 'days');
-        $account = new Account($this->fake('email'));
-        $account->expired_at = $expired_at;
-
-        $account->extendSubscription('month');
-
-        $expected_expired_at = $now->modify('+1 month');
         $this->assertSame($expected_expired_at->getTimestamp(), $account->expired_at->getTimestamp());
     }
 
@@ -58,7 +30,7 @@ class AccountTest extends \PHPUnit\Framework\TestCase
         $account = new Account($this->fake('email'));
         $account->expired_at = $expired_at;
 
-        $account->extendSubscription('year');
+        $account->extendSubscription();
 
         $expected_expired_at = $now->modify('+1 year');
         $this->assertSame($expected_expired_at->getTimestamp(), $account->expired_at->getTimestamp());
@@ -66,12 +38,11 @@ class AccountTest extends \PHPUnit\Framework\TestCase
 
     public function testExtendSubscriptionDoesNothingIfFreeAccount(): void
     {
-        $frequency = $this->fake('randomElement', ['month', 'year']);
         $expired_at = new \DateTimeImmutable('@0');
         $account = new Account($this->fake('email'));
         $account->expired_at = $expired_at;
 
-        $account->extendSubscription($frequency);
+        $account->extendSubscription();
 
         $this->assertSame($expired_at->getTimestamp(), $account->expired_at->getTimestamp());
     }

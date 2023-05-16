@@ -50,7 +50,6 @@ class Subscriptions
      * Stripe API to start a payment session.
      *
      * @request_param string csrf
-     * @request_param string frequency (month or year)
      * @request_param boolean reminder
      *
      * @response 401
@@ -58,7 +57,7 @@ class Subscriptions
      * @response 302 /account/address
      *     if the address is not set
      * @response 400
-     *     if CSRF or frequency are invalid
+     *     if CSRF is invalid
      * @response 302 /payments/:id/pay
      *     on success
      */
@@ -78,10 +77,9 @@ class Subscriptions
             return Response::redirect('account address');
         }
 
-        $frequency = $request->param('frequency');
         $reminder = $request->paramBoolean('reminder', false);
 
-        $payment = models\Payment::initSubscriptionFromAccount($account, $frequency);
+        $payment = models\Payment::initSubscriptionFromAccount($account, 30);
         $errors = $payment->validate();
         if ($errors) {
             return Response::badRequest('subscriptions/init.phtml', [
@@ -102,7 +100,7 @@ class Subscriptions
         }
 
         $stripe_service = new services\Stripe();
-        $period = $payment->frequency === 'month' ? '1 mois' : '1 an';
+        $period = '1 an';
         $stripe_session = $stripe_service->createSession(
             $payment,
             "Abonnement à Flus ({$period})",
@@ -120,7 +118,7 @@ class Subscriptions
         $payment->session_id = $stripe_session->id;
         $payment->save();
 
-        $account->preferred_frequency = $payment->frequency ?? 'year';
+        $account->preferred_frequency = 'year';
         $account->reminder = $reminder;
         $account->save();
 

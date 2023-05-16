@@ -275,10 +275,10 @@ class CommonPots
             ]);
         }
 
-        $pot_usage = new models\PotUsage($account, 'month');
+        $pot_usage = new models\PotUsage($account);
         $pot_usage->save();
 
-        $account->extendSubscription($pot_usage->frequency);
+        $account->extendSubscription();
         $account->reminder = $reminder;
         $account->save();
 

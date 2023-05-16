@@ -368,7 +368,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         $datasets = [];
         foreach (range(1, \Minz\Configuration::$application['number_of_datasets']) as $n) {
             $datasets[] = [
-                $faker->randomElement(['common_pot', 'subscription_month', 'subscription_year']),
+                $faker->randomElement(['common_pot', 'subscription']),
                 $faker->email,
                 $faker->numberBetween(1, 1000),
             ];
