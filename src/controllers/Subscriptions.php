@@ -39,6 +39,7 @@ class Subscriptions
         }
 
         return Response::ok('subscriptions/init.phtml', [
+            'contribution_price' => models\Payment::contributionPrice(),
             'account' => $account,
             'amount' => 30,
             'reminder' => $account->reminder,
@@ -88,6 +89,7 @@ class Subscriptions
         $errors = $payment->validate();
         if ($errors) {
             return Response::badRequest('subscriptions/init.phtml', [
+                'contribution_price' => models\Payment::contributionPrice(),
                 'account' => $account,
                 'amount' => $amount,
                 'reminder' => $reminder,
@@ -98,6 +100,7 @@ class Subscriptions
 
         if (!\Minz\Csrf::validate($request->param('csrf'))) {
             return Response::badRequest('subscriptions/init.phtml', [
+                'contribution_price' => models\Payment::contributionPrice(),
                 'account' => $account,
                 'amount' => $amount,
                 'reminder' => $reminder,

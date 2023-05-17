@@ -371,4 +371,27 @@ class Payment
         $parameters = array_merge($parameters, $payments_ids);
         return $statement->execute($parameters);
     }
+
+    /**
+     * Return the contribution price in euros.
+     *
+     * The contribution price is defined as the price which all the active
+     * accounts + the current person should have paid in order to achieve the
+     * financial goal.
+     */
+    public static function contributionPrice(): int
+    {
+        $financial_goal = \Minz\Configuration::$application['financial_goal'];
+
+        // Consider the person who is going to subscribe.
+        $active_accounts = Account::countActive() + 1;
+
+        // The max price is 10€ per month.
+        $max_price = 10 * 12;
+        $min_price = 1;
+
+        $price = intval($financial_goal / $active_accounts);
+
+        return max($min_price, min($max_price, $price));
+    }
 }

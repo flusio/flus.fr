@@ -323,4 +323,29 @@ class Account
         ]);
         return self::fromDatabaseRows($statement->fetchAll());
     }
+
+    /**
+     * Return the number of accounts with an active subscription.
+     *
+     * This counts only accounts which already made a payment, in order to
+     * exclude accounts using the first free month.
+     */
+    public static function countActive(): int
+    {
+        $sql = <<<SQL
+            SELECT COUNT(DISTINCT a.id) FROM accounts a
+            INNER JOIN payments p
+            ON p.account_id = a.id
+            WHERE a.expired_at >= :now
+        SQL;
+
+        $now = \Minz\Time::now();
+        $database = Database::get();
+        $statement = $database->prepare($sql);
+        $statement->execute([
+            'now' => $now->format(Database\Column::DATETIME_FORMAT),
+        ]);
+
+        return intval($statement->fetchColumn());
+    }
 }

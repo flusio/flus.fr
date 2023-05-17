@@ -20,6 +20,8 @@ return [
         'flus_private_key' => $dotenv->pop('APP_FLUS_PRIVATE_KEY'),
 
         'support_email' => $dotenv->pop('APP_SUPPORT_EMAIL'),
+
+        'financial_goal' => intval($dotenv->pop('APP_FINANCIAL_GOAL', '36000')),
     ],
 
     'database' => [

@@ -93,6 +93,31 @@
                         </span>
                     </label>
                 </div>
+
+                <div class="amount-selector__item">
+                    <input
+                        id="amount-contribution"
+                        name="amount-radio"
+                        class="amount-selector__radio"
+                        type="radio"
+                        data-action="amount-selector#select"
+                        data-target="amount-selector.radio"
+                        data-value="<?= $contribution_price ?>"
+                    />
+
+                    <label
+                        for="amount-contribution"
+                        class="amount-selector__label"
+                    >
+                        <span class="amount-selector__amount">
+                            <?= $contribution_price ?> €
+                        </span>
+
+                        <span class="amount-selector__title">
+                            soutien
+                        </span>
+                    </label>
+                </div>
             </div>
 
             <label for="amount" class="amount-selector__choose-label">
