@@ -24,48 +24,6 @@
 
         <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
 
-        <fieldset
-            class="form-group <?= isset($errors['type']) ? 'form-group--invalid' : '' ?>"
-        >
-            <legend>Type de paiement</legend>
-
-            <div class="form-group">
-                <input
-                    id="type_common_pot"
-                    type="radio"
-                    name="type"
-                    value="common_pot"
-                    <?= $type === 'common_pot' ? 'checked' : '' ?>
-                    required
-                />
-
-                <label for="type_common_pot">
-                    Cagnotte
-                </label>
-            </div>
-
-            <div class="form-group">
-                <input
-                    id="type_subscription"
-                    type="radio"
-                    name="type"
-                    value="subscription"
-                    <?= $type === 'subscription' ? 'checked' : '' ?>
-                    required
-                />
-
-                <label for="type_subscription">
-                    Abonnement 1 an
-                </label>
-            </div>
-
-            <?php if (isset($errors['type'])): ?>
-                <p class="form-group__error">
-                    <?= $errors['type'] ?>
-                </p>
-            <?php endif; ?>
-        </fieldset>
-
         <div class="form-group <?= isset($errors['email']) ? 'form-group--invalid' : '' ?>">
             <label for="email">
                 Adresse courriel

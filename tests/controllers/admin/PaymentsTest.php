@@ -51,13 +51,12 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider createProvider
      */
-    public function testCreateRedirectsCorrectly(string $type, string $email, int $amount): void
+    public function testCreateRedirectsCorrectly(string $email, int $amount): void
     {
         $this->loginAdmin();
 
         $response = $this->appRun('POST', '/admin/payments/new', [
             'csrf' => \Minz\Csrf::generate(),
-            'type' => $type,
             'email' => $email,
             'amount' => $amount,
         ]);
@@ -68,13 +67,12 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider createProvider
      */
-    public function testCreateGenerateAnInvoiceNumber(string $type, string $email, int $amount): void
+    public function testCreateGenerateAnInvoiceNumber(string $email, int $amount): void
     {
         $this->loginAdmin();
 
         $response = $this->appRun('POST', '/admin/payments/new', [
             'csrf' => \Minz\Csrf::generate(),
-            'type' => $type,
             'email' => $email,
             'amount' => $amount,
         ]);
@@ -90,31 +88,12 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider createProvider
      */
-    public function testCreateFailsIfTypeIsInvalid(string $type, string $email, int $amount): void
+    public function testCreateFailsIfEmailIsInvalid(string $email, int $amount): void
     {
         $this->loginAdmin();
 
         $response = $this->appRun('POST', '/admin/payments/new', [
             'csrf' => \Minz\Csrf::generate(),
-            'type' => 'invalid',
-            'email' => $email,
-            'amount' => $amount,
-        ]);
-
-        $this->assertResponseCode($response, 400);
-        $this->assertResponseContains($response, 'Le type de paiement est invalide');
-    }
-
-    /**
-     * @dataProvider createProvider
-     */
-    public function testCreateFailsIfEmailIsInvalid(string $type, string $email, int $amount): void
-    {
-        $this->loginAdmin();
-
-        $response = $this->appRun('POST', '/admin/payments/new', [
-            'csrf' => \Minz\Csrf::generate(),
-            'type' => $type,
             'email' => 'not an email',
             'amount' => $amount,
         ]);
@@ -126,11 +105,10 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider createProvider
      */
-    public function testCreateFailsIfNotConnected(string $type, string $email, int $amount): void
+    public function testCreateFailsIfNotConnected(string $email, int $amount): void
     {
         $response = $this->appRun('POST', '/admin/payments/new', [
             'csrf' => \Minz\Csrf::generate(),
-            'type' => $type,
             'email' => $email,
             'amount' => $amount,
         ]);
@@ -141,13 +119,12 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider createProvider
      */
-    public function testCreateFailsIfCsrfIsInvalid(string $type, string $email, int $amount): void
+    public function testCreateFailsIfCsrfIsInvalid(string $email, int $amount): void
     {
         $this->loginAdmin();
 
         $response = $this->appRun('POST', '/admin/payments/new', [
             'csrf' => 'not the token',
-            'type' => $type,
             'email' => $email,
             'amount' => $amount,
         ]);
@@ -360,7 +337,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @return array<array{string, string, int}>
+     * @return array<array{string, int}>
      */
     public function createProvider(): array
     {
@@ -368,7 +345,6 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         $datasets = [];
         foreach (range(1, \Minz\Configuration::$application['number_of_datasets']) as $n) {
             $datasets[] = [
-                $faker->randomElement(['common_pot', 'subscription']),
                 $faker->email,
                 $faker->numberBetween(1, 1000),
             ];

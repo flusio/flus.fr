@@ -70,7 +70,6 @@ class Payments
         }
 
         return Response::ok('admin/payments/init.phtml', [
-            'type' => 'common_pot',
             'email' => '',
             'amount' => 30,
         ]);
@@ -79,12 +78,7 @@ class Payments
     /**
      * Create a payment
      *
-     * @request_param string type
-     *     Must be either `common_pot`, `subscription_month` or
-     *     `subscription_year`
      * @request_param integer amount
-     *     Required if type is set to `common_pot`, it must be a numerical
-     *     value between 1 and 1000.
      * @request_param string email
      * @request_param string csrf
      *
@@ -101,14 +95,12 @@ class Payments
             return Response::redirect('login', ['from' => 'admin/payments#init']);
         }
 
-        $type = $request->param('type');
         $email = \Minz\Email::sanitize($request->param('email', ''));
         /** @var int */
         $amount = $request->paramInteger('amount', 0);
 
         if (!\Minz\Csrf::validate($request->param('csrf'))) {
             return Response::badRequest('admin/payments/init.phtml', [
-                'type' => $type,
                 'email' => $email,
                 'amount' => $amount,
                 'error' => 'Une vérification de sécurité a échoué, veuillez réessayer de soumettre le formulaire.',
@@ -117,7 +109,6 @@ class Payments
 
         if (!\Minz\Email::validate($email)) {
             return Response::badRequest('admin/payments/init.phtml', [
-                'type' => $type,
                 'email' => $email,
                 'amount' => $amount,
                 'errors' => [
@@ -132,25 +123,11 @@ class Payments
             $account->save();
         }
 
-        if ($type === 'common_pot') {
-            $payment = models\Payment::initCommonPotFromAccount($account, $amount);
-        } elseif ($type === 'subscription') {
-            $payment = models\Payment::initSubscriptionFromAccount($account, $amount);
-        } else {
-            return Response::badRequest('admin/payments/init.phtml', [
-                'type' => $type,
-                'email' => $email,
-                'amount' => $amount,
-                'errors' => [
-                    'type' => 'Le type de paiement est invalide',
-                ],
-            ]);
-        }
+        $payment = models\Payment::initSubscriptionFromAccount($account, $amount);
 
         $errors = $payment->validate();
         if ($errors) {
             return Response::badRequest('admin/payments/init.phtml', [
-                'type' => $type,
                 'email' => $email,
                 'amount' => $amount,
                 'errors' => $errors,

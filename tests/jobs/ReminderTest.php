@@ -4,7 +4,6 @@ namespace Website\jobs;
 
 use tests\factories\AccountFactory;
 use tests\factories\PaymentFactory;
-use tests\factories\PotUsageFactory;
 use Website\models;
 
 class ReminderTest extends \PHPUnit\Framework\TestCase

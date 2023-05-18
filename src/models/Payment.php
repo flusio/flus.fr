@@ -104,19 +104,6 @@ class Payment
     }
 
     /**
-     * Init a common pot payment from an account.
-     *
-     * @param integer|float $euros
-     */
-    public static function initCommonPotFromAccount(Account $account, mixed $euros): self
-    {
-        $payment = new self('common_pot', intval($euros * 100));
-        $payment->account_id = $account->id;
-
-        return $payment;
-    }
-
-    /**
      * Init a credit payment from a payment.
      */
     public static function initCreditFromPayment(self $payment): self

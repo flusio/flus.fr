@@ -64,20 +64,6 @@
             <?php endif; ?>
 
             <li class="navaccount__item">
-                <a class="navaccount__link navaccount__link--give" href="<?= url('common pot contribution') ?>">
-                    Contribuer à la cagnotte
-                </a>
-            </li>
-
-            <?php if (!$account->isFree()): ?>
-                <li class="navaccount__item">
-                    <a class="navaccount__link navaccount__link--common-pot" href="<?= url('common pot usage') ?>">
-                        Bénéficier de la cagnotte
-                    </a>
-                </li>
-            <?php endif; ?>
-
-            <li class="navaccount__item">
                 <a class="navaccount__link navaccount__link--address" href="<?= url('account address') ?>">
                     Gérer vos adresses
                 </a>
