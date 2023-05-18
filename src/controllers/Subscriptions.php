@@ -76,13 +76,36 @@ class Subscriptions
             return Response::unauthorized('unauthorized.phtml');
         }
 
+        $reminder = $request->paramBoolean('reminder', false);
+
+        /** @var int */
+        $amount = $request->paramInteger('amount', 0);
+
+        if (!\Minz\Csrf::validate($request->param('csrf'))) {
+            return Response::badRequest('subscriptions/init.phtml', [
+                'contribution_price' => models\Payment::contributionPrice(),
+                'account' => $account,
+                'amount' => $amount,
+                'reminder' => $reminder,
+                'ongoing_payment' => $account->ongoingPayment(),
+                'error' => 'Une vérification de sécurité a échoué, veuillez réessayer de soumettre le formulaire.',
+            ]);
+        }
+
         if ($account->mustSetAddress()) {
             return Response::redirect('account address');
         }
 
-        $reminder = $request->paramBoolean('reminder', false);
-        /** @var int */
-        $amount = $request->paramInteger('amount', 0);
+        $account->preferred_frequency = 'year';
+        $account->reminder = $reminder;
+        $account->save();
+
+        if ($amount === 0) {
+            $account->extendSubscription();
+            $account->save();
+
+            return Response::redirect('Payments#succeeded');
+        }
 
         $payment = models\Payment::initSubscriptionFromAccount($account, $amount);
 
@@ -95,17 +118,6 @@ class Subscriptions
                 'reminder' => $reminder,
                 'ongoing_payment' => $account->ongoingPayment(),
                 'errors' => $errors,
-            ]);
-        }
-
-        if (!\Minz\Csrf::validate($request->param('csrf'))) {
-            return Response::badRequest('subscriptions/init.phtml', [
-                'contribution_price' => models\Payment::contributionPrice(),
-                'account' => $account,
-                'amount' => $amount,
-                'reminder' => $reminder,
-                'ongoing_payment' => $account->ongoingPayment(),
-                'error' => 'Une vérification de sécurité a échoué, veuillez réessayer de soumettre le formulaire.',
             ]);
         }
 
@@ -127,10 +139,6 @@ class Subscriptions
         $payment->payment_intent_id = $stripe_session->payment_intent;
         $payment->session_id = $stripe_session->id;
         $payment->save();
-
-        $account->preferred_frequency = 'year';
-        $account->reminder = $reminder;
-        $account->save();
 
         return Response::redirect('Payments#pay', [
             'id' => $payment->id,

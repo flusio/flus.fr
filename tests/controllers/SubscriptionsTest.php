@@ -162,6 +162,45 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
      *
      * @param AccountAddress $address
      */
+    public function testRenewCreatesAcceptsAmountOfZero(array $address): void
+    {
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
+        $expected_expired_at = \Minz\Time::fromNow(1, 'year');
+        $user = $this->loginUser([
+            'expired_at' => $now,
+            'address_first_name' => $address['first_name'],
+            'address_last_name' => $address['last_name'],
+            'address_address1' => $address['address1'],
+            'address_postcode' => $address['postcode'],
+            'address_city' => $address['city'],
+        ]);
+        $account = models\Account::find($user['account_id']);
+
+        $this->assertSame(0, models\Payment::count());
+        $this->assertNotNull($account);
+
+        $response = $this->appRun('POST', '/account/renew', [
+            'csrf' => \Minz\Csrf::generate(),
+            'account_id' => $account->id,
+            'amount' => 0,
+        ]);
+
+        $this->assertSame(0, models\Payment::count());
+        $this->assertResponseCode($response, 302, '/merci');
+        /** @var models\Account */
+        $account = $account->reload();
+        $this->assertSame(
+            $expected_expired_at->getTimestamp(),
+            $account->expired_at->getTimestamp()
+        );
+    }
+
+    /**
+     * @dataProvider addressProvider
+     *
+     * @param AccountAddress $address
+     */
     public function testRenewRedirectsIfNoAddress(array $address): void
     {
         $user = $this->loginUser();
