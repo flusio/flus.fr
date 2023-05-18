@@ -20,9 +20,9 @@
             echo 'heu non;';
         endif;
         if ($payment->type === 'credit'):
-            echo '-' . $payment->amount / 100 . ';';
+            echo '-' . number_format($payment->amount / 100, 2, ',', '') . ';';
         else:
-            echo $payment->amount / 100 . ';';
+            echo number_format($payment->amount / 100, 2, ',', '') . ';';
         endif;
         if ($payment->payment_intent_id):
             echo 'stripe;';
@@ -35,7 +35,7 @@
         else:
             echo ';';
         endif;
-        echo $payment->stripeFees() / 100 . ';';
+        echo number_format($payment->stripeFees() / 100, 2, ',', '') . ';';
         echo $payment->invoice_number . ';';
         echo "\n";
     endforeach;
