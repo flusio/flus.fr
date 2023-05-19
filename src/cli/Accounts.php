@@ -51,10 +51,7 @@ class Accounts
     }
 
     /**
-     * @request_param string account_id
-     * @request_param string service
-     *     The name of the service making the request ('flusio' or 'freshrss').
-     *     If the variable is invalid, it defaults to 'flusio'.
+     * @request_param string id
      *
      * @response 404
      *     if the account doesn't exist
@@ -63,23 +60,17 @@ class Accounts
      */
     public function loginUrl(Request $request): Response
     {
-        $account_id = $request->param('account_id');
-        $service = $request->param('service');
+        $id = $request->param('id');
 
-        $account = models\Account::find($account_id);
+        $account = models\Account::find($id);
         if (!$account) {
             return Response::text(404, 'This account doesn’t exist.');
-        }
-
-        if ($service !== 'flusio' && $service !== 'freshrss') {
-            $service = 'flusio';
         }
 
         $token = new models\Token(10, 'minutes');
         $token->save();
 
         $account->access_token = $token->token;
-        $account->preferred_service = $service;
         $account->save();
 
         $login_url = \Minz\Url::absoluteFor('account login', [

@@ -24,9 +24,8 @@ class Help
         $usage .= "  accounts                 List the accounts\n";
         $usage .= "  accounts create          Create a new account\n";
         $usage .= "      --email=TEXT         The email of the account\n";
-        $usage .= "  accounts login-url       Generate a URL to login as a user\n";
-        $usage .= "      --account_id=ID      The ID of the account\n";
-        $usage .= "      [--service=TEXT]     The name of the service to redirect to (freshrss or flusio)\n";
+        $usage .= "  accounts login           Generate a URL to login as a user\n";
+        $usage .= "      --id=ID              The ID of the account\n";
         $usage .= "\n";
         $usage .= "  migrations               List the migrations\n";
         $usage .= "  migrations setup         Initialize or migrate the application\n";

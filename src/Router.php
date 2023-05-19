@@ -108,7 +108,7 @@ class Router
 
         $router->addRoute('CLI', '/accounts', 'Accounts#index');
         $router->addRoute('CLI', '/accounts/create', 'Accounts#create');
-        $router->addRoute('CLI', '/accounts/login-url', 'Accounts#loginUrl');
+        $router->addRoute('CLI', '/accounts/login', 'Accounts#loginUrl');
 
         return $router;
     }
