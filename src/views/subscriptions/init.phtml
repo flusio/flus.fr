@@ -49,8 +49,9 @@
                 <div class="amount-selector__container">
                     <div class="amount-selector__item">
                         <input
-                            id="amount-15"
-                            name="amount-radio"
+                            id="amount-solidarity"
+                            name="tariff"
+                            value="solidarity"
                             class="amount-selector__radio"
                             type="radio"
                             <?= $amount === 15 ? 'checked' : '' ?>
@@ -60,7 +61,7 @@
                         />
 
                         <label
-                            for="amount-15"
+                            for="amount-solidarity"
                             class="amount-selector__label"
                         >
                             <span class="amount-selector__amount">
@@ -75,8 +76,9 @@
 
                     <div class="amount-selector__item">
                         <input
-                            id="amount-30"
-                            name="amount-radio"
+                            id="amount-stability"
+                            name="tariff"
+                            value="stability"
                             class="amount-selector__radio"
                             type="radio"
                             <?= $amount === 30 ? 'checked' : '' ?>
@@ -86,7 +88,7 @@
                         />
 
                         <label
-                            for="amount-30"
+                            for="amount-stability"
                             class="amount-selector__label"
                         >
                             <span class="amount-selector__amount">
@@ -102,9 +104,11 @@
                     <div class="amount-selector__item">
                         <input
                             id="amount-contribution"
-                            name="amount-radio"
+                            name="tariff"
+                            value="contribution"
                             class="amount-selector__radio"
                             type="radio"
+                            <?= $amount === $contribution_price ? 'checked' : '' ?>
                             data-action="amount-selector#select"
                             data-target="amount-selector.radio"
                             data-value="<?= $contribution_price ?>"

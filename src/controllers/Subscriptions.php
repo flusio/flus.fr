@@ -41,7 +41,7 @@ class Subscriptions
         return Response::ok('subscriptions/init.phtml', [
             'contribution_price' => models\Payment::contributionPrice(),
             'account' => $account,
-            'amount' => 30,
+            'amount' => $account->preferredAmount(),
             'reminder' => $account->reminder,
             'ongoing_payment' => $account->ongoingPayment(),
         ]);
@@ -82,6 +82,9 @@ class Subscriptions
         /** @var int */
         $amount = $request->paramInteger('amount', 0);
 
+        /** @var string */
+        $tariff = $request->param('tariff', '');
+
         if (!\Minz\Csrf::validate($request->param('csrf'))) {
             return Response::badRequest('subscriptions/init.phtml', [
                 'contribution_price' => models\Payment::contributionPrice(),
@@ -108,7 +111,13 @@ class Subscriptions
             return Response::redirect('account address');
         }
 
-        $account->preferred_frequency = 'year';
+        if (in_array($tariff, ['solidarity', 'stability', 'contribution'])) {
+            $preferred_tariff = $tariff;
+        } else {
+            $preferred_tariff = strval($amount);
+        }
+
+        $account->preferred_tariff = $preferred_tariff;
         $account->reminder = $reminder;
         $account->save();
 

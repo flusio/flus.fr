@@ -32,14 +32,6 @@ class AccountFactory extends Database\Factory
                 return $faker->dateTime;
             },
 
-            'preferred_frequency' => function () use ($faker) {
-                return $faker->randomElement(['month', 'year']);
-            },
-
-            'preferred_payment_type' => function () use ($faker) {
-                return $faker->randomElement(['common_pot', 'card']);
-            },
-
             'preferred_service' => function () use ($faker) {
                 return $faker->randomElement(['flusio', 'freshrss']);
             },

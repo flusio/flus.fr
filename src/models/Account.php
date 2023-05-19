@@ -47,17 +47,12 @@ class Account
     #[Database\Column]
     public ?\DateTimeImmutable $last_sync_at = null;
 
-    #[Validable\Inclusion(in: ['month', 'year'], message: 'Saisissez une fréquence valide.')]
-    #[Database\Column]
-    public string $preferred_frequency;
-
-    #[Validable\Inclusion(in: ['common_pot', 'card'], message: 'Saisissez un mode de paiement valide.')]
-    #[Database\Column]
-    public string $preferred_payment_type;
-
     #[Validable\Inclusion(in: ['flusio', 'freshrss'], message: 'Saisissez un service valide.')]
     #[Database\Column]
     public string $preferred_service;
+
+    #[Database\Column]
+    public string $preferred_tariff;
 
     #[Database\Column]
     public bool $reminder;
@@ -101,9 +96,8 @@ class Account
         $this->id = \Minz\Random::hex(32);
         $this->email = \Minz\Email::sanitize($email);
         $this->expired_at = \Minz\Time::fromNow(1, 'month');
-        $this->preferred_frequency = 'year';
-        $this->preferred_payment_type = 'card';
         $this->preferred_service = 'flusio';
+        $this->preferred_tariff = 'stability';
         $this->reminder = true;
         $this->address_country = 'FR';
         $this->last_sync_at = \Minz\Time::now();
@@ -145,6 +139,22 @@ class Account
         $today = \Minz\Time::now();
         $latest_date = max($today, $this->expired_at);
         $this->expired_at = $latest_date->modify('+1 year');
+    }
+
+    /**
+     * Return the preferred amount based on preferred tariff.
+     */
+    public function preferredAmount(): int
+    {
+        if ($this->preferred_tariff === 'solidarity') {
+            return 15;
+        } elseif ($this->preferred_tariff === 'stability') {
+            return 30;
+        } elseif ($this->preferred_tariff === 'contribution') {
+            return Payment::contributionPrice();
+        } else {
+            return intval($this->preferred_tariff);
+        }
     }
 
     public function checkAccess(string $access_token): bool
