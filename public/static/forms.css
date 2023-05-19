@@ -233,13 +233,6 @@ fieldset {
     border-radius: .25em;
 }
 
-@media (min-width: 48em) {
-    fieldset {
-        margin-left: calc(var(--space-medium) * -1);
-        margin-right: calc(var(--space-medium) * -1);
-    }
-}
-
 legend {
     padding-left: var(--space-small);
     padding-right: var(--space-small);
@@ -307,6 +300,7 @@ legend {
  */
 .form--contact,
 .form--common-pot,
+.form--address,
 .form--renew {
     max-width: 60ch;
     margin-right: auto;

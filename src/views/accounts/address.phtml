@@ -1,6 +1,7 @@
 <?php
     $this->layout('account.phtml', [
         'title' => 'Vos adresses',
+        'current_page' => 'profile',
     ]);
 ?>
 
@@ -208,13 +209,5 @@
                 Confirmer vos adresses
             </button>
         </div>
-
-        <?php if (!$account->mustSetAddress()): ?>
-            <p class="paragraph--center">
-                <a href="<?= url('account') ?>">
-                    Revenir à votre compte
-                </a>
-            </p>
-        <?php endif; ?>
     </form>
 </section>

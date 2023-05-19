@@ -1,6 +1,7 @@
 <?php
     $this->layout('account.phtml', [
         'title' => 'Renouveler votre abonnement',
+        'current_page' => 'subscription',
     ]);
 ?>
 
@@ -208,10 +209,4 @@
             </div>
         </form>
     <?php endif; ?>
-
-    <p class="paragraph--center">
-        <a href="<?= url('account') ?>">
-            Revenir à votre compte
-        </a>
-    </p>
 </section>
