@@ -41,21 +41,6 @@ class Router
         $router->addRoute('POST', '/account/address', 'Accounts#updateAddress', 'account update address');
         $router->addRoute('GET', '/account/renew', 'Subscriptions#init', 'subscription init');
         $router->addRoute('POST', '/account/renew', 'Subscriptions#renew', 'subscription renew');
-        $router->addRoute('GET', '/account/common-pot', 'CommonPots#show', 'common pot account');
-        $router->addRoute(
-            'GET',
-            '/account/common-pot/contribute',
-            'CommonPots#contribution',
-            'common pot contribution'
-        );
-        $router->addRoute(
-            'POST',
-            '/account/common-pot/contribute',
-            'CommonPots#contribute',
-            'contribute common pot'
-        );
-        $router->addRoute('GET', '/account/common-pot/use', 'CommonPots#usage', 'common pot usage');
-        $router->addRoute('POST', '/account/common-pot/use', 'CommonPots#use', 'use common pot');
 
         $router->addRoute('GET', '/payments/:id/pay', 'Payments#pay');
         $router->addRoute('GET', '/merci', 'Payments#succeeded');

@@ -18,124 +18,200 @@
             </strong>
         <?php elseif (!$account->isFree() && !$account->hasExpired()): ?>
             Votre abonnement expirera le <strong><?= _d($account->expired_at, 'dd MMMM yyyy') ?>.</strong>
-            Vous pouvez le renouveler dès maintenant, la période de
-            renouvellement s’ajoutera à votre abonnement courant.
+            Vous pouvez le renouveler dès maintenant <strong>pour une durée de 1 an</strong>.
+            La période de renouvellement s’ajoutera à votre abonnement courant.
         <?php endif; ?>
     </p>
 
-    <form method="post" action="<?= url('subscription renew') ?>" class="form--renew">
-        <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
-
-        <?php if ($error): ?>
-            <p class="form__error">
-                <?= $error ?>
-            </p>
-        <?php endif; ?>
-
-        <div class="form-group frequency-selector">
-            <div class="frequency-selector__item">
-                <input
-                    id="frequency-month"
-                    class="frequency-selector__radio"
-                    type="radio"
-                    name="frequency"
-                    value="month"
-                    <?= $account->preferred_frequency === 'month' ? 'checked' : '' ?>
-                />
-
-                <label
-                    for="frequency-month"
-                    class="frequency-selector__label"
-                >
-                    <span class="frequency-selector__frequency">
-                        1 mois
-                    </span>
-                    <span class="frequency-selector__price">
-                        soit 3 €
-                    </span>
-                </label>
-            </div>
-
-            <div class="frequency-selector__item">
-                <input
-                    id="frequency-year"
-                    class="frequency-selector__radio"
-                    type="radio"
-                    name="frequency"
-                    value="year"
-                    <?= $account->preferred_frequency === 'year' ? 'checked' : '' ?>
-                />
-
-                <label
-                    for="frequency-year"
-                    class="frequency-selector__label"
-                >
-                    <span class="frequency-selector__frequency">
-                        1 an
-                    </span>
-                    <span class="frequency-selector__price">
-                        soit 30 €
-                    </span>
-                </label>
-            </div>
-
-            <?php if (isset($errors['frequency'])): ?>
-                <p class="form-group__error">
-                    <?= $errors['frequency'] ?>
-                </p>
-            <?php endif; ?>
-        </div>
-
-        <div class="form-group form-group--reminder">
-            <input
-                id="reminder"
-                name="reminder"
-                type="checkbox"
-                <?= $reminder ? 'checked' : '' ?>
-            />
-
-            <label for="reminder">
-                Recevoir un rappel à l’approche de l’échéance
-            </label>
-        </div>
-
-        <div class="form-group form-group--cgv <?= isset($errors['cgv']) ? 'form-group--invalid' : '' ?>">
-            <p class="form-group__caption">
-                Vous devez accepter les
-                <a href="<?= url('cgv') ?>" target="_blank" rel="noopener noreferrer nofollow">
-                    Conditions Générales de Vente</a>.
-                Vous serez ensuite redirigé·e vers le prestataire de paiement
-                <a href="https://stripe.com/fr" target="_blank" rel="noopener noreferrer nofollow">Stripe</a>.
-            </p>
-
-            <input
-                id="cgv"
-                name="accept_cgv"
-                type="checkbox"
-                required
-            />
-
-            <label for="cgv">
-                Accepter les Conditions Générales de Vente
-            </label>
-
-            <?php if (isset($errors['cgv'])): ?>
-                <p class="form-group__error">
-                    <?= $errors['cgv'] ?>
-                </p>
-            <?php endif; ?>
-        </div>
-
-        <div class="form__actions">
-            <button type="submit" class="button--primary">
-                Renouveler votre abonnement
-            </button>
-        </div>
-
-        <p class="paragraph--center">
-            <a href="<?= url('account') ?>">
-                Revenir à votre compte
-            </a>
+    <?php if ($account->expired_at > \Minz\Time::fromNow(1, 'month')): ?>
+        <p class="paragraph--featured">
+            Vous pourrez renouveler à 1 mois de l’expiration de votre abonnement.
         </p>
-    </form>
+    <?php else: ?>
+        <form method="post" action="<?= url('subscription renew') ?>" class="form--renew">
+            <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+
+            <?php if ($error): ?>
+                <p class="form__error">
+                    <?= $error ?>
+                </p>
+            <?php endif; ?>
+
+            <div
+                class="form-group amount-selector"
+                data-controller="amount-selector"
+                data-amount-selector-initial-amount="<?= $amount ?>"
+            >
+                <label>
+                    Sélectionner un tarif
+                </label>
+
+                <div class="amount-selector__container">
+                    <div class="amount-selector__item">
+                        <input
+                            id="amount-solidarity"
+                            name="tariff"
+                            value="solidarity"
+                            class="amount-selector__radio"
+                            type="radio"
+                            <?= $amount === 15 ? 'checked' : '' ?>
+                            data-action="amount-selector#select"
+                            data-target="amount-selector.radio"
+                            data-value="15"
+                        />
+
+                        <label
+                            for="amount-solidarity"
+                            class="amount-selector__label"
+                        >
+                            <span class="amount-selector__amount">
+                                15 €
+                            </span>
+
+                            <span class="amount-selector__title">
+                                solidaire
+                            </span>
+                        </label>
+                    </div>
+
+                    <div class="amount-selector__item">
+                        <input
+                            id="amount-stability"
+                            name="tariff"
+                            value="stability"
+                            class="amount-selector__radio"
+                            type="radio"
+                            <?= $amount === 30 ? 'checked' : '' ?>
+                            data-action="amount-selector#select"
+                            data-target="amount-selector.radio"
+                            data-value="30"
+                        />
+
+                        <label
+                            for="amount-stability"
+                            class="amount-selector__label"
+                        >
+                            <span class="amount-selector__amount">
+                                30 €
+                            </span>
+
+                            <span class="amount-selector__title">
+                                équilibre
+                            </span>
+                        </label>
+                    </div>
+
+                    <div class="amount-selector__item">
+                        <input
+                            id="amount-contribution"
+                            name="tariff"
+                            value="contribution"
+                            class="amount-selector__radio"
+                            type="radio"
+                            <?= $amount === $contribution_price ? 'checked' : '' ?>
+                            data-action="amount-selector#select"
+                            data-target="amount-selector.radio"
+                            data-value="<?= $contribution_price ?>"
+                        />
+
+                        <label
+                            for="amount-contribution"
+                            class="amount-selector__label"
+                        >
+                            <span class="amount-selector__amount">
+                                <?= $contribution_price ?> €
+                            </span>
+
+                            <span class="amount-selector__title">
+                                soutien
+                            </span>
+                        </label>
+                    </div>
+                </div>
+
+                <label for="amount" class="amount-selector__choose-label">
+                    <span>
+                        ou choisir
+                    </span>
+
+                    <input
+                        id="amount"
+                        class="amount-selector__input"
+                        name="amount"
+                        type="number"
+                        step="0.5"
+                        min="0"
+                        max="1000"
+                        value="<?= $amount ?>"
+                        data-action="amount-selector#change"
+                        data-target="amount-selector.amount"
+                        required
+                        <?= isset($errors['amount']) ? 'autofocus' : '' ?>
+                    />
+
+                    <span>
+                        euros
+                    </span>
+                </label>
+
+                <?php if (isset($errors['amount'])): ?>
+                    <p class="form-group__error">
+                        <?= $errors['amount'] ?>
+                    </p>
+                <?php endif; ?>
+            </div>
+
+            <div class="form-group form-group--reminder">
+                <input
+                    id="reminder"
+                    name="reminder"
+                    type="checkbox"
+                    <?= $reminder ? 'checked' : '' ?>
+                />
+
+                <label for="reminder">
+                    Recevoir un rappel à l’approche de l’échéance
+                </label>
+            </div>
+
+            <div class="form-group form-group--cgv <?= isset($errors['cgv']) ? 'form-group--invalid' : '' ?>">
+                <p class="form-group__caption">
+                    Vous devez accepter les
+                    <a href="<?= url('cgv') ?>" target="_blank" rel="noopener noreferrer nofollow">
+                        Conditions Générales de Vente</a>.
+                    Vous serez ensuite redirigé·e vers le prestataire de paiement
+                    <a href="https://stripe.com/fr" target="_blank" rel="noopener noreferrer nofollow">Stripe</a>.
+                </p>
+
+                <input
+                    id="cgv"
+                    name="accept_cgv"
+                    type="checkbox"
+                    required
+                />
+
+                <label for="cgv">
+                    Accepter les Conditions Générales de Vente
+                </label>
+
+                <?php if (isset($errors['cgv'])): ?>
+                    <p class="form-group__error">
+                        <?= $errors['cgv'] ?>
+                    </p>
+                <?php endif; ?>
+            </div>
+
+            <div class="form__actions">
+                <button type="submit" class="button--primary">
+                    Renouveler votre abonnement
+                </button>
+            </div>
+        </form>
+    <?php endif; ?>
+
+    <p class="paragraph--center">
+        <a href="<?= url('account') ?>">
+            Revenir à votre compte
+        </a>
+    </p>
 </section>

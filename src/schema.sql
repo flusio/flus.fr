@@ -13,9 +13,8 @@ CREATE TABLE accounts (
     access_token TEXT,
     last_sync_at TEXT,
 
-    preferred_frequency TEXT NOT NULL DEFAULT 'month',
-    preferred_payment_type TEXT NOT NULL DEFAULT 'card',
     preferred_service TEXT NOT NULL DEFAULT 'flusio',
+    preferred_tariff TEXT NOT NULL DEFAULT 'stability',
     reminder BOOLEAN NOT NULL DEFAULT false,
 
     address_first_name TEXT,

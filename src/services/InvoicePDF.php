@@ -113,10 +113,9 @@ class InvoicePDF extends \FPDF
                 ],
             ];
         } elseif ($payment->type === 'subscription') {
-            $period = $payment->frequency === 'month' ? '1 mois' : '1 an';
             $this->purchases = [
                 [
-                    'description' => "Renouvellement d'un abonnement\nde " . $period . " à Flus",
+                    'description' => "Renouvellement d'un abonnement\nde 1 an à Flus",
                     'number' => '1',
                     'price' => $amount,
                     'total' => $amount,

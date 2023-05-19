@@ -47,10 +47,7 @@ class PaymentsCompleterTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($now->getTimestamp(), $payment->completed_at->getTimestamp());
     }
 
-    /**
-     * @dataProvider frequencyProvider
-     */
-    public function testPerformExtendsSubscriptionIfAccountIsAttached(string $frequency): void
+    public function testPerformExtendsSubscriptionIfAccountIsAttached(): void
     {
         $now = $this->fake('dateTime');
         $this->freeze($now);
@@ -62,13 +59,8 @@ class PaymentsCompleterTest extends \PHPUnit\Framework\TestCase
             'completed_at' => null,
             'is_paid' => true,
             'account_id' => $account->id,
-            'frequency' => $frequency,
         ]);
-        if ($frequency === 'month') {
-            $expected_expired_at = \Minz\Time::fromNow(1, 'month');
-        } else {
-            $expected_expired_at = \Minz\Time::fromNow(1, 'year');
-        }
+        $expected_expired_at = \Minz\Time::fromNow(1, 'year');
 
         $completer = new PaymentsCompleter();
         $completer->perform();
@@ -176,21 +168,5 @@ class PaymentsCompleterTest extends \PHPUnit\Framework\TestCase
         /** @var models\Payment */
         $payment = $payment->reload();
         $this->assertNull($payment->completed_at);
-    }
-
-    /**
-     * @return array<array{'month'|'year'}>
-     */
-    public function frequencyProvider(): array
-    {
-        $faker = \Faker\Factory::create();
-        $datasets = [];
-        foreach (range(1, \Minz\Configuration::$application['number_of_datasets']) as $n) {
-            $datasets[] = [
-                $faker->randomElement(['month', 'year']),
-            ];
-        }
-
-        return $datasets;
     }
 }

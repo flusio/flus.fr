@@ -39,7 +39,9 @@ class Subscriptions
         }
 
         return Response::ok('subscriptions/init.phtml', [
+            'contribution_price' => models\Payment::contributionPrice(),
             'account' => $account,
+            'amount' => $account->preferredAmount(),
             'reminder' => $account->reminder,
             'ongoing_payment' => $account->ongoingPayment(),
         ]);
@@ -50,15 +52,16 @@ class Subscriptions
      * Stripe API to start a payment session.
      *
      * @request_param string csrf
-     * @request_param string frequency (month or year)
      * @request_param boolean reminder
+     * @request_param integer amount must be between 0 and 1000
      *
      * @response 401
      *     if the user is not connected
      * @response 302 /account/address
      *     if the address is not set
      * @response 400
-     *     if CSRF or frequency are invalid
+     *     if CSRF is invalid, or the subscription is not yet to renew (i.e.
+     *     expires in more than 1 month)
      * @response 302 /payments/:id/pay
      *     on success
      */
@@ -74,35 +77,73 @@ class Subscriptions
             return Response::unauthorized('unauthorized.phtml');
         }
 
-        if ($account->mustSetAddress()) {
-            return Response::redirect('account address');
-        }
-
-        $frequency = $request->param('frequency');
         $reminder = $request->paramBoolean('reminder', false);
 
-        $payment = models\Payment::initSubscriptionFromAccount($account, $frequency);
-        $errors = $payment->validate();
-        if ($errors) {
-            return Response::badRequest('subscriptions/init.phtml', [
-                'account' => $account,
-                'reminder' => $reminder,
-                'ongoing_payment' => $account->ongoingPayment(),
-                'errors' => $errors,
-            ]);
-        }
+        /** @var int */
+        $amount = $request->paramInteger('amount', 0);
+
+        /** @var string */
+        $tariff = $request->param('tariff', '');
 
         if (!\Minz\Csrf::validate($request->param('csrf'))) {
             return Response::badRequest('subscriptions/init.phtml', [
+                'contribution_price' => models\Payment::contributionPrice(),
                 'account' => $account,
+                'amount' => $amount,
                 'reminder' => $reminder,
                 'ongoing_payment' => $account->ongoingPayment(),
                 'error' => 'Une vérification de sécurité a échoué, veuillez réessayer de soumettre le formulaire.',
             ]);
         }
 
+        if ($account->expired_at > \Minz\Time::fromNow(1, 'month')) {
+            return Response::badRequest('subscriptions/init.phtml', [
+                'contribution_price' => models\Payment::contributionPrice(),
+                'account' => $account,
+                'amount' => $amount,
+                'reminder' => $reminder,
+                'ongoing_payment' => $account->ongoingPayment(),
+                'error' => 'Vous pourrez renouveler à 1 mois de l’expiration de votre abonnement.',
+            ]);
+        }
+
+        if ($account->mustSetAddress()) {
+            return Response::redirect('account address');
+        }
+
+        if (in_array($tariff, ['solidarity', 'stability', 'contribution'])) {
+            $preferred_tariff = $tariff;
+        } else {
+            $preferred_tariff = strval($amount);
+        }
+
+        $account->preferred_tariff = $preferred_tariff;
+        $account->reminder = $reminder;
+        $account->save();
+
+        if ($amount === 0) {
+            $account->extendSubscription();
+            $account->save();
+
+            return Response::redirect('Payments#succeeded');
+        }
+
+        $payment = models\Payment::initSubscriptionFromAccount($account, $amount);
+
+        $errors = $payment->validate();
+        if ($errors) {
+            return Response::badRequest('subscriptions/init.phtml', [
+                'contribution_price' => models\Payment::contributionPrice(),
+                'account' => $account,
+                'amount' => $amount,
+                'reminder' => $reminder,
+                'ongoing_payment' => $account->ongoingPayment(),
+                'errors' => $errors,
+            ]);
+        }
+
         $stripe_service = new services\Stripe();
-        $period = $payment->frequency === 'month' ? '1 mois' : '1 an';
+        $period = '1 an';
         $stripe_session = $stripe_service->createSession(
             $payment,
             "Abonnement à Flus ({$period})",
@@ -119,10 +160,6 @@ class Subscriptions
         $payment->payment_intent_id = $stripe_session->payment_intent;
         $payment->session_id = $stripe_session->id;
         $payment->save();
-
-        $account->preferred_frequency = $payment->frequency ?? 'year';
-        $account->reminder = $reminder;
-        $account->save();
 
         return Response::redirect('Payments#pay', [
             'id' => $payment->id,

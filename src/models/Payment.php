@@ -89,32 +89,15 @@ class Payment
 
     /**
      * Init a subscription payment from an account.
-     */
-    public static function initSubscriptionFromAccount(Account $account, string $frequency): self
-    {
-        $frequency = strtolower(trim($frequency));
-        $amount = 0;
-        if ($frequency === 'month') {
-            $amount = 3 * 100;
-        } elseif ($frequency === 'year') {
-            $amount = 30 * 100;
-        }
-
-        $payment = new self('subscription', $amount);
-        $payment->frequency = $frequency;
-        $payment->account_id = $account->id;
-
-        return $payment;
-    }
-
-    /**
-     * Init a common pot payment from an account.
      *
      * @param integer|float $euros
      */
-    public static function initCommonPotFromAccount(Account $account, mixed $euros): self
+    public static function initSubscriptionFromAccount(Account $account, mixed $euros): self
     {
-        $payment = new self('common_pot', intval($euros * 100));
+        $amount = intval($euros * 100);
+
+        $payment = new self('subscription', $amount);
+        $payment->frequency = 'year';
         $payment->account_id = $account->id;
 
         return $payment;
@@ -374,5 +357,28 @@ class Payment
         $parameters = [$account_id];
         $parameters = array_merge($parameters, $payments_ids);
         return $statement->execute($parameters);
+    }
+
+    /**
+     * Return the contribution price in euros.
+     *
+     * The contribution price is defined as the price which all the active
+     * accounts + the current person should have paid in order to achieve the
+     * financial goal.
+     */
+    public static function contributionPrice(): int
+    {
+        $financial_goal = \Minz\Configuration::$application['financial_goal'];
+
+        // Consider the person who is going to subscribe.
+        $active_accounts = Account::countActive() + 1;
+
+        // The max price is 10€ per month.
+        $max_price = 10 * 12;
+        $min_price = 1;
+
+        $price = intval($financial_goal / $active_accounts);
+
+        return max($min_price, min($max_price, $price));
     }
 }

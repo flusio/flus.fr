@@ -53,45 +53,6 @@ class PotUsage
     public string $account_id;
 
     /**
-     * Init a pot usage from an account.
-     *
-     * @param \Website\models\Account $account
-     * @param string $frequency (`month` or `year`)
-     */
-    public function __construct($account, $frequency)
-    {
-        $frequency = strtolower(trim($frequency));
-        $amount = 0;
-        if ($frequency === 'month') {
-            $amount = 3;
-        } elseif ($frequency === 'year') {
-            $amount = 30;
-        }
-
-        $this->id = \Minz\Random::hex(32);
-        $this->completed_at = \Minz\Time::now();
-        $this->is_paid = true;
-        $this->amount = $amount * 100;
-        $this->frequency = $frequency;
-        $this->account_id = $account->id;
-    }
-
-    /**
-     * Return the account associated to the payment if any. It might be null if
-     * the account has been deleted.
-     *
-     * @return \Website\models\Account|null
-     */
-    public function account()
-    {
-        if (!$this->account_id) {
-            return null;
-        }
-
-        return Account::find($this->account_id);
-    }
-
-    /**
      * Return the amount actually available in the common pot
      *
      * @return integer

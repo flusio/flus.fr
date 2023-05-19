@@ -21,12 +21,8 @@ class PaymentCompleter
 
         $account = $payment->account();
         if ($account && $payment->type === 'subscription') {
-            if ($payment->frequency) {
-                $account->extendSubscription($payment->frequency);
-                $account->save();
-            } else {
-                \Minz\Log::error("[PaymentCompleter#complete] Payment {$payment->id} has no frequency.");
-            }
+            $account->extendSubscription();
+            $account->save();
         }
 
         $invoice_filepath = $payment->invoiceFilepath();
