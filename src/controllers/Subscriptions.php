@@ -60,7 +60,8 @@ class Subscriptions
      * @response 302 /account/address
      *     if the address is not set
      * @response 400
-     *     if CSRF is invalid
+     *     if CSRF is invalid, or the subscription is not yet to renew (i.e.
+     *     expires in more than 1 month)
      * @response 302 /payments/:id/pay
      *     on success
      */
@@ -89,6 +90,17 @@ class Subscriptions
                 'reminder' => $reminder,
                 'ongoing_payment' => $account->ongoingPayment(),
                 'error' => 'Une vérification de sécurité a échoué, veuillez réessayer de soumettre le formulaire.',
+            ]);
+        }
+
+        if ($account->expired_at > \Minz\Time::fromNow(1, 'month')) {
+            return Response::badRequest('subscriptions/init.phtml', [
+                'contribution_price' => models\Payment::contributionPrice(),
+                'account' => $account,
+                'amount' => $amount,
+                'reminder' => $reminder,
+                'ongoing_payment' => $account->ongoingPayment(),
+                'error' => 'Vous pourrez renouveler à 1 mois de l’expiration de votre abonnement.',
             ]);
         }
 

@@ -126,7 +126,9 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
      */
     public function testRenewCreatesAPaymentAndRedirects(array $address): void
     {
+        $expired_at = \Minz\Time::fromNow(15, 'days');
         $user = $this->loginUser([
+            'expired_at' => $expired_at,
             'address_first_name' => $address['first_name'],
             'address_last_name' => $address['last_name'],
             'address_address1' => $address['address1'],
@@ -164,11 +166,11 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
      */
     public function testRenewCreatesAcceptsAmountOfZero(array $address): void
     {
-        $now = $this->fake('dateTime');
-        $this->freeze($now);
-        $expected_expired_at = \Minz\Time::fromNow(1, 'year');
+        $this->freeze();
+        $expired_at = \Minz\Time::fromNow(15, 'days');
+        $expected_expired_at = \Minz\Time::relative('1 year 15 days');
         $user = $this->loginUser([
-            'expired_at' => $now,
+            'expired_at' => $expired_at,
             'address_first_name' => $address['first_name'],
             'address_last_name' => $address['last_name'],
             'address_address1' => $address['address1'],
@@ -203,7 +205,10 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
      */
     public function testRenewRedirectsIfNoAddress(array $address): void
     {
-        $user = $this->loginUser();
+        $expired_at = \Minz\Time::fromNow(15, 'days');
+        $user = $this->loginUser([
+            'expired_at' => $expired_at,
+        ]);
         $account = models\Account::find($user['account_id']);
 
         $this->assertNotNull($account);
@@ -223,9 +228,45 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
      *
      * @param AccountAddress $address
      */
+    public function testRenewFailsIfExpiresInMoreThanOneMonth(array $address): void
+    {
+        $expired_at = \Minz\Time::fromNow(2, 'months');
+        $user = $this->loginUser([
+            'expired_at' => $expired_at,
+            'address_first_name' => $address['first_name'],
+            'address_last_name' => $address['last_name'],
+            'address_address1' => $address['address1'],
+            'address_postcode' => $address['postcode'],
+            'address_city' => $address['city'],
+        ]);
+        $account = models\Account::find($user['account_id']);
+
+        $this->assertNotNull($account);
+
+        $response = $this->appRun('POST', '/account/renew', [
+            'csrf' => \Minz\Csrf::generate(),
+            'account_id' => $account->id,
+            'amount' => 10,
+        ]);
+
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains(
+            $response,
+            'Vous pourrez renouveler à 1 mois de l’expiration de votre abonnement.'
+        );
+        $this->assertSame(0, models\Payment::count());
+    }
+
+    /**
+     * @dataProvider addressProvider
+     *
+     * @param AccountAddress $address
+     */
     public function testRenewFailsIfAmountIsInvalid(array $address): void
     {
+        $expired_at = \Minz\Time::fromNow(15, 'days');
         $user = $this->loginUser([
+            'expired_at' => $expired_at,
             'address_first_name' => $address['first_name'],
             'address_last_name' => $address['last_name'],
             'address_address1' => $address['address1'],
@@ -254,7 +295,9 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
      */
     public function testRenewFailsIfNotConnected(array $address): void
     {
+        $expired_at = \Minz\Time::fromNow(15, 'days');
         $account = AccountFactory::create([
+            'expired_at' => $expired_at,
             'address_first_name' => $address['first_name'],
             'address_last_name' => $address['last_name'],
             'address_address1' => $address['address1'],
@@ -279,7 +322,9 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
      */
     public function testRenewFailsIfCsrfIsInvalid(array $address): void
     {
+        $expired_at = \Minz\Time::fromNow(15, 'days');
         $user = $this->loginUser([
+            'expired_at' => $expired_at,
             'address_first_name' => $address['first_name'],
             'address_last_name' => $address['last_name'],
             'address_address1' => $address['address1'],
