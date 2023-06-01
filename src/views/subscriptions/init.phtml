@@ -162,19 +162,6 @@
                 <?php endif; ?>
             </div>
 
-            <div class="form-group form-group--reminder">
-                <input
-                    id="reminder"
-                    name="reminder"
-                    type="checkbox"
-                    <?= $reminder ? 'checked' : '' ?>
-                />
-
-                <label for="reminder">
-                    Recevoir un rappel à l’approche de l’échéance
-                </label>
-            </div>
-
             <div class="form-group form-group--cgv <?= isset($errors['cgv']) ? 'form-group--invalid' : '' ?>">
                 <p class="form-group__caption">
                     Vous devez accepter les

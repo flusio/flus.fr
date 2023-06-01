@@ -209,4 +209,37 @@
             </button>
         </div>
     </form>
+
+    <hr />
+
+    <?php if (!$account->isFree()): ?>
+        <form method="post" action="<?= url('account set reminder') ?>">
+            <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+            <input type="hidden" name="from" value="account profile" />
+
+            <?php if ($account->reminder): ?>
+                <p class="paragraph--center paragraph--limit">
+                    Vous recevrez un courriel à l’approche de l’échéance de
+                    votre abonnement.
+                </p>
+
+                <div class="paragraph--center">
+                    <button type="submit" class="button--ghost" name="reminder" value="false">
+                        Désactiver le rappel
+                    </button>
+                </div>
+            <?php else: ?>
+                <p class="paragraph--center paragraph--limit">
+                    Vous pouvez recevoir un courriel à l’approche de l’échéance
+                    de votre abonnement.
+                </p>
+
+                <div class="paragraph--center">
+                    <button type="submit" class="button--default" name="reminder" value="true">
+                        Activer le rappel
+                    </button>
+                </div>
+            <?php endif; ?>
+        </form>
+    <?php endif; ?>
 </section>
