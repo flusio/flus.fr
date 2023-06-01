@@ -339,6 +339,7 @@ legend {
  * Amount selector on the subscription renewing page
  */
 .amount-selector {
+    margin-top: var(--space-large);
     margin-bottom: var(--space-large);
 
     text-align: center;
