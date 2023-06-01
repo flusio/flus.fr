@@ -324,7 +324,7 @@ hr {
 
 .layout__nav a {
     display: block;
-    padding: 1.5rem 2rem 1.5rem 5.5rem;
+    padding: 1rem 2rem;
 
     text-decoration: none;
 
@@ -333,6 +333,12 @@ hr {
     background-color: var(--color-white);
     background-repeat: no-repeat;
     background-position: 1rem center;
+}
+
+@media (min-width: 48em) {
+    .layout__nav a {
+        padding-left: 5.5rem;
+    }
 }
 
 .layout__nav a[aria-current="page"] {
@@ -351,12 +357,18 @@ hr {
     border-left: none;
 }
 
-.layout__nav-item--subscription a {
-    background-image: url("icons/commerce/credit-card-line.svg");
-}
+@media (min-width: 48em) {
+    .layout__nav-item--subscription a {
+        background-image: url("icons/commerce/credit-card-line.svg");
+    }
 
-.layout__nav-item--profile a {
-    background-image: url("icons/core/user-line.svg");
+    .layout__nav-item--profile a {
+        background-image: url("icons/core/user-line.svg");
+    }
+
+    .layout__nav-item--invoices a {
+        background-image: url("icons/technology/pdf-file-line.svg");
+    }
 }
 
 .layout__content {
@@ -372,7 +384,7 @@ hr {
     .layout__content {
         padding: 0.2rem;
 
-        background-image: linear-gradient(178deg, var(--color-purple-1), var(--color-purple-3) 2%);
+        background-image: linear-gradient(to bottom, var(--color-purple-1), var(--color-purple-3) 100px);
         border-top: none;
     }
 }

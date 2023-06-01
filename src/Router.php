@@ -41,6 +41,7 @@ class Router
         $router->addRoute('POST', '/account/profile', 'Accounts#updateProfile', 'account update profile');
         $router->addRoute('GET', '/account/renew', 'Subscriptions#init', 'subscription init');
         $router->addRoute('POST', '/account/renew', 'Subscriptions#renew', 'subscription renew');
+        $router->addRoute('GET', '/account/invoices', 'Accounts#invoices', 'account invoices');
 
         $router->addRoute('GET', '/payments/:id/pay', 'Payments#pay');
         $router->addRoute('GET', '/merci', 'Payments#succeeded');

@@ -240,4 +240,28 @@ class Accounts
 
         return Response::redirect($from);
     }
+
+    /**
+     * @response 401
+     *     if the user is not connected
+     * @response 200
+     *     on success
+     */
+    public function invoices(Request $request): Response
+    {
+        $user = utils\CurrentUser::get();
+        if (!$user || utils\CurrentUser::isAdmin()) {
+            return Response::unauthorized('unauthorized.phtml');
+        }
+
+        $account = models\Account::find($user['account_id']);
+        if (!$account) {
+            return Response::unauthorized('unauthorized.phtml');
+        }
+
+        return Response::ok('accounts/invoices.phtml', [
+            'account' => $account,
+            'payments' => $account->payments(),
+        ]);
+    }
 }

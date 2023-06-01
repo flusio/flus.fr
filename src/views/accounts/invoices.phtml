@@ -1,0 +1,62 @@
+<?php
+    $this->layout('account.phtml', [
+        'title' => 'Vos factures',
+        'current_page' => 'invoices',
+    ]);
+?>
+
+<section class="section">
+    <div class="header">
+        <h1 class="header__title">
+            Vos factures
+        </h1>
+    </div>
+
+    <?php if ($payments): ?>
+        <table>
+            <tbody>
+                <?php foreach ($payments as $payment): ?>
+                    <tr <?= !$payment->completed_at ? 'class="row--ghost"' : ''?> >
+                        <td class="cell--right">
+                            <?= format_amount($payment->amount) ?>
+                        </td>
+
+                        <td>
+                            <?php if ($payment->type === 'subscription' && $payment->frequency === 'month'): ?>
+                                Abonnement mois
+                            <?php elseif ($payment->type === 'subscription' && $payment->frequency === 'year'): ?>
+                                Abonnement année
+                            <?php elseif ($payment->type === 'common_pot'): ?>
+                                Cagnotte
+                            <?php elseif ($payment->type === 'credit'): ?>
+                                Crédit
+                            <?php else: ?>
+                                Heu… non
+                            <?php endif; ?>
+                        </td>
+
+                        <td>
+                            <?php if ($payment->completed_at): ?>
+                                <?= _d($payment->completed_at, 'dd MMM yyyy') ?>
+                            <?php else: ?>
+                                traitement en cours
+                            <?php endif; ?>
+                        </td>
+
+                        <td>
+                            <?php if ($payment->invoice_number): ?>
+                                <a href="<?= url('invoice download pdf', ['id' => $payment->id]) ?>">
+                                    <?= $payment->invoice_number ?>
+                                </a>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    <?php else: ?>
+        <p class="paragraph--center paragraph--secondary">
+            Il n’y a aucune facture à afficher.
+        </p>
+    <?php endif; ?>
+</section>
