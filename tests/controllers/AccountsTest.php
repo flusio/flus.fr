@@ -182,7 +182,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('GET', '/account');
 
-        $this->assertResponseCode($response, 302, '/account/address');
+        $this->assertResponseCode($response, 302, '/account/profile');
     }
 
     public function testShowFailsIfNotConnected(): void
@@ -385,19 +385,19 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($user);
     }
 
-    public function testAddressRendersCorrectly(): void
+    public function testProfileRendersCorrectly(): void
     {
         $this->loginUser();
 
-        $response = $this->appRun('GET', '/account/address');
+        $response = $this->appRun('GET', '/account/profile');
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponsePointer($response, 'accounts/address.phtml');
+        $this->assertResponsePointer($response, 'accounts/profile.phtml');
     }
 
-    public function testAddressFailsIfNotConnected(): void
+    public function testProfileFailsIfNotConnected(): void
     {
-        $response = $this->appRun('GET', '/account/address');
+        $response = $this->appRun('GET', '/account/profile');
 
         $this->assertResponseCode($response, 401);
     }
@@ -407,11 +407,11 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
      *
      * @param AccountAddress $address
      */
-    public function testUpdateAddressChangesAddressAndRedirects(string $email, array $address): void
+    public function testUpdateProfileChangesAddressAndRedirects(string $email, array $address): void
     {
         $user = $this->loginUser();
 
-        $response = $this->appRun('POST', '/account/address', [
+        $response = $this->appRun('POST', '/account/profile', [
             'csrf' => \Minz\Csrf::generate(),
             'email' => $email,
             'address' => $address,
@@ -433,14 +433,14 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
      *
      * @param AccountAddress $address
      */
-    public function testUpdateAddressAcceptsNoPhysicalAddress(string $email, array $address): void
+    public function testUpdateProfileAcceptsNoPhysicalAddress(string $email, array $address): void
     {
         $user = $this->loginUser();
         unset($address['address1']);
         unset($address['postcode']);
         unset($address['city']);
 
-        $response = $this->appRun('POST', '/account/address', [
+        $response = $this->appRun('POST', '/account/profile', [
             'csrf' => \Minz\Csrf::generate(),
             'email' => $email,
             'address' => $address,
@@ -462,9 +462,9 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
      *
      * @param AccountAddress $address
      */
-    public function testUpdateAddressFailsIfNotConnected(string $email, array $address): void
+    public function testUpdateProfileFailsIfNotConnected(string $email, array $address): void
     {
-        $response = $this->appRun('POST', '/account/address', [
+        $response = $this->appRun('POST', '/account/profile', [
             'csrf' => \Minz\Csrf::generate(),
             'email' => $email,
             'address' => $address,
@@ -478,11 +478,11 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
      *
      * @param AccountAddress $address
      */
-    public function testUpdateAddressFailsIfCsrfIsInvalid(string $email, array $address): void
+    public function testUpdateProfileFailsIfCsrfIsInvalid(string $email, array $address): void
     {
         $user = $this->loginUser();
 
-        $response = $this->appRun('POST', '/account/address', [
+        $response = $this->appRun('POST', '/account/profile', [
             'csrf' => 'not the token',
             'email' => $email,
             'address' => $address,
@@ -497,12 +497,12 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
      *
      * @param AccountAddress $address
      */
-    public function testUpdateAddressFailsWithInvalidEmail(string $email, array $address): void
+    public function testUpdateProfileFailsWithInvalidEmail(string $email, array $address): void
     {
         $user = $this->loginUser();
         $email = $this->fake('domainName');
 
-        $response = $this->appRun('POST', '/account/address', [
+        $response = $this->appRun('POST', '/account/profile', [
             'csrf' => \Minz\Csrf::generate(),
             'email' => $email,
             'address' => $address,
@@ -520,11 +520,11 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
      *
      * @param AccountAddress $address
      */
-    public function testUpdateAddressFailsWithMissingEmail(string $email, array $address): void
+    public function testUpdateProfileFailsWithMissingEmail(string $email, array $address): void
     {
         $user = $this->loginUser();
 
-        $response = $this->appRun('POST', '/account/address', [
+        $response = $this->appRun('POST', '/account/profile', [
             'csrf' => \Minz\Csrf::generate(),
             'address' => $address,
         ]);
@@ -538,12 +538,12 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
      *
      * @param AccountAddress $address
      */
-    public function testUpdateAddressFailsWithMissingFirstName(string $email, array $address): void
+    public function testUpdateProfileFailsWithMissingFirstName(string $email, array $address): void
     {
         $user = $this->loginUser();
         unset($address['first_name']);
 
-        $response = $this->appRun('POST', '/account/address', [
+        $response = $this->appRun('POST', '/account/profile', [
             'csrf' => \Minz\Csrf::generate(),
             'email' => $email,
             'address' => $address,
@@ -558,12 +558,12 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
      *
      * @param AccountAddress $address
      */
-    public function testUpdateAddressFailsWithMissingLastName(string $email, array $address): void
+    public function testUpdateProfileFailsWithMissingLastName(string $email, array $address): void
     {
         $user = $this->loginUser();
         unset($address['last_name']);
 
-        $response = $this->appRun('POST', '/account/address', [
+        $response = $this->appRun('POST', '/account/profile', [
             'csrf' => \Minz\Csrf::generate(),
             'email' => $email,
             'address' => $address,
@@ -578,12 +578,12 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
      *
      * @param AccountAddress $address
      */
-    public function testUpdateAddressFailsWithMissingAddress1(string $email, array $address): void
+    public function testUpdateProfileFailsWithMissingAddress1(string $email, array $address): void
     {
         $user = $this->loginUser();
         unset($address['address1']);
 
-        $response = $this->appRun('POST', '/account/address', [
+        $response = $this->appRun('POST', '/account/profile', [
             'csrf' => \Minz\Csrf::generate(),
             'email' => $email,
             'address' => $address,
@@ -598,12 +598,12 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
      *
      * @param AccountAddress $address
      */
-    public function testUpdateAddressFailsWithMissingPostcode(string $email, array $address): void
+    public function testUpdateProfileFailsWithMissingPostcode(string $email, array $address): void
     {
         $user = $this->loginUser();
         unset($address['postcode']);
 
-        $response = $this->appRun('POST', '/account/address', [
+        $response = $this->appRun('POST', '/account/profile', [
             'csrf' => \Minz\Csrf::generate(),
             'email' => $email,
             'address' => $address,
@@ -618,12 +618,12 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
      *
      * @param AccountAddress $address
      */
-    public function testUpdateAddressFailsWithMissingCity(string $email, array $address): void
+    public function testUpdateProfileFailsWithMissingCity(string $email, array $address): void
     {
         $user = $this->loginUser();
         unset($address['city']);
 
-        $response = $this->appRun('POST', '/account/address', [
+        $response = $this->appRun('POST', '/account/profile', [
             'csrf' => \Minz\Csrf::generate(),
             'email' => $email,
             'address' => $address,
@@ -638,12 +638,12 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
      *
      * @param AccountAddress $address
      */
-    public function testUpdateAddressFailsWithInvalidCountry(string $email, array $address): void
+    public function testUpdateProfileFailsWithInvalidCountry(string $email, array $address): void
     {
         $user = $this->loginUser();
         $address['country'] = 'invalid';
 
-        $response = $this->appRun('POST', '/account/address', [
+        $response = $this->appRun('POST', '/account/profile', [
             'csrf' => \Minz\Csrf::generate(),
             'email' => $email,
             'address' => $address,

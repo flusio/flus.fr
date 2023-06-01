@@ -35,7 +35,7 @@ class Subscriptions
         }
 
         if ($account->mustSetAddress()) {
-            return Response::redirect('account address');
+            return Response::redirect('account profile');
         }
 
         return Response::ok('subscriptions/init.phtml', [
@@ -108,7 +108,7 @@ class Subscriptions
         }
 
         if ($account->mustSetAddress()) {
-            return Response::redirect('account address');
+            return Response::redirect('account profile');
         }
 
         if (in_array($tariff, ['solidarity', 'stability', 'contribution'])) {

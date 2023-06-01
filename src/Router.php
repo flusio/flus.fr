@@ -37,8 +37,8 @@ class Router
         $router->addRoute('GET', '/account/login', 'Accounts#login', 'account login');
         $router->addRoute('POST', '/account/logout', 'Accounts#logout', 'account logout');
         $router->addRoute('POST', '/account/reminder', 'Accounts#setReminder', 'account set reminder');
-        $router->addRoute('GET', '/account/address', 'Accounts#address', 'account address');
-        $router->addRoute('POST', '/account/address', 'Accounts#updateAddress', 'account update address');
+        $router->addRoute('GET', '/account/profile', 'Accounts#profile', 'account profile');
+        $router->addRoute('POST', '/account/profile', 'Accounts#updateProfile', 'account update profile');
         $router->addRoute('GET', '/account/renew', 'Subscriptions#init', 'subscription init');
         $router->addRoute('POST', '/account/renew', 'Subscriptions#renew', 'subscription renew');
 

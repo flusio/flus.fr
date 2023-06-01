@@ -35,7 +35,7 @@ class Accounts
         }
 
         if ($account->mustSetAddress()) {
-            return Response::redirect('account address');
+            return Response::redirect('account profile');
         }
 
         $ongoing_payment = $account->ongoingPayment();
@@ -116,7 +116,7 @@ class Accounts
      * @response 200
      *     on success
      */
-    public function address(Request $request): Response
+    public function profile(Request $request): Response
     {
         $user = utils\CurrentUser::get();
         if (!$user || utils\CurrentUser::isAdmin()) {
@@ -128,7 +128,7 @@ class Accounts
             return Response::unauthorized('unauthorized.phtml');
         }
 
-        return Response::ok('accounts/address.phtml', [
+        return Response::ok('accounts/profile.phtml', [
             'account' => $account,
             'email' => $account->email,
             'address' => $account->address(),
@@ -144,7 +144,7 @@ class Accounts
      * @response 302 /account
      *     on success
      */
-    public function updateAddress(Request $request): Response
+    public function updateProfile(Request $request): Response
     {
         $user = utils\CurrentUser::get();
         if (!$user || utils\CurrentUser::isAdmin()) {
@@ -182,7 +182,7 @@ class Accounts
         }
 
         if ($errors) {
-            return Response::badRequest('accounts/address.phtml', [
+            return Response::badRequest('accounts/profile.phtml', [
                 'account' => $account,
                 'email' => $email,
                 'address' => $address,
@@ -192,7 +192,7 @@ class Accounts
         }
 
         if (!\Minz\Csrf::validate($request->param('csrf'))) {
-            return Response::badRequest('accounts/address.phtml', [
+            return Response::badRequest('accounts/profile.phtml', [
                 'account' => $account,
                 'email' => $email,
                 'address' => $address,
