@@ -25,7 +25,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
      *
      * @param AccountAddress $address
      */
-    public function testShowRendersCorrectly(string $email, array $address): void
+    public function testShowRedirectsToRenew(string $email, array $address): void
     {
         $this->loginUser([
             'email' => $email,
@@ -38,138 +38,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('GET', '/account');
 
-        $this->assertResponseCode($response, 200);
-        $this->assertResponseContains($response, $email);
-        $this->assertResponsePointer($response, 'accounts/show.phtml');
-    }
-
-    /**
-     * @dataProvider addressesProvider
-     *
-     * @param AccountAddress $address
-     */
-    public function testShowRendersFutureExpiration(string $email, array $address): void
-    {
-        $this->freeze($this->fake('dateTime'));
-        $expired_at = \Minz\Time::fromNow($this->fake('randomDigitNotNull'), 'days');
-        $this->loginUser([
-            'expired_at' => $expired_at,
-            'address_first_name' => $address['first_name'],
-            'address_last_name' => $address['last_name'],
-            'address_address1' => $address['address1'],
-            'address_postcode' => $address['postcode'],
-            'address_city' => $address['city'],
-        ]);
-
-        $response = $this->appRun('GET', '/account');
-
-        $this->assertResponseCode($response, 200);
-        $this->assertResponseContains($response, 'Votre abonnement expirera le');
-    }
-
-    /**
-     * @dataProvider addressesProvider
-     *
-     * @param AccountAddress $address
-     */
-    public function testShowRendersPriorExpiration(string $email, array $address): void
-    {
-        $this->freeze($this->fake('dateTime'));
-        $expired_at = \Minz\Time::ago($this->fake('randomDigitNotNull'), 'days');
-        $this->loginUser([
-            'expired_at' => $expired_at,
-            'address_first_name' => $address['first_name'],
-            'address_last_name' => $address['last_name'],
-            'address_address1' => $address['address1'],
-            'address_postcode' => $address['postcode'],
-            'address_city' => $address['city'],
-        ]);
-
-        $response = $this->appRun('GET', '/account');
-
-        $this->assertResponseCode($response, 200);
-        $this->assertResponseContains($response, 'Votre abonnement a expiré le');
-    }
-
-    /**
-     * @dataProvider addressesProvider
-     *
-     * @param AccountAddress $address
-     */
-    public function testShowRendersIfNoExpiration(string $email, array $address): void
-    {
-        $expired_at = new \DateTimeImmutable('@0');
-        $this->loginUser([
-            'expired_at' => $expired_at,
-            'address_first_name' => $address['first_name'],
-            'address_last_name' => $address['last_name'],
-            'address_address1' => $address['address1'],
-            'address_postcode' => $address['postcode'],
-            'address_city' => $address['city'],
-        ]);
-
-        $response = $this->appRun('GET', '/account');
-
-        $this->assertResponseCode($response, 200);
-        $this->assertResponseContains($response, 'Vous bénéficiez d’un abonnement gratuit');
-    }
-
-    /**
-     * @dataProvider addressesProvider
-     *
-     * @param AccountAddress $address
-     */
-    public function testShowRendersIfOngoingAndUnpaidPayment(string $email, array $address): void
-    {
-        $user = $this->loginUser([
-            'email' => $email,
-            'address_first_name' => $address['first_name'],
-            'address_last_name' => $address['last_name'],
-            'address_address1' => $address['address1'],
-            'address_postcode' => $address['postcode'],
-            'address_city' => $address['city'],
-        ]);
-        PaymentFactory::create([
-            'account_id' => $user['account_id'],
-            'completed_at' => null,
-            'is_paid' => false,
-        ]);
-
-        $response = $this->appRun('GET', '/account');
-
-        $this->assertResponseCode($response, 200);
-        $this->assertResponseContains($response, 'Votre paiement est en cours de traitement');
-        $this->assertResponsePointer($response, 'accounts/show.phtml');
-    }
-
-    /**
-     * @dataProvider addressesProvider
-     *
-     * @param AccountAddress $address
-     */
-    public function testShowCompletesAnOngoingAndPaidPayment(string $email, array $address): void
-    {
-        $user = $this->loginUser([
-            'email' => $email,
-            'address_first_name' => $address['first_name'],
-            'address_last_name' => $address['last_name'],
-            'address_address1' => $address['address1'],
-            'address_postcode' => $address['postcode'],
-            'address_city' => $address['city'],
-        ]);
-        $payment = PaymentFactory::create([
-            'account_id' => $user['account_id'],
-            'completed_at' => null,
-            'is_paid' => true,
-            'frequency' => 'year',
-        ]);
-
-        $response = $this->appRun('GET', '/account');
-
-        $this->assertResponseNotContains($response, 'Votre paiement est en cours de traitement');
-        $payment = $payment->reload();
-        $this->assertNotNull($payment);
-        $this->assertNotNull($payment->completed_at);
+        $this->assertResponseCode($response, 302, '/account/renew');
     }
 
     public function testShowRedirectsIfNoAddress(): void

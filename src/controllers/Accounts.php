@@ -38,20 +38,7 @@ class Accounts
             return Response::redirect('account profile');
         }
 
-        $ongoing_payment = $account->ongoingPayment();
-        if ($ongoing_payment && $ongoing_payment->is_paid) {
-            // If the ongoing payment is paid, we can complete it so it’s no
-            // longer ongoing :)
-            $payment_completer = new services\PaymentCompleter();
-            $payment_completer->complete($ongoing_payment);
-            $ongoing_payment = null;
-        }
-
-        return Response::ok('accounts/show.phtml', [
-            'account' => $account,
-            'payments' => $account->payments(),
-            'ongoing_payment' => $ongoing_payment,
-        ]);
+        return Response::redirect('subscription init');
     }
 
     /**
