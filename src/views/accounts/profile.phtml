@@ -104,8 +104,32 @@
             </div>
         </div>
 
-        <fieldset>
-            <legend>Adresse postale (facultative)</legend>
+        <div class="form-group" data-controller="checkboxes">
+            <?php
+                $is_checked = (
+                    !empty($address['address1']) ||
+                    !empty($address['postcode']) ||
+                    !empty($address['city'])
+                );
+            ?>
+
+            <input
+                id="show-address"
+                name="show_address"
+                type="checkbox"
+                data-action="checkboxes#switch"
+                data-target="checkboxes.control"
+                data-checkboxes-control="#address"
+                <?= $is_checked ? 'checked' : '' ?>
+            />
+
+            <label for="show-address">
+                Faire apparaître votre adresse postale sur les factures
+            </label>
+        </div>
+
+        <fieldset id="address">
+            <legend>Adresse postale</legend>
 
             <div class="form-group <?= isset($errors['address_address1']) ? 'form-group--invalid' : '' ?>">
                 <label for="address1">

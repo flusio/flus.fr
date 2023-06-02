@@ -145,6 +145,14 @@ class Accounts
 
         $email = $request->param('email', '');
         $address = $request->paramArray('address', $account->address());
+        $show_address = $request->paramBoolean('show_address', false);
+
+        if (!$show_address) {
+            $address['address1'] = '';
+            $address['postcode'] = '';
+            $address['city'] = '';
+        }
+
         $account->email = $email;
         $account->setAddress($address);
 
