@@ -11,6 +11,7 @@
 
         <script src="<?= url_static('stimulus.min.js') ?>" defer></script>
         <script src="<?= url_static('amount-selector.js') ?>" defer></script>
+        <script src="<?= url_static('checkboxes.js') ?>" defer></script>
 
         <title><?= $title ?></title>
     </head>
@@ -32,11 +33,42 @@
 
                 <form method="post" action="<?= url('account logout') ?>">
                     <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
-                    <button class="button--default" type="submit">
+                    <button class="button--ghost" type="submit">
                         Revenir à l’application
                     </button>
                 </form>
             </header>
+
+            <nav class="layout__nav">
+                <ul>
+                    <li class="layout__nav-item--subscription">
+                        <a
+                            href="<?= url('subscription init') ?>"
+                            <?= $current_page === 'subscription' ? 'aria-current="page"' : '' ?>
+                        >
+                            Abonnement
+                        </a>
+                    </li>
+
+                    <li class="layout__nav-item--profile">
+                        <a
+                            href="<?= url('account profile') ?>"
+                            <?= $current_page === 'profile' ? 'aria-current="page"' : '' ?>
+                        >
+                            Profil
+                        </a>
+                    </li>
+
+                    <li class="layout__nav-item--invoices">
+                        <a
+                            href="<?= url('account invoices') ?>"
+                            <?= $current_page === 'invoices' ? 'aria-current="page"' : '' ?>
+                        >
+                            Factures
+                        </a>
+                    </li>
+                </ul>
+            </nav>
 
             <main class="layout__content" id="contenu">
                 <?= $this->safe('content') ?>

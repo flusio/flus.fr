@@ -35,23 +35,10 @@ class Accounts
         }
 
         if ($account->mustSetAddress()) {
-            return Response::redirect('account address');
+            return Response::redirect('account profile');
         }
 
-        $ongoing_payment = $account->ongoingPayment();
-        if ($ongoing_payment && $ongoing_payment->is_paid) {
-            // If the ongoing payment is paid, we can complete it so it’s no
-            // longer ongoing :)
-            $payment_completer = new services\PaymentCompleter();
-            $payment_completer->complete($ongoing_payment);
-            $ongoing_payment = null;
-        }
-
-        return Response::ok('accounts/show.phtml', [
-            'account' => $account,
-            'payments' => $account->payments(),
-            'ongoing_payment' => $ongoing_payment,
-        ]);
+        return Response::redirect('subscription init');
     }
 
     /**
@@ -116,7 +103,7 @@ class Accounts
      * @response 200
      *     on success
      */
-    public function address(Request $request): Response
+    public function profile(Request $request): Response
     {
         $user = utils\CurrentUser::get();
         if (!$user || utils\CurrentUser::isAdmin()) {
@@ -128,7 +115,7 @@ class Accounts
             return Response::unauthorized('unauthorized.phtml');
         }
 
-        return Response::ok('accounts/address.phtml', [
+        return Response::ok('accounts/profile.phtml', [
             'account' => $account,
             'email' => $account->email,
             'address' => $account->address(),
@@ -144,7 +131,7 @@ class Accounts
      * @response 302 /account
      *     on success
      */
-    public function updateAddress(Request $request): Response
+    public function updateProfile(Request $request): Response
     {
         $user = utils\CurrentUser::get();
         if (!$user || utils\CurrentUser::isAdmin()) {
@@ -158,6 +145,14 @@ class Accounts
 
         $email = $request->param('email', '');
         $address = $request->paramArray('address', $account->address());
+        $show_address = $request->paramBoolean('show_address', false);
+
+        if (!$show_address) {
+            $address['address1'] = '';
+            $address['postcode'] = '';
+            $address['city'] = '';
+        }
+
         $account->email = $email;
         $account->setAddress($address);
 
@@ -182,7 +177,7 @@ class Accounts
         }
 
         if ($errors) {
-            return Response::badRequest('accounts/address.phtml', [
+            return Response::badRequest('accounts/profile.phtml', [
                 'account' => $account,
                 'email' => $email,
                 'address' => $address,
@@ -192,7 +187,7 @@ class Accounts
         }
 
         if (!\Minz\Csrf::validate($request->param('csrf'))) {
-            return Response::badRequest('accounts/address.phtml', [
+            return Response::badRequest('accounts/profile.phtml', [
                 'account' => $account,
                 'email' => $email,
                 'address' => $address,
@@ -239,5 +234,29 @@ class Accounts
         }
 
         return Response::redirect($from);
+    }
+
+    /**
+     * @response 401
+     *     if the user is not connected
+     * @response 200
+     *     on success
+     */
+    public function invoices(Request $request): Response
+    {
+        $user = utils\CurrentUser::get();
+        if (!$user || utils\CurrentUser::isAdmin()) {
+            return Response::unauthorized('unauthorized.phtml');
+        }
+
+        $account = models\Account::find($user['account_id']);
+        if (!$account) {
+            return Response::unauthorized('unauthorized.phtml');
+        }
+
+        return Response::ok('accounts/invoices.phtml', [
+            'account' => $account,
+            'payments' => $account->payments(),
+        ]);
     }
 }

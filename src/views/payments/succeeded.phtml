@@ -5,16 +5,20 @@
     ]);
 ?>
 
-<section class="section section--text">
-    <p class="paragraph--featured">
+<section class="section">
+    <p class="paragraph--featured paragraph--limit">
         Votre paiement a bien été pris en compte, merci pour votre soutien&nbsp;!
     </p>
 
-    <p class="paragraph--center">
-        <a class="call-to-action" href="<?= url('account') ?>">
-            Revenir à votre compte
-        </a>
-    </p>
+    <form method="post" action="<?= url('account logout') ?>">
+        <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+
+        <p class="paragraph--center">
+            <button class="button--primary" type="submit">
+                Revenir à l’application
+            </button>
+        </p>
+    </form>
 
     <img
         class="illustration illustration--centered"

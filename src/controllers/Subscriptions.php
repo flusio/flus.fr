@@ -35,14 +35,13 @@ class Subscriptions
         }
 
         if ($account->mustSetAddress()) {
-            return Response::redirect('account address');
+            return Response::redirect('account profile');
         }
 
         return Response::ok('subscriptions/init.phtml', [
             'contribution_price' => models\Payment::contributionPrice(),
             'account' => $account,
             'amount' => $account->preferredAmount(),
-            'reminder' => $account->reminder,
             'ongoing_payment' => $account->ongoingPayment(),
         ]);
     }
@@ -52,7 +51,6 @@ class Subscriptions
      * Stripe API to start a payment session.
      *
      * @request_param string csrf
-     * @request_param boolean reminder
      * @request_param integer amount must be between 0 and 1000
      *
      * @response 401
@@ -77,8 +75,6 @@ class Subscriptions
             return Response::unauthorized('unauthorized.phtml');
         }
 
-        $reminder = $request->paramBoolean('reminder', false);
-
         /** @var int */
         $amount = $request->paramInteger('amount', 0);
 
@@ -90,7 +86,6 @@ class Subscriptions
                 'contribution_price' => models\Payment::contributionPrice(),
                 'account' => $account,
                 'amount' => $amount,
-                'reminder' => $reminder,
                 'ongoing_payment' => $account->ongoingPayment(),
                 'error' => 'Une vérification de sécurité a échoué, veuillez réessayer de soumettre le formulaire.',
             ]);
@@ -101,14 +96,13 @@ class Subscriptions
                 'contribution_price' => models\Payment::contributionPrice(),
                 'account' => $account,
                 'amount' => $amount,
-                'reminder' => $reminder,
                 'ongoing_payment' => $account->ongoingPayment(),
                 'error' => 'Vous pourrez renouveler à 1 mois de l’expiration de votre abonnement.',
             ]);
         }
 
         if ($account->mustSetAddress()) {
-            return Response::redirect('account address');
+            return Response::redirect('account profile');
         }
 
         if (in_array($tariff, ['solidarity', 'stability', 'contribution'])) {
@@ -118,7 +112,6 @@ class Subscriptions
         }
 
         $account->preferred_tariff = $preferred_tariff;
-        $account->reminder = $reminder;
         $account->save();
 
         if ($amount === 0) {
@@ -136,7 +129,6 @@ class Subscriptions
                 'contribution_price' => models\Payment::contributionPrice(),
                 'account' => $account,
                 'amount' => $amount,
-                'reminder' => $reminder,
                 'ongoing_payment' => $account->ongoingPayment(),
                 'errors' => $errors,
             ]);

@@ -96,7 +96,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('GET', '/account/renew');
 
-        $this->assertResponseCode($response, 302, '/account/address');
+        $this->assertResponseCode($response, 302, '/account/profile');
     }
 
     /**
@@ -219,7 +219,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
             'amount' => 10,
         ]);
 
-        $this->assertResponseCode($response, 302, '/account/address');
+        $this->assertResponseCode($response, 302, '/account/profile');
         $this->assertSame(0, models\Payment::count());
     }
 

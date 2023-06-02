@@ -25,7 +25,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
      *
      * @param AccountAddress $address
      */
-    public function testShowRendersCorrectly(string $email, array $address): void
+    public function testShowRedirectsToRenew(string $email, array $address): void
     {
         $this->loginUser([
             'email' => $email,
@@ -38,138 +38,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('GET', '/account');
 
-        $this->assertResponseCode($response, 200);
-        $this->assertResponseContains($response, $email);
-        $this->assertResponsePointer($response, 'accounts/show.phtml');
-    }
-
-    /**
-     * @dataProvider addressesProvider
-     *
-     * @param AccountAddress $address
-     */
-    public function testShowRendersFutureExpiration(string $email, array $address): void
-    {
-        $this->freeze($this->fake('dateTime'));
-        $expired_at = \Minz\Time::fromNow($this->fake('randomDigitNotNull'), 'days');
-        $this->loginUser([
-            'expired_at' => $expired_at,
-            'address_first_name' => $address['first_name'],
-            'address_last_name' => $address['last_name'],
-            'address_address1' => $address['address1'],
-            'address_postcode' => $address['postcode'],
-            'address_city' => $address['city'],
-        ]);
-
-        $response = $this->appRun('GET', '/account');
-
-        $this->assertResponseCode($response, 200);
-        $this->assertResponseContains($response, 'Votre abonnement expirera le');
-    }
-
-    /**
-     * @dataProvider addressesProvider
-     *
-     * @param AccountAddress $address
-     */
-    public function testShowRendersPriorExpiration(string $email, array $address): void
-    {
-        $this->freeze($this->fake('dateTime'));
-        $expired_at = \Minz\Time::ago($this->fake('randomDigitNotNull'), 'days');
-        $this->loginUser([
-            'expired_at' => $expired_at,
-            'address_first_name' => $address['first_name'],
-            'address_last_name' => $address['last_name'],
-            'address_address1' => $address['address1'],
-            'address_postcode' => $address['postcode'],
-            'address_city' => $address['city'],
-        ]);
-
-        $response = $this->appRun('GET', '/account');
-
-        $this->assertResponseCode($response, 200);
-        $this->assertResponseContains($response, 'Votre abonnement a expiré le');
-    }
-
-    /**
-     * @dataProvider addressesProvider
-     *
-     * @param AccountAddress $address
-     */
-    public function testShowRendersIfNoExpiration(string $email, array $address): void
-    {
-        $expired_at = new \DateTimeImmutable('@0');
-        $this->loginUser([
-            'expired_at' => $expired_at,
-            'address_first_name' => $address['first_name'],
-            'address_last_name' => $address['last_name'],
-            'address_address1' => $address['address1'],
-            'address_postcode' => $address['postcode'],
-            'address_city' => $address['city'],
-        ]);
-
-        $response = $this->appRun('GET', '/account');
-
-        $this->assertResponseCode($response, 200);
-        $this->assertResponseContains($response, 'Vous bénéficiez d’un abonnement gratuit');
-    }
-
-    /**
-     * @dataProvider addressesProvider
-     *
-     * @param AccountAddress $address
-     */
-    public function testShowRendersIfOngoingAndUnpaidPayment(string $email, array $address): void
-    {
-        $user = $this->loginUser([
-            'email' => $email,
-            'address_first_name' => $address['first_name'],
-            'address_last_name' => $address['last_name'],
-            'address_address1' => $address['address1'],
-            'address_postcode' => $address['postcode'],
-            'address_city' => $address['city'],
-        ]);
-        PaymentFactory::create([
-            'account_id' => $user['account_id'],
-            'completed_at' => null,
-            'is_paid' => false,
-        ]);
-
-        $response = $this->appRun('GET', '/account');
-
-        $this->assertResponseCode($response, 200);
-        $this->assertResponseContains($response, 'Votre paiement est en cours de traitement');
-        $this->assertResponsePointer($response, 'accounts/show.phtml');
-    }
-
-    /**
-     * @dataProvider addressesProvider
-     *
-     * @param AccountAddress $address
-     */
-    public function testShowCompletesAnOngoingAndPaidPayment(string $email, array $address): void
-    {
-        $user = $this->loginUser([
-            'email' => $email,
-            'address_first_name' => $address['first_name'],
-            'address_last_name' => $address['last_name'],
-            'address_address1' => $address['address1'],
-            'address_postcode' => $address['postcode'],
-            'address_city' => $address['city'],
-        ]);
-        $payment = PaymentFactory::create([
-            'account_id' => $user['account_id'],
-            'completed_at' => null,
-            'is_paid' => true,
-            'frequency' => 'year',
-        ]);
-
-        $response = $this->appRun('GET', '/account');
-
-        $this->assertResponseNotContains($response, 'Votre paiement est en cours de traitement');
-        $payment = $payment->reload();
-        $this->assertNotNull($payment);
-        $this->assertNotNull($payment->completed_at);
+        $this->assertResponseCode($response, 302, '/account/renew');
     }
 
     public function testShowRedirectsIfNoAddress(): void
@@ -182,7 +51,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('GET', '/account');
 
-        $this->assertResponseCode($response, 302, '/account/address');
+        $this->assertResponseCode($response, 302, '/account/profile');
     }
 
     public function testShowFailsIfNotConnected(): void
@@ -385,19 +254,19 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($user);
     }
 
-    public function testAddressRendersCorrectly(): void
+    public function testProfileRendersCorrectly(): void
     {
         $this->loginUser();
 
-        $response = $this->appRun('GET', '/account/address');
+        $response = $this->appRun('GET', '/account/profile');
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponsePointer($response, 'accounts/address.phtml');
+        $this->assertResponsePointer($response, 'accounts/profile.phtml');
     }
 
-    public function testAddressFailsIfNotConnected(): void
+    public function testProfileFailsIfNotConnected(): void
     {
-        $response = $this->appRun('GET', '/account/address');
+        $response = $this->appRun('GET', '/account/profile');
 
         $this->assertResponseCode($response, 401);
     }
@@ -407,11 +276,11 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
      *
      * @param AccountAddress $address
      */
-    public function testUpdateAddressChangesAddressAndRedirects(string $email, array $address): void
+    public function testUpdateProfileChangesAddressAndRedirects(string $email, array $address): void
     {
         $user = $this->loginUser();
 
-        $response = $this->appRun('POST', '/account/address', [
+        $response = $this->appRun('POST', '/account/profile', [
             'csrf' => \Minz\Csrf::generate(),
             'email' => $email,
             'address' => $address,
@@ -433,14 +302,14 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
      *
      * @param AccountAddress $address
      */
-    public function testUpdateAddressAcceptsNoPhysicalAddress(string $email, array $address): void
+    public function testUpdateProfileAcceptsNoPhysicalAddress(string $email, array $address): void
     {
         $user = $this->loginUser();
         unset($address['address1']);
         unset($address['postcode']);
         unset($address['city']);
 
-        $response = $this->appRun('POST', '/account/address', [
+        $response = $this->appRun('POST', '/account/profile', [
             'csrf' => \Minz\Csrf::generate(),
             'email' => $email,
             'address' => $address,
@@ -462,9 +331,9 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
      *
      * @param AccountAddress $address
      */
-    public function testUpdateAddressFailsIfNotConnected(string $email, array $address): void
+    public function testUpdateProfileFailsIfNotConnected(string $email, array $address): void
     {
-        $response = $this->appRun('POST', '/account/address', [
+        $response = $this->appRun('POST', '/account/profile', [
             'csrf' => \Minz\Csrf::generate(),
             'email' => $email,
             'address' => $address,
@@ -478,11 +347,11 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
      *
      * @param AccountAddress $address
      */
-    public function testUpdateAddressFailsIfCsrfIsInvalid(string $email, array $address): void
+    public function testUpdateProfileFailsIfCsrfIsInvalid(string $email, array $address): void
     {
         $user = $this->loginUser();
 
-        $response = $this->appRun('POST', '/account/address', [
+        $response = $this->appRun('POST', '/account/profile', [
             'csrf' => 'not the token',
             'email' => $email,
             'address' => $address,
@@ -497,12 +366,12 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
      *
      * @param AccountAddress $address
      */
-    public function testUpdateAddressFailsWithInvalidEmail(string $email, array $address): void
+    public function testUpdateProfileFailsWithInvalidEmail(string $email, array $address): void
     {
         $user = $this->loginUser();
         $email = $this->fake('domainName');
 
-        $response = $this->appRun('POST', '/account/address', [
+        $response = $this->appRun('POST', '/account/profile', [
             'csrf' => \Minz\Csrf::generate(),
             'email' => $email,
             'address' => $address,
@@ -520,11 +389,11 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
      *
      * @param AccountAddress $address
      */
-    public function testUpdateAddressFailsWithMissingEmail(string $email, array $address): void
+    public function testUpdateProfileFailsWithMissingEmail(string $email, array $address): void
     {
         $user = $this->loginUser();
 
-        $response = $this->appRun('POST', '/account/address', [
+        $response = $this->appRun('POST', '/account/profile', [
             'csrf' => \Minz\Csrf::generate(),
             'address' => $address,
         ]);
@@ -538,12 +407,12 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
      *
      * @param AccountAddress $address
      */
-    public function testUpdateAddressFailsWithMissingFirstName(string $email, array $address): void
+    public function testUpdateProfileFailsWithMissingFirstName(string $email, array $address): void
     {
         $user = $this->loginUser();
         unset($address['first_name']);
 
-        $response = $this->appRun('POST', '/account/address', [
+        $response = $this->appRun('POST', '/account/profile', [
             'csrf' => \Minz\Csrf::generate(),
             'email' => $email,
             'address' => $address,
@@ -558,12 +427,12 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
      *
      * @param AccountAddress $address
      */
-    public function testUpdateAddressFailsWithMissingLastName(string $email, array $address): void
+    public function testUpdateProfileFailsWithMissingLastName(string $email, array $address): void
     {
         $user = $this->loginUser();
         unset($address['last_name']);
 
-        $response = $this->appRun('POST', '/account/address', [
+        $response = $this->appRun('POST', '/account/profile', [
             'csrf' => \Minz\Csrf::generate(),
             'email' => $email,
             'address' => $address,
@@ -578,12 +447,12 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
      *
      * @param AccountAddress $address
      */
-    public function testUpdateAddressFailsWithMissingAddress1(string $email, array $address): void
+    public function testUpdateProfileFailsWithMissingAddress1(string $email, array $address): void
     {
         $user = $this->loginUser();
         unset($address['address1']);
 
-        $response = $this->appRun('POST', '/account/address', [
+        $response = $this->appRun('POST', '/account/profile', [
             'csrf' => \Minz\Csrf::generate(),
             'email' => $email,
             'address' => $address,
@@ -598,12 +467,12 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
      *
      * @param AccountAddress $address
      */
-    public function testUpdateAddressFailsWithMissingPostcode(string $email, array $address): void
+    public function testUpdateProfileFailsWithMissingPostcode(string $email, array $address): void
     {
         $user = $this->loginUser();
         unset($address['postcode']);
 
-        $response = $this->appRun('POST', '/account/address', [
+        $response = $this->appRun('POST', '/account/profile', [
             'csrf' => \Minz\Csrf::generate(),
             'email' => $email,
             'address' => $address,
@@ -618,12 +487,12 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
      *
      * @param AccountAddress $address
      */
-    public function testUpdateAddressFailsWithMissingCity(string $email, array $address): void
+    public function testUpdateProfileFailsWithMissingCity(string $email, array $address): void
     {
         $user = $this->loginUser();
         unset($address['city']);
 
-        $response = $this->appRun('POST', '/account/address', [
+        $response = $this->appRun('POST', '/account/profile', [
             'csrf' => \Minz\Csrf::generate(),
             'email' => $email,
             'address' => $address,
@@ -638,12 +507,12 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
      *
      * @param AccountAddress $address
      */
-    public function testUpdateAddressFailsWithInvalidCountry(string $email, array $address): void
+    public function testUpdateProfileFailsWithInvalidCountry(string $email, array $address): void
     {
         $user = $this->loginUser();
         $address['country'] = 'invalid';
 
-        $response = $this->appRun('POST', '/account/address', [
+        $response = $this->appRun('POST', '/account/profile', [
             'csrf' => \Minz\Csrf::generate(),
             'email' => $email,
             'address' => $address,
