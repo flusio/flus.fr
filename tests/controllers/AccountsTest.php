@@ -283,6 +283,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('POST', '/account/profile', [
             'csrf' => \Minz\Csrf::generate(),
             'email' => $email,
+            'show_address' => true,
             'address' => $address,
         ]);
 
@@ -312,6 +313,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('POST', '/account/profile', [
             'csrf' => \Minz\Csrf::generate(),
             'email' => $email,
+            'show_address' => true,
             'address' => $address,
         ]);
 
@@ -336,6 +338,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('POST', '/account/profile', [
             'csrf' => \Minz\Csrf::generate(),
             'email' => $email,
+            'show_address' => true,
             'address' => $address,
         ]);
 
@@ -354,6 +357,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('POST', '/account/profile', [
             'csrf' => 'not the token',
             'email' => $email,
+            'show_address' => true,
             'address' => $address,
         ]);
 
@@ -374,6 +378,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('POST', '/account/profile', [
             'csrf' => \Minz\Csrf::generate(),
             'email' => $email,
+            'show_address' => true,
             'address' => $address,
         ]);
 
@@ -395,6 +400,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('POST', '/account/profile', [
             'csrf' => \Minz\Csrf::generate(),
+            'show_address' => true,
             'address' => $address,
         ]);
 
@@ -415,6 +421,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('POST', '/account/profile', [
             'csrf' => \Minz\Csrf::generate(),
             'email' => $email,
+            'show_address' => true,
             'address' => $address,
         ]);
 
@@ -435,6 +442,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('POST', '/account/profile', [
             'csrf' => \Minz\Csrf::generate(),
             'email' => $email,
+            'show_address' => true,
             'address' => $address,
         ]);
 
@@ -455,6 +463,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('POST', '/account/profile', [
             'csrf' => \Minz\Csrf::generate(),
             'email' => $email,
+            'show_address' => true,
             'address' => $address,
         ]);
 
@@ -475,6 +484,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('POST', '/account/profile', [
             'csrf' => \Minz\Csrf::generate(),
             'email' => $email,
+            'show_address' => true,
             'address' => $address,
         ]);
 
@@ -495,6 +505,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('POST', '/account/profile', [
             'csrf' => \Minz\Csrf::generate(),
             'email' => $email,
+            'show_address' => true,
             'address' => $address,
         ]);
 
@@ -515,6 +526,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('POST', '/account/profile', [
             'csrf' => \Minz\Csrf::generate(),
             'email' => $email,
+            'show_address' => true,
             'address' => $address,
         ]);
 
