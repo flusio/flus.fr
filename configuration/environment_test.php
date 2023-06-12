@@ -27,7 +27,7 @@ return [
 
         'support_email' => 'support@example.com',
 
-        'financial_goal' => intval($dotenv->pop('APP_FINANCIAL_GOAL', '36000')),
+        'financial_goal' => 36000,
 
         // used only in tests
         'number_of_datasets' => $number_of_datasets,
