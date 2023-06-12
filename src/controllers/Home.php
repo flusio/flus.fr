@@ -6,6 +6,7 @@ use Minz\Request;
 use Minz\Response;
 use Website\mailers;
 use Website\models;
+use Website\utils;
 
 class Home
 {
@@ -28,7 +29,15 @@ class Home
         $common_pot_revenue = models\Payment::findCommonPotRevenue($current_year) / 100;
         $subscriptions_revenue = models\Payment::findSubscriptionsRevenue($current_year) / 100;
 
+        $account = null;
+        $user = utils\CurrentUser::get();
+        if ($user && !utils\CurrentUser::isAdmin()) {
+            $account = models\Account::find($user['account_id']);
+        }
+
         $response = Response::ok('home/pricing.phtml', [
+            'account' => $account,
+            'contribution_price' => models\Payment::contributionPrice(),
             'total_revenue' => number_format($total_revenue, 2, ',', '&nbsp;'),
             'revenue_target' => number_format($revenue_target, 0, ',', '&nbsp;'),
             'percent_target' => intval($percent_target),

@@ -879,31 +879,57 @@ hr {
     text-align: center;
 }
 
-.price__month {
-    display: block;
-
-    font-size: calc(var(--size-large) * 1.2);
-    font-weight: bold;
-}
-
-.price__year {
-    display: block;
-
+.price__unique {
     font-size: calc(var(--size-large) * 1.2);
 }
 
-.price__all-inclusive {
+.price__choose {
     display: block;
 
     font-style: italic;
 }
 
-.price__all-inclusive::before {
-    content: "* ";
+.tariffs {
+    display: flex;
+    margin-top: var(--space-large);
+    margin-bottom: var(--space-large);
+    padding-left: 0;
+
+    flex-direction: column;
+
+    list-style: none;
 }
 
-.price__all-inclusive::after {
-    content: " *";
+.tariffs__item {
+    flex: 1;
+}
+
+.tariffs__item + .tariffs__item {
+    margin-top: var(--space-medium);
+}
+
+@media (min-width: 48em) {
+    .tariffs {
+        flex-direction: row;
+    }
+
+    .tariffs__item + .tariffs__item {
+        margin-top: 0;
+        margin-left: var(--space-medium);
+    }
+}
+
+.tariffs__name {
+    display: block;
+
+    text-align: center;
+}
+
+.tariffs__description {
+    display: block;
+    margin-top: var(--space-small);
+
+    font-size: var(--size-small);
 }
 
 .gauge {

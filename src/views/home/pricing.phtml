@@ -3,7 +3,7 @@
         'title' => 'Tarifs · Flus',
         'canonical' => url_full('pricing'),
         'current_page' => 'pricing',
-        'description' => 'Un prix unique, accessible pour financer directement le projet.',
+        'description' => 'Un prix libre pour financer directement le projet.',
         'og' => [
             'type' => 'website',
             'image' => url_full_static('flus.png'),
@@ -18,9 +18,12 @@
     </div>
 
     <p class="price">
-        <span class="price__month">3&nbsp;€ par mois</span>
-        <span class="price__year">ou 30&nbsp;€ par an</span>
-        <span class="price__all-inclusive">tout inclus, y’a pas de surprise</span>
+        <span class="price__unique">Un prix unique : <strong>le vôtre.</strong></span>
+        <span class="price__choose">De 0 à 1 000 €, le prix est libre.</span>
+    </p>
+
+    <p class="paragraph--center">
+        <a class="price__more" href="#choisir">En savoir plus sur le prix libre</a>
     </p>
 
     <p class="paragraph--featured">
@@ -29,42 +32,71 @@
         </a>
     </p>
 
-    <p class="paragraph--center">
-        abonnements gratuits via la <a href="<?= url('common pot') ?>">cagnotte</a>
-    </p>
-
     <img
         class="illustration illustration--centered savings"
         alt=""
         src="<?= url_static('illustrations/savings.svg') ?>"
         height="250"
     />
+</section>
 
-    <p>
+<section class="section" id="choisir">
+    <div class="header">
+        <h2 class="header__title">Choisir le « juste » prix</h2>
+    </div>
+
+    <p class="section--text">
         Si Flus est payant, c’est que je souhaite vivre de cette activité
-        pour m’y consacrer. <strong>À 3 euros par mois, je pense que ce n’est
-            pas si cher payé pour un Web de meilleure qualité.</strong>
+        pour m’y consacrer. Le prix libre permet à tout un chacun de déterminer
+        combien il ou elle est prête à payer pour un service en ligne.
     </p>
 
-    <p>
-        J’ai exclu le modèle publicitaire sur lequel repose une large
-        partie du Web car il pose de nombreux problèmes de vie privée et de
-        captation de l’attention. <strong>Le système d’abonnements a le mérite
-            d’être transparent et de faire vivre le service de manière
-            soutenable.</strong>
+    <p class="section--text">
+        Choisir un prix n’est pas chose aisée. Ainsi, je propose trois
+        tarifs de base pour vous aider à choisir :
     </p>
 
-    <p>
-        Les utilisateurs et utilisatrices de Flus alimentent également
-        une cagnotte qui débloquent des abonnements mensuels gratuits pour
-        celles et ceux qui ne peuvent ou ne veulent payer. <strong>C’est un
-            modèle alternatif et solidaire.</strong>
+    <ol class="tariffs">
+        <li class="tariffs__item">
+            <strong class="tariffs__name">Tarif « solidaire »<br>à 15 € par an.</strong>
+            <span class="tariffs__description">
+                Pour celles et ceux qui ne sont pas prêts à dépenser plus, mais
+                qui souhaitent tout de même soutenir le projet.
+            </span>
+        </li>
+
+        <li class="tariffs__item">
+            <strong class="tariffs__name">Tarif « équilibre »<br>à 30 € par an.</strong>
+            <span class="tariffs__description">
+                C’est le tarif de base, celui que je juge le plus juste au regard
+                du service que je propose et de mon objectif financier.
+            </span>
+        </li>
+
+        <li class="tariffs__item">
+            <strong class="tariffs__name">Tarif « soutien »<br>à <?= $contribution_price ?> € * par an.</strong>
+            <span class="tariffs__description">
+                Il faudrait que tous et toutes les abonnées actuelles payent ce
+                prix pour que j’atteigne mon objectif financier.
+            </span>
+        </li>
+    </ol>
+
+    <p class="section--text">
+        * Le tarif « soutien » a de particulier qu’il évolue ! Plus vous êtes
+        nombreux et nombreuses à payer pour le service, plus le prix diminue.
     </p>
 
-    <p>
-        <strong>
-            <a href="<?= url('common pot') ?>">→ En apprendre plus sur la cagnotte</a>
-        </strong>
+    <p class="paragraph--featured">
+        <?php if ($account): ?>
+            <a class="call-to-action" href="<?= url('subscription init') ?>">
+                Retour au renouvellement
+            </a>
+        <?php else: ?>
+            <a class="call-to-action" href="https://app.flus.fr/registration">
+                Commencer à utiliser Flus
+            </a>
+        <?php endif; ?>
     </p>
 </section>
 
@@ -80,7 +112,7 @@
 
     <div class="gauge" style="--gauge-value: <?= $percent_target ?>%;">
         <p class="gauge__status">
-            Objectif 2022&nbsp;:
+            Objectif 2023&nbsp;:
             <strong><?= $this->safe('total_revenue') ?> sur <?= $this->safe('revenue_target') ?>&nbsp;€</strong>
         </p>
 
