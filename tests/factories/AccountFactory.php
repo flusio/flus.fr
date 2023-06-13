@@ -44,6 +44,10 @@ class AccountFactory extends Database\Factory
                 return $faker->boolean;
             },
 
+            'entity_type' => function () use ($faker) {
+                return $faker->randomElement(['natural', 'legal']);
+            },
+
             'address_country' => function () use ($faker) {
                 return $faker->randomElement(\Website\utils\Countries::codes());
             },

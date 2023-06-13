@@ -12,6 +12,7 @@ use Website\utils;
  * @phpstan-type AccountAddress array{
  *     'first_name': string,
  *     'last_name': string,
+ *     'legal_name': string,
  *     'address1': string,
  *     'postcode': string,
  *     'city': string,
@@ -57,11 +58,18 @@ class Account
     #[Database\Column]
     public bool $reminder;
 
+    #[Validable\Inclusion(in: ['natural', 'legal'], message: 'Saisissez un choix valide.')]
+    #[Database\Column]
+    public string $entity_type;
+
     #[Database\Column]
     public ?string $address_first_name;
 
     #[Database\Column]
     public ?string $address_last_name;
+
+    #[Database\Column]
+    public ?string $address_legal_name;
 
     #[Database\Column]
     public ?string $address_address1;
@@ -81,9 +89,6 @@ class Account
     #[Database\Column]
     public ?string $address_country;
 
-    // What a tremendous verification! This could be improved, but I don't
-    // plan to let anyone to set its vat number himself, so this is fine
-    // for now.
     #[Validable\Length(min: 10, max: 20, message: 'Saisissez un numéro de TVA valide.')]
     #[Database\Column]
     public ?string $company_vat_number = null;
@@ -99,6 +104,7 @@ class Account
         $this->preferred_service = 'flusio';
         $this->preferred_tariff = 'stability';
         $this->reminder = true;
+        $this->entity_type = 'natural';
         $this->address_country = 'FR';
         $this->last_sync_at = \Minz\Time::now();
     }
@@ -186,6 +192,7 @@ class Account
         return [
             'first_name' => $this->address_first_name ?? '',
             'last_name' => $this->address_last_name ?? '',
+            'legal_name' => $this->address_legal_name ?? '',
             'address1' => $this->address_address1 ?? '',
             'postcode' => $this->address_postcode ?? '',
             'city' => $this->address_city ?? '',
@@ -197,6 +204,7 @@ class Account
      * @param array{
      *     'first_name'?: string,
      *     'last_name'?: string,
+     *     'legal_name'?: string,
      *     'address1'?: string,
      *     'postcode'?: string,
      *     'city'?: string,
@@ -207,6 +215,7 @@ class Account
     {
         $this->address_first_name = trim($address['first_name'] ?? '');
         $this->address_last_name = trim($address['last_name'] ?? '');
+        $this->address_legal_name = trim($address['legal_name'] ?? '');
         $this->address_address1 = trim($address['address1'] ?? '');
         $this->address_postcode = trim($address['postcode'] ?? '');
         $this->address_city = trim($address['city'] ?? '');
@@ -218,7 +227,7 @@ class Account
      */
     public function mustSetAddress(): bool
     {
-        return !$this->address_first_name;
+        return !$this->address_first_name && !$this->address_legal_name;
     }
 
     /**

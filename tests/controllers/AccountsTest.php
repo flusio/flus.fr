@@ -604,6 +604,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
                 [
                     'first_name' => $faker->firstName,
                     'last_name' => $faker->lastName,
+                    'legal_name' => '',
                     'address1' => $faker->streetAddress,
                     'postcode' => $faker->postcode,
                     'city' => $faker->city,
