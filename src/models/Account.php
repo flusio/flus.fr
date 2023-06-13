@@ -93,6 +93,9 @@ class Account
     #[Database\Column]
     public ?string $company_vat_number = null;
 
+    #[Database\Column]
+    public ?string $managed_by_id = null;
+
     #[Database\Column(computed: true)]
     public int $count_payments;
 
@@ -275,6 +278,42 @@ class Account
     public function ongoingPayment(): ?Payment
     {
         return Payment::findOngoingForAccount($this->id);
+    }
+
+    /**
+     * Return the list of the accounts managed by the current one.
+     *
+     * @return Account[]
+     */
+    public function managedAccounts(): array
+    {
+        $accounts = self::listBy([
+            'managed_by_id' => $this->id,
+        ]);
+
+        usort($accounts, function ($account1, $account2) {
+            return $account1->email <=> $account2->email;
+        });
+
+        return $accounts;
+    }
+
+    /**
+     * Return the number of the accounts managed by the current one.
+     */
+    public function countManagedAccounts(): int
+    {
+        return self::countBy([
+            'managed_by_id' => $this->id,
+        ]);
+    }
+
+    /**
+     * Return whether the current account is managed by another one.
+     */
+    public function isManaged(): bool
+    {
+        return $this->managed_by_id !== null;
     }
 
     /**
