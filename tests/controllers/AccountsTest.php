@@ -303,6 +303,41 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
      *
      * @param AccountAddress $address
      */
+    public function testUpdateProfileAcceptsLegalEntityInfo(string $email, array $address): void
+    {
+        $user = $this->loginUser();
+        $faker = \Faker\Factory::create('fr_FR');
+        $legal_name = $faker->company();
+        $vat_number = $faker->vat(); // @phpstan-ignore-line
+        $address['legal_name'] = $legal_name;
+
+        $response = $this->appRun('POST', '/account/profile', [
+            'csrf' => \Minz\Csrf::generate(),
+            'entity_type' => 'legal',
+            'email' => $email,
+            'show_address' => true,
+            'address' => $address,
+            'company_vat_number' => $vat_number,
+        ]);
+
+        $this->assertResponseCode($response, 302, '/account');
+        $account = models\Account::find($user['account_id']);
+        $this->assertNotNull($account);
+        $this->assertSame($email, $account->email);
+        $this->assertSame($vat_number, $account->company_vat_number);
+        $this->assertSame('', $account->address_first_name);
+        $this->assertSame('', $account->address_last_name);
+        $this->assertSame($address['legal_name'], $account->address_legal_name);
+        $this->assertSame($address['address1'], $account->address_address1);
+        $this->assertSame($address['postcode'], $account->address_postcode);
+        $this->assertSame($address['city'], $account->address_city);
+    }
+
+    /**
+     * @dataProvider addressesProvider
+     *
+     * @param AccountAddress $address
+     */
     public function testUpdateProfileAcceptsNoPhysicalAddress(string $email, array $address): void
     {
         $user = $this->loginUser();
@@ -313,7 +348,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('POST', '/account/profile', [
             'csrf' => \Minz\Csrf::generate(),
             'email' => $email,
-            'show_address' => true,
+            'show_address' => false,
             'address' => $address,
         ]);
 
