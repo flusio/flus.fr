@@ -43,23 +43,6 @@ class InvoicePDFTest extends TestCase
         $this->assertSame($expected_paid, $global_info['Payée le']);
     }
 
-    public function testPdfWithVatNumber(): void
-    {
-        $faker = \Faker\Factory::create('fr_FR');
-        $vat_number = $faker->vat(); // @phpstan-ignore-line
-        $account = AccountFactory::create([
-            'company_vat_number' => $vat_number,
-        ]);
-        $payment = PaymentFactory::create([
-            'account_id' => $account->id,
-        ]);
-
-        $invoice_pdf = new InvoicePDF($payment);
-
-        $global_info = $invoice_pdf->global_info;
-        $this->assertSame($global_info['N° TVA client'], $vat_number);
-    }
-
     public function testPdfNotCompletedIsDue(): void
     {
         $payment = PaymentFactory::create([
@@ -107,6 +90,7 @@ class InvoicePDFTest extends TestCase
     public function testPdfHasCustomer(): void
     {
         $account = AccountFactory::create([
+            'entity_type' => 'natural',
             'address_first_name' => $this->fake('firstName'),
             'address_last_name' => $this->fake('lastName'),
             'address_address1' => $this->fake('streetAddress'),
@@ -132,6 +116,27 @@ class InvoicePDFTest extends TestCase
         $this->assertSame($expected_line2, $invoice_pdf->customer[1]);
         $this->assertSame($expected_line3, $invoice_pdf->customer[2]);
         $this->assertSame($expected_line4, $invoice_pdf->customer[3]);
+    }
+
+    public function testPdfForLegalEntity(): void
+    {
+        $faker = \Faker\Factory::create('fr_FR');
+        $legal_name = $faker->company();
+        $vat_number = $faker->vat(); // @phpstan-ignore-line
+        $account = AccountFactory::create([
+            'entity_type' => 'legal',
+            'address_legal_name' => $legal_name,
+            'company_vat_number' => $vat_number,
+        ]);
+        $payment = PaymentFactory::create([
+            'account_id' => $account->id,
+        ]);
+
+        $invoice_pdf = new InvoicePDF($payment);
+
+        $global_info = $invoice_pdf->global_info;
+        $this->assertSame($global_info['N° TVA client'], $vat_number);
+        $this->assertSame($legal_name, $invoice_pdf->customer[0]);
     }
 
     public function testPdfWithYearSubscriptionHasCorrespondingPurchase(): void

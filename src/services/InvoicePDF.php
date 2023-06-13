@@ -85,9 +85,12 @@ class InvoicePDF extends \FPDF
         }
 
         $address = $account->address();
-        $this->customer = [
-            $address['first_name'] . ' ' . $address['last_name'],
-        ];
+        $this->customer = [];
+        if ($account->entity_type === 'natural') {
+            $this->customer[] = $address['first_name'] . ' ' . $address['last_name'];
+        } else {
+            $this->customer[] = $address['legal_name'];
+        }
 
         if ($address['address1']) {
             $this->customer[] = $address['address1'];

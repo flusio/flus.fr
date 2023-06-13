@@ -29,6 +29,7 @@
         method="post"
         action="<?= url('account update profile') ?>"
         class="form--address"
+        data-controller="profile"
     >
         <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
 
@@ -37,6 +38,42 @@
                 <?= $error ?>
             </p>
         <?php endif; ?>
+
+        <div class="form-group columns">
+            <div class="columns__item columns__item--size3">
+                Vous êtes
+            </div>
+
+            <div class="columns__item columns__item--size4">
+                <input
+                    id="entity-type-natural"
+                    name="entity_type"
+                    value="natural"
+                    type="radio"
+                    <?= $entity_type === 'natural' ? 'checked' : '' ?>
+                    data-action="profile#switchEntityType"
+                />
+
+                <label for="entity-type-natural">
+                    un particulier
+                </label>
+            </div>
+
+            <div class="columns__item columns__item--size4">
+                <input
+                    id="entity-type-legal"
+                    name="entity_type"
+                    value="legal"
+                    type="radio"
+                    <?= $entity_type === 'legal' ? 'checked' : '' ?>
+                    data-action="profile#switchEntityType"
+                />
+
+                <label for="entity-type-legal">
+                    une structure
+                </label>
+            </div>
+        </div>
 
         <div class="form-group <?= isset($errors['email']) ? 'form-group--invalid' : '' ?>">
             <label for="email">
@@ -58,69 +95,109 @@
             <?php endif; ?>
         </div>
 
-        <div class="columns">
-            <div class="columns__item">
-                <div class="form-group <?= isset($errors['address_first_name']) ? 'form-group--invalid' : '' ?>">
-                    <label for="first-name">
-                        Prénom
-                    </label>
+        <div data-target="profile.sectionNatural">
+            <div class="columns">
+                <div class="columns__item">
+                    <div class="form-group <?= isset($errors['address_first_name']) ? 'form-group--invalid' : '' ?>">
+                        <label for="first-name">
+                            Prénom
+                        </label>
 
-                    <input
-                        id="first-name"
-                        name="address[first_name]"
-                        type="text"
-                        value="<?= $address['first_name'] ?>"
-                        required
-                    />
+                        <input
+                            id="first-name"
+                            name="address[first_name]"
+                            type="text"
+                            value="<?= $address['first_name'] ?>"
+                            required
+                            data-target="profile.firstName"
+                        />
 
-                    <?php if (isset($errors['address_first_name'])): ?>
-                        <p class="form-group__error">
-                            <?= $errors['address_first_name'] ?>
-                        </p>
-                    <?php endif; ?>
+                        <?php if (isset($errors['address_first_name'])): ?>
+                            <p class="form-group__error">
+                                <?= $errors['address_first_name'] ?>
+                            </p>
+                        <?php endif; ?>
+                    </div>
                 </div>
-            </div>
 
-            <div class="columns__item">
-                <div class="form-group <?= isset($errors['address_last_name']) ? 'form-group--invalid' : '' ?>">
-                    <label for="last-name">
-                        Nom
-                    </label>
+                <div class="columns__item">
+                    <div class="form-group <?= isset($errors['address_last_name']) ? 'form-group--invalid' : '' ?>">
+                        <label for="last-name">
+                            Nom
+                        </label>
 
-                    <input
-                        id="last-name"
-                        name="address[last_name]"
-                        type="text"
-                        value="<?= $address['last_name'] ?>"
-                        required
-                    />
+                        <input
+                            id="last-name"
+                            name="address[last_name]"
+                            type="text"
+                            value="<?= $address['last_name'] ?>"
+                            required
+                            data-target="profile.lastName"
+                        />
 
-                    <?php if (isset($errors['address_last_name'])): ?>
-                        <p class="form-group__error">
-                            <?= $errors['address_last_name'] ?>
-                        </p>
-                    <?php endif; ?>
+                        <?php if (isset($errors['address_last_name'])): ?>
+                            <p class="form-group__error">
+                                <?= $errors['address_last_name'] ?>
+                            </p>
+                        <?php endif; ?>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="form-group" data-controller="checkboxes">
-            <?php
-                $is_checked = (
-                    !empty($address['address1']) ||
-                    !empty($address['postcode']) ||
-                    !empty($address['city'])
-                );
-            ?>
+        <div data-target="profile.sectionLegal">
+            <div class="form-group <?= isset($errors['address_legal_name']) ? 'form-group--invalid' : '' ?>">
+                <label for="legal-name">
+                    Raison sociale
+                </label>
 
+                <input
+                    id="legal-name"
+                    name="address[legal_name]"
+                    type="text"
+                    value="<?= $address['legal_name'] ?>"
+                    required
+                    data-target="profile.legalName"
+                />
+
+                <?php if (isset($errors['address_legal_name'])): ?>
+                    <p class="form-group__error">
+                        <?= $errors['address_legal_name'] ?>
+                    </p>
+                <?php endif; ?>
+            </div>
+
+            <div class="form-group <?= isset($errors['company_vat_number']) ? 'form-group--invalid' : '' ?>">
+                <label for="company-vat-number">
+                    Numéro de <abbr>TVA</abbr>
+                    <span class="paragraph--secondary">(optionel)</span>
+                </label>
+
+                <input
+                    id="company-vat-number"
+                    name="company_vat_number"
+                    type="text"
+                    minlength="10"
+                    maxlength="20"
+                    value="<?= $company_vat_number ?>"
+                />
+
+                <?php if (isset($errors['company_vat_number'])): ?>
+                    <p class="form-group__error">
+                        <?= $errors['company_vat_number'] ?>
+                    </p>
+                <?php endif; ?>
+            </div>
+        </div>
+
+        <div class="form-group">
             <input
                 id="show-address"
                 name="show_address"
                 type="checkbox"
-                data-action="checkboxes#switch"
-                data-target="checkboxes.control"
-                data-checkboxes-control="#address"
-                <?= $is_checked ? 'checked' : '' ?>
+                data-action="profile#switchAddress"
+                data-target="profile.controlAddress"
+                <?= $show_address ? 'checked' : '' ?>
             />
 
             <label for="show-address">
@@ -220,12 +297,6 @@
                 <?php endif; ?>
             </div>
         </fieldset>
-
-        <?php if ($account->company_vat_number): ?>
-            <p>
-                Numéro <abbr>TVA</abbr> : <?= $account->company_vat_number ?>
-            </p>
-        <?php endif; ?>
 
         <div class="form__actions">
             <button type="submit" class="button--primary">

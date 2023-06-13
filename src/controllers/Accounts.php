@@ -118,7 +118,10 @@ class Accounts
         return Response::ok('accounts/profile.phtml', [
             'account' => $account,
             'email' => $account->email,
+            'entity_type' => $account->entity_type,
+            'show_address' => false,
             'address' => $account->address(),
+            'company_vat_number' => $account->company_vat_number,
             'countries' => utils\Countries::listSorted(),
         ]);
     }
@@ -144,8 +147,19 @@ class Accounts
         }
 
         $email = $request->param('email', '');
+        $entity_type = $request->param('entity_type', 'natural');
+        $company_vat_number = $request->param('company_vat_number', '');
         $address = $request->paramArray('address', $account->address());
         $show_address = $request->paramBoolean('show_address', false);
+
+        if ($entity_type === 'natural') {
+            $company_vat_number = '';
+            $address['legal_name'] = '';
+        } else {
+            $show_address = true;
+            $address['first_name'] = '';
+            $address['last_name'] = '';
+        }
 
         if (!$show_address) {
             $address['address1'] = '';
@@ -154,17 +168,25 @@ class Accounts
         }
 
         $account->email = $email;
+        $account->entity_type = $entity_type;
         $account->setAddress($address);
+        $account->company_vat_number = $company_vat_number;
 
         $errors = $account->validate();
-        if (!$account->address_first_name) {
-            $errors['address_first_name'] = 'Votre prénom est obligatoire.';
-        }
-        if (!$account->address_last_name) {
-            $errors['address_last_name'] = 'Votre nom est obligatoire.';
+
+        if ($entity_type === 'natural') {
+            if (!$account->address_first_name) {
+                $errors['address_first_name'] = 'Votre prénom est obligatoire.';
+            }
+
+            if (!$account->address_last_name) {
+                $errors['address_last_name'] = 'Votre nom est obligatoire.';
+            }
+        } elseif (!$account->address_legal_name) {
+            $errors['address_legal_name'] = 'Votre raison sociale est obligatoire.';
         }
 
-        if ($account->address_address1 || $account->address_postcode || $account->address_city) {
+        if ($show_address) {
             if (!$account->address_address1) {
                 $errors['address_address1'] = 'Votre adresse est incomplète.';
             }
@@ -180,7 +202,10 @@ class Accounts
             return Response::badRequest('accounts/profile.phtml', [
                 'account' => $account,
                 'email' => $email,
+                'entity_type' => $entity_type,
+                'show_address' => $show_address,
                 'address' => $address,
+                'company_vat_number' => $company_vat_number,
                 'countries' => utils\Countries::listSorted(),
                 'errors' => $errors,
             ]);
@@ -190,7 +215,10 @@ class Accounts
             return Response::badRequest('accounts/profile.phtml', [
                 'account' => $account,
                 'email' => $email,
+                'entity_type' => $entity_type,
+                'show_address' => $show_address,
                 'address' => $address,
+                'company_vat_number' => $company_vat_number,
                 'countries' => utils\Countries::listSorted(),
                 'error' => 'Une vérification de sécurité a échoué, veuillez réessayer de soumettre le formulaire.',
             ]);

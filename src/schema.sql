@@ -17,8 +17,10 @@ CREATE TABLE accounts (
     preferred_tariff TEXT NOT NULL DEFAULT 'stability',
     reminder BOOLEAN NOT NULL DEFAULT false,
 
+    entity_type TEXT NOT NULL DEFAULT 'natural',
     address_first_name TEXT,
     address_last_name TEXT,
+    address_legal_name TEXT,
     address_address1 TEXT,
     address_postcode TEXT,
     address_city TEXT,
