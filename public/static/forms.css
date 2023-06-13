@@ -154,6 +154,17 @@ input[type="checkbox"]:checked + label::before {
     border-color: var(--color-black);
 }
 
+input[type="radio"]:checked[disabled] + label::before,
+input[type="checkbox"]:checked[disabled] + label::before {
+    background-color: var(--color-grey-2);
+    border-color: var(--color-grey-1);
+}
+
+input[type="radio"]:checked[disabled] + label::after,
+input[type="checkbox"]:checked[disabled] + label::after {
+    opacity: 0.6;
+}
+
 input[type="radio"]:focus + label::before,
 input[type="checkbox"]:focus + label::before {
     box-shadow: 0 0 0px 1px var(--color-purple-1);
