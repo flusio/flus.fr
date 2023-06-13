@@ -259,6 +259,50 @@ hr {
     }
 }
 
+.columns__item--size1 {
+    flex-basis: calc(1 * 100% / 12);
+}
+
+.columns__item--size2 {
+    flex-basis: calc(2 * 100% / 12);
+}
+
+.columns__item--size3 {
+    flex-basis: calc(3 * 100% / 12);
+}
+
+.columns__item--size4 {
+    flex-basis: calc(4 * 100% / 12);
+}
+
+.columns__item--size5 {
+    flex-basis: calc(5 * 100% / 12);
+}
+
+.columns__item--size6 {
+    flex-basis: calc(6 * 100% / 12);
+}
+
+.columns__item--size7 {
+    flex-basis: calc(7 * 100% / 12);
+}
+
+.columns__item--size8 {
+    flex-basis: calc(8 * 100% / 12);
+}
+
+.columns__item--size9 {
+    flex-basis: calc(9 * 100% / 12);
+}
+
+.columns__item--size10 {
+    flex-basis: calc(10 * 100% / 12);
+}
+
+.columns__item--size11 {
+    flex-basis: calc(11 * 100% / 12);
+}
+
 .illustration {
     display: block;
     margin: var(--space-large) var(--space-medium);
