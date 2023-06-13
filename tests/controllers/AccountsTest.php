@@ -626,6 +626,36 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($old_reminder, $account->reminder);
     }
 
+    public function testManagedAccountsRendersCorrectly(): void
+    {
+        $this->loginUser([
+            'entity_type' => 'legal',
+        ]);
+
+        $response = $this->appRun('GET', '/account/managed');
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponsePointer($response, 'accounts/managed.phtml');
+    }
+
+    public function testManagedAccountsFailsIfNotConnected(): void
+    {
+        $response = $this->appRun('GET', '/account/managed');
+
+        $this->assertResponseCode($response, 401);
+    }
+
+    public function testManagedAccountsFailsIfNotLegalEntity(): void
+    {
+        $this->loginUser([
+            'entity_type' => 'natural',
+        ]);
+
+        $response = $this->appRun('GET', '/account/managed');
+
+        $this->assertResponseCode($response, 404);
+    }
+
     /**
      * @return array<array{string, AccountAddress}>
      */

@@ -287,4 +287,34 @@ class Accounts
             'payments' => $account->payments(),
         ]);
     }
+
+    /**
+     * @response 401
+     *     if the user is not connected
+     * @response 404
+     *     if the user's account is not a legal entity
+     * @response 200
+     *     on success
+     */
+    public function managed(Request $request): Response
+    {
+        $user = utils\CurrentUser::get();
+        if (!$user || utils\CurrentUser::isAdmin()) {
+            return Response::unauthorized('unauthorized.phtml');
+        }
+
+        $account = models\Account::find($user['account_id']);
+        if (!$account) {
+            return Response::unauthorized('unauthorized.phtml');
+        }
+
+        if ($account->entity_type !== 'legal') {
+            return Response::notFound('not_found.phtml');
+        }
+
+        return Response::ok('accounts/managed.phtml', [
+            'account' => $account,
+            'managedAccounts' => $account->managedAccounts(),
+        ]);
+    }
 }

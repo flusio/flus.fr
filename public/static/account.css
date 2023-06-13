@@ -479,6 +479,12 @@ table {
     width: 100%;
 }
 
+table th {
+    padding: var(--space-small);
+
+    text-align: left;
+}
+
 table td {
     padding: var(--space-small);
 }

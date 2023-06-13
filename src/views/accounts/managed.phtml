@@ -1,0 +1,47 @@
+<?php
+    $this->layout('account.phtml', [
+        'title' => 'Gestion des comptes abonnés',
+        'current_page' => 'subscription',
+    ]);
+?>
+
+<section class="section">
+    <div class="header">
+        <h1 class="header__title">
+            Gestion des comptes abonnés
+        </h1>
+    </div>
+
+    <p class="section__intro">
+        Ici, vous pouvez décider de renouveler l’abonnement d’autres comptes.<br>
+        <a href="<?= url('subscription init') ?>">Retourner au renouvellement</a>
+    </p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Compte</th>
+                <th>Expire le</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <?php array_unshift($managedAccounts, $account); ?>
+
+            <?php foreach ($managedAccounts as $managedAccount): ?>
+                <tr>
+                    <td>
+                        <?= $managedAccount->email ?>
+                        <?php if ($managedAccount->id === $account->id): ?>
+                            (vous)
+                        <?php endif; ?>
+                    </td>
+
+                    <td>
+                        <?= _d($managedAccount->expired_at, 'dd MMM yyyy') ?>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+</section>
