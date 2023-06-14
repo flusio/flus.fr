@@ -65,6 +65,7 @@
             <tr>
                 <th>Compte</th>
                 <th>Expire le</th>
+                <th>Actions</th>
             </tr>
         </thead>
 
@@ -82,6 +83,17 @@
 
                     <td>
                         <?= _d($managedAccount->expired_at, 'dd MMM yyyy') ?>
+                    </td>
+
+                    <td>
+                        <?php if ($managedAccount->id !== $account->id): ?>
+                            <form method="post" action="<?= url('delete managed account', ['id' => $managedAccount->id]) ?>">
+                                <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+                                <button type="submit" class="button--default">
+                                    Supprimer
+                                </button>
+                            </form>
+                        <?php endif; ?>
                     </td>
                 </tr>
             <?php endforeach; ?>

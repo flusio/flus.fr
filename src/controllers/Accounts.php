@@ -441,4 +441,59 @@ class Accounts
 
         return Response::redirect('managed accounts');
     }
+
+    /**
+     * @request_param string csrf
+     * @request_param string id
+     *
+     * @response 401
+     *     if the user is not connected, or if account is managed
+     * @response 404
+     *     if the id does not exist, or if the user's account is not a legal
+     *     entity
+     * @response 302 /account/managed
+     *     on success
+     */
+    public function deleteManaged(Request $request): Response
+    {
+        $user = utils\CurrentUser::get();
+        if (!$user || utils\CurrentUser::isAdmin()) {
+            return Response::unauthorized('unauthorized.phtml');
+        }
+
+        $account = models\Account::find($user['account_id']);
+        if (!$account) {
+            return Response::unauthorized('unauthorized.phtml');
+        }
+
+        if ($account->isManaged()) {
+            return Response::unauthorized('accounts/blocked.phtml');
+        }
+
+        if ($account->entity_type !== 'legal') {
+            return Response::notFound('not_found.phtml');
+        }
+
+        $id = $request->param('id', '');
+        $csrf = $request->param('csrf', '');
+
+        if (!\Minz\Csrf::validate($request->param('csrf'))) {
+            return Response::redirect('managed accounts');
+        }
+
+        $managed_account = models\Account::find($id);
+
+        if (!$managed_account) {
+            return Response::notFound('not_found.phtml');
+        }
+
+        if ($managed_account->managed_by_id !== $account->id) {
+            return Response::redirect('managed accounts');
+        }
+
+        $managed_account->managed_by_id = null;
+        $managed_account->save();
+
+        return Response::redirect('managed accounts');
+    }
 }
