@@ -27,7 +27,11 @@
                 </td>
 
                 <td class="cell cell--customer">
-                    <?= $account->address_first_name . ' ' . $account->address_last_name ?>
+                    <?php if ($account->entity_type === 'natural'): ?>
+                        <?= $account->address_first_name . ' ' . $account->address_last_name ?>
+                    <?php else: ?>
+                        <?= $account->address_legal_name ?>
+                    <?php endif; ?>
                 </td>
 
                 <td class="cell cell--nature">
