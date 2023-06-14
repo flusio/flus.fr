@@ -656,6 +656,159 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 404);
     }
 
+    public function testAddManagedAccountsCreatesAccount(): void
+    {
+        $this->loginUser([
+            'entity_type' => 'legal',
+        ]);
+        $account = models\Account::take();
+        $this->assertNotNull($account);
+        $email = $this->fake('email');
+
+        $response = $this->appRun('POST', '/account/managed', [
+            'csrf' => \Minz\Csrf::generate(),
+            'email' => $email,
+        ]);
+
+        $this->assertResponseCode($response, 302, '/account/managed');
+        $managed_account = models\Account::findBy(['email' => $email]);
+        $this->assertNotNull($managed_account);
+        $this->assertSame($account->id, $managed_account->managed_by_id);
+    }
+
+    public function testAddManagedAccountsUpdatesExistingAccount(): void
+    {
+        $this->loginUser([
+            'entity_type' => 'legal',
+            'expired_at' => \Minz\Time::fromNow(2, 'month'),
+        ]);
+        $account = models\Account::take();
+        $this->assertNotNull($account);
+        $managed_account = AccountFactory::create([
+            'managed_by_id' => null,
+            'expired_at' => \Minz\Time::fromNow(1, 'month'),
+            'reminder' => true,
+        ]);
+
+        $response = $this->appRun('POST', '/account/managed', [
+            'csrf' => \Minz\Csrf::generate(),
+            'email' => $managed_account->email,
+        ]);
+
+        $this->assertResponseCode($response, 302, '/account/managed');
+        $managed_account = $managed_account->reload();
+        $this->assertNotNull($managed_account);
+        $this->assertSame($account->id, $managed_account->managed_by_id);
+        $this->assertSame(
+            $account->expired_at->getTimestamp(),
+            $managed_account->expired_at->getTimestamp()
+        );
+        $this->assertFalse($managed_account->reminder);
+    }
+
+    public function testAddManagedAccountsFailsIfCsrfIsInvalid(): void
+    {
+        $this->loginUser([
+            'entity_type' => 'legal',
+        ]);
+        $email = $this->fake('email');
+
+        $response = $this->appRun('POST', '/account/managed', [
+            'csrf' => 'not a token',
+            'email' => $email,
+        ]);
+
+        $this->assertResponseCode($response, 400);
+        $this->assertFalse(models\Account::existsBy(['email' => $email]));
+    }
+
+    public function testAddManagedAccountsFailsIfEmailIsInvalid(): void
+    {
+        $this->loginUser([
+            'entity_type' => 'legal',
+        ]);
+        $email = 'not an email';
+
+        $response = $this->appRun('POST', '/account/managed', [
+            'csrf' => \Minz\Csrf::generate(),
+            'email' => $email,
+        ]);
+
+        $this->assertResponseCode($response, 400);
+        $this->assertFalse(models\Account::existsBy(['email' => $email]));
+    }
+
+    public function testAddManagedAccountsFailsIfDefaultAccount(): void
+    {
+        $this->loginUser([
+            'entity_type' => 'legal',
+        ]);
+        $default_account = models\Account::defaultAccount();
+
+        $response = $this->appRun('POST', '/account/managed', [
+            'csrf' => \Minz\Csrf::generate(),
+            'email' => $default_account->email,
+        ]);
+
+        $this->assertResponseCode($response, 400);
+        $default_account = $default_account->reload();
+        $this->assertNotNull($default_account);
+        $this->assertNull($default_account->managed_by_id);
+    }
+
+    public function testAddManagedAccountsFailsIfAlreadyManaged(): void
+    {
+        $this->loginUser([
+            'entity_type' => 'legal',
+            'expired_at' => \Minz\Time::fromNow(2, 'month'),
+        ]);
+        $account = AccountFactory::create([
+            'entity_type' => 'legal',
+        ]);
+        $managed_account = AccountFactory::create([
+            'managed_by_id' => $account->id,
+        ]);
+
+        $response = $this->appRun('POST', '/account/managed', [
+            'csrf' => \Minz\Csrf::generate(),
+            'email' => $managed_account->email,
+        ]);
+
+        $this->assertResponseCode($response, 400);
+        $managed_account = $managed_account->reload();
+        $this->assertNotNull($managed_account);
+        $this->assertSame($account->id, $managed_account->managed_by_id);
+    }
+
+    public function testAddManagedAccountsFailsIfNotLegalEntity(): void
+    {
+        $this->loginUser([
+            'entity_type' => 'natural',
+        ]);
+        $email = $this->fake('email');
+
+        $response = $this->appRun('POST', '/account/managed', [
+            'csrf' => \Minz\Csrf::generate(),
+            'email' => $email,
+        ]);
+
+        $this->assertResponseCode($response, 404);
+        $this->assertFalse(models\Account::existsBy(['email' => $email]));
+    }
+
+    public function testAddManagedAccountsFailsIfNotConnected(): void
+    {
+        $email = $this->fake('email');
+
+        $response = $this->appRun('POST', '/account/managed', [
+            'csrf' => \Minz\Csrf::generate(),
+            'email' => $email,
+        ]);
+
+        $this->assertResponseCode($response, 401);
+        $this->assertFalse(models\Account::existsBy(['email' => $email]));
+    }
+
     /**
      * @return array<array{string, AccountAddress}>
      */

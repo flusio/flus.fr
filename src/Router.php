@@ -43,6 +43,7 @@ class Router
         $router->addRoute('POST', '/account/renew', 'Subscriptions#renew', 'subscription renew');
         $router->addRoute('GET', '/account/invoices', 'Accounts#invoices', 'account invoices');
         $router->addRoute('GET', '/account/managed', 'Accounts#managed', 'managed accounts');
+        $router->addRoute('POST', '/account/managed', 'Accounts#addManaged', 'add managed account');
 
         $router->addRoute('GET', '/payments/:id/pay', 'Payments#pay');
         $router->addRoute('GET', '/merci', 'Payments#succeeded');

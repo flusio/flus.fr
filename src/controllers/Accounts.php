@@ -315,6 +315,106 @@ class Accounts
         return Response::ok('accounts/managed.phtml', [
             'account' => $account,
             'managedAccounts' => $account->managedAccounts(),
+            'email' => '',
         ]);
+    }
+
+    /**
+     * @request_param string csrf
+     * @request_param string email
+     *
+     * @response 401
+     *     if the user is not connected
+     * @response 404
+     *     if the user's account is not a legal entity
+     * @response 400
+     *     if csrf, or email is invalid
+     * @response 302 /account/managed
+     *     on success
+     */
+    public function addManaged(Request $request): Response
+    {
+        $user = utils\CurrentUser::get();
+        if (!$user || utils\CurrentUser::isAdmin()) {
+            return Response::unauthorized('unauthorized.phtml');
+        }
+
+        $account = models\Account::find($user['account_id']);
+        if (!$account) {
+            return Response::unauthorized('unauthorized.phtml');
+        }
+
+        if ($account->entity_type !== 'legal') {
+            return Response::notFound('not_found.phtml');
+        }
+
+        $email = $request->param('email', '');
+        $csrf = $request->param('csrf', '');
+
+        if (!\Minz\Csrf::validate($request->param('csrf'))) {
+            return Response::badRequest('accounts/managed.phtml', [
+                'account' => $account,
+                'managedAccounts' => $account->managedAccounts(),
+                'email' => $email,
+                'error' => 'Une vérification de sécurité a échoué, veuillez réessayer de soumettre le formulaire.',
+            ]);
+        }
+
+        $email = \Minz\Email::sanitize($email);
+
+        if (!\Minz\Email::validate($email)) {
+            return Response::badRequest('accounts/managed.phtml', [
+                'account' => $account,
+                'managedAccounts' => $account->managedAccounts(),
+                'email' => $email,
+                'errors' => [
+                    'email' => 'Veuillez saisir une adresse email valide.',
+                ],
+            ]);
+        }
+
+        $managed_account = models\Account::findBy([
+            'email' => $email,
+        ]);
+
+        if (!$managed_account) {
+            $managed_account = new models\Account($email);
+        }
+
+        $default_account = models\Account::defaultAccount();
+
+        if ($managed_account->id === $default_account->id) {
+            return Response::badRequest('accounts/managed.phtml', [
+                'account' => $account,
+                'managedAccounts' => $account->managedAccounts(),
+                'email' => $email,
+                'errors' => [
+                    'email' => 'Vous ne pouvez pas gérer ce compte.',
+                ],
+            ]);
+        }
+
+        if ($managed_account->managed_by_id !== null) {
+            return Response::badRequest('accounts/managed.phtml', [
+                'account' => $account,
+                'managedAccounts' => $account->managedAccounts(),
+                'email' => $email,
+                'errors' => [
+                    'email' => 'Ce compte est déjà géré par un autre compte.',
+                ],
+            ]);
+        }
+
+        $managed_account->managed_by_id = $account->id;
+
+        if ($managed_account->expired_at < $account->expired_at) {
+            $managed_account->expired_at = $account->expired_at;
+        }
+
+        $managed_account->reminder = false;
+
+        $managed_account->save();
+
+        return Response::redirect('managed accounts');
     }
 }

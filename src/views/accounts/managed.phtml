@@ -17,6 +17,49 @@
         <a href="<?= url('subscription init') ?>">Retourner au renouvellement</a>
     </p>
 
+    <form
+        method="post"
+        action="<?= url('add managed account') ?>"
+    >
+        <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+
+        <?php if ($error): ?>
+            <p class="form__error">
+                <?= $error ?>
+            </p>
+        <?php endif; ?>
+
+        <div class="form-group <?= isset($errors['email']) ? 'form-group--invalid' : '' ?>">
+            <label for="email">
+                Ajouter une adresse courriel
+            </label>
+
+            <div class="columns columns--center">
+                <div class="columns__item columns__item--size9">
+                    <input
+                        id="email"
+                        name="email"
+                        type="email"
+                        value="<?= $email ?>"
+                        required
+                    />
+
+                    <?php if (isset($errors['email'])): ?>
+                        <p class="form-group__error">
+                            <?= $errors['email'] ?>
+                        </p>
+                    <?php endif; ?>
+                </div>
+
+                <div class="columns__item columns__item--size3">
+                    <button type="submit" class="button--primary">
+                        Ajouter
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+
     <table>
         <thead>
             <tr>
