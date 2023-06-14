@@ -105,8 +105,15 @@ class Home
 
     public function contact(Request $request): Response
     {
+        $email = '';
+        $user = utils\CurrentUser::get();
+        if ($user && !utils\CurrentUser::isAdmin()) {
+            $account = models\Account::find($user['account_id']);
+            $email = $account->email ?? '';
+        }
+
         return Response::ok('home/contact.phtml', [
-            'email' => '',
+            'email' => $email,
             'subject' => $request->param('subject', ''),
             'content' => '',
         ]);
