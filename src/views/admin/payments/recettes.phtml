@@ -46,9 +46,9 @@
 
                 <td class="cell cell--amount">
                     <?php if ($payment->type === 'credit'): ?>
-                        -<?= $payment->amount / 100 ?> €
+                        -<?= $payment->totalAmount() / 100 ?> €
                     <?php else: ?>
-                        <?= $payment->amount / 100 ?> €
+                        <?= $payment->totalAmount() / 100 ?> €
                     <?php endif; ?>
                 </td>
 

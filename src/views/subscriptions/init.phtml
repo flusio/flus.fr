@@ -22,16 +22,16 @@
         <?php endif; ?>
     </p>
 
-    <?php if ($account->entity_type === 'legal'): ?>
-        <p class="paragraph--center paragraph--limit">
-            Vous allez renouveler pour <?= $account->countManagedAccounts() + 1 ?> compte(s)
-            → <a href="<?= url('managed accounts') ?>">Gérer</a>
-        </p>
-    <?php endif; ?>
+    <?php $count_accounts = $account->countManagedAccounts() + 1; ?>
 
     <?php if ($account->expired_at > \Minz\Time::fromNow(1, 'month')): ?>
         <p class="paragraph--featured paragraph--limit">
             Vous pourrez renouveler à 1 mois de l’expiration de votre abonnement.
+        </p>
+
+        <p class="paragraph--center paragraph--limit">
+            Vous gérez <?= $count_accounts ?> compte(s)
+            → <a href="<?= url('managed accounts') ?>">Gérer</a>
         </p>
     <?php elseif (!$account->isFree()): ?>
         <?php if ($ongoing_payment): ?>
@@ -60,6 +60,7 @@
                 class="form-group amount-selector"
                 data-controller="amount-selector"
                 data-amount-selector-initial-amount="<?= $amount ?>"
+                data-amount-selector-count-accounts="<?= $count_accounts ?>"
             >
                 <label>
                     Sélectionner un tarif (<a href="<?= url('pricing') ?>#choisir">obtenir de l’aide</a>)
@@ -176,6 +177,18 @@
                 <?php if (isset($errors['amount'])): ?>
                     <p class="form-group__error">
                         <?= $errors['amount'] ?>
+                    </p>
+                <?php endif; ?>
+
+                <?php if ($account->entity_type === 'legal'): ?>
+                    <p class="paragraph--center paragraph--limit">
+                        Vous allez renouveler pour <?= $count_accounts ?> compte(s)
+                        → <a href="<?= url('managed accounts') ?>">Gérer</a>
+                    </p>
+
+                    <p class="paragraph--featured">
+                        Soit un total de
+                        <span data-target="amount-selector.totalAmount"></span> €
                     </p>
                 <?php endif; ?>
             </div>

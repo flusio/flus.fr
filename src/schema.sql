@@ -42,6 +42,7 @@ CREATE TABLE payments (
 
     invoice_number TEXT,
     amount INTEGER NOT NULL,
+    quantity INTEGER NOT NULL DEFAULT 1,
     frequency TEXT,
     credited_payment_id TEXT,
 

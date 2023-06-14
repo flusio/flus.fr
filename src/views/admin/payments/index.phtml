@@ -27,8 +27,20 @@
 </a>
 
 <?php foreach ($payments_by_months as $month => $payments): ?>
-    <?php $month_amounts = array_column($payments, 'amount'); ?>
-    <?php $month_total_amount = array_sum($month_amounts); ?>
+    <?php
+        $month_total_amount = 0;
+        foreach ($payments as $payment) {
+            if (!$payment->is_paid) {
+                continue;
+            }
+
+            if ($payment->type === 'credit') {
+                $month_total_amount -= $payment->totalAmount();
+            } else {
+                $month_total_amount += $payment->totalAmount();
+            }
+        }
+    ?>
     <h2><?= format_month($month, 'MMMM') ?>&nbsp;—&nbsp;<?= format_amount($month_total_amount) ?></h2>
 
     <table>
@@ -36,7 +48,7 @@
             <?php foreach ($payments as $payment): ?>
                 <tr <?= !$payment->completed_at ? 'class="row--ghost"' : ''?> >
                     <td class="cell--right">
-                        <?= format_amount($payment->amount) ?>
+                        <?= format_amount($payment->totalAmount()) ?>
                     </td>
 
                     <td>

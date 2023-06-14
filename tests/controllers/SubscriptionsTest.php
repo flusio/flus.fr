@@ -164,6 +164,45 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
      *
      * @param AccountAddress $address
      */
+    public function testRenewConsidersManagedAccounts(array $address): void
+    {
+        $expired_at = \Minz\Time::fromNow(15, 'days');
+        $user = $this->loginUser([
+            'expired_at' => $expired_at,
+            'address_first_name' => $address['first_name'],
+            'address_last_name' => $address['last_name'],
+            'address_address1' => $address['address1'],
+            'address_postcode' => $address['postcode'],
+            'address_city' => $address['city'],
+        ]);
+        $account = models\Account::find($user['account_id']);
+        $this->assertNotNull($account);
+        AccountFactory::create(['managed_by_id' => $account->id]);
+        AccountFactory::create(['managed_by_id' => $account->id]);
+
+        $this->assertSame(0, models\Payment::count());
+
+        $response = $this->appRun('POST', '/account/renew', [
+            'csrf' => \Minz\Csrf::generate(),
+            'account_id' => $account->id,
+            'amount' => 10,
+        ]);
+
+        $this->assertSame(1, models\Payment::count());
+
+        $payment = models\Payment::take();
+        $this->assertNotNull($payment);
+        $this->assertResponseCode($response, 302, "/payments/{$payment->id}/pay");
+        $this->assertSame(1000, $payment->amount);
+        $this->assertSame(3, $payment->quantity);
+        $this->assertSame(3000, $payment->totalAmount());
+    }
+
+    /**
+     * @dataProvider addressProvider
+     *
+     * @param AccountAddress $address
+     */
     public function testRenewCreatesAcceptsAmountOfZero(array $address): void
     {
         $this->freeze();

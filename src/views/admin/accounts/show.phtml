@@ -74,7 +74,7 @@
             <?php foreach ($payments as $payment): ?>
                 <tr <?= !$payment->completed_at ? 'class="row--ghost"' : ''?> >
                     <td class="cell--right">
-                        <?= format_amount($payment->amount) ?>
+                        <?= format_amount($payment->totalAmount()) ?>
                     </td>
 
                     <td>

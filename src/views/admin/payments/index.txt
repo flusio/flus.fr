@@ -20,9 +20,9 @@
             echo 'heu non;';
         endif;
         if ($payment->type === 'credit'):
-            echo '-' . number_format($payment->amount / 100, 2, ',', '') . ';';
+            echo '-' . number_format($payment->totalAmount() / 100, 2, ',', '') . ';';
         else:
-            echo number_format($payment->amount / 100, 2, ',', '') . ';';
+            echo number_format($payment->totalAmount() / 100, 2, ',', '') . ';';
         endif;
         if ($payment->payment_intent_id):
             echo 'stripe;';

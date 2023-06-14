@@ -144,6 +144,7 @@ class InvoicePDFTest extends TestCase
         $payment = PaymentFactory::create([
             'type' => 'subscription',
             'frequency' => 'year',
+            'quantity' => 3,
         ]);
 
         $invoice_pdf = new InvoicePDF($payment);
@@ -154,15 +155,15 @@ class InvoicePDFTest extends TestCase
             $invoice_pdf->purchases[0]['description']
         );
         $this->assertSame(
-            '1',
-            $invoice_pdf->purchases[0]['number']
+            (string) $payment->quantity,
+            $invoice_pdf->purchases[0]['quantity']
         );
         $this->assertSame(
             ($payment->amount / 100) . ' €',
             $invoice_pdf->purchases[0]['price']
         );
         $this->assertSame(
-            ($payment->amount / 100) . ' €',
+            ($payment->totalAmount() / 100) . ' €',
             $invoice_pdf->purchases[0]['total']
         );
     }
@@ -181,15 +182,15 @@ class InvoicePDFTest extends TestCase
             $invoice_pdf->purchases[0]['description']
         );
         $this->assertSame(
-            '1',
-            $invoice_pdf->purchases[0]['number']
+            (string) $payment->quantity,
+            $invoice_pdf->purchases[0]['quantity']
         );
         $this->assertSame(
             ($payment->amount / 100) . ' €',
             $invoice_pdf->purchases[0]['price']
         );
         $this->assertSame(
-            ($payment->amount / 100) . ' €',
+            ($payment->totalAmount() / 100) . ' €',
             $invoice_pdf->purchases[0]['total']
         );
     }
@@ -215,15 +216,15 @@ class InvoicePDFTest extends TestCase
             $invoice_pdf->purchases[0]['description']
         );
         $this->assertSame(
-            '1',
-            $invoice_pdf->purchases[0]['number']
+            (string) $payment->quantity,
+            $invoice_pdf->purchases[0]['quantity']
         );
         $this->assertSame(
             ($payment->amount / 100) . ' €',
             $invoice_pdf->purchases[0]['price']
         );
         $this->assertSame(
-            ($payment->amount / 100) . ' €',
+            ($payment->totalAmount() / 100) . ' €',
             $invoice_pdf->purchases[0]['total']
         );
     }

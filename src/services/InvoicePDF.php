@@ -11,7 +11,7 @@ use Website\utils;
  *
  * @phpstan-type InvoicePurchase array{
  *     'description': string,
- *     'number': string,
+ *     'quantity': string,
  *     'price': string,
  *     'total': string,
  * }
@@ -99,29 +99,30 @@ class InvoicePDF extends \FPDF
         };
 
         $amount = $payment->amount / 100 . ' €';
+        $total_amount = $payment->totalAmount() / 100 . ' €';
 
         $this->total_purchases = [
-            'ht' => $amount,
+            'ht' => $total_amount,
             'tva' => 'non applicable',
-            'ttc' => $amount,
+            'ttc' => $total_amount,
         ];
 
         if ($payment->type === 'common_pot') {
             $this->purchases = [
                 [
                     'description' => "Participation à la cagnotte commune\nde Flus",
-                    'number' => '1',
+                    'quantity' => (string) $payment->quantity,
                     'price' => $amount,
-                    'total' => $amount,
+                    'total' => $total_amount,
                 ],
             ];
         } elseif ($payment->type === 'subscription') {
             $this->purchases = [
                 [
                     'description' => "Renouvellement d'un abonnement\nde 1 an à Flus",
-                    'number' => '1',
+                    'quantity' => (string) $payment->quantity,
                     'price' => $amount,
-                    'total' => $amount,
+                    'total' => $total_amount,
                 ],
             ];
         } elseif ($payment->type === 'credit') {
@@ -137,9 +138,9 @@ class InvoicePDF extends \FPDF
             $this->purchases = [
                 [
                     'description' => "Remboursement de la facture\n{$invoice_number}",
-                    'number' => '1',
+                    'quantity' => (string) $payment->quantity,
                     'price' => $amount,
-                    'total' => $amount,
+                    'total' => $total_amount,
                 ],
             ];
         }
@@ -221,7 +222,7 @@ class InvoicePDF extends \FPDF
             $this->MultiCell(90, 5, $this->pdfDecode($purchase['description']), 0);
 
             $this->SetXY(110, $this->GetY() - 10);
-            $this->Cell(25, 5, $this->pdfDecode($purchase['number']), 0, 0);
+            $this->Cell(25, 5, $this->pdfDecode($purchase['quantity']), 0, 0);
             $this->Cell(25, 5, $this->pdfDecode($purchase['price']), 0, 0);
             $this->Cell(25, 5, $this->pdfDecode($purchase['total']), 0, 1);
 
@@ -238,7 +239,7 @@ class InvoicePDF extends \FPDF
         $this->SetFont('', 'B');
 
         $this->SetX(135);
-        $this->Cell(25, 10, 'Prix HT', 0, 0, '', true);
+        $this->Cell(25, 10, 'Total HT', 0, 0, '', true);
         $this->Cell(25, 10, $this->pdfDecode($infos['ht']), 0, 1);
 
         $this->SetX(135);

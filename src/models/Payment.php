@@ -56,6 +56,9 @@ class Payment
     #[Database\Column]
     public int $amount;
 
+    #[Database\Column]
+    public int $quantity;
+
     #[Validable\Length(min: 1, message: 'La génération du paiement Stripe a échoué.')]
     #[Database\Column]
     public ?string $payment_intent_id = null;
@@ -84,6 +87,7 @@ class Payment
         $this->id = \Minz\Random::hex(32);
         $this->type = $type;
         $this->amount = $amount;
+        $this->quantity = 1;
         $this->is_paid = false;
     }
 
@@ -99,6 +103,7 @@ class Payment
         $payment = new self('subscription', $amount);
         $payment->frequency = 'year';
         $payment->account_id = $account->id;
+        $payment->quantity = $account->countManagedAccounts() + 1;
 
         return $payment;
     }
@@ -108,11 +113,19 @@ class Payment
      */
     public static function initCreditFromPayment(self $payment): self
     {
-        $credit = new self('credit', $payment->amount);
+        $credit = new self('credit', $payment->totalAmount());
         $credit->account_id = $payment->account_id;
         $credit->credited_payment_id = $payment->id;
 
         return $credit;
+    }
+
+    /**
+     * Return the total amount of the payment.
+     */
+    public function totalAmount(): int
+    {
+        return $this->amount * $this->quantity;
     }
 
     /**

@@ -40,7 +40,7 @@ class Stripe
                 'name' => $name,
                 'amount' => $payment->amount,
                 'currency' => 'eur',
-                'quantity' => 1,
+                'quantity' => $payment->quantity,
             ]],
             'success_url' => $success_url,
             'cancel_url' => $cancel_url,
