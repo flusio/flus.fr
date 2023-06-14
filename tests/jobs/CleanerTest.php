@@ -84,6 +84,22 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(models\Account::exists($account->id));
     }
 
+    public function testPerformKeepsUnsyncButManagedAccounts(): void
+    {
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
+        $days = $this->fake('numberBetween', 3, 30);
+        $account = AccountFactory::create([
+            'last_sync_at' => \Minz\Time::ago($days, 'days'),
+            'managed_by_id' => AccountFactory::create()->id,
+        ]);
+
+        $cleaner = new Cleaner();
+        $cleaner->perform();
+
+        $this->assertTrue(models\Account::exists($account->id));
+    }
+
     public function testPerformDoesNotMovePaymentsAndPotUsagesOfSyncAccounts(): void
     {
         $now = $this->fake('dateTime');

@@ -363,15 +363,16 @@ class Account
 
     /**
      * List the accounts which have a last_sync_at property older than the
-     * given date.
+     * given date and that are not managed by another account.
      *
      * @return self[]
      */
-    public static function listByLastSyncAtOlderThan(\DateTimeImmutable $date): array
+    public static function listToBeDeleted(\DateTimeImmutable $date): array
     {
         $sql = <<<SQL
             SELECT * FROM accounts
-            WHERE last_sync_at < ? OR last_sync_at IS NULL
+            WHERE (last_sync_at < ? OR last_sync_at IS NULL)
+            AND managed_by_id IS NULL
         SQL;
 
         $database = Database::get();
