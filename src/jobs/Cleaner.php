@@ -35,7 +35,7 @@ class Cleaner extends Job
     {
         $date = \Minz\Time::ago(2, 'days');
 
-        $accounts_to_delete = models\Account::listByLastSyncAtOlderThan($date);
+        $accounts_to_delete = models\Account::listToBeDeleted($date);
         $accounts_ids = array_column($accounts_to_delete, 'id');
 
         $number_accounts = count($accounts_ids);

@@ -23,6 +23,11 @@ class PaymentCompleter
         if ($account && $payment->type === 'subscription') {
             $account->extendSubscription();
             $account->save();
+
+            foreach ($account->managedAccounts() as $managed_account) {
+                $managed_account->extendSubscription();
+                $managed_account->save();
+            }
         }
 
         $invoice_filepath = $payment->invoiceFilepath();

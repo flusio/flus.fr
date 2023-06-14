@@ -93,6 +93,9 @@ class Account
     #[Database\Column]
     public ?string $company_vat_number = null;
 
+    #[Database\Column]
+    public ?string $managed_by_id = null;
+
     #[Database\Column(computed: true)]
     public int $count_payments;
 
@@ -278,6 +281,42 @@ class Account
     }
 
     /**
+     * Return the list of the accounts managed by the current one.
+     *
+     * @return Account[]
+     */
+    public function managedAccounts(): array
+    {
+        $accounts = self::listBy([
+            'managed_by_id' => $this->id,
+        ]);
+
+        usort($accounts, function ($account1, $account2) {
+            return $account1->email <=> $account2->email;
+        });
+
+        return $accounts;
+    }
+
+    /**
+     * Return the number of the accounts managed by the current one.
+     */
+    public function countManagedAccounts(): int
+    {
+        return self::countBy([
+            'managed_by_id' => $this->id,
+        ]);
+    }
+
+    /**
+     * Return whether the current account is managed by another one.
+     */
+    public function isManaged(): bool
+    {
+        return $this->managed_by_id !== null;
+    }
+
+    /**
      * Return the list of accounts with computed count_payments
      *
      * @return self[]
@@ -324,15 +363,16 @@ class Account
 
     /**
      * List the accounts which have a last_sync_at property older than the
-     * given date.
+     * given date and that are not managed by another account.
      *
      * @return self[]
      */
-    public static function listByLastSyncAtOlderThan(\DateTimeImmutable $date): array
+    public static function listToBeDeleted(\DateTimeImmutable $date): array
     {
         $sql = <<<SQL
             SELECT * FROM accounts
-            WHERE last_sync_at < ? OR last_sync_at IS NULL
+            WHERE (last_sync_at < ? OR last_sync_at IS NULL)
+            AND managed_by_id IS NULL
         SQL;
 
         $database = Database::get();

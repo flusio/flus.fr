@@ -42,6 +42,9 @@ class Router
         $router->addRoute('GET', '/account/renew', 'Subscriptions#init', 'subscription init');
         $router->addRoute('POST', '/account/renew', 'Subscriptions#renew', 'subscription renew');
         $router->addRoute('GET', '/account/invoices', 'Accounts#invoices', 'account invoices');
+        $router->addRoute('GET', '/account/managed', 'Accounts#managed', 'managed accounts');
+        $router->addRoute('POST', '/account/managed', 'Accounts#addManaged', 'add managed account');
+        $router->addRoute('POST', '/account/managed/:id/delete', 'Accounts#deleteManaged', 'delete managed account');
 
         $router->addRoute('GET', '/payments/:id/pay', 'Payments#pay');
         $router->addRoute('GET', '/merci', 'Payments#succeeded');

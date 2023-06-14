@@ -1,0 +1,25 @@
+<?php
+    $this->layout('account.phtml', [
+        'title' => 'Votre abonnement',
+        'nav_disabled' => true,
+    ]);
+?>
+
+<section class="section">
+    <div class="header">
+        <h1 class="header__title">
+            Votre abonnement
+        </h1>
+    </div>
+
+    <p class="paragraph--featured paragraph--limit">
+        Votre abonnement est géré par un autre compte.
+    </p>
+
+    <p class="paragraph--centered paragraph--limit">
+        Si vous pensez qu’il s’agit d’une erreur,
+        <a href="<?= url('contact', ['subject' => 'Abonnement géré par un autre compte']) ?>">
+            veuillez me contacter.
+        </a>
+    </p>
+</section>

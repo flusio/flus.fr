@@ -27,7 +27,10 @@ CREATE TABLE accounts (
     address_country TEXT,
     company_vat_number TEXT,
 
-    FOREIGN KEY (access_token) REFERENCES tokens(token) ON UPDATE CASCADE ON DELETE SET NULL
+    managed_by_id TEXT,
+
+    FOREIGN KEY (access_token) REFERENCES tokens(token) ON UPDATE CASCADE ON DELETE SET NULL,
+    FOREIGN KEY (managed_by_id) REFERENCES accounts(id) ON UPDATE CASCADE ON DELETE SET NULL
 );
 
 CREATE TABLE payments (
