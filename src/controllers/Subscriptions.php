@@ -126,6 +126,11 @@ class Subscriptions
             $account->extendSubscription();
             $account->save();
 
+            foreach ($account->managedAccounts() as $managed_account) {
+                $managed_account->extendSubscription();
+                $managed_account->save();
+            }
+
             return Response::redirect('Payments#succeeded');
         }
 

@@ -15,6 +15,15 @@ class PaymentsCompleterTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\MailerAsserts;
 
     /**
+     * @beforeClass
+     */
+    public static function initRouter(): void
+    {
+        $router = \Website\Router::loadApp();
+        \Minz\Engine::init($router);
+    }
+
+    /**
      * @afterClass
      */
     public static function dropInvoices(): void
@@ -68,6 +77,36 @@ class PaymentsCompleterTest extends \PHPUnit\Framework\TestCase
         /** @var models\Account */
         $account = $account->reload();
         $this->assertSame($expected_expired_at->getTimestamp(), $account->expired_at->getTimestamp());
+    }
+
+    public function testPerformExtendsSubscriptionOfManagedAccounts(): void
+    {
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
+        $account = AccountFactory::create([
+            'expired_at' => \Minz\Time::now(),
+        ]);
+        $managed_account = AccountFactory::create([
+            'expired_at' => \Minz\Time::fromNow(5, 'days'),
+            'managed_by_id' => $account->id,
+        ]);
+        $payment = PaymentFactory::create([
+            'type' => 'subscription',
+            'completed_at' => null,
+            'is_paid' => true,
+            'account_id' => $account->id,
+        ]);
+        $expected_expired_at = \Minz\Time::relative('1 year 5 days');
+
+        $completer = new PaymentsCompleter();
+        $completer->perform();
+
+        $managed_account = $managed_account->reload();
+        $this->assertNotNull($managed_account);
+        $this->assertSame(
+            $expected_expired_at->getTimestamp(),
+            $managed_account->expired_at->getTimestamp()
+        );
     }
 
     public function testPerformDontExtendsSubscriptionIfNotSubscription(): void
