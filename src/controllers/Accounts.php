@@ -19,7 +19,7 @@ class Accounts
      *     if the user is not connected
      * @response 302 /account/address
      *     if the address is not set
-     * @response 200
+     * @response 302 /account/renew
      *     on success
      */
     public function show(Request $request): Response
@@ -99,7 +99,7 @@ class Accounts
 
     /**
      * @response 401
-     *     if the user is not connected
+     *     if the user is not connected, or if account is managed
      * @response 200
      *     on success
      */
@@ -115,6 +115,10 @@ class Accounts
             return Response::unauthorized('unauthorized.phtml');
         }
 
+        if ($account->isManaged()) {
+            return Response::unauthorized('accounts/blocked.phtml');
+        }
+
         return Response::ok('accounts/profile.phtml', [
             'account' => $account,
             'email' => $account->email,
@@ -128,7 +132,7 @@ class Accounts
 
     /**
      * @response 401
-     *     if the user is not connected
+     *     if the user is not connected, or if account is managed
      * @response 400
      *     if the email or address is invalid
      * @response 302 /account
@@ -144,6 +148,10 @@ class Accounts
         $account = models\Account::find($user['account_id']);
         if (!$account) {
             return Response::unauthorized('unauthorized.phtml');
+        }
+
+        if ($account->isManaged()) {
+            return Response::unauthorized('accounts/blocked.phtml');
         }
 
         $email = $request->param('email', '');
@@ -235,7 +243,7 @@ class Accounts
      * @request_param string from A route name (default is "account")
      *
      * @response 401
-     *     if the user is not connected
+     *     if the user is not connected, or if account is managed
      * @response 400
      *     if csrf is invalid
      * @response 302 /account
@@ -253,6 +261,10 @@ class Accounts
             return Response::unauthorized('unauthorized.phtml');
         }
 
+        if ($account->isManaged()) {
+            return Response::unauthorized('accounts/blocked.phtml');
+        }
+
         $reminder = $request->paramBoolean('reminder', false);
         $from = $request->param('from', 'account');
 
@@ -266,7 +278,7 @@ class Accounts
 
     /**
      * @response 401
-     *     if the user is not connected
+     *     if the user is not connected, or if account is managed
      * @response 200
      *     on success
      */
@@ -282,6 +294,10 @@ class Accounts
             return Response::unauthorized('unauthorized.phtml');
         }
 
+        if ($account->isManaged()) {
+            return Response::unauthorized('accounts/blocked.phtml');
+        }
+
         return Response::ok('accounts/invoices.phtml', [
             'account' => $account,
             'payments' => $account->payments(),
@@ -290,7 +306,7 @@ class Accounts
 
     /**
      * @response 401
-     *     if the user is not connected
+     *     if the user is not connected, or if account is managed
      * @response 404
      *     if the user's account is not a legal entity
      * @response 200
@@ -306,6 +322,10 @@ class Accounts
         $account = models\Account::find($user['account_id']);
         if (!$account) {
             return Response::unauthorized('unauthorized.phtml');
+        }
+
+        if ($account->isManaged()) {
+            return Response::unauthorized('accounts/blocked.phtml');
         }
 
         if ($account->entity_type !== 'legal') {
@@ -324,7 +344,7 @@ class Accounts
      * @request_param string email
      *
      * @response 401
-     *     if the user is not connected
+     *     if the user is not connected, or if account is managed
      * @response 404
      *     if the user's account is not a legal entity
      * @response 400
@@ -342,6 +362,10 @@ class Accounts
         $account = models\Account::find($user['account_id']);
         if (!$account) {
             return Response::unauthorized('unauthorized.phtml');
+        }
+
+        if ($account->isManaged()) {
+            return Response::unauthorized('accounts/blocked.phtml');
         }
 
         if ($account->entity_type !== 'legal') {

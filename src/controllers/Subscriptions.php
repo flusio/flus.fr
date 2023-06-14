@@ -16,7 +16,7 @@ class Subscriptions
 {
     /**
      * @response 401
-     *     if the user is not connected
+     *     if the user is not connected, or if the account is managed
      * @response 302 /account/address
      *     if the address is not set
      * @response 200
@@ -38,6 +38,10 @@ class Subscriptions
             return Response::redirect('account profile');
         }
 
+        if ($account->isManaged()) {
+            return Response::unauthorized('accounts/blocked.phtml');
+        }
+
         return Response::ok('subscriptions/init.phtml', [
             'contribution_price' => models\Payment::contributionPrice(),
             'account' => $account,
@@ -54,7 +58,7 @@ class Subscriptions
      * @request_param integer amount must be between 0 and 1000
      *
      * @response 401
-     *     if the user is not connected
+     *     if the user is not connected, or if the account is managed
      * @response 302 /account/address
      *     if the address is not set
      * @response 400
@@ -73,6 +77,10 @@ class Subscriptions
         $account = models\Account::find($user['account_id']);
         if (!$account) {
             return Response::unauthorized('unauthorized.phtml');
+        }
+
+        if ($account->isManaged()) {
+            return Response::unauthorized('accounts/blocked.phtml');
         }
 
         /** @var int */
