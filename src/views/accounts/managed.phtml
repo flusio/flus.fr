@@ -60,6 +60,7 @@
         </div>
     </form>
 
+    <?php $has_inactive_account = false; ?>
     <table>
         <thead>
             <tr>
@@ -78,6 +79,11 @@
                         <?= $managedAccount->email ?>
                         <?php if ($managedAccount->id === $account->id): ?>
                             (vous)
+                        <?php endif; ?>
+
+                        <?php if (!$managedAccount->isSync()): ?>
+                            <?php $has_inactive_account = true; ?>
+                            (inactif *)
                         <?php endif; ?>
                     </td>
 
@@ -99,4 +105,11 @@
             <?php endforeach; ?>
         </tbody>
     </table>
+
+    <?php if ($has_inactive_account): ?>
+        <p class="paragraph--secondary paragraph--limit">
+            * Les comptes inactifs sont inutilisés. Vous pouvez les supprimer de
+            vos comptes gérés (ou relancer les personnes concernées).
+        </p>
+    <?php endif; ?>
 </section>
