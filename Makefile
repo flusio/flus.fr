@@ -43,7 +43,7 @@ docker-clean: ## Clean the Docker stuff
 install: ## Install the dependencies
 	$(COMPOSER) install
 
-.PHONY: init
+.PHONY: setup
 setup: ## Initialize or migration the application
 	$(PHP) ./cli migrations setup --seed
 
