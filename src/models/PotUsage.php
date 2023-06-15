@@ -40,7 +40,7 @@ class PotUsage
     #[Validable\Comparison(
         greater_or_equal: Payment::MIN_AMOUNT,
         less_or_equal: Payment::MAX_AMOUNT,
-        message: 'Le montant doit être compris entre 1 et 1000 €.',
+        message: 'Le montant doit être compris entre 1 et 120 €.',
     )]
     #[Database\Column]
     public int $amount;

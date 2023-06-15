@@ -20,7 +20,7 @@ class Payment
     use Validable;
 
     public const MIN_AMOUNT = 1 * 100;
-    public const MAX_AMOUNT = 1000 * 100;
+    public const MAX_AMOUNT = 120 * 100;
 
     #[Database\Column]
     public string $id;
@@ -51,7 +51,7 @@ class Payment
     #[Validable\Comparison(
         greater_or_equal: Payment::MIN_AMOUNT,
         less_or_equal: Payment::MAX_AMOUNT,
-        message: 'Le montant doit être compris entre 1 et 1000 €.',
+        message: 'Le montant doit être compris entre 1 et 120 €.',
     )]
     #[Database\Column]
     public int $amount;
@@ -386,9 +386,8 @@ class Payment
         // Consider the person who is going to subscribe.
         $active_accounts = Account::countActive() + 1;
 
-        // The max price is 10€ per month.
-        $max_price = 10 * 12;
-        $min_price = 1;
+        $min_price = self::MIN_AMOUNT / 100;
+        $max_price = self::MAX_AMOUNT / 100;
 
         $price = intval($financial_goal / $active_accounts);
 

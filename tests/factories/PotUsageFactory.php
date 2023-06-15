@@ -33,7 +33,7 @@ class PotUsageFactory extends Database\Factory
             },
 
             'amount' => function () use ($faker) {
-                return $faker->numberBetween(100, 100000);
+                return $faker->numberBetween(100, 12000);
             },
 
             'frequency' => function () use ($faker) {

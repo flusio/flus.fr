@@ -22,8 +22,8 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
     public function testShowPublicRendersCorrectly(): void
     {
         $common_pot_expenses = $this->fake('numberBetween', 100, 499);
-        $common_pot_revenues = $this->fake('numberBetween', 500, 100000);
-        $subscriptions_revenues = $this->fake('numberBetween', 100, 100000);
+        $common_pot_revenues = $this->fake('numberBetween', 500, 12000);
+        $subscriptions_revenues = $this->fake('numberBetween', 100, 12000);
         PotUsageFactory::create([
             'amount' => $common_pot_expenses,
         ]);

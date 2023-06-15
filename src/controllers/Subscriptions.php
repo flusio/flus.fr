@@ -55,7 +55,7 @@ class Subscriptions
      * Stripe API to start a payment session.
      *
      * @request_param string csrf
-     * @request_param integer amount must be between 0 and 1000
+     * @request_param integer amount must be between 0 and 120
      *
      * @response 401
      *     if the user is not connected, or if the account is managed

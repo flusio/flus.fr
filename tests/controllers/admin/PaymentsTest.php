@@ -346,7 +346,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         foreach (range(1, \Minz\Configuration::$application['number_of_datasets']) as $n) {
             $datasets[] = [
                 $faker->email,
-                $faker->numberBetween(1, 1000),
+                $faker->numberBetween(1, 120),
             ];
         }
 

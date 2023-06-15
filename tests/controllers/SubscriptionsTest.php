@@ -319,11 +319,11 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('POST', '/account/renew', [
             'csrf' => \Minz\Csrf::generate(),
             'account_id' => $account->id,
-            'amount' => 1001,
+            'amount' => 121,
         ]);
 
         $this->assertResponseCode($response, 400);
-        $this->assertResponseContains($response, 'Le montant doit être compris entre 1 et 1000 €.');
+        $this->assertResponseContains($response, 'Le montant doit être compris entre 1 et 120 €.');
         $this->assertSame(0, models\Payment::count());
     }
 
