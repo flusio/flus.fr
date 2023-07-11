@@ -46,6 +46,7 @@ class Application
             'error' => null,
             'load_form_statics' => false,
             'current_user' => utils\CurrentUser::get(),
+            'current_account' => utils\CurrentUser::getAccount(),
             'current_page' => null,
         ]);
     }

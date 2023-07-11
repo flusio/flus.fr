@@ -43,14 +43,16 @@
             <?php if (!$nav_disabled): ?>
                 <nav class="layout__nav">
                     <ul>
-                        <li class="layout__nav-item--subscription">
-                            <a
-                                href="<?= url('subscription init') ?>"
-                                <?= $current_page === 'subscription' ? 'aria-current="page"' : '' ?>
-                            >
-                                Abonnement
-                            </a>
-                        </li>
+                        <?php if ($current_account && !$current_account->mustSetAddress()): ?>
+                            <li class="layout__nav-item--subscription">
+                                <a
+                                    href="<?= url('subscription init') ?>"
+                                    <?= $current_page === 'subscription' ? 'aria-current="page"' : '' ?>
+                                >
+                                    Abonnement
+                                </a>
+                            </li>
+                        <?php endif; ?>
 
                         <li class="layout__nav-item--profile">
                             <a

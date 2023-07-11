@@ -2,6 +2,8 @@
 
 namespace Website\utils;
 
+use Website\models;
+
 /**
  * @phpstan-type User array{'account_id': string}
  *
@@ -41,6 +43,17 @@ class CurrentUser
         } else {
             return null;
         }
+    }
+
+    public static function getAccount(): ?models\Account
+    {
+        $current_user = self::get();
+
+        if (!$current_user) {
+            return null;
+        }
+
+        return models\Account::find($current_user['account_id']);
     }
 
     public static function isAdmin(): bool
