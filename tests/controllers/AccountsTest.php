@@ -368,6 +368,34 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
      *
      * @param AccountAddress $address
      */
+    public function testUpdateProfileResetsManagedAccounts(string $email, array $address): void
+    {
+        $user = $this->loginUser();
+        $managed_account = AccountFactory::create([
+            'managed_by_id' => $user['account_id'],
+        ]);
+
+        $response = $this->appRun('POST', '/account/profile', [
+            'csrf' => \Minz\Csrf::generate(),
+            'email' => $email,
+            'show_address' => true,
+            'address' => $address,
+        ]);
+
+        $this->assertResponseCode($response, 302, '/account');
+        $managed_account = $managed_account->reload();
+        $this->assertNotNull($managed_account);
+        $this->assertNull($managed_account->managed_by_id);
+        $account = models\Account::find($user['account_id']);
+        $this->assertNotNull($account);
+        $this->assertSame(0, $account->countManagedAccounts());
+    }
+
+    /**
+     * @dataProvider addressesProvider
+     *
+     * @param AccountAddress $address
+     */
     public function testUpdateProfileFailsIfNotConnected(string $email, array $address): void
     {
         $response = $this->appRun('POST', '/account/profile', [

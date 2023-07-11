@@ -44,13 +44,18 @@
                 Vous êtes
             </div>
 
-            <div class="columns__item columns__item--size4">
+            <?php $count_managed_accounts = $account->countManagedAccounts(); ?>
+            <div
+                class="columns__item columns__item--size4"
+                <?= $count_managed_accounts > 0 ? 'title="Action impossible : vous gérez actuellemement les abonnements d’autres comptes."' : '' ?>
+            >
                 <input
                     id="entity-type-natural"
                     name="entity_type"
                     value="natural"
                     type="radio"
                     <?= $entity_type === 'natural' ? 'checked' : '' ?>
+                    <?= $count_managed_accounts > 0 ? 'disabled' : '' ?>
                     data-action="profile#switchEntityType"
                 />
 

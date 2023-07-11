@@ -234,6 +234,13 @@ class Accounts
 
         $account->save();
 
+        // Stop managing accounts.
+        $managed_accounts = $account->managedAccounts();
+        foreach ($managed_accounts as $managed_account) {
+            $managed_account->managed_by_id = null;
+            $managed_account->save();
+        }
+
         return Response::redirect('account');
     }
 

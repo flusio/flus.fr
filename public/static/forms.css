@@ -123,6 +123,11 @@ input[type="checkbox"] + label {
     align-items: center;
 }
 
+input[type="radio"][disabled] + label,
+input[type="checkbox"][disabled] + label {
+    color: var(--color-grey-1);
+}
+
 input[type="radio"] + label::before,
 input[type="checkbox"] + label::before {
     content: ' ';
@@ -135,7 +140,7 @@ input[type="checkbox"] + label::before {
 
     flex-shrink: 0;
 
-    background-color: var(--color-grey-3);
+    background-color: var(--color-grey-2);
     border: 0.25rem solid var(--color-grey-1);
     border-radius: 50%;
 
@@ -154,10 +159,10 @@ input[type="checkbox"]:checked + label::before {
     border-color: var(--color-black);
 }
 
-input[type="radio"]:checked[disabled] + label::before,
-input[type="checkbox"]:checked[disabled] + label::before {
-    background-color: var(--color-grey-2);
-    border-color: var(--color-grey-1);
+input[type="radio"][disabled] + label::before,
+input[type="checkbox"][disabled] + label::before {
+    background-color: var(--color-grey-3);
+    border-color: var(--color-grey-2);
 }
 
 input[type="radio"]:checked[disabled] + label::after,
