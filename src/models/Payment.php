@@ -173,7 +173,7 @@ class Payment
     public function stripeFees(): int
     {
         if ($this->payment_intent_id) {
-            return intval(floor($this->amount * 0.014) + 25);
+            return intval(floor($this->amount * 0.015) + 25);
         } else {
             return 0;
         }
