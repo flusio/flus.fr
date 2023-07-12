@@ -29,10 +29,12 @@
             Vous pourrez renouveler à 1 mois de l’expiration de votre abonnement.
         </p>
 
-        <p class="paragraph--center paragraph--limit">
-            Vous gérez <?= $count_accounts ?> compte(s)
-            → <a href="<?= url('managed accounts') ?>">Gérer</a>
-        </p>
+        <?php if ($account->entity_type === 'legal'): ?>
+            <p class="paragraph--center paragraph--limit">
+                Vous gérez <?= $count_accounts ?> compte(s)
+                → <a href="<?= url('managed accounts') ?>">Gérer</a>
+            </p>
+        <?php endif; ?>
     <?php elseif (!$account->isFree()): ?>
         <?php if ($ongoing_payment): ?>
             <p class="paragraph--featured paragraph--limit">
