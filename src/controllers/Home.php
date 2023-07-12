@@ -24,7 +24,7 @@ class Home
     {
         $current_year = intval(\Minz\Time::now()->format('Y'));
         $total_revenue = models\Payment::findTotalRevenue($current_year) / 100;
-        $revenue_target = 5000;
+        $revenue_target = \Minz\Configuration::$application['financial_goal'];
         $percent_target = min(100, max(5, $total_revenue * 100 / $revenue_target));
         $common_pot_revenue = models\Payment::findCommonPotRevenue($current_year) / 100;
         $subscriptions_revenue = models\Payment::findSubscriptionsRevenue($current_year) / 100;
