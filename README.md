@@ -17,8 +17,7 @@ requires PHP 8.2 to work properly.
 
 You’ll also need an account on [Stripe](https://stripe.com/).
 
-Make sure to [install Docker](https://docs.docker.com/get-docker/) and
-[Docker Compose](https://docs.docker.com/compose/install/).
+Make sure to [install Docker](https://docs.docker.com/get-docker/).
 
 First, download flus.fr with Git:
 
@@ -48,7 +47,7 @@ Then, start the services:
 $ make docker-start
 ```
 
-This command calls `docker-compose` with the file under the `docker/` folder.
+This command calls `docker compose` with the file under the `docker/` folder.
 The first time you call it, it will download the Docker images and build the
 `php` one with the information from the `docker/Dockerfile` file.
 
