@@ -26,8 +26,6 @@ class Home
         $total_revenue = models\Payment::findTotalRevenue($current_year) / 100;
         $revenue_target = \Minz\Configuration::$application['financial_goal'];
         $percent_target = min(100, max(5, $total_revenue * 100 / $revenue_target));
-        $common_pot_revenue = models\Payment::findCommonPotRevenue($current_year) / 100;
-        $subscriptions_revenue = models\Payment::findSubscriptionsRevenue($current_year) / 100;
 
         $account = null;
         $user = utils\CurrentUser::get();
@@ -41,8 +39,6 @@ class Home
             'total_revenue' => number_format($total_revenue, 2, ',', '&nbsp;'),
             'revenue_target' => number_format($revenue_target, 0, ',', '&nbsp;'),
             'percent_target' => intval($percent_target),
-            'common_pot_revenue' => number_format($common_pot_revenue, 2, ',', '&nbsp;'),
-            'subscriptions_revenue' => number_format($subscriptions_revenue, 2, ',', '&nbsp;'),
         ]);
         $response->setContentSecurityPolicy('style-src', "'self' 'unsafe-inline'");
         return $response;
