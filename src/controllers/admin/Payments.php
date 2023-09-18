@@ -29,10 +29,11 @@ class Payments
         }
 
         $year = $request->param('year', \Minz\Time::now()->format('Y'));
+
         $payments = models\Payment::listByYear($year);
         $payments_by_months = [];
         foreach ($payments as $payment) {
-            $month = intval($payment->created_at->format('n'));
+            $month = $payment->created_at->format('m');
             $payments_by_months[$month][] = $payment;
         }
 
@@ -51,6 +52,7 @@ class Payments
             return Response::ok('admin/payments/index.phtml', [
                 'year' => $year,
                 'payments_by_months' => $payments_by_months,
+                'count_free_renewals_per_month' => models\FreeRenewal::countPerMonth($year),
             ]);
         }
     }

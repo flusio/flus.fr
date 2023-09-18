@@ -55,6 +55,12 @@ CREATE TABLE payments (
     FOREIGN KEY (account_id) REFERENCES accounts(id) ON UPDATE CASCADE ON DELETE RESTRICT
 );
 
+CREATE TABLE free_renewals (
+    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    created_at TEXT NOT NULL,
+    quantity INTEGER NOT NULL DEFAULT 1
+);
+
 CREATE TABLE pot_usages (
     id TEXT PRIMARY KEY NOT NULL,
     created_at TEXT NOT NULL,

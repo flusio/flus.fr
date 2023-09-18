@@ -26,8 +26,15 @@
     Créer un paiement
 </a>
 
-<?php foreach ($payments_by_months as $month => $payments): ?>
+<?php foreach (['12', '11', '10', '09', '08', '07', '06', '05', '04', '03', '02', '01'] as $month): ?>
     <?php
+        $payments = $payments_by_months[$month] ?? [];
+        $count_free_renewals = $count_free_renewals_per_month[$month] ?? 0;
+
+        if (empty($payments) && $count_free_renewals === 0) {
+            continue;
+        }
+
         $month_total_amount = 0;
         foreach ($payments as $payment) {
             if (!$payment->is_paid) {
@@ -41,7 +48,14 @@
             }
         }
     ?>
-    <h2><?= format_month($month, 'MMMM') ?>&nbsp;—&nbsp;<?= format_amount($month_total_amount) ?></h2>
+
+    <h2><?= format_month(intval($month), 'MMMM') ?>&nbsp;—&nbsp;<?= format_amount($month_total_amount) ?></h2>
+
+    <?php if ($count_free_renewals > 0): ?>
+        <p>
+            <?= $count_free_renewals ?> renouvellement(s) gratuit(s)
+        </p>
+    <?php endif; ?>
 
     <table>
         <tbody>

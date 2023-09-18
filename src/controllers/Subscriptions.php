@@ -126,10 +126,15 @@ class Subscriptions
             $account->extendSubscription();
             $account->save();
 
-            foreach ($account->managedAccounts() as $managed_account) {
+            $managed_accounts = $account->managedAccounts();
+            foreach ($managed_accounts as $managed_account) {
                 $managed_account->extendSubscription();
                 $managed_account->save();
             }
+
+            $quantity_renewals = count($managed_accounts) + 1;
+            $free_renewal = new models\FreeRenewal($quantity_renewals);
+            $free_renewal->save();
 
             return Response::redirect('Payments#succeeded');
         }
