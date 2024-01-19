@@ -6,6 +6,10 @@
         <link rel="shortcut icon" href="<?= url_static('favicon-32px.png') ?>">
         <meta name="robots" content="noindex">
 
+        <?php if ($plausible_url): ?>
+            <script defer data-domain="<?= $current_host ?>" src="<?= $plausible_url ?>/js/script.js"></script>
+        <?php endif; ?>
+
         <link rel="stylesheet" href="<?= url_static('style.css') ?>">
 
         <title><?= $title ?></title>

@@ -48,6 +48,8 @@ class Application
             'current_user' => utils\CurrentUser::get(),
             'current_account' => utils\CurrentUser::getAccount(),
             'current_page' => null,
+            'plausible_url' => \Minz\Configuration::$application['plausible_url'],
+            'current_host' => \Minz\Configuration::$url_options['host'],
         ]);
     }
 

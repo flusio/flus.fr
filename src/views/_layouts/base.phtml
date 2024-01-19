@@ -14,6 +14,10 @@
         <script src="<?= url_static('stimulus.min.js') ?>" defer></script>
         <script src="<?= url_static('popup.js') ?>" defer></script>
 
+        <?php if ($plausible_url): ?>
+            <script defer data-domain="<?= $current_host ?>" src="<?= $plausible_url ?>/js/script.js"></script>
+        <?php endif; ?>
+
         <?php if ($load_form_statics): ?>
             <link rel="stylesheet" href="<?= url_static('forms.css') ?>">
         <?php endif; ?>

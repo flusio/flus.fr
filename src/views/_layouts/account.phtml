@@ -13,6 +13,10 @@
         <script src="<?= url_static('amount-selector.js') ?>" defer></script>
         <script src="<?= url_static('profile.js') ?>" defer></script>
 
+        <?php if ($plausible_url): ?>
+            <script defer data-domain="<?= $current_host ?>" src="<?= $plausible_url ?>/js/script.js"></script>
+        <?php endif; ?>
+
         <title><?= $title ?></title>
     </head>
 

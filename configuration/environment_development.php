@@ -22,6 +22,8 @@ return [
         'support_email' => $dotenv->pop('APP_SUPPORT_EMAIL'),
 
         'financial_goal' => intval($dotenv->pop('APP_FINANCIAL_GOAL', '36000')),
+
+        'plausible_url' => $dotenv->pop('PLAUSIBLE_URL'),
     ],
 
     'database' => [

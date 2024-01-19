@@ -29,6 +29,8 @@ return [
 
         'financial_goal' => 36000,
 
+        'plausible_url' => null,
+
         // used only in tests
         'number_of_datasets' => $number_of_datasets,
     ],
