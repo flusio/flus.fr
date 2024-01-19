@@ -229,7 +229,6 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(0, models\Payment::count());
         $this->assertResponseCode($response, 302, '/merci');
-        /** @var models\Account */
         $account = $account->reload();
         $this->assertSame(
             $expected_expired_at->getTimestamp(),

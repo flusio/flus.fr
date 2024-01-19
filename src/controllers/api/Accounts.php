@@ -79,8 +79,8 @@ class Accounts
             return Response::unauthorized();
         }
 
-        $account_id = $request->param('account_id');
-        $service = $request->param('service');
+        $account_id = $request->param('account_id', '');
+        $service = $request->param('service', 'flusio');
 
         $account = models\Account::find($account_id);
         if (!$account) {
@@ -127,7 +127,7 @@ class Accounts
             return Response::unauthorized();
         }
 
-        $account_id = $request->param('account_id');
+        $account_id = $request->param('account_id', '');
 
         $account = models\Account::find($account_id);
         if (!$account) {

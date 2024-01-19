@@ -23,7 +23,7 @@ class Stripe
      */
     public function hooks(Request $request): Response
     {
-        $payload = $request->param('@input');
+        $payload = $request->param('@input', '');
         $signature = $request->header('HTTP_STRIPE_SIGNATURE');
         $hook_secret = \Minz\Configuration::$application['stripe_webhook_secret'];
 

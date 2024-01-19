@@ -80,7 +80,6 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 200);
-        /** @var models\Account */
         $account = $account->reload();
         $this->assertEquals($now, $account->last_sync_at);
     }
@@ -134,7 +133,6 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
             'Content-Type' => 'application/json'
         ]);
 
-        /** @var models\Account */
         $account = $account->reload();
         $this->assertNotEmpty($account->access_token);
         $token = models\Token::find($account->access_token);
@@ -162,7 +160,6 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 401);
-        /** @var models\Account */
         $account = $account->reload();
         $this->assertNull($account->access_token);
     }
@@ -181,7 +178,6 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 404);
-        /** @var models\Account */
         $account = $account->reload();
         $this->assertNull($account->access_token);
     }
@@ -226,7 +222,6 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 200);
-        /** @var models\Account */
         $account = $account->reload();
         $this->assertEquals($now, $account->last_sync_at);
     }
@@ -296,7 +291,6 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 200);
-        /** @var models\Account */
         $account = $account->reload();
         $this->assertEquals($now, $account->last_sync_at);
     }

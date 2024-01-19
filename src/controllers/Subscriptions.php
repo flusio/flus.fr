@@ -89,7 +89,7 @@ class Subscriptions
         /** @var string */
         $tariff = $request->param('tariff', '');
 
-        if (!\Minz\Csrf::validate($request->param('csrf'))) {
+        if (!\Minz\Csrf::validate($request->param('csrf', ''))) {
             return Response::badRequest('subscriptions/init.phtml', [
                 'contribution_price' => models\Payment::contributionPrice(),
                 'account' => $account,

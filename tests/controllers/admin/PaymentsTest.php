@@ -174,7 +174,6 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/admin?status=payment_confirmed');
-        /** @var models\Payment */
         $payment = $payment->reload();
         $this->assertTrue($payment->is_paid);
     }
@@ -219,7 +218,6 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/admin/login?from=admin%2Fpayments%23index');
-        /** @var models\Payment */
         $payment = $payment->reload();
         $this->assertFalse($payment->is_paid);
     }
@@ -237,7 +235,6 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'Une vérification de sécurité a échoué');
-        /** @var models\Payment */
         $payment = $payment->reload();
         $this->assertFalse($payment->is_paid);
     }

@@ -97,7 +97,6 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $account = $account->reload();
-        $this->assertNotNull($account);
         $this->assertNull($account->access_token);
         $this->assertFalse(models\Token::exists($token->token));
     }
@@ -384,7 +383,6 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 302, '/account');
         $managed_account = $managed_account->reload();
-        $this->assertNotNull($managed_account);
         $this->assertNull($managed_account->managed_by_id);
         $account = models\Account::find($user['account_id']);
         $this->assertNotNull($account);
@@ -631,7 +629,6 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 401);
         $account = $account->reload();
-        $this->assertNotNull($account);
         $this->assertSame($old_reminder, $account->reminder);
     }
 
@@ -725,7 +722,6 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 302, '/account/managed');
         $managed_account = $managed_account->reload();
-        $this->assertNotNull($managed_account);
         $this->assertSame($account->id, $managed_account->managed_by_id);
         $this->assertSame(
             $account->expired_at->getTimestamp(),
@@ -780,7 +776,6 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 400);
         $default_account = $default_account->reload();
-        $this->assertNotNull($default_account);
         $this->assertNull($default_account->managed_by_id);
     }
 
@@ -804,7 +799,6 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 400);
         $managed_account = $managed_account->reload();
-        $this->assertNotNull($managed_account);
         $this->assertSame($account->id, $managed_account->managed_by_id);
     }
 
@@ -854,7 +848,6 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 302, '/account/managed');
         $managed_account = $managed_account->reload();
-        $this->assertNotNull($managed_account);
         $this->assertNull($managed_account->managed_by_id);
     }
 
@@ -873,7 +866,6 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 302, '/account/managed');
         $managed_account = $managed_account->reload();
-        $this->assertNotNull($managed_account);
         $this->assertNotNull($managed_account->managed_by_id);
     }
 
@@ -907,7 +899,6 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 302, '/account/managed');
         $managed_account = $managed_account->reload();
-        $this->assertNotNull($managed_account);
         $this->assertNotNull($managed_account->managed_by_id);
     }
 
@@ -923,7 +914,6 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 401);
         $managed_account = $managed_account->reload();
-        $this->assertNotNull($managed_account);
         $this->assertNotNull($managed_account->managed_by_id);
     }
 

@@ -28,7 +28,8 @@ class Payments
             return Response::redirect('login');
         }
 
-        $year = $request->param('year', \Minz\Time::now()->format('Y'));
+        $current_year = intval(\Minz\Time::now()->format('Y'));
+        $year = $request->paramInteger('year', $current_year);
 
         $payments = models\Payment::listByYear($year);
         $payments_by_months = [];
@@ -101,7 +102,7 @@ class Payments
         /** @var int */
         $amount = $request->paramInteger('amount', 0);
 
-        if (!\Minz\Csrf::validate($request->param('csrf'))) {
+        if (!\Minz\Csrf::validate($request->param('csrf', ''))) {
             return Response::badRequest('admin/payments/init.phtml', [
                 'email' => $email,
                 'amount' => $amount,
@@ -160,7 +161,7 @@ class Payments
             return Response::redirect('login', ['from' => 'admin/payments#index']);
         }
 
-        $payment_id = $request->param('id');
+        $payment_id = $request->param('id', '');
         $payment = models\Payment::find($payment_id);
         if (!$payment) {
             return Response::notFound('not_found.phtml');
@@ -192,7 +193,7 @@ class Payments
             return Response::redirect('login', ['from' => 'admin/payments#index']);
         }
 
-        $payment_id = $request->param('id');
+        $payment_id = $request->param('id', '');
         $payment = models\Payment::find($payment_id);
         if (!$payment) {
             return Response::notFound('not_found.phtml');
@@ -205,7 +206,7 @@ class Payments
             ]);
         }
 
-        if (!\Minz\Csrf::validate($request->param('csrf'))) {
+        if (!\Minz\Csrf::validate($request->param('csrf', ''))) {
             return Response::badRequest('admin/payments/show.phtml', [
                 'payment' => $payment,
                 'error' => 'Une vérification de sécurité a échoué, veuillez réessayer de soumettre le formulaire.',
@@ -247,7 +248,7 @@ class Payments
             return Response::redirect('login', ['from' => 'admin/payments#index']);
         }
 
-        $payment_id = $request->param('id');
+        $payment_id = $request->param('id', '');
         $payment = models\Payment::find($payment_id);
         if (!$payment) {
             return Response::notFound('not_found.phtml');
@@ -269,7 +270,7 @@ class Payments
             ]);
         }
 
-        if (!\Minz\Csrf::validate($request->param('csrf'))) {
+        if (!\Minz\Csrf::validate($request->param('csrf', ''))) {
             return Response::badRequest('admin/payments/show.phtml', [
                 'completed_at' => \Minz\Time::now(),
                 'payment' => $payment,

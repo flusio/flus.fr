@@ -24,7 +24,7 @@ class Payments
      */
     public function pay(Request $request): Response
     {
-        $payment_id = $request->param('id');
+        $payment_id = $request->param('id', '');
         $payment = models\Payment::find($payment_id);
 
         if (!$payment) {

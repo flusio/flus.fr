@@ -50,7 +50,6 @@ class PaymentsCompleterTest extends \PHPUnit\Framework\TestCase
         $completer = new PaymentsCompleter();
         $completer->perform();
 
-        /** @var models\Payment */
         $payment = $payment->reload();
         $this->assertNotNull($payment->completed_at);
         $this->assertSame($now->getTimestamp(), $payment->completed_at->getTimestamp());
@@ -74,7 +73,6 @@ class PaymentsCompleterTest extends \PHPUnit\Framework\TestCase
         $completer = new PaymentsCompleter();
         $completer->perform();
 
-        /** @var models\Account */
         $account = $account->reload();
         $this->assertSame($expected_expired_at->getTimestamp(), $account->expired_at->getTimestamp());
     }
@@ -102,7 +100,6 @@ class PaymentsCompleterTest extends \PHPUnit\Framework\TestCase
         $completer->perform();
 
         $managed_account = $managed_account->reload();
-        $this->assertNotNull($managed_account);
         $this->assertSame(
             $expected_expired_at->getTimestamp(),
             $managed_account->expired_at->getTimestamp()
@@ -127,7 +124,6 @@ class PaymentsCompleterTest extends \PHPUnit\Framework\TestCase
         $completer = new PaymentsCompleter();
         $completer->perform();
 
-        /** @var models\Account */
         $account = $account->reload();
         $this->assertSame($expired_at->getTimestamp(), $account->expired_at->getTimestamp());
     }
@@ -143,7 +139,6 @@ class PaymentsCompleterTest extends \PHPUnit\Framework\TestCase
         $completer = new PaymentsCompleter();
         $completer->perform();
 
-        /** @var models\Payment */
         $payment = $payment->reload();
         $this->assertNotNull($payment->invoice_number);
         $this->assertTrue($payment->invoiceExists());
@@ -188,7 +183,6 @@ class PaymentsCompleterTest extends \PHPUnit\Framework\TestCase
         $completer = new PaymentsCompleter();
         $completer->perform();
 
-        /** @var models\Payment */
         $payment = $payment->reload();
         $this->assertNotNull($payment->completed_at);
         $this->assertSame($completed_at->getTimestamp(), $payment->completed_at->getTimestamp());
@@ -204,7 +198,6 @@ class PaymentsCompleterTest extends \PHPUnit\Framework\TestCase
         $completer = new PaymentsCompleter();
         $completer->perform();
 
-        /** @var models\Payment */
         $payment = $payment->reload();
         $this->assertNull($payment->completed_at);
     }

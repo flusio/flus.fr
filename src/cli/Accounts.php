@@ -60,7 +60,7 @@ class Accounts
      */
     public function loginUrl(Request $request): Response
     {
-        $id = $request->param('id');
+        $id = $request->param('id', '');
 
         $account = models\Account::find($id);
         if (!$account) {

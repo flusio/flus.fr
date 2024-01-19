@@ -54,7 +54,7 @@ class Accounts
      */
     public function login(Request $request): Response
     {
-        $account_id = $request->param('account_id');
+        $account_id = $request->param('account_id', '');
         $access_token = $request->param('access_token', '');
 
         $account = models\Account::find($account_id);
@@ -83,7 +83,7 @@ class Accounts
     {
         $user = utils\CurrentUser::get();
 
-        if (\Minz\Csrf::validate($request->param('csrf')) && $user) {
+        if (\Minz\Csrf::validate($request->param('csrf', '')) && $user) {
             utils\CurrentUser::logOut();
 
             $account = models\Account::find($user['account_id']);
@@ -219,7 +219,7 @@ class Accounts
             ]);
         }
 
-        if (!\Minz\Csrf::validate($request->param('csrf'))) {
+        if (!\Minz\Csrf::validate($request->param('csrf', ''))) {
             return Response::badRequest('accounts/profile.phtml', [
                 'account' => $account,
                 'email' => $email,
@@ -273,9 +273,13 @@ class Accounts
         }
 
         $reminder = $request->paramBoolean('reminder', false);
-        $from = $request->param('from', 'account');
+        $from = $request->param('from', '');
 
-        if (\Minz\Csrf::validate($request->param('csrf'))) {
+        if (!$from) {
+            $from = 'account';
+        }
+
+        if (\Minz\Csrf::validate($request->param('csrf', ''))) {
             $account->reminder = $reminder;
             $account->save();
         }
@@ -382,7 +386,7 @@ class Accounts
         $email = $request->param('email', '');
         $csrf = $request->param('csrf', '');
 
-        if (!\Minz\Csrf::validate($request->param('csrf'))) {
+        if (!\Minz\Csrf::validate($csrf)) {
             return Response::badRequest('accounts/managed.phtml', [
                 'account' => $account,
                 'managedAccounts' => $account->managedAccounts(),
@@ -484,7 +488,7 @@ class Accounts
         $id = $request->param('id', '');
         $csrf = $request->param('csrf', '');
 
-        if (!\Minz\Csrf::validate($request->param('csrf'))) {
+        if (!\Minz\Csrf::validate($csrf)) {
             return Response::redirect('managed accounts');
         }
 

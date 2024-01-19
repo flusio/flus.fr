@@ -61,9 +61,7 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $cleaner = new Cleaner();
         $cleaner->perform();
 
-        /** @var models\Payment */
         $payment = $payment->reload();
-        /** @var models\PotUsage */
         $pot_usage = $pot_usage->reload();
         $this->assertSame($default_account->id, $payment->account_id);
         $this->assertSame($default_account->id, $pot_usage->account_id);
@@ -119,9 +117,7 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $cleaner = new Cleaner();
         $cleaner->perform();
 
-        /** @var models\Payment */
         $payment = $payment->reload();
-        /** @var models\PotUsage */
         $pot_usage = $pot_usage->reload();
         $this->assertSame($account->id, $payment->account_id);
         $this->assertSame($account->id, $pot_usage->account_id);
