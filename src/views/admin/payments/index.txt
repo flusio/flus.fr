@@ -37,6 +37,11 @@
         endif;
         echo number_format($payment->stripeFees() / 100, 2, ',', '') . ';';
         echo $payment->invoice_number . ';';
+        if ($payment->isFirstMadeByAccount()):
+            echo 'x;';
+        else:
+            echo ';';
+        endif;
         echo "\n";
     endforeach;
 ?>

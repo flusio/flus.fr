@@ -199,6 +199,30 @@ class Payment
         }
     }
 
+    /**
+     * Return whether the current payment is the first made by the
+     * corresponding account or not.
+     */
+    public function isFirstMadeByAccount(): bool
+    {
+        $sql = <<<'SQL'
+            SELECT id FROM payments
+            WHERE account_id = :account_id
+            ORDER BY created_at ASC
+            LIMIT 1
+            SQL;
+
+        $database = Database::get();
+        $statement = $database->prepare($sql);
+        $statement->execute([
+            ':account_id' => $this->account_id,
+        ]);
+
+        $id = $statement->fetchColumn();
+
+        return $id === $this->id;
+    }
+
     public static function generateInvoiceNumber(): string
     {
         $now = \Minz\Time::now();
