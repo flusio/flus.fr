@@ -99,6 +99,7 @@ class Router
         $router->addRoute('CLI', '/accounts/create', 'Accounts#create');
         $router->addRoute('CLI', '/accounts/login', 'Accounts#loginUrl');
         $router->addRoute('CLI', '/accounts/import', 'Accounts#import');
+        $router->addRoute('CLI', '/payments/import', 'Payments#import');
 
         return $router;
     }
