@@ -407,4 +407,13 @@ class Account
 
         return intval($statement->fetchColumn());
     }
+
+    public static function load(array $data): self
+    {
+        $account = self::fromDatabaseRow($data);
+        $account->access_token = null;
+        $account->is_persisted = false;
+        $account->save();
+        return $account;
+    }
 }

@@ -80,4 +80,39 @@ class Accounts
 
         return Response::text(200, $login_url);
     }
+
+    /**
+     * @request_param string filename
+     */
+    public function import(Request $request): mixed
+    {
+        $filename = $request->param('filename', '');
+        $file_content = file_get_contents($filename);
+        if (!$file_content) {
+            return Response::text(400, "File {$filename} doesn't exist or is not readable.");
+        }
+
+        $data = json_decode($file_content, true);
+        if ($data === false) {
+            return Response::text(400, "File {$filename} is not valid JSON.");
+        }
+
+        $existing = [];
+        $imported = [];
+
+        foreach ($data as $raw_account) {
+            if (models\Account::exists($raw_account['id'])) {
+                $existing[] = $raw_account['id'];
+                continue;
+            }
+
+            $account = models\Account::load($raw_account);
+            $imported[] = $account->id;
+        }
+
+        $existing = implode("\n", $existing);
+        $imported = implode("\n", $imported);
+        yield Response::text(200, "Existing:\n{$existing}\n");
+        yield Response::text(200, "Imported:\n{$imported}\n");
+    }
 }
