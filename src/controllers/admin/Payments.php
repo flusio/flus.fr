@@ -127,16 +127,6 @@ class Payments
         }
 
         $payment = models\Payment::initSubscriptionFromAccount($account, $amount);
-
-        $errors = $payment->validate();
-        if ($errors) {
-            return Response::badRequest('admin/payments/init.phtml', [
-                'email' => $email,
-                'amount' => $amount,
-                'errors' => $errors,
-            ]);
-        }
-
         $payment->invoice_number = models\Payment::generateInvoiceNumber();
         $payment->save();
 
