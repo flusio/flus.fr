@@ -30,9 +30,6 @@ class Router
         $router->addRoute('GET', '/sitemap.xml', 'Home#sitemap', 'sitemap.xml');
         $router->addRoute('GET', '/.well-known/security.txt', 'Home#securityTxt', 'security.txt');
 
-        $router->addRoute('GET', '/addons/updates.json', 'Addons#geckoUpdate');
-        $router->addRoute('GET', '/addons/gecko/latest', 'Addons#geckoLatest');
-
         $router->addRoute('GET', '/account', 'Accounts#show', 'account');
         $router->addRoute('GET', '/account/login', 'Accounts#login', 'account login');
         $router->addRoute('POST', '/account/logout', 'Accounts#logout', 'account logout');
