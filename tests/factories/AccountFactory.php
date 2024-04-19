@@ -33,7 +33,7 @@ class AccountFactory extends Database\Factory
             },
 
             'preferred_service' => function () use ($faker) {
-                return $faker->randomElement(['flusio', 'freshrss']);
+                return $faker->randomElement(['flus', 'freshrss']);
             },
 
             'email' => function () use ($faker) {

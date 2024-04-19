@@ -221,7 +221,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
     public function testLogoutRedirectsToShow(): void
     {
-        $service = $this->fake('randomElement', ['flusio', 'freshrss']);
+        $service = $this->fake('randomElement', ['flus', 'freshrss']);
         $this->loginUser([
             'preferred_service' => $service,
         ]);
@@ -230,7 +230,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
             'csrf' => \Minz\Csrf::generate(),
         ]);
 
-        if ($service === 'flusio') {
+        if ($service === 'flus') {
             $expected_location = 'https://app.flus.fr';
         } else {
             $expected_location = 'https://flus.io';

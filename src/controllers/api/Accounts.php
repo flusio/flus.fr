@@ -61,8 +61,8 @@ class Accounts
      * @request_header string PHP_AUTH_USER
      * @request_param string account_id
      * @request_param string service
-     *     The name of the service making the request ('flusio' or 'freshrss').
-     *     If the variable is invalid, it defaults to 'flusio'.
+     *     The name of the service making the request ('flus' or 'freshrss').
+     *     If the variable is invalid, it defaults to 'flus'.
      *
      * @response 401
      *     if the auth header is invalid
@@ -80,15 +80,15 @@ class Accounts
         }
 
         $account_id = $request->param('account_id', '');
-        $service = $request->param('service', 'flusio');
+        $service = strtolower($request->param('service', 'flus'));
 
         $account = models\Account::find($account_id);
         if (!$account) {
             return Response::notFound();
         }
 
-        if ($service !== 'flusio' && $service !== 'freshrss') {
-            $service = 'flusio';
+        if ($service !== 'flus' && $service !== 'freshrss') {
+            $service = 'flus';
         }
 
         $token = new models\Token(10, 'minutes');

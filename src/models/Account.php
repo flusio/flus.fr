@@ -48,7 +48,7 @@ class Account
     #[Database\Column]
     public ?\DateTimeImmutable $last_sync_at = null;
 
-    #[Validable\Inclusion(in: ['flusio', 'freshrss'], message: 'Saisissez un service valide.')]
+    #[Validable\Inclusion(in: ['flus', 'freshrss'], message: 'Saisissez un service valide.')]
     #[Database\Column]
     public string $preferred_service;
 
@@ -104,7 +104,7 @@ class Account
         $this->id = \Minz\Random::hex(32);
         $this->email = \Minz\Email::sanitize($email);
         $this->expired_at = \Minz\Time::fromNow(1, 'month');
-        $this->preferred_service = 'flusio';
+        $this->preferred_service = 'flus';
         $this->preferred_tariff = 'stability';
         $this->reminder = true;
         $this->entity_type = 'natural';
@@ -253,7 +253,7 @@ class Account
      * Return whether the account is sync or not.
      *
      * If the account is not sync, it probably means the user deleted its
-     * account on the connected services (i.e. flusio and/or FreshRSS).
+     * account on the connected services (i.e. Flus and/or FreshRSS).
      */
     public function isSync(): bool
     {

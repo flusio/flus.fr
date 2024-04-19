@@ -3,9 +3,9 @@
 This is the repository of the website [flus.fr](https://flus.fr).
 
 If you’re looking for the code of [app.flus.fr](https://app.flus.fr), it’s in a
-different repository: [flusio/flusio](https://github.com/flusio/flusio).
+different repository: [flusio/Flus](https://github.com/flusio/Flus).
 
-flus.fr is the entrance of my paid service based on flusio. It is intended to
+flus.fr is the entrance of my paid service based on Flus. It is intended to
 French people, thus the website is only translated in French.
 
 flus.fr is licensed under [AGPL 3](https://github.com/flusio/flus.fr/blob/main/LICENSE.txt).

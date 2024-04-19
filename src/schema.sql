@@ -13,7 +13,7 @@ CREATE TABLE accounts (
     access_token TEXT,
     last_sync_at TEXT,
 
-    preferred_service TEXT NOT NULL DEFAULT 'flusio',
+    preferred_service TEXT NOT NULL DEFAULT 'flus',
     preferred_tariff TEXT NOT NULL DEFAULT 'stability',
     reminder BOOLEAN NOT NULL DEFAULT false,
 
