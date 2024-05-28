@@ -11,7 +11,7 @@ Pour cela, il vous suffit de suivre le lien suivant (valide une fois pendant 24h
 
 <?php if ($service === 'freshrss'): ?>
 Si le lien précédent ne fonctionne pas, vous pouvez vous connecter à FreshRSS,
-menu « Abonnement Flus » ( https://flus.io/i/?c=billing ), puis « Renouveler
+menu « Abonnement Flus » ( https://rss.flus.fr/i/?c=billing ), puis « Renouveler
 depuis votre compte de paiement ».
 <?php else: ?>
 Si le lien précédent ne fonctionne pas, vous pouvez vous connecter à Flus,

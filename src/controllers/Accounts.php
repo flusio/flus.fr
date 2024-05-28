@@ -88,7 +88,7 @@ class Accounts
 
             $account = models\Account::find($user['account_id']);
             if ($account && $account->preferred_service === 'freshrss') {
-                return Response::found('https://flus.io');
+                return Response::found('https://rss.flus.fr');
             } else {
                 return Response::found('https://app.flus.fr');
             }

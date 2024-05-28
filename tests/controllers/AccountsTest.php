@@ -233,7 +233,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         if ($service === 'flus') {
             $expected_location = 'https://app.flus.fr';
         } else {
-            $expected_location = 'https://flus.io';
+            $expected_location = 'https://rss.flus.fr';
         }
         $this->assertResponseCode($response, 302, $expected_location);
         $user = utils\CurrentUser::get();
