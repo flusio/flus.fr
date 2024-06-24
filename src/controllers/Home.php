@@ -136,11 +136,25 @@ class Home
         $honeypot = $request->param('website');
         if (!$honeypot) {
             $mailer = new mailers\Support();
-            $mailer->sendMessage($message);
+            $sent = $mailer->sendMessage($message);
+
+            if (!$sent) {
+                return Response::badRequest('home/contact.phtml', [
+                    'email' => $email,
+                    'subject' => $subject,
+                    'content' => $content,
+                    'errors' => [
+                        '_' => 'Une erreur est survenue durant l’envoi de votre message. Veuillez réessayer plus tard.',
+                    ],
+                ]);
+            }
         }
 
         return Response::ok('home/contact.phtml', [
             'email_sent' => true,
+            'email' => $email,
+            'subject' => $subject,
+            'content' => $content,
         ]);
     }
 

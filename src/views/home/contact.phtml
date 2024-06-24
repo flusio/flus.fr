@@ -34,6 +34,12 @@
              action="<?= url('send contact email') ?>"
              class="form--contact"
          >
+            <?php if (isset($errors['_'])): ?>
+                <p class="form-group__error">
+                    <?= $errors['_'] ?>
+                </p>
+            <?php endif; ?>
+
             <div class="form-group <?= isset($errors['subject']) ? 'form-group--invalid' : '' ?>">
                 <label for="subject">
                     Sujet
