@@ -21,7 +21,7 @@ votre abonnement ».
 
 Si vous avez décidé d’arrêter d’utiliser Flus mais souhaitez récupérer vos
 données (ou pour toute autre question), vous pouvez me contacter à l’adresse
-suivante : support@flus.io
+suivante : <?= $support_email ?>
 
 En vous remerciant de votre soutien,
 

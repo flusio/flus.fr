@@ -41,13 +41,6 @@ class InvoicePDF extends \FPDF
     /** @var InvoiceTotal */
     public array $total_purchases;
 
-    /** @var string[] */
-    public array $footer = [
-        'Marien Fressinaud Mas de Feix / Flus – 57 rue du Vercors, 38000 Grenoble – support@flus.io',
-        'micro-entreprise – N° Siret 878 196 278 00013 – 878 196 278 R.C.S. Grenoble',
-        'TVA non applicable, art. 293 B du CGI',
-    ];
-
     public function __construct(models\Payment $payment)
     {
         parent::__construct();
@@ -254,10 +247,17 @@ class InvoicePDF extends \FPDF
     // phpcs:disable PSR1.Methods.CamelCapsMethodName.NotCamelCaps
     public function Footer(): void
     {
-        $offset = count($this->footer) * 5 + 20;
+        $support_email = \Minz\Configuration::$application['support_email'];
+        $footer = [
+            'Marien Fressinaud Mas de Feix / Flus – 57 rue du Vercors, 38000 Grenoble – ' . $support_email,
+            'micro-entreprise – N° Siret 878 196 278 00013 – 878 196 278 R.C.S. Grenoble',
+            'TVA non applicable, art. 293 B du CGI',
+        ];
+
+        $offset = count($footer) * 5 + 20;
         $this->SetY(-$offset);
         $this->SetFont('', 'I', 10);
-        foreach ($this->footer as $info) {
+        foreach ($footer as $info) {
             $this->Cell(0, 5, $this->pdfDecode($info), 0, 1, 'C');
         }
     }

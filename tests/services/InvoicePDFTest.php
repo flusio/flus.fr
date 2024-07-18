@@ -248,24 +248,4 @@ class InvoicePDFTest extends TestCase
             $invoice_pdf->total_purchases['ttc']
         );
     }
-
-    public function testPdfHasFooter(): void
-    {
-        $payment = PaymentFactory::create();
-
-        $invoice_pdf = new InvoicePDF($payment);
-
-        $this->assertSame(
-            'Marien Fressinaud Mas de Feix / Flus – 57 rue du Vercors, 38000 Grenoble – support@flus.io',
-            $invoice_pdf->footer[0]
-        );
-        $this->assertSame(
-            'micro-entreprise – N° Siret 878 196 278 00013 – 878 196 278 R.C.S. Grenoble',
-            $invoice_pdf->footer[1]
-        );
-        $this->assertSame(
-            'TVA non applicable, art. 293 B du CGI',
-            $invoice_pdf->footer[2]
-        );
-    }
 }

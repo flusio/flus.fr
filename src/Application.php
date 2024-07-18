@@ -50,6 +50,7 @@ class Application
             'current_page' => null,
             'plausible_url' => \Minz\Configuration::$application['plausible_url'],
             'current_host' => \Minz\Configuration::$url_options['host'],
+            'support_email' => \Minz\Configuration::$application['support_email'],
         ]);
     }
 
@@ -75,6 +76,7 @@ class Application
             'error' => null,
             'bin' => $bin,
             'current_command' => $current_command,
+            'support_email' => \Minz\Configuration::$application['support_email'],
         ]);
     }
 }
