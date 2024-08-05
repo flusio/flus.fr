@@ -1,0 +1,18 @@
+table {
+    width: 100%;
+
+    border-collapse: collapse;
+}
+
+td,
+th {
+    padding: var(--space-small);
+
+    border: 1px solid var(--color-green-gable);
+}
+
+th {
+    background-color: var(--color-green-gable);
+
+    color: var(--color-pampas);
+}

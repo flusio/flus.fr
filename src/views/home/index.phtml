@@ -1,139 +1,298 @@
 <?php
     $this->layout('base.phtml', [
-        'title' => 'Flus, plateforme de veille tout-en-un',
+        'title' => 'Flus, le complément éditorial de votre veille',
         'canonical' => url_full('home'),
-        'description' => 'Flus est une plateforme pour agréger, stocker et partager votre veille autour de vous.',
-        'layout_fluid' => true,
+        'current_page' => 'home',
+        'description' => 'Collectez, commentez et retrouvez vos liens favoris en un instant.',
         'og' => [
             'type' => 'website',
             'image' => url_full_static('og-card.png'),
-            'twitter_card' => 'summary',
+            'twitter_card' => 'summary_large_image',
         ],
     ]);
 ?>
 
-<section class="section section--start" id="start">
-    <div class="hello__intro">
-        <div class="hello__text">
-            <h1 class="hello__headline">
-                Une plateforme pour agréger, stocker et partager votre veille
-                autour de vous.
-            </h1>
+<section class="panel panel--primary panel--header home__panel--header">
+    <div class="wrapper wrapper--larger wrapper--center cols cols--gap-larger">
+        <div class="col--size5 wrapper wrapper--text flow flow--large">
+            <h1>Flus</h1>
 
-            <ul class="hello__registration">
-                <li>
-                    <a class="call-to-action" href="https://app.flus.fr/registration">
-                        Débuter avec Flus
-                    </a>
-                </li>
+            <p class="text--big">
+                Le complément éditorial de votre veille.<br>
+                Collectez, commentez et retrouvez vos liens favoris en un instant.
+            </p>
 
-                <li>
-                    <a href="<?= url('tour') ?>">
-                        Visite guidée
-                    </a>
-                </li>
-            </ul>
+            <p class="cols cols--gap">
+                <a class="button button--primary" href="https://app.flus.fr/registration">
+                    <?= icon('arrow-left', 'rotate180') ?>
+                    S’inscrire sur Flus
+                </a>
+
+                <a class="button" href="https://demo.flus.fr/">
+                    Essayer la démo
+                </a>
+            </p>
         </div>
-    </div>
 
-    <div class="hello__text">
-        <p>
-            <strong>
-                Flus est une plateforme Web tout-en-un alliant agrégation de
-                flux <abbr>RSS</abbr>, stockage et partage de liens, pour une
-                veille quotidienne apaisée.
-            </strong>
-        </p>
-
-        <p>
-            Grâce au <i>journal</i>, suivez vos sites, podcasts ou encore
-            chaînes YouTube favorites, tout en rangeant vos liens à consulter
-            plus tard dans vos <i>signets</i>. Vos liens à archiver ou partager
-            trouveront leur place dans vos <i>collections</i> thématiques.
-        </p>
-
-        <p>
-            Le journal est un espace que vous remplissez à votre
-            convenance&nbsp;: il n’est jamais saturé&nbsp;! Dites adieu aux
-            fils de lecture interminables et à l’angoisse qui s’y mêle 👋.
-        </p>
-
-        <p class="hello__outro">
-            <span class="hello__secondary">Pour en apprendre plus&nbsp;:</span>
-            <span><a class="call-to-action" href="<?= url('tour') ?>">suivez la visite guidée</a></span>
-            <span class="hello__secondary">ou</span>
-            <span><a href="https://app.flus.fr/registration">débutez avec Flus</a></span>
-        </p>
-    </div>
-
-    <div class="hello__screenshot screenshot">
-        <picture>
-            <source srcset="<?= url_static('screenshot-mobile.png') ?>" media="(max-width: 800px)">
+        <div class="col--size6 text--right">
             <img
-                loading="lazy"
-                class="illustration screenshot__image"
-                src="<?= url_static('screenshot.png') ?>"
-                alt="Capture d’écran affichant le journal de Flus, montrant plusieurs liens différents."
+                class="panel--header__illustration"
+                alt=""
+                src="<?= url_static('illustrations/project-team.svg') ?>"
             />
-        </picture>
+        </div>
     </div>
 
-    <section class="hello__more">
-        <header class="header">
-            <h2 class="header__title">Aller plus loin</h2>
-        </header>
+    <a class="home__anchor--bigscroll" href="#avantages">
+        <?= icon('arrow-left', 'rotate270') ?>
+        <span class="sr-only">
+            Découvrir les avantages de Flus
+        </span>
+    </a>
+</section>
 
-        <div class="hello__columns">
-            <div class="hello__column">
-                <h3 class="icon icon--thumbs-up">
-                    Positif
-                </h3>
+<section class="panel panel--grey home__panel--advantages" id="avantages">
+    <div class="wrapper wrapper--large wrapper--center flow flow--larger">
+        <div class="wrapper wrapper--text wrapper--center text--center flow">
+            <h2>
+                Quels sont les avantages de Flus&nbsp;?
+            </h2>
+
+            <p>
+                Flus est le compagnon idéal de votre veille en ligne.<br>
+                Lisez, rangez, commentez, et partagez facilement les contenus
+                qui vous ont intéressés et marqués.
+            </p>
+        </div>
+
+        <div class="cols cols--gap-large">
+            <div class="col--size4 card card--gable">
+                <div class="card__body flow flow--large">
+                    <h3>
+                        Veille enrichie
+                    </h3>
+
+                    <p>
+                        Rangez les liens issus de votre veille dans des collections
+                        thématiques, puis commentez-les. Retrouvez-les ensuite grâce
+                        au moteur de recherche intégré.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col--size4 card card--caribbean">
+                <div class="card__body flow flow--large">
+                    <h3>
+                        Veille adaptée
+                    </h3>
+
+                    <p>
+                        Emportez Flus dans votre poche ou utilisez l’extension
+                        navigateur pour accomplir votre veille sans bousculer vos
+                        habitudes.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col--size4 card card--topaz">
+                <div class="card__body flow flow--large">
+                    <h3>
+                        Veille apaisée
+                    </h3>
+
+                    <p>
+                        Ne vous laissez plus inonder de choses à lire. Le journal
+                        se connecte aux flux d’actualité de vos sites favoris, et vous en
+                        présente une sélection digeste.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="panel">
+    <div class="wrapper wrapper--large wrapper--center cols cols--center cols--gap-larger">
+        <div class="col--size6 wrapper wrapper--text flow flow--large">
+            <h2>
+                Un espace lecture sur-mesure
+            </h2>
+
+            <p>
+                Suivez vos sites, podcasts ou encore chaînes YouTube favorites
+                grâce au journal. Rangez vos liens à consulter plus tard dans
+                vos signets, tout en conservant une trace des liens déjà lus.
+            </p>
+
+            <p>
+                <a class="button button--primary" href="<?= url('features') ?>">
+                    <?= icon('arrow-left', 'rotate180') ?>
+                    Découvrir plus de fonctionnalités
+                </a>
+            </p>
+        </div>
+
+        <div class="col--size6">
+            <div class="panel panel--rounded panel--grey">
+                <img
+                    class="illustration"
+                    loading="lazy"
+                    alt="L’écran « Lecture » de Flus affiche trois onglets : Journal, Signets et Liens lus. Des liens sont présents dans les signets."
+                    src="<?= url_static('screenshots/onglet-lecture.webp') ?>"
+                />
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="panel panel--grey">
+    <div class="wrapper wrapper--large wrapper--center flow">
+        <h2 class="text--center">
+            La philosophie de Flus en 3 mots
+        </h2>
+
+        <div class="cols cols--gap">
+            <div class="card col--size4 flow flow--large">
+                <div class="card__illustration">
+                    <img
+                        alt=""
+                        src="<?= url_static('illustrations/online-connection.svg') ?>"
+                    />
+                </div>
+
+                <div class="card__body flow">
+                    <h3>
+                        Positif
+                    </h3>
+
+                    <p>
+                        Le projet derrière Flus se revendique d’un numérique plus
+                        accessible et plus humain.
+                    </p>
+                </div>
 
                 <p>
-                    Le projet derrière Flus se revendique d’un numérique plus
-                    accessible et plus humain.
-                </p>
-
-                <p>
-                    <a href="<?= url('project') ?>">
-                        → Découvrez le projet
+                    <a class="button button--primary" href="<?= url_full('home') ?>carnet/">
+                        <?= icon('arrow-left', 'rotate180') ?>
+                        Accéder au blog
                     </a>
                 </p>
             </div>
 
-            <div class="hello__column">
-                <h3 class="icon icon--code">
-                    Libre
-                </h3>
+            <div class="card col--size4 flow flow--large">
+                <div class="card__illustration">
+                    <img
+                        alt=""
+                        src="<?= url_static('illustrations/open-source.svg') ?>"
+                    />
+                </div>
+
+                <div class="card__body flow">
+                    <h3>
+                        Libre
+                    </h3>
+
+                    <p>
+                        Le code de Flus est ouvert afin de permettre à tout le
+                        monde de l’auditer et de l’installer.
+                    </p>
+                </div>
 
                 <p>
-                    Le code de Flus est ouvert afin de permettre à tout le
-                    monde de l’auditer et de l’installer.
-                </p>
-
-                <p>
-                    <a href="https://github.com/flusio/Flus">
-                        → Explorez le code source
+                    <a class="button button--primary" href="https://github.com/flusio/Flus">
+                        <?= icon('arrow-left', 'rotate180') ?>
+                        Explorer le code source
                     </a>
                 </p>
             </div>
 
-            <div class="hello__column">
-                <h3 class="icon icon--euro">
-                    Payant
-                </h3>
+            <div class="card col--size4 flow flow--large">
+                <div class="card__illustration">
+                    <img
+                        alt=""
+                        src="<?= url_static('illustrations/online-payment.svg') ?>"
+                    />
+                </div>
+
+                <div class="card__body flow">
+                    <h3>
+                        Pérenne
+                    </h3>
+
+                    <p>
+                        Auto-financé et sans publicité, vous assurez
+                        l’existence de Flus depuis ses débuts.
+                    </p>
+                </div>
 
                 <p>
-                    La pérennité de Flus a un coût et je ne vous le cache
-                    pas, mais vous pouvez décider du prix.
-                </p>
-
-                <p>
-                    <a href="<?= url('pricing') ?>">
-                        → Apprenez-en plus sur les tarifs
+                    <a class="button button--primary" href="<?= url('pricing') ?>">
+                        <?= icon('arrow-left', 'rotate180') ?>
+                        Découvrir le prix libre
                     </a>
                 </p>
             </div>
         </div>
-    </section>
+    </div>
+</section>
+
+<section class="panel">
+    <div class="wrapper wrapper--large wrapper--center text--center flow flow--larger">
+        <h2>
+            Les différents services offerts par Flus
+        </h2>
+
+        <img
+            class="no-mobile"
+            loading="lazy"
+            alt="Différents sites Web (Youtube, RSS, Mastodon, Le Monde, podcasts) sont agrégés vers le logo de Flus. De celui-ci sortent 5 services : Accès mobile et extension, éditorialisation de votre veille, prix libre et adapté, respect de votre vie privée, support professionnel dédié."
+            src="<?= url_static('illustrations/flus-services.svg') ?>"
+        />
+
+        <img
+            class="only-mobile"
+            loading="lazy"
+            alt="Différents sites Web (Youtube, RSS, Mastodon, Le Monde, podcasts) sont agrégés vers le logo de Flus. De celui-ci sortent 5 services : Accès mobile et extension, éditorialisation de votre veille, prix libre et adapté, respect de votre vie privée, support professionnel dédié."
+            src="<?= url_static('illustrations/flus-services-mobile.svg') ?>"
+        />
+    </div>
+</section>
+
+<section class="panel">
+    <div class="wrapper wrapper--large wrapper--center cols cols--gap">
+        <div class="col--size4 flow flow--larger">
+            <h2>
+                Un mot du créateur, Marien
+            </h2>
+
+            <img
+                alt=""
+                src="<?= url_static('illustrations/hello.svg') ?>"
+            />
+        </div>
+
+        <div class="col--size2"></div>
+
+        <div class="col--size6 wrapper wrapper--text flow">
+            <p>
+                J’ai commencé à travailler sur Flus car j’avais besoin d’une
+                plateforme de veille différente. Je cherchais un logiciel qui
+                soit complet, agréable à utiliser, libre et qui respecte mes
+                données. Dans le même temps, je souhaitais pouvoir vivre de mon
+                métier de développeur tout en prenant du plaisir dans mon
+                travail. Fin 2019, ayant l’opportunité de me mettre à mon
+                compte, j’ai décidé d’allier ces deux composantes.
+            </p>
+
+            <p>
+                Désormais, mon activité est suffisamment rentable pour que je
+                puisse continuer d’investir mon temps dans l’amélioration de ce
+                service. En apportant un soin particulier à ce que je fais
+                —&nbsp;ou en m’entourant de personnes expertes dans leur
+                domaine&nbsp;—, je suis en mesure de vous apporter un service à
+                taille humaine qui soit à le fois de qualité et pérenne. C’est,
+                je crois, plus que nécessaire aujourd’hui sur Internet.
+            </p>
+        </div>
+    </div>
 </section>

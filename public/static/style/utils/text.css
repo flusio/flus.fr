@@ -1,0 +1,72 @@
+h1 {
+    font-size: var(--font-size-bigger);
+}
+
+h2 {
+    color: var(--color-green-gable);
+    font-size: var(--font-size-big);
+}
+
+h3 {
+    font-weight: normal;
+}
+
+.text-container h1 {
+    margin-top: 1.17em;
+    margin-bottom: 0.67em;
+}
+.text-container h2 {
+    margin-top: 1.25em;
+    margin-bottom: 0.75em;
+}
+.text-container h3 {
+    margin-top: 1.33em;
+    margin-bottom: 0.83em;
+}
+
+.text-container p,
+.text-container ul,
+.text-container ol {
+    margin-top: 1.12em;
+    margin-bottom: 1.12em;
+}
+
+.text--gable {
+    color: var(--color-green-gable);
+}
+
+.text--bold {
+    font-weight: 600;
+}
+
+.text--bolder {
+    font-weight: 700;
+}
+
+.text--center {
+    text-align: center;
+}
+
+.text--right {
+    text-align: right;
+}
+
+.text--smaller {
+    font-size: var(--font-size-smaller);
+}
+
+.text--small {
+    font-size: var(--font-size-small);
+}
+
+.text--normal {
+    font-size: var(--font-size-normal);
+}
+
+.text--big {
+    font-size: var(--font-size-big);
+}
+
+.text--bigger {
+    font-size: var(--font-size-bigger);
+}

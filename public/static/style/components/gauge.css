@@ -1,0 +1,94 @@
+.gauge {
+    --gauge-value: 0%;
+
+    padding: var(--space-large);
+
+    background-color: var(--color-white);
+    border-radius: var(--border-radius);
+}
+
+.gauge__container {
+    position: relative;
+    z-index: 1;
+
+    display: flex;
+    max-width: 8em;
+    height: 30em;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 0;
+
+    flex-direction: column;
+
+    border: 2px solid var(--color-green-gable);
+    border-radius: var(--border-radius);
+
+    list-style: none;
+}
+
+@media (min-width: 800px) {
+    .gauge__container {
+        max-width: none;
+        height: auto;
+
+        flex-direction: row;
+    }
+}
+
+.gauge__current {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: -1;
+
+    height: var(--gauge-value);
+
+    color: transparent;
+
+    background-color: var(--color-green-topaz);
+    border-radius: calc(var(--border-radius) - 2px) calc(var(--border-radius) - 2px) 0 0;
+}
+
+@media (min-width: 800px) {
+    .gauge__current {
+        bottom: 0;
+
+        height: auto;
+        width: var(--gauge-value);
+
+        border-radius: calc(var(--border-radius) - 2px) 0 0 calc(var(--border-radius) - 2px)
+    }
+}
+
+.gauge__item {
+    display: flex;
+    padding: var(--space-small) var(--space-medium);
+
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    font-size: var(--font-size-small);
+    text-align: center;
+}
+
+.gauge__item + .gauge__item {
+    border-top: 2px solid var(--color-green-gable);
+}
+
+@media (min-width: 800px) {
+    .gauge__item + .gauge__item {
+        border-top: none;
+        border-left: 2px solid var(--color-green-gable);
+    }
+}
+
+.gauge__item--purchases {
+    flex-basis: 30%;
+}
+
+.gauge__item--salary {
+    flex-basis: 70%;
+}
