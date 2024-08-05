@@ -5,12 +5,32 @@
     ]);
 ?>
 
-<h1>
-    Cette page n’existe pas.
-</h1>
+<section class="panel">
+    <div class="wrapper wrapper--small wrapper--center text--center flow flow--larger">
+        <div class="panel panel--topaz panel--rounded flow flow--large">
+            <h1>
+                Page non trouvée
+            </h1>
 
-<p>
-    <a href="<?= url('home') ?>">
-        Revenir à la page d’accueil
-    </a>
-</p>
+            <p>
+                Vous avez peut-être suivi un lien invalide, ou la page a été
+                supprimée. Quoiqu’il en soit, cette erreur n’est pas de votre
+                fait et vous n’avez plus qu’à revenir en arrière.
+            </p>
+
+            <p>
+                <a class="button button--primary" href="<?= url('home') ?>">
+                    <?= icon('arrow-left') ?>
+
+                    Revenir à la page d’accueil
+                </a>
+            </p>
+        </div>
+
+        <img
+            alt=""
+            src="<?= url_static('illustrations/page_not_found.svg') ?>"
+            height="250"
+        />
+    </div>
+</section>

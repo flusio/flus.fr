@@ -2,38 +2,24 @@
 <html lang="fr">
     <head>
         <meta charset="UTF-8" />
+        <title><?= $title ?></title>
+
         <meta name="viewport" content="initial-scale=1.0" />
-        <link rel="shortcut icon" href="<?= url_static('favicon-32px.png') ?>">
         <meta name="robots" content="noindex">
+
+        <link rel="shortcut icon" href="<?= url_static('favicon-32px.png') ?>">
+
+        <link rel="stylesheet" href="<?= url_static('style/main.css') ?>">
 
         <?php if ($plausible_url): ?>
             <script defer data-domain="<?= $current_host ?>" src="<?= $plausible_url ?>/js/script.js"></script>
         <?php endif; ?>
-
-        <link rel="stylesheet" href="<?= url_static('style.css') ?>">
-
-        <title><?= $title ?></title>
     </head>
 
     <body>
-        <div class="layout layout--error">
-            <header class="layout__header">
-                <nav>
-                    <a href="<?= url('home') ?>">
-                        Oh non&nbsp;😟
-                    </a>
-                </nav>
-            </header>
-
+        <div class="layout">
             <main class="layout__content" id="contenu">
                 <?= $this->safe('content') ?>
-
-                <img
-                    class="illustration illustration--centered not-found"
-                    alt=""
-                    src="<?= url_static('illustrations/not-found.svg') ?>"
-                    height="250"
-                />
 
                 <?php if ($environment !== 'production' && $error): ?>
                     <pre class="error-box"><?= (string)$error ?></pre>

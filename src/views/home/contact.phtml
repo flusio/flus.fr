@@ -1,144 +1,208 @@
 <?php
     $this->layout('base.phtml', [
-        'title' => 'Une question ? Une remarque ? Contactez-moi',
+        'title' => 'Une question ? Une suggestion ? · Flus',
         'canonical' => url_full('contact'),
-        'description' => 'Vous avez une question, rencontrez un problème ou souhaitez en savoir plus sur le service ? Vous pouvez m’écrire depuis ce formulaire.',
+        'current_page' => 'contact',
+        'description' => 'Vous avez une question, rencontrez un problème ou souhaitez en savoir plus sur le service ? Vous pouvez m’écrire directement.',
         'og' => [
             'type' => 'website',
-            'image' => url_full_static('illustrations/contact.svg'),
+            'image' => url_full_static('og-card.png'),
             'twitter_card' => 'summary_large_image',
         ],
-        'load_form_statics' => true,
     ]);
 ?>
 
-<section class="section">
-    <div class="header">
-        <h1 class="header__title">Une question&nbsp;? Une remarque&nbsp;?</h1>
+<nav class="layout__breadcrumb" aria-label="Fil d’Ariane">
+    <ul class="list--nostyle">
+        <li class="breadcrumb__item">
+            <a class="breadcrumb__link" href="<?= url('home') ?>">
+
+                Accueil
+            </a>
+        </li>
+
+        <li class="breadcrumb__item">
+            <a class="breadcrumb__link" aria-current="page" href="<?= url('contact') ?>">
+
+                Contact
+            </a>
+        </li>
+    </ul>
+</nav>
+
+<section class="panel panel--primary panel--header">
+    <div class="wrapper wrapper--larger wrapper--center cols cols--gap-larger">
+        <div class="col--size6 wrapper wrapper--text flow flow--large">
+            <h1>Une question&nbsp;? Une suggestion&nbsp;?</h1>
+
+            <p>
+                Vous avez une question, rencontrez un problème ou souhaitez en
+                savoir plus sur le service ? Vous pouvez m’écrire directement.
+            </p>
+
+            <p>
+                <a class="button button--primary" href="#formulaire">
+                    <?= icon('arrow-left', 'rotate180') ?>
+                    Accéder au formulaire de contact
+                </a>
+            </p>
+        </div>
+
+        <div class="col--size6 text--right">
+            <img
+                class="panel--header__illustration"
+                alt=""
+                src="<?= url_static('illustrations/contact.svg') ?>"
+            />
+        </div>
     </div>
+</section>
 
-    <p class="section__intro">
-         Vous avez une question, rencontrez un problème ou souhaitez simplement
-         en savoir plus sur le service ? Vous pouvez m’écrire directement
-         depuis ce formulaire.
-    </p>
+<section class="panel" id="formulaire">
+    <div class="wrapper wrapper--center flow flow--larger">
+        <h2 class="text--center">
+            Formulaire de contact
+        </h2>
 
-    <?php if (isset($email_sent) && $email_sent): ?>
-        <p class="paragraph--featured">
-            Votre message a bien été envoyé. Je vous répondrai le plus
-            rapidement possible, dès que je l’aurai lu.
-        </p>
-    <?php else: ?>
-        <form
-             method="post"
-             action="<?= url('send contact email') ?>"
-             class="form--contact"
-         >
-            <?php if (isset($errors['_'])): ?>
-                <p class="form-group__error">
-                    <?= $errors['_'] ?>
-                </p>
-            <?php endif; ?>
+        <div class="panel panel--grey panel--rounded">
+            <div class="wrapper wrapper--small wrapper--center flow flow--larger">
+                <?php if (isset($email_sent) && $email_sent): ?>
+                    <div class="panel panel--topaz panel--rounded text--center text--bold flow flow--large">
+                        <div class="text--bigger">
+                            <?= icon('check') ?>
+                        </div>
 
-            <div class="form-group <?= isset($errors['subject']) ? 'form-group--invalid' : '' ?>">
-                <label for="subject">
-                    Sujet
-                </label>
+                        <p>
+                            Votre message a bien été envoyé. Je vous répondrai
+                            le plus rapidement possible, dès que je l’aurai lu.
+                        </p>
+                    </div>
+                <?php else: ?>
+                    <form
+                         method="post"
+                         action="<?= url('send contact email') ?>#formulaire"
+                         class="flow flow--large"
+                     >
+                        <?php if (isset($errors['_'])): ?>
+                            <p class="form-group__error">
+                                Erreur&nbsp;:
+                                <?= $errors['_'] ?>
+                            </p>
+                        <?php endif; ?>
 
-                <p class="form-group__caption">
-                    Concis et précis, cela me permettra de comprendre rapidement ce
-                    dont vous voulez me parler.
-                </p>
+                        <div class="flow flow--small">
+                            <label class="text--big" for="subject">
+                                Sujet
+                            </label>
 
-                <input
-                    id="subject"
-                    name="subject"
-                    type="text"
-                    value="<?= $subject ?>"
-                    required
-                />
+                            <p class="form-group__caption">
+                                Concis et précis, cela me permettra de comprendre rapidement ce
+                                dont vous voulez me parler.
+                            </p>
 
-                <?php if (isset($errors['subject'])): ?>
-                    <p class="form-group__error">
-                        <?= $errors['subject'] ?>
-                    </p>
+                            <?php if (isset($errors['subject'])): ?>
+                                <p class="form-group__error" id="subject-error">
+                                    Erreur&nbsp;:
+                                    <?= $errors['subject'] ?>
+                                </p>
+                            <?php endif; ?>
+
+                            <input
+                                id="subject"
+                                name="subject"
+                                type="text"
+                                value="<?= $subject ?>"
+                                required
+                                <?php if (isset($errors['subject'])): ?>
+                                    aria-invalid="true"
+                                    aria-errormessage="subject-error"
+                                <?php endif; ?>
+                            />
+                        </div>
+
+                        <div class="flow flow--small">
+                            <label class="text--big" for="content">
+                                Votre message
+                            </label>
+
+                            <?php if (isset($errors['content'])): ?>
+                                <p class="form-group__error" id="content-error">
+                                    Erreur&nbsp;:
+                                    <?= $errors['content'] ?>
+                                </p>
+                            <?php endif; ?>
+
+                            <textarea
+                                id="content"
+                                name="content"
+                                required
+                                <?php if (isset($errors['content'])): ?>
+                                    aria-invalid="true"
+                                    aria-errormessage="content-error"
+                                <?php endif; ?>
+                            ><?= $content ?></textarea>
+                        </div>
+
+                        <div class="flow flow--small">
+                            <label class="text--big" for="email">
+                                Votre adresse courriel
+                            </label>
+
+                            <p class="form-group__caption">
+                                Je vous répondrai à cette adresse, mais je ne l’utiliserai pas
+                                au-delà de notre échange.
+                            </p>
+
+                            <?php if (isset($errors['email'])): ?>
+                                <p class="form-group__error" id="email-error">
+                                    Erreur&nbsp;:
+                                    <?= $errors['email'] ?>
+                                </p>
+                            <?php endif; ?>
+
+                            <input
+                                id="email"
+                                name="email"
+                                type="email"
+                                value="<?= $email ?>"
+                                required
+                                <?php if (isset($errors['email'])): ?>
+                                    aria-invalid="true"
+                                    aria-errormessage="email-error"
+                                <?php endif; ?>
+                            />
+                        </div>
+
+                        <div class="flow flow--small" hidden>
+                            <label class="text--big" for="website">
+                                Votre site Internet
+                            </label>
+
+                            <p class="form-group__caption">
+                                En vérité, vous ne devriez sans doute pas remplir ce
+                                champ&nbsp;: il s’agit d’un piège à robots.
+                            </p>
+
+                            <input
+                                id="website"
+                                name="website"
+                                type="text"
+                                value=""
+                            />
+                        </div>
+
+                        <div class="text--center">
+                            <button type="submit" class="button--primary">
+                                Envoyer votre message
+                            </button>
+                        </div>
+                    </form>
                 <?php endif; ?>
-            </div>
 
-            <div class="form-group <?= isset($errors['content']) ? 'form-group--invalid' : '' ?>">
-                <label for="content">
-                    Votre message
-                </label>
-
-                <textarea id="content" name="content" required><?= $content ?></textarea>
-
-                <?php if (isset($errors['content'])): ?>
-                    <p class="form-group__error">
-                        <?= $errors['content'] ?>
-                    </p>
-                <?php endif; ?>
-            </div>
-
-            <div class="form-group <?= isset($errors['email']) ? 'form-group--invalid' : '' ?>">
-                <label for="email">
-                    Votre adresse courriel
-                </label>
-
-                <p class="form-group__caption">
-                    Je vous répondrai à cette adresse, mais je ne l’utiliserai pas
-                    au-delà de notre échange.
+                <p class="text--center">
+                    Si vous rencontrez des soucis avec ce formulaire, vous pouvez également me contacter sur <strong><a href="https://piaille.fr/@flus">Mastodon</a></strong>.
                 </p>
-
-                <input
-                    id="email"
-                    name="email"
-                    type="email"
-                    value="<?= $email ?>"
-                    required
-                />
-
-                <?php if (isset($errors['email'])): ?>
-                    <p class="form-group__error">
-                        <?= $errors['email'] ?>
-                    </p>
-                <?php endif; ?>
             </div>
-
-            <div class="form-group form-group--website">
-                <label for="website">
-                    Votre site Internet
-                </label>
-
-                <p class="form-group__caption">
-                    En vérité, vous ne devriez sans doute pas remplir ce
-                    champ&nbsp;: il s’agit d’un piège à robots.
-                </p>
-
-                <input
-                    id="website"
-                    name="website"
-                    type="text"
-                    value=""
-                />
-            </div>
-
-            <div class="form__actions">
-                <button type="submit" class="button--primary">
-                    Envoyer votre message
-                </button>
-            </div>
-        </form>
-    <?php endif; ?>
-
-    <p class="section__outro paragraph--center">
-        Si vous rencontrez des soucis avec ce formulaire,<br /> vous pouvez également
-        me contacter sur <a href="https://piaille.fr/@flus">Mastodon</a>.
-    </p>
-
-    <img
-        class="illustration illustration--centered contact"
-        alt=""
-        src="<?= url_static('illustrations/contact.svg') ?>"
-        height="300"
-    />
+        </div>
+    </div>
 </section>

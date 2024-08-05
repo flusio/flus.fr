@@ -1,0 +1,10 @@
+.grid {
+    display: grid;
+
+    grid-gap: var(--space-large);
+    grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+}
+
+.grid > * {
+    min-width: 0;
+}

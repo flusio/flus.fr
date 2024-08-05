@@ -1,0 +1,5 @@
+@media (min-width: 800px) {
+    .features__feature--reverse {
+        flex-direction: row-reverse;
+    }
+}

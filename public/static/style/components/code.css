@@ -1,0 +1,30 @@
+code,
+kbd {
+    padding-right: var(--space-smaller);
+    padding-left: var(--space-smaller);
+
+    color: var(--color-green-forest);
+
+    background-color: var(--color-green-gossip);
+    border-radius: 5px;
+}
+
+pre {
+    padding: var(--space-medium);
+
+    overflow: auto;
+
+    color: var(--color-pampas);
+
+    background-color: var(--color-green-gable);
+    border-radius: var(--border-radius);
+}
+
+pre code {
+    padding: 0;
+
+    color: var(--color-pampas);
+
+    background-color: transparent;
+    border: none;
+}

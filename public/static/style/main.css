@@ -1,0 +1,81 @@
+@import "./_reset.css";
+@import "./variables/colors.css";
+@import "./variables/sizes.css";
+@import "./utils/accessibility.css";
+@import "./utils/cols.css";
+@import "./utils/fonts.css";
+@import "./utils/flow.css";
+@import "./utils/text.css";
+@import "./utils/wrapper.css";
+@import "./components/accordions.css";
+@import "./components/anchors.css";
+@import "./components/badges.css";
+@import "./components/buttons.css";
+@import "./components/cards.css";
+@import "./components/code.css";
+@import "./components/forms/labels.css";
+@import "./components/forms/groups.css";
+@import "./components/forms/texts.css";
+@import "./components/error_box.css";
+@import "./components/gauge.css";
+@import "./components/grids.css";
+@import "./components/icons.css";
+@import "./components/images.css";
+@import "./components/lists.css";
+@import "./components/panels.css";
+@import "./components/tables.css";
+@import "./components/quotes.css";
+@import "./layout/breadcrumb.css";
+@import "./layout/content.css";
+@import "./layout/footer.css";
+@import "./layout/header.css";
+@import "./layout/navigation.css";
+@import "./custom/home.css";
+@import "./custom/features.css";
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 120%;
+
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+
+    color: var(--color-green-rangoon);
+    font-family:
+        Raleway,
+        system-ui,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        Oxygen-Sans,
+        Ubuntu,
+        Cantarell,
+        "Helvetica Neue",
+        sans-serif;
+    line-height: 1.4;
+}
+
+hr {
+    border: 1px solid var(--color-green-gable);
+}
+
+@media (max-width: 799px) {
+    .no-mobile {
+        display: none;
+    }
+}
+
+@media (min-width: 800px) {
+    .only-mobile {
+        display: none;
+    }
+}

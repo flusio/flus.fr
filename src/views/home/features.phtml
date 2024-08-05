@@ -1,0 +1,208 @@
+<?php
+    $this->layout('base.phtml', [
+        'title' => 'Flus en 6 fonctionnalités · Flus',
+        'canonical' => url_full('features'),
+        'current_page' => 'features',
+        'description' => 'Flux Web, collections, recherche, collaboratif, mobile, extension : Flus a tout ce qu’il vous faut pour une veille efficace.',
+        'og' => [
+            'type' => 'website',
+            'image' => url_full_static('og-card.png'),
+            'twitter_card' => 'summary',
+        ],
+    ]);
+?>
+
+<nav class="layout__breadcrumb" aria-label="Fil d’Ariane">
+    <ul class="list--nostyle">
+        <li class="breadcrumb__item">
+            <a class="breadcrumb__link" href="<?= url('home') ?>">
+
+                Accueil
+            </a>
+        </li>
+
+        <li class="breadcrumb__item">
+            <a class="breadcrumb__link" aria-current="page" href="<?= url('features') ?>">
+
+                Fonctionnalités
+            </a>
+        </li>
+    </ul>
+</nav>
+
+<section class="panel panel--primary panel--header">
+    <div class="wrapper wrapper--larger wrapper--center cols cols--gap-larger">
+        <div class="col--size6 wrapper wrapper--text flow flow--large">
+            <h1>Flus en 6 fonctionnalités</h1>
+
+            <p>
+                Flux Web, collections, recherche, collaboratif, mobile, extension&nbsp;:
+                Flus a tout ce qu’il vous faut pour une veille efficace.
+            </p>
+
+            <p>
+                <a class="button button--primary" href="#liste">
+                    <?= icon('arrow-left', 'rotate180') ?>
+                    Découvrir les fonctionnalités
+                </a>
+            </p>
+        </div>
+
+        <div class="col--size6 text--right">
+            <img
+                class="panel--header__illustration"
+                alt=""
+                src="<?= url_static('illustrations/bookmarks.svg') ?>"
+            />
+        </div>
+    </div>
+</section>
+
+<section class="panel" id="liste">
+    <div class="wrapper wrapper--larger wrapper--center flow flow--large">
+        <div class="panel panel--grey panel--rounded cols cols--center cols--gap-larger">
+            <div class="col--size5 wrapper wrapper--text flow flow--large">
+                <h2>
+                    Veille éditorialisée
+                </h2>
+
+                <p>
+                    Rangez les liens glanés sur le Web dans des collections
+                    thématiques et commentez-les. Flus vous aide à retrouver
+                    rapidement les articles et sites que vous avez consultés par le
+                    passé grâce à son moteur de recherche.
+                </p>
+            </div>
+
+            <div class="col--size7 text--center">
+                <img
+                    class="illustration"
+                    loading="lazy"
+                    alt="L’écran « Lecture » de Flus affiche trois onglets : Journal, Signets et Liens lus. Des liens sont présents dans les signets."
+                    src="<?= url_static('screenshots/onglet-lecture.webp') ?>"
+                />
+            </div>
+        </div>
+
+        <div class="features__feature--reverse panel panel--topaz panel--rounded cols cols--center cols--gap-larger">
+            <div class="col--size5 wrapper wrapper--text flow flow--large">
+                <h2>
+                    Veille publique
+                </h2>
+
+                <p>
+                    Vous collectionnez les liens à ne plus savoir quoi en
+                    faire&nbsp;? Vous pouvez partager vos collections avec le
+                    reste du monde&nbsp;! Qui sait, le dernier article que vous
+                    avez lu pourrait intéresser d’autres personnes&nbsp;?
+                </p>
+            </div>
+
+            <div class="col--size7 text--center">
+                <img
+                    class="illustration"
+                    loading="lazy"
+                    alt="Un profil dans Flus affiche trois liens partagés et une collection publiée."
+                    src="<?= url_static('screenshots/profil.webp') ?>"
+                />
+            </div>
+        </div>
+
+        <div class="panel panel--grey panel--rounded cols cols--center cols--gap-larger">
+            <div class="col--size5 wrapper wrapper--text flow flow--large">
+                <h2>
+                    Lecteur de flux
+                </h2>
+
+                <p>
+                    Ajoutez les flux Web de vos sites, chaînes vidéos et
+                    podcasts favoris, puis recevez les actualités directement
+                    dans Flus. Son journal est conçu pour que vous ne soyez
+                    jamais submergé·e par les informations et mettre en avant
+                    celles qui vous intéressent.
+                </p>
+            </div>
+
+            <div class="col--size7 text--center">
+                <img
+                    class="illustration"
+                    loading="lazy"
+                    alt="Un écran montrant deux groupes de flux (Actualités et Détente) contenant différents flux Web."
+                    src="<?= url_static('screenshots/flux.webp') ?>"
+                />
+            </div>
+        </div>
+
+        <div class="features__feature--reverse panel panel--primary panel--rounded cols cols--center cols--gap-larger">
+            <div class="col--size5 wrapper wrapper--text flow flow--large">
+                <h2>
+                    Collections collaboratives
+                </h2>
+
+                <p>
+                    Faire sa veille, c’est bien&nbsp;; la faire à plusieurs,
+                    c’est mieux&nbsp;! Flus vous permet de partager vos
+                    collections avec les autres personnes présentes sur la
+                    plateforme. Il ne vous reste plus qu’à proposer à vos
+                    collègues et camarades de vous rejoindre.
+                </p>
+            </div>
+
+            <div class="col--size7 text--center">
+                <img
+                    class="illustration"
+                    loading="lazy"
+                    alt="Une modale explique comment partager l’accès d’une collection (en lecture et / ou écriture) avec un ou une utilisatrice de Flus."
+                    src="<?= url_static('screenshots/veille-partagee.webp') ?>"
+                />
+            </div>
+        </div>
+
+        <div class="panel panel--grey panel--rounded cols cols--center cols--gap-larger">
+            <div class="col--size5 wrapper wrapper--text flow flow--large">
+                <h2>
+                    Accès mobile
+                </h2>
+
+                <p>
+                    Ayez Flus toujours dans votre poche et emportez-le avec vous
+                    dans les transports. Son interface adaptative en fait le
+                    compagnon idéal pour vos longs trajets en bus.
+                </p>
+            </div>
+
+            <div class="col--size7 text--center">
+                <img
+                    class="illustration"
+                    loading="lazy"
+                    alt="Un écran sur mobile montre l’onglet Lecture de Flus. Trois liens dans les signets sont affichés en colonne."
+                    src="<?= url_static('screenshots/mobile.webp') ?>"
+                />
+            </div>
+        </div>
+
+        <div class="features__feature--reverse panel panel--topaz panel--rounded cols cols--center cols--gap-larger">
+            <div class="col--size5 wrapper wrapper--text flow flow--large">
+                <h2>
+                    Extension navigateur
+                </h2>
+
+                <p>
+                    Ne laissez plus filer les liens qui vous ont plu.
+                    L’extension navigateur (Firefox et Chrome) vous permet
+                    d’enregistrer n’importe quelle adresse Web dans Flus en un
+                    instant.
+                </p>
+            </div>
+
+            <div class="col--size7 text--center">
+                <img
+                    class="illustration"
+                    loading="lazy"
+                    alt="Une fenêtre Firefox montre une page Youtube. L’extension navigateur est ouverte par-dessus permettant d’ajouter la page aux signets Flus."
+                    src="<?= url_static('screenshots/extension.webp') ?>"
+                />
+            </div>
+        </div>
+    </div>
+</section>

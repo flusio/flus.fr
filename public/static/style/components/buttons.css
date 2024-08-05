@@ -1,0 +1,63 @@
+button,
+.button {
+    --button-padding: var(--space-small) var(--space-medium);
+    --button-color: var(--color-green-forest);
+    --button-background-color: var(--color-pampas);
+    --button-border-color: currentcolor;
+
+    display: inline-block;
+    padding: var(--button-padding);
+
+    color: var(--button-color);
+    font-family: inherit;
+    font-size: var(--font-size-normal);
+    font-weight: 600;
+    line-height: 1.5;
+    text-align: center;
+    text-decoration: none;
+
+    background-color: var(--button-background-color);
+    border: 1px solid var(--button-border-color);
+    border-radius: var(--border-radius);
+
+    transition:
+        background-color 0.2s ease-in-out,
+        border-color 0.2s ease-in-out;
+
+    cursor: pointer;
+}
+
+button:hover,
+.button:hover,
+button:active,
+.button:active {
+    --button-background-color: var(--color-white);
+}
+
+.button--primary {
+    --button-color: var(--color-green-forest);
+    --button-background-color: var(--color-green-caribbean);
+    --button-border-color: transparent;
+}
+
+.button--primary:hover,
+.button--primary:active {
+    --button-background-color: var(--color-green-topaz);
+}
+
+.button--ghost {
+    --button-color: var(--color-pampas);
+    --button-background-color: transparent;
+    --button-border-color: transparent;
+}
+
+.button--ghost:hover,
+.button--ghost:active {
+    --button-background-color: transparent;
+    --button-border-color: currentcolor;
+}
+
+.button--block {
+    display: block;
+    width: 100%;
+}

@@ -28,3 +28,20 @@ function format_message(string $message): string
 {
     return nl2br($message);
 }
+
+/**
+ * Return a SVG icon.
+ */
+function icon(string $icon_name, string $additional_class_names = ''): string
+{
+    $class = "icon icon--{$icon_name}";
+    if ($additional_class_names) {
+        $class .= ' ' . $additional_class_names;
+    }
+
+    $url_icons = \Minz\Output\ViewHelpers::urlStatic('icons/icons.svg');
+    $svg = "<svg class=\"{$class}\" aria-hidden=\"true\" width=\"36\" height=\"36\">";
+    $svg .= "<use xlink:href=\"{$url_icons}#{$icon_name}\"/>";
+    $svg .= '</svg>';
+    return $svg;
+}

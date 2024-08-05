@@ -1,9 +1,9 @@
 <?php
     $this->layout('base.phtml', [
-        'title' => 'Tarifs · Flus',
+        'title' => 'Le prix de Flus est le vôtre · Flus',
         'canonical' => url_full('pricing'),
         'current_page' => 'pricing',
-        'description' => 'Un prix libre pour financer directement le projet.',
+        'description' => 'Auto-financé et sans publicité, Flus assure sa pérennité grâce à un modèle économique vertueux. De 0 à 120 €, c’est vous qui en choisissez le prix.',
         'og' => [
             'type' => 'website',
             'image' => url_full_static('flus.png'),
@@ -12,139 +12,222 @@
     ]);
 ?>
 
-<section class="section section--text">
-    <div class="header">
-        <h1 class="header__title">Tarifs</h1>
+<nav class="layout__breadcrumb" aria-label="Fil d’Ariane">
+    <ul class="list--nostyle">
+        <li class="breadcrumb__item">
+            <a class="breadcrumb__link" href="<?= url('home') ?>">
+
+                Accueil
+            </a>
+        </li>
+
+        <li class="breadcrumb__item">
+            <a class="breadcrumb__link" aria-current="page" href="<?= url('pricing') ?>">
+
+                Tarifs
+            </a>
+        </li>
+    </ul>
+</nav>
+
+<section class="panel panel--primary panel--header">
+    <div class="wrapper wrapper--larger wrapper--center cols cols--gap-larger">
+        <div class="col--size6 wrapper wrapper--text flow flow--large">
+            <h1>Le prix de Flus est le vôtre</h1>
+
+            <p>
+                Auto-financé et sans publicité, Flus assure sa pérennité grâce
+                à un modèle économique vertueux. De 0 à 120&nbsp;€, c’est vous
+                qui en choisissez le prix.
+            </p>
+
+            <p>
+                <a class="button button--primary" href="#choisir">
+                    <?= icon('arrow-left', 'rotate180') ?>
+                    Découvrir les tarifs recommandés
+                </a>
+            </p>
+        </div>
+
+        <div class="col--size6 text--right">
+            <img
+                class="panel--header__illustration"
+                alt=""
+                src="<?= url_static('illustrations/credit-card-payment.svg') ?>"
+            />
+        </div>
     </div>
-
-    <p class="price">
-        <span class="price__unique">Un prix unique : <strong>le vôtre.</strong></span>
-        <span class="price__choose">De 0 à 120 €, le prix est libre.</span>
-    </p>
-
-    <p class="paragraph--center">
-        <a class="price__more" href="#choisir">En savoir plus sur le prix libre</a>
-    </p>
-
-    <p class="paragraph--featured">
-        <a class="call-to-action" href="https://app.flus.fr/registration">
-            Commencer par un mois gratuit
-        </a>
-    </p>
-
-    <img
-        class="illustration illustration--centered savings"
-        alt=""
-        src="<?= url_static('illustrations/savings.svg') ?>"
-        height="250"
-    />
 </section>
 
-<section class="section" id="choisir">
-    <div class="header">
-        <h2 class="header__title">Choisir le « juste » prix</h2>
-    </div>
+<section class="panel panel--grey" id="choisir">
+    <div class="wrapper wrapper--large wrapper--center flow flow--larger">
+        <div class="wrapper wrapper--text wrapper--center text--center flow">
+            <h2>
+                Choisir le «&nbsp;juste&nbsp;» prix
+            </h2>
 
-    <p class="section--text">
-        Si Flus est payant, c’est que je souhaite vivre de cette activité
-        pour m’y consacrer. Le prix libre permet à tout un chacun de déterminer
-        combien il ou elle est prête à payer pour un service en ligne.
-    </p>
+            <p>
+                Le prix libre offre à chacun et chacune l’opportunité de
+                contribuer à hauteur de ses moyens. Mais choisir un prix n’est
+                pas toujours chose aisée. Ainsi, je propose trois tarifs de
+                base pour vous y aider&nbsp;:
+            </p>
+        </div>
 
-    <p class="section--text">
-        Choisir un prix n’est pas chose aisée. Ainsi, je propose trois
-        tarifs de base pour vous aider à choisir :
-    </p>
+        <div class="flow">
+            <div class="cols cols--gap-large">
+                <div class="col--size4 card card--gable">
+                    <div class="card__body flow flow--large">
+                        <h3>
+                            <strong>Tarif solidaire</strong> à 15&nbsp;€ par an
+                        </h3>
 
-    <ol class="tariffs">
-        <li class="tariffs__item">
-            <strong class="tariffs__name">Tarif « solidaire »<br>à 15 € par an.</strong>
-            <span class="tariffs__description">
-                Pour celles et ceux qui ne sont pas prêts à dépenser plus, mais
-                qui souhaitent tout de même soutenir le projet.
-            </span>
-        </li>
+                        <p>
+                            Pour celles et ceux qui ne sont pas prêts à dépenser
+                            plus, mais qui souhaitent tout de même soutenir le
+                            projet.
+                        </p>
+                    </div>
+                </div>
 
-        <li class="tariffs__item">
-            <strong class="tariffs__name">Tarif « équilibre »<br>à 30 € par an.</strong>
-            <span class="tariffs__description">
-                C’est le tarif de base, celui que je juge le plus juste au regard
-                du service que je propose et de mon objectif financier.
-            </span>
-        </li>
+                <div class="col--size4 card card--caribbean">
+                    <div class="card__body flow flow--large">
+                        <h3>
+                            <strong>Tarif équilibre</strong> à 30&nbsp;€ par an
+                        </h3>
 
-        <li class="tariffs__item">
-            <strong class="tariffs__name">Tarif « soutien »<br>à <?= $contribution_price ?> € * par an.</strong>
-            <span class="tariffs__description">
-                Il faudrait que tous et toutes les abonnées actuelles payent ce
-                prix pour que j’atteigne mon objectif financier.
-            </span>
-        </li>
-    </ol>
+                        <p>
+                            C’est le tarif de base, celui que je juge le plus juste
+                            au regard du service que je propose et de mon objectif
+                            financier.
+                        </p>
+                    </div>
+                </div>
 
-    <p class="section--text">
-        * Le tarif « soutien » a de particulier qu’il évolue ! Plus vous êtes
-        nombreux et nombreuses à payer pour le service, plus le prix diminue.
-    </p>
+                <div class="col--size4 card card--topaz">
+                    <div class="card__body flow flow--large">
+                        <h3>
+                            <strong>Tarif soutien</strong> à <?= $contribution_price ?>&nbsp;€ par an<span aria-details="support-tariff-details">*</span>
+                        </h3>
 
-    <p class="paragraph--featured">
-        <?php if ($account): ?>
-            <a class="call-to-action" href="<?= url('subscription init') ?>">
-                Retour au renouvellement
-            </a>
-        <?php else: ?>
-            <a class="call-to-action" href="https://app.flus.fr/registration">
-                Commencer à utiliser Flus
-            </a>
-        <?php endif; ?>
-    </p>
-</section>
+                        <p>
+                            Il faudrait que tous et toutes les abonnées actuelles
+                            payent ce prix pour que j’atteigne mon objectif
+                            financier.
+                        </p>
+                    </div>
+                </div>
+            </div>
 
-<section class="section section--text">
-    <div class="header">
-        <h2 class="header__title">Financement</h2>
-    </div>
+            <p class="wrapper wrapper--text wrapper--center text--center" id="support-tariff-details">
+                * Le tarif «&nbsp;soutien&nbsp;» a de particulier qu’il
+                évolue&nbsp;: plus vous êtes nombreux et nombreuses à payer
+                pour le service, plus le prix diminue&nbsp;!
+            </p>
+        </div>
 
-    <p class="section__intro">
-        Curieux de connaître mes objectifs financiers et de savoir comment
-        j’utilise mon chiffre d’affaires&nbsp;?
-    </p>
-
-    <div class="gauge" style="--gauge-value: <?= $percent_target ?>%;">
-        <p class="gauge__status">
-            Objectif 2024&nbsp;:
-            <strong><?= $this->safe('total_revenue') ?> sur <?= $this->safe('revenue_target') ?>&nbsp;€</strong>
+        <p class="wrapper wrapper--text wrapper--center text--center">
+            <?php if ($account): ?>
+                <a class="button button--primary" href="<?= url('subscription init') ?>">
+                    <?= icon('arrow-left', 'rotate180') ?>
+                    Retour au renouvellement
+                </a>
+            <?php else: ?>
+                <a class="button button--primary" href="https://app.flus.fr/registration">
+                    <?= icon('arrow-left', 'rotate180') ?>
+                    Commencer par 1 mois gratuit
+                </a>
+            <?php endif; ?>
         </p>
-
-        <ul class="gauge__container">
-            <li class="gauge__current"></li>
-
-            <li class="gauge__item gauge__item--purchases">
-                Achats<br />30&nbsp;%
-            </li>
-
-            <li class="gauge__item gauge__item--salary">
-                Rémunération (dont cotisations)<br />70&nbsp;%
-            </li>
-        </ul>
     </div>
+</section>
 
-    <p>
-        Les <strong>achats</strong> incluent le paiement des serveurs, des
-        noms de domaine et fournitures éventuelles. On y trouve également
-        les frais liés aux paiements, ainsi que les frais bancaires.
-    </p>
+<section class="panel">
+    <div class="wrapper wrapper--large wrapper--center flow flow--larger">
+        <div class="wrapper wrapper--text wrapper--center text--center flow flow--large">
+            <h2>
+                Entreprise, association ou collectivité&nbsp;?
+            </h2>
 
-    <p>
-        La <strong>rémunération</strong> correspond à mon salaire si j’atteins
-        le palier des 5&nbsp;000&nbsp;€, représentant un peu plus de
-        2&nbsp;500&nbsp;€ dans ma poche. Mon but est bien sûr d’aller au-delà
-        afin de pouvoir en vivre.
-    </p>
+            <p>
+                Payez en une seule fois pour l’ensemble de vos membres et
+                développez une culture collaborative de la veille dans votre
+                structure. Le prix libre vous est également disponible, sans
+                restriction.
+            </p>
 
-    <p>
-        <strong>
-            <a href="https://flus.fr/carnet/bilan-2023.html">→ Lire mon bilan de l’année 2023</a>
-        </strong>
-    </p>
+            <div class="text--center">
+                <img
+                    alt=""
+                    src="<?= url_static('illustrations/teamwork.svg') ?>"
+                />
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="panel">
+    <div class="wrapper wrapper--large wrapper--center cols cols--center cols--gap-larger">
+        <div class="col--size5 wrapper wrapper--text flow flow--large">
+            <h2>
+                Le financement de Flus
+            </h2>
+
+            <p>
+                Les <strong>achats</strong> incluent le paiement des serveurs,
+                des noms de domaine et fournitures éventuelles. On y trouve
+                également les frais liés aux paiements, ainsi que les frais
+                bancaires.
+            </p>
+
+            <p>
+                La <strong>rémunération</strong> correspond à mon salaire si
+                j’atteins le palier des 5&nbsp;000&nbsp;€, représentant un peu
+                plus de 2&nbsp;500&nbsp;€ dans ma poche. Mon but est bien sûr
+                d’aller au-delà afin de pouvoir en vivre.
+            </p>
+
+            <p>
+                <strong>
+                    <a class="button button--primary" href="https://flus.fr/carnet/bilan-2023.html">
+                        <?= icon('arrow-left', 'rotate180') ?>
+                        Lire mon bilan de l’année 2023
+                    </a>
+                </strong>
+            </p>
+        </div>
+
+        <div class="col--size7">
+            <div class="panel panel--rounded panel--grey flow flow--larger">
+                <h3 class="text--bold text--center">
+                    Curieu⋅se de connaître mes objectifs financiers et de savoir comment
+                    j’utilise mon chiffre d’affaires&nbsp;?
+                </h3>
+
+                <div class="gauge flow" style="--gauge-value: <?= $percent_target ?>%;">
+                    <p class="text--center">
+                        Objectif 2024&nbsp;:
+                        <strong><?= $this->safe('total_revenue') ?> sur <?= $this->safe('revenue_target') ?>&nbsp;€</strong>
+                    </p>
+
+                    <ul class="gauge__container">
+                        <li class="gauge__current">
+                            Avancement<br>
+                            <?= $percent_target ?>&nbsp;%
+                        </li>
+
+                        <li class="gauge__item gauge__item--purchases">
+                            Achats<br>
+                            30&nbsp;%
+                        </li>
+
+                        <li class="gauge__item gauge__item--salary">
+                            Rémunération (dont cotisations)<br>
+                            70&nbsp;%
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
 </section>

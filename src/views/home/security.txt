@@ -1,6 +1,6 @@
 Contact: <?= url_full('contact') . "\n" ?>
-Contact: security@flus.io
-Expires: <?= (new \DateTime('2025-01-03 00:00:00'))->format(\DateTime::ATOM) . "\n" ?>
+Contact: security@flus.fr
+Expires: <?= (new \DateTime('2025-09-01 00:00:00'))->format(\DateTime::ATOM) . "\n" ?>
 Policy: <?= url_full('security') . "\n" ?>
 Acknowledgments: <?= url_full('security') . "\n" ?>
 Canonical: <?= url_full('security.txt') . "\n" ?>

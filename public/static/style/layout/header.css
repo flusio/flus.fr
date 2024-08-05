@@ -1,0 +1,97 @@
+.layout__header {
+    --header-padding-y: var(--space-medium);
+    --header-padding-x: var(--space-medium);
+    --header-logo-height: 40px;
+    --header-height: calc(var(--header-padding-y) * 2 + var(--header-logo-height));
+
+    display: flex;
+    padding: var(--header-padding-y) var(--header-padding-x);
+
+    flex-direction: row-reverse;
+    align-items: center;
+    gap: var(--space-medium);
+
+    color: var(--color-pampas);
+
+    background-color: var(--color-green-gable);
+}
+
+@media (min-width: 800px) {
+    .layout__header {
+        --header-padding-x: var(--space-large);
+
+        flex-direction: row;
+    }
+}
+
+.layout__header > * {
+    flex: 1;
+}
+
+@media(max-width: 799px) {
+    .layout__header .header__navigation {
+        flex: 0;
+    }
+}
+
+.layout__header .header__navigation .navigation__container {
+    display: flex;
+    padding-left: 0;
+
+    align-items: center;
+    gap: var(--space-medium);
+
+    list-style: none;
+}
+
+@media(max-width: 799px) {
+    .layout__header .header__navigation .navigation__container {
+        position: absolute;
+        z-index: 100;
+        top: var(--header-height);
+        right: 0;
+        left: 0;
+
+        padding: var(--space-large) var(--space-medium);
+
+        align-items: stretch;
+        flex-direction: column;
+        gap: var(--space-smaller);
+
+        background-color: var(--color-green-gable);
+        border-bottom: 2px solid var(--color-green-caribbean);
+        box-shadow: 0 4px 6px 0 var(--color-box-shadow);
+    }
+}
+
+.layout__header .header__logo a {
+    display: inline-block;
+    height: var(--header-logo-height);
+}
+
+@media (min-width: 800px) {
+    .layout__header .header__logo {
+        text-align: center;
+    }
+}
+
+.layout__header .header__navigation .navigation__link {
+    display: block;
+    padding: var(--space-small);
+
+    color: currentcolor;
+    font-weight: 600;
+    text-align: center;
+    text-decoration: none;
+
+    transition: color 0.2s ease-in-out;
+}
+
+.layout__header .header__navigation .navigation__link:hover {
+    color: var(--color-green-caribbean);
+    text-decoration: underline;
+}
+
+.layout__header .header__navigation .navigation__link[aria-current="page"] {
+    color: var(--color-green-caribbean);
+}

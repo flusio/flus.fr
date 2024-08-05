@@ -15,6 +15,7 @@ class Router
         $router->addRoute('GET', '/', 'Home#index', 'home');
         $router->addRoute('GET', '/projet', 'Home#project', 'project');
         $router->addRoute('GET', '/tarifs', 'Home#pricing', 'pricing');
+        $router->addRoute('GET', '/fonctionnalites', 'Home#features', 'features');
         $router->addRoute('GET', '/visite', 'Home#tour', 'tour');
         $router->addRoute('GET', '/visite/:page', 'Home#tour', 'tour page');
         $router->addRoute('GET', '/financement', 'Home#funding', 'funding');

@@ -5,76 +5,89 @@
     ]);
 ?>
 
-<section class="section section--text">
-    <div class="header">
-        <h1 class="header__title">Crédits</h1>
-    </div>
+<nav class="layout__breadcrumb" aria-label="Fil d’Ariane">
+    <ul class="list--nostyle">
+        <li class="breadcrumb__item">
+            <a class="breadcrumb__link" href="<?= url('home') ?>">
 
-    <p class="section__intro">
-        Flus se repose en partie sur le travail d’autres personnes. Cette page me sert à les en remercier très sincèrement.
-    </p>
+                Accueil
+            </a>
+        </li>
 
-    <img
-        class="illustration illustration--centered link"
-        alt=""
-        src="<?= url_static('illustrations/link.svg') ?>"
-        height="250"
-    />
+        <li class="breadcrumb__item">
+            <a class="breadcrumb__link" aria-current="page" href="<?= url('credits') ?>">
 
-    <p>
-        Tout d’abord, j’ai reçu une aide immense de la part de <a href="https://www.maiwann.net/">Maiwann</a> pour ce qui concerne l’expérience utilisateur. Le projet n’en serait sans doute pas là aujourd’hui sans elle 😊
-    </p>
-
-    <p>
-        Le logo a été réalisé par <a href="https://www.clara-chambon.fr/">Clara Chambon</a>.
-    </p>
-
-    <p>
-        La police utilisée dans le logo ainsi que pour les titres du site est la
-        «&nbsp;<a href="https://fonts.google.com/specimen/Comfortaa">Comfortaa</a>&nbsp;»,
-        conçue par Johan Aakerlund.
-    </p>
-
-    <p>
-        La police de texte est
-        l’«&nbsp;<a href="https://fonts.google.com/specimen/Open+Sans">Open Sans</a>&nbsp;»,
-        conçue par Steve Matteson.
-    </p>
-
-    <p>
-        Les icônes sont issues du projet <a href="https://clarity.design/">Clarity</a>.
-    </p>
-
-    <p>
-        Les illustrations viennent du génialissime projet
-        <a lang="en" href="https://undraw.co/">unDraw</a>, par
-        <a href="https://twitter.com/ninaLimpi">Katerina Limpitsouni</a>.
-    </p>
-
-    <p>
-        La photo utilisée sur la page d’accueil a été prise par <a href="https://unsplash.com/photos/mHQ5ZixDmDI">Markus Spiske</a>
-        et recadrée par moi-même.
-    </p>
-
-    <p>
-        Enfin, un bon paquet des idées déposées ici sont le fruit des échanges que
-        j’ai eus avec quelques-un·es d’entre vous. Merci encore&nbsp;!
-    </p>
-
-    <p>
-        Le service Flus utilise un certain nombre de photos pour illustrer
-        <a href="https://app.flus.fr/discovery">les thématiques</a>. Elles sont
-        toutes issues du site <a href="https://unsplash.com/">unsplash.com</a> :
-    </p>
-
-    <ul>
-        <li>Culture : photo par <a href="https://unsplash.com/@alfonsmc10">Alfons Morales</a></li>
-        <li>Économie : photo par <a href="https://unsplash.com/@dhelentjaris">Diane Helentjaris</a></li>
-        <li>Éducation : photo par <a href="https://unsplash.com/@napr0tiv">Vasily Koloda</a></li>
-        <li>Planète et climat : photo par <a href="https://unsplash.com/@na_photo">Nagy Arnold</a></li>
-        <li>Politique et société : photo par <a href="https://unsplash.com/@matnapo">Mat Napo</a></li>
-        <li>Santé : photo par <a href="https://unsplash.com/@nobiteuntilphoto">Mariana Medvedeva</a></li>
-        <li>Sciences et technologie : photo par <a href="https://unsplash.com/@alexkixa">Alexandre Debiève</a></li>
-        <li>Sport : photo par <a href="https://unsplash.com/@paulwallez">Paul Wallez</a></li>
+                Crédits
+            </a>
+        </li>
     </ul>
-</section>
+</nav>
+
+<article>
+    <header class="panel panel--primary panel--header">
+        <div class="wrapper wrapper--larger wrapper--center text--center">
+            <h1>Crédits</h1>
+        </div>
+    </header>
+
+    <div class="panel">
+        <div class="wrapper wrapper--text wrapper--center text-container">
+            <p>
+                Flus se repose en partie sur le travail d’autres personnes. Cette page me sert à les en remercier très sincèrement.
+            </p>
+
+            <p>
+                Tout d’abord, j’ai reçu une aide immense de la part de <a href="https://www.maiwann.net/">Maiwann</a> pour ce qui concerne l’expérience utilisateur.
+                Le projet n’en serait sans doute pas là aujourd’hui sans elle 😊
+            </p>
+
+            <p>
+                Le design du site vitrine a été conçu par <a href="https://fr.linkedin.com/in/elina-bufferne">Elina Bufferne</a>.
+            </p>
+
+            <p>
+                Le logo a été réalisé par <a href="https://www.clara-chambon.fr/">Clara Chambon</a>.
+            </p>
+
+            <p>
+                La police utilisée dans le logo est la
+                «&nbsp;<a href="https://fonts.google.com/specimen/Comfortaa">Comfortaa</a>&nbsp;»,
+                conçue par Johan Aakerlund. La police de texte est la
+                «&nbsp;<a href="https://www.theleagueofmoveabletype.com/raleway">Raleway</a>&nbsp;»,
+                conçue par The League of Moveable Type.
+            </p>
+
+            <p>
+                Les icônes sont issues du projet <a href="https://clarity.design/">Clarity</a>.
+            </p>
+
+            <p>
+                Les illustrations viennent du génialissime projet
+                <a lang="en" href="https://undraw.co/">unDraw</a>, par
+                <a href="https://twitter.com/ninaLimpi">Katerina Limpitsouni</a>.
+            </p>
+
+            <p>
+                Enfin, un bon paquet des idées déposées ici sont le fruit des échanges que
+                j’ai eus avec quelques-un·es d’entre vous. Merci encore&nbsp;!
+            </p>
+
+            <p>
+                Le service Flus utilise un certain nombre de photos pour illustrer
+                <a href="https://app.flus.fr/discovery">les thématiques</a>. Elles sont
+                toutes issues du site <a href="https://unsplash.com/">unsplash.com</a> :
+            </p>
+
+            <ul>
+                <li>Culture : photo par <a href="https://unsplash.com/@alfonsmc10">Alfons Morales</a></li>
+                <li>Économie : photo par <a href="https://unsplash.com/@dhelentjaris">Diane Helentjaris</a></li>
+                <li>Éducation : photo par <a href="https://unsplash.com/@napr0tiv">Vasily Koloda</a></li>
+                <li>Planète et climat : photo par <a href="https://unsplash.com/@na_photo">Nagy Arnold</a></li>
+                <li>Politique et société : photo par <a href="https://unsplash.com/@matnapo">Mat Napo</a></li>
+                <li>Santé : photo par <a href="https://unsplash.com/@nobiteuntilphoto">Mariana Medvedeva</a></li>
+                <li>Sciences et technologie : photo par <a href="https://unsplash.com/@alexkixa">Alexandre Debiève</a></li>
+                <li>Sport : photo par <a href="https://unsplash.com/@paulwallez">Paul Wallez</a></li>
+            </ul>
+        </div>
+    </div>
+</article>

@@ -1,0 +1,11 @@
+.error-box {
+    margin-top: 0;
+    margin-bottom: 0;
+    padding: var(--space-medium);
+
+    font-size: var(--font-size-big);
+
+    border-radius: 0;
+
+    overflow: auto;
+}

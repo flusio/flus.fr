@@ -20,12 +20,17 @@ class Home
         return Response::ok('home/project.phtml');
     }
 
+    public function features(Request $request): Response
+    {
+        return Response::ok('home/features.phtml');
+    }
+
     public function pricing(Request $request): Response
     {
         $current_year = intval(\Minz\Time::now()->format('Y'));
         $total_revenue = models\Payment::findTotalRevenue($current_year) / 100;
         $revenue_target = \Minz\Configuration::$application['financial_goal'];
-        $percent_target = min(100, max(5, $total_revenue * 100 / $revenue_target));
+        $percent_target = min(100, $total_revenue * 100 / $revenue_target);
 
         $account = null;
         $user = utils\CurrentUser::get();

@@ -5,27 +5,21 @@
         <title><?= $title ?></title>
 
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <?php if (isset($description)): ?>
+            <meta name="description" content="<?= $description ?>" />
+        <?php endif; ?>
+
         <link rel="canonical" href="<?= $canonical ?>">
+        <link rel="alternate" href="<?= url_full('home') ?>carnet/feeds/all.atom.xml" type="application/atom+xml" title="Articles du carnet de flus" />
         <link rel="shortcut icon" href="<?= url_static('favicon-32px.png') ?>">
         <link rel="me" href="https://piaille.fr/@flus">
 
-        <link rel="stylesheet" href="<?= url_static('style.css') ?>">
-
-        <script src="<?= url_static('stimulus.min.js') ?>" defer></script>
-        <script src="<?= url_static('popup.js') ?>" defer></script>
+        <link rel="stylesheet" href="<?= url_static('style/main.css') ?>">
+        <script src="<?= url_static('js/stimulus.min.js') ?>" defer></script>
+        <script src="<?= url_static('js/main.js') ?>" defer></script>
 
         <?php if ($plausible_url): ?>
-            <script defer data-domain="<?= $current_host ?>" src="<?= $plausible_url ?>/js/script.js"></script>
-        <?php endif; ?>
-
-        <?php if ($load_form_statics): ?>
-            <link rel="stylesheet" href="<?= url_static('forms.css') ?>">
-        <?php endif; ?>
-
-        <link href="https://flus.fr/carnet/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Articles du carnet de flus" />
-
-        <?php if (isset($description)): ?>
-            <meta name="description" content="<?= $description ?>" />
+            <script src="<?= $plausible_url ?>/js/script.js" defer data-domain="<?= $current_host ?>"></script>
         <?php endif; ?>
 
         <?php if (isset($og)): ?>
@@ -36,141 +30,214 @@
             <meta property="og:url" content="<?= $canonical ?>" />
             <meta property="og:image" content="<?= $og['image'] ?>" />
             <meta name="twitter:card" content="<?= $og['twitter_card'] ?>">
-            <meta name="twitter:site" content="@flus_fr">
         <?php endif; ?>
     </head>
 
     <body>
-        <a class="no-mobile accessibility-nav call-to-action" href="#contenu" tabindex="0" data-controller="skip-nav" data-action="skip-nav#skip">
-            Sauter au contenu
-        </a>
+        <nav class="accessibility-nav" aria-label="Menu de liens d’évitement">
+            <a href="#contenu" class="button button--primary">
+                Aller au contenu
+            </a>
+        </nav>
 
         <div class="layout">
-            <header class="layout__header">
-                <nav class="nav">
-                    <details
-                        class="nav__popup popup only-mobile"
-                        data-controller="popup"
-                        data-action="click@window->popup#close"
+            <header class="layout__header" role="banner">
+                <nav
+                    class="header__navigation"
+                    data-controller="navigation"
+                    aria-label="Menu de navigation principal"
+                    role="navigation"
+                >
+                    <button
+                        class="navigation__menubutton button button--ghost only-mobile"
+                        data-action="navigation#switch"
+                        data-target="navigation.button"
+                        aria-expanded="false"
                     >
-                        <summary class="popup__opener" title="Ouvrir le menu">
-                            <i class="icon icon--bars"></i>
+                        <?= icon('bars') ?>
+                        <?= icon('times') ?>
 
-                            <span class="sr-only">
-                                Ouvrir le menu
-                            </span>
-                        </summary>
+                        <span class="sr-only">
+                            Ouvrir le menu de navigation
+                        </span>
+                    </button>
 
-                        <ul class="popup__container">
-                            <li class="popup__item popup__item--close">
-                                <button
-                                    type="button"
-                                    class="popup__button"
-                                    data-action="popup#toggle"
-                                    aria-label="Fermer"
-                                    title="Fermer cette fenêtre"
-                                >
-                                    <i class="icon icon--only icon--times"></i>
-                                </button>
-                            </li>
-
-                            <li class="popup__item <?= $current_page === 'home' ? 'popup__item--active' : '' ?>">
-                                <a class="popup__link" href="<?= url('home') ?>">
-                                    Accueil
-                                </a>
-                            </li>
-
-                            <li class="popup__item <?= $current_page === 'tour' ? 'popup__item--active' : '' ?>">
-                                <a class="popup__link" href="<?= url('tour') ?>">
-                                    Visite
-                                </a>
-                            </li>
-
-                            <li class="popup__item <?= $current_page === 'project' ? 'popup__item--active' : '' ?>">
-                                <a class="popup__link" href="<?= url('project') ?>">
-                                    Projet
-                                </a>
-                            </li>
-
-                            <li class="popup__item <?= $current_page === 'pricing' ? 'popup__item--active' : '' ?>">
-                                <a class="popup__link" href="<?= url('pricing') ?>">
-                                    Tarifs
-                                </a>
-                            </li>
-
-                            <li class="popup__item">
-                                <a class="popup__link" href="https://flus.fr/carnet/">
-                                    Carnet
-                                </a>
-                            </li>
-                        </ul>
-                    </details>
-
-                    <a class="nav__link no-mobile" href="<?= url('home') ?>">
-                        <img
-                            class="nav__image"
-                            src="<?= url_static('logo.svg') ?>"
-                            height="40"
-                            alt="Flus"
-                         />
-                    </a>
-
-                    <div class="nav__space"></div>
-
-                    <ul class="nav__container no-mobile">
-                        <li class="nav__item <?= $current_page === 'tour' ? 'nav__item--active' : '' ?>">
-                            <a class="nav__link" href="<?= url('tour') ?>">
-                                Visite
+                    <ul class="navigation__container">
+                        <li>
+                            <a
+                                class="navigation__link"
+                                href="<?= url('features') ?>"
+                                <?= $current_page === 'features' ? 'aria-current="page"' : '' ?>
+                            >
+                                Fonctionnalités
                             </a>
                         </li>
 
-                        <li class="nav__item <?= $current_page === 'project' ? 'nav__item--active' : '' ?>">
-                            <a class="nav__link" href="<?= url('project') ?>">
-                                Projet
-                            </a>
-                        </li>
-
-                        <li class="nav__item <?= $current_page === 'pricing' ? 'nav__item--active' : '' ?>">
-                            <a class="nav__link" href="<?= url('pricing') ?>">
+                        <li>
+                            <a
+                                class="navigation__link"
+                                href="<?= url('pricing') ?>"
+                                <?= $current_page === 'pricing' ? 'aria-current="page"' : '' ?>
+                            >
                                 Tarifs
                             </a>
                         </li>
 
-                        <li class="nav__item">
-                            <a class="nav__link" href="https://flus.fr/carnet/">
-                                Carnet
+                        <li>
+                            <a
+                                class="navigation__link"
+                                href="<?= url_full('home') ?>carnet/"
+                            >
+                                Blog
+                            </a>
+                        </li>
+
+                        <li>
+                            <a
+                                class="navigation__link"
+                                href="<?= url('contact') ?>"
+                                <?= $current_page === 'contact' ? 'aria-current="page"' : '' ?>
+                            >
+                                Contact
+                            </a>
+                        </li>
+
+                        <li class="only-mobile">
+                            <a
+                                class="navigation__link"
+                                href="https://app.flus.fr/login"
+                            >
+                                Se connecter
+                            </a>
+                        </li>
+
+                        <li class="only-mobile">
+                            <a
+                                class="navigation__link"
+                                href="https://app.flus.fr/registration"
+                            >
+                                S’inscrire
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+
+                <div class="header__logo">
+                    <a
+                        href="<?= url('home') ?>"
+                        <?= $current_page === 'home' ? 'aria-current="page"' : '' ?>
+                    >
+                        <img
+                            src="<?= url_static('logo-white.svg') ?>"
+                            height="40"
+                            alt="Flus"
+                        />
+                    </a>
+                </div>
+
+                <div class="col--extend text--right no-mobile">
+                    <a class="button button--primary" href="https://app.flus.fr/registration">
+                        <?= icon('arrow-left', 'rotate180') ?>
+                        S’inscrire
+                    </a>
+
+                    <a class="button button--ghost" href="https://app.flus.fr/login">
+                        Se connecter
+                    </a>
+                </div>
+            </header>
+
+            <main class="layout__content" id="contenu" role="main" tabindex="-1">
+                <?= $this->safe('content') ?>
+            </main>
+
+            <footer class="layout__footer" role="contentinfo">
+                <div class="wrapper wrapper--larger wrapper--center flow flow--large">
+                    <div class="cols cols--center cols--gap-large">
+                        <a href="<?= url('home') ?>">
+                            <img
+                                class="footer__logo"
+                                alt="Flus"
+                                src="<?= url_static('logo.svg') ?>"
+                            />
+                        </a>
+
+                        <ul class="list--nostyle list--inline col--extend cols cols--center cols--hcenter cols--gap">
+                            <li>
+                                <a class="footer__link" href="<?= url('features') ?>">
+                                    Fonctionnalités
+                                </a>
+                            </li>
+
+                            <li>
+                                <a class="footer__link" href="<?= url('pricing') ?>">
+                                    Tarifs
+                                </a>
+                            </li>
+
+                            <li>
+                                <a class="footer__link" href="<?= url_full('home') ?>carnet/">
+                                    Blog
+                                </a>
+                            </li>
+
+                            <li>
+                                <a class="footer__link" href="<?= url('contact') ?>">
+                                    Contact
+                                </a>
+                            </li>
+                        </ul>
+
+                        <p>
+                            <a class="button button--primary" href="https://app.flus.fr/registration">
+                                <?= icon('arrow-left', 'rotate180') ?>
+                                S’inscrire sur Flus
+                            </a>
+                        </p>
+                    </div>
+
+                    <hr class="footer__separator">
+
+                    <ul class="list--nostyle list--inline text--small text--center">
+                        <li>
+                            <a class="footer__link" href="<?= url('legal') ?>">
+                                Mentions légales
+                            </a>
+                        </li>
+
+                        <li>
+                            <a class="footer__link" href="<?= url('security') ?>">
+                                Sécurité
+                            </a>
+                        </li>
+
+                        <li>
+                            <a class="footer__link" href="<?= url('credits') ?>">
+                                Crédits
+                            </a>
+                        </li>
+
+                        <li>
+                            <a class="footer__link" href="https://rss.flus.fr">
+                                Accéder à FreshRSS
+                            </a>
+                        </li>
+
+                        <li>
+                            <a class="footer__link" href="https://status.flus.fr">
+                                Statut des services
                             </a>
                         </li>
                     </ul>
 
-                    <a class="nav__link nav__link--featured" href="https://app.flus.fr/login">
-                        Se connecter
-                    </a>
-                </nav>
-            </header>
+                    <p class="footer__license text--small text--center">
+                        Licence libre
 
-            <main class="layout__content <?= isset($layout_fluid) && $layout_fluid ? 'layout__content--fluid' : '' ?>" id="contenu">
-                <?= $this->safe('content') ?>
-            </main>
-
-            <footer class="layout__footer">
-                <p>
-                    <a class="call-to-action" href="https://app.flus.fr/registration">
-                        S’inscrire sur Flus
-                    </a>
-                </p>
-
-                <p class="paragraph--center">
-                    <a href="<?= url('contact') ?>">Contact</a>&nbsp;·&nbsp;<a href="<?= url('security') ?>">Sécurité</a>&nbsp;·&nbsp;<a href="<?= url('credits') ?>">Crédits</a>&nbsp;·&nbsp;<a href="<?= url('legal') ?>">Mentions légales</a>
-                </p>
-
-                <p class="paragraph--center">
-                    <a href="https://rss.flus.fr">Accéder à FreshRSS</a>&nbsp;·&nbsp;<a href="https://status.flus.fr/">Statut des services</a>
-                </p>
-
-                <p class="copyright">
-                    Licence libre <a href="https://github.com/flusio/flus.fr/blob/main/LICENSE.txt">AGPL-3.0</a> (<a href="https://github.com/flusio">code source</a>)
-                </p>
+                        <a href="https://github.com/flusio/Flus/blob/main/LICENSE.txt">
+                            AGPL-3.0
+                        </a>
+                    </p>
+                </div>
             </footer>
         </div>
     </body>

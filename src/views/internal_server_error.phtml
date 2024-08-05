@@ -1,21 +1,45 @@
 <?php
     $this->layout('error.phtml', [
-        'title' => 'Une erreur est survenue',
+        'title' => 'Erreur interne',
         'error' => $error,
     ]);
 ?>
 
-<h1>
-    Une erreur est survenue durant le traitement de votre requête.
-</h1>
+<section class="panel">
+    <div class="wrapper wrapper--small wrapper--center text--center flow flow--larger">
+        <div class="panel panel--topaz panel--rounded flow flow--large">
+            <h1>
+                Erreur interne
+            </h1>
 
-<p>
-    Si vous le souhaitez, vous pouvez <a href="mailto:marien@flus.io">me
-        prévenir par courriel</a>.
-</p>
+            <div class="flow">
+                <p>
+                    Une erreur interne non prévue est survenue durant le traitement
+                    de votre requête. Vous n’êtes pas responsable de cette erreur.
+                </p>
 
-<p>
-    <a href="<?= url('home') ?>">
-        Revenir à la page d’accueil
-    </a>
-</p>
+                <p>
+                    Si vous le souhaitez, vous pouvez
+                    <a href="mailto:support@flus.fr">
+                        me prévenir de cette erreur par courriel
+                    </a>.
+                </p>
+            </div>
+
+            <p>
+                <a class="button button--primary" href="<?= url('home') ?>">
+                    <?= icon('arrow-left') ?>
+
+                    Revenir à la page d’accueil
+                </a>
+            </p>
+        </div>
+
+        <img
+            alt=""
+            src="<?= url_static('illustrations/server_down.svg') ?>"
+            height="250"
+        />
+    </div>
+</section>
+

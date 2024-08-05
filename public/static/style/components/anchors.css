@@ -1,0 +1,14 @@
+a {
+    color: var(--color-green-gable);
+}
+
+h1 a,
+h2 a,
+h3 a {
+    display: inline-block;
+}
+
+.anchor--nostyle {
+    color: currentcolor;
+    text-decoration: none;
+}

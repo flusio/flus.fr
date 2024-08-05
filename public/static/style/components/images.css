@@ -1,0 +1,32 @@
+img {
+    max-width: 100%;
+}
+
+a > img {
+    vertical-align: middle;
+}
+
+.illustration {
+    border: 15px solid var(--color-white);
+    border-radius: var(--border-radius);
+}
+
+.screenshot {
+    padding: var(--space-larger) var(--space-large);
+
+    text-align: center;
+
+    background-color: var(--color-pampas);
+    border-radius: var(--border-radius);
+}
+
+figure {
+    margin-right: 0;
+    margin-left: 0;
+}
+
+figcaption {
+    padding: var(--space-smaller);
+
+    font-style: italic;
+}

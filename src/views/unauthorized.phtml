@@ -1,16 +1,38 @@
 <?php
     $this->layout('error.phtml', [
-        'title' => 'Authentification nécessaire',
+        'title' => 'Connexion requise',
         'error' => $error,
     ]);
 ?>
 
-<h1>
-    Désolé, mais vous n’êtes pas connecté‧e…
-</h1>
+<section class="panel">
+    <div class="wrapper wrapper--small wrapper--center text--center flow flow--larger">
+        <div class="panel panel--topaz panel--rounded flow flow--large">
+            <h1>
+                Connexion requise
+            </h1>
 
-<p>
-    <a href="<?= url('home') ?>">
-        Revenir à la page d’accueil
-    </a>
-</p>
+            <p>
+                Vous devez être connecté·e pour accéder à cet espace. Si vous
+                avez suivi un lien depuis un email, ce lien a sans doute
+                expiré. Rendez-vous dans Flus, «&nbsp;Compte &amp;
+                données&nbsp;» et «&nbsp;Gérer votre abonnement&nbsp;» pour
+                accéder à cet espace.
+            </p>
+
+            <p>
+                <a class="button button--primary" href="https://app.flus.fr">
+                    <?= icon('arrow-left') ?>
+
+                    Revenir à Flus
+                </a>
+            </p>
+        </div>
+
+        <img
+            alt=""
+            src="<?= url_static('illustrations/secure_login.svg') ?>"
+            height="250"
+        />
+    </div>
+</section>

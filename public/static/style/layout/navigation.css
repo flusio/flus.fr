@@ -1,0 +1,19 @@
+@media(max-width: 799px) {
+    .navigation__menubutton {
+        padding: var(--space-smaller);
+
+        border-radius: 50%;
+
+        aspect-ratio: 1/1;
+    }
+
+    .navigation__menubutton[aria-expanded="true"] {
+        background-color: var(--color-green-topaz);
+    }
+
+    .navigation__menubutton[aria-expanded="true"] .icon--bars,
+    .navigation__menubutton[aria-expanded="false"] .icon--times,
+    .navigation__menubutton[aria-expanded="false"] + .navigation__container {
+        display: none;
+    }
+}

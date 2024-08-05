@@ -1,0 +1,43 @@
+.accordion {
+    border-bottom: 1px solid var(--color-green-caribbean);
+}
+
+.accordion__title {
+    --accordion-icon-size: 1.5rem;
+
+    padding-top: var(--space-medium);
+    padding-right: calc(var(--accordion-icon-size) + var(--space-small));
+    padding-bottom: var(--space-medium);
+
+    color: var(--color-green-gable);
+    font-weight: 600;
+
+    background-image: url("../../icons/angle-down.svg");
+    background-repeat: no-repeat;
+    background-position: right 0 top 50%;
+    background-size: var(--accordion-icon-size);
+
+    list-style: none;
+}
+
+.accordion__title:focus {
+    outline: none;
+}
+
+.accordion__title:focus-visible {
+    outline: var(--outline-width) solid var(--outline-color);
+    outline-offset: var(--outline-width);
+}
+
+.accordion[open] .accordion__title {
+    background-image: url("../../icons/angle-up.svg");
+}
+
+.accordion__title::-webkit-details-marker {
+    display: none;
+}
+
+.accordion__body {
+    padding-top: var(--space-large);
+    padding-bottom: var(--space-large);
+}

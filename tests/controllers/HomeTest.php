@@ -15,7 +15,7 @@ class HomeTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', '/');
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponseContains($response, 'Une plateforme pour agréger, stocker et partager votre veille');
+        $this->assertResponseContains($response, 'Flus, le complément éditorial de votre veille');
         $this->assertResponsePointer($response, 'home/index.phtml');
     }
 

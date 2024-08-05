@@ -1,0 +1,11 @@
+blockquote {
+    margin-left: 0;
+    margin-right: 0;
+    padding: var(--space-small) var(--space-medium);
+
+    font-style: italic;
+
+    background-color: var(--color-pampas);
+    border-left: 10px solid var(--color-green-caribbean);
+    border-radius: var(--border-radius);
+}

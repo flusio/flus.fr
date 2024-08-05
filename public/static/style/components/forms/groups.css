@@ -1,0 +1,8 @@
+.form-group__caption {
+    font-size: var(--font-size-small);
+}
+
+.form-group__error {
+    color: var(--color-red-persian);
+    font-weight: 600;
+}
