@@ -1,0 +1,79 @@
+/**
+ * Accessible custom checkboxes and radio buttons.
+ * @see https://www.a11ywithlindsey.com/blog/create-custom-keyboard-accesible-checkboxes
+ */
+input[type="checkbox"] {
+    position: absolute;
+
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+
+    width: 1px;
+    height: 1px;
+}
+
+input[type="checkbox"] + label {
+    position: relative;
+
+    display: inline-flex;
+
+    align-items: center;
+}
+
+input[type="checkbox"][hidden] + label {
+    display: none;
+}
+
+input[type="checkbox"] + label::before {
+    content: "";
+
+    position: relative;
+
+    width: 25px;
+    height: 25px;
+    margin-right: var(--space-small);
+
+    flex-shrink: 0;
+
+    background-color: var(--color-white);
+    border: 1px solid var(--color-green-topaz);
+    border-radius: 5px;
+
+    transition:
+        border-color 0.2s ease-in-out,
+        background-color 0.2s ease-in-out;
+}
+
+input[type="checkbox"]:focus + label {
+    outline: var(--outline-width) solid var(--outline-color);
+    outline-offset: var(--outline-offset);
+}
+
+input[type="checkbox"]:checked + label::before {
+    border-color: var(--color-green-gable);
+}
+
+input[type="checkbox"]:checked + label::after {
+    content: "";
+
+    position: absolute;
+
+    width: 15px;
+    height: 7px;
+    margin-top: -4px;
+    margin-left: 5px;
+
+    border-bottom: 2px solid var(--color-green-gable);
+    border-left: 2px solid var(--color-green-gable);
+
+    transform: rotate(-45deg);
+}
+
+input[type="checkbox"][disabled] + label {
+    color: var(--color-corduroy);
+    font-weight: normal;
+}
+
+input[type="checkbox"][disabled] + label::before {
+    border-color: var(--color-corduroy);
+}

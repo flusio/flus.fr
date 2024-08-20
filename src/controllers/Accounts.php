@@ -63,7 +63,7 @@ class Accounts
         }
 
         if (!$account->checkAccess($access_token)) {
-            return Response::badRequest('bad_request.phtml');
+            return Response::unauthorized('unauthorized.phtml');
         }
 
         utils\CurrentUser::logUserIn($account->id);
@@ -303,10 +303,6 @@ class Accounts
         $account = models\Account::find($user['account_id']);
         if (!$account) {
             return Response::unauthorized('unauthorized.phtml');
-        }
-
-        if ($account->isManaged()) {
-            return Response::unauthorized('accounts/blocked.phtml');
         }
 
         return Response::ok('accounts/invoices.phtml', [

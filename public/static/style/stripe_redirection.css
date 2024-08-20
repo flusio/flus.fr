@@ -1,10 +1,16 @@
-@font-face {
-    font-family: 'Open Sans';
-    font-style: normal;
-    font-weight: 400;
-    src: local('Open Sans Regular'), local('OpenSans-Regular'),
-         url('fonts/open-sans-v17-latin-regular.woff2') format('woff2'),
-         url('fonts/open-sans-v17-latin-regular.woff') format('woff');
+@import "./variables/colors.css";
+@import "./utils/fonts.css";
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 120%;
+
+    scroll-behavior: smooth;
 }
 
 body {
@@ -16,11 +22,20 @@ body {
     flex-direction: column;
     justify-content: center;
 
-    font-size: 1.75rem;
     text-align: center;
-    font-family: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+    font-family:
+        Raleway,
+        system-ui,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        Oxygen-Sans,
+        Ubuntu,
+        Cantarell,
+        "Helvetica Neue",
+        sans-serif;
 
-    background-color: #fdfcff;
+    background-color: var(--color-pampas);
 }
 
 /**
@@ -34,14 +49,15 @@ body {
 }
 
 #stripe-error {
-    color: #ba1109;
+    color: var(--color-red-persian);
+    font-weight: 600;
 }
 
 #spinner {
     width: 40px;
     height: 40px;
     margin: 30px auto;
-    background-color: #333;
+    background-color: var(--color-green-caribbean);
 
     border-radius: 100%;
     -webkit-animation: sk-scaleout 1.0s infinite ease-in-out;

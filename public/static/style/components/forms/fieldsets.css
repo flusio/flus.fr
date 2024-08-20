@@ -1,0 +1,13 @@
+fieldset {
+    min-width: auto;
+    padding: var(--space-medium);
+
+    background-color: var(--color-white);
+    border: 1px solid var(--color-green-gable);
+    border-radius: var(--border-radius);
+}
+
+legend {
+    padding-right: var(--space-medium);
+    padding-left: var(--space-medium);
+}

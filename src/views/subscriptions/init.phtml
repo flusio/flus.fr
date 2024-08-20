@@ -5,228 +5,233 @@
     ]);
 ?>
 
-<section class="section">
-    <div class="header">
-        <h1 class="header__title">
+<section class="panel">
+    <div class="wrapper wrapper--small flow flow--larger">
+        <h1>
             Votre abonnement
         </h1>
-    </div>
 
-    <p class="section__intro">
-        <?php if ($account->isFree()): ?>
-            Vous bénéficiez d’un abonnement gratuit.
-        <?php elseif ($account->hasExpired()): ?>
-            Votre abonnement a expiré le <strong><?= _d($account->expired_at, 'dd MMMM yyyy') ?>.</strong>
-        <?php else: ?>
-            Votre abonnement expirera le <strong><?= _d($account->expired_at, 'dd MMMM yyyy') ?>.</strong>
-        <?php endif; ?>
-    </p>
-
-    <?php $count_accounts = $account->countManagedAccounts() + 1; ?>
-
-    <?php if ($account->expired_at > \Minz\Time::fromNow(1, 'month')): ?>
-        <p class="paragraph--featured paragraph--limit">
-            Vous pourrez renouveler à 1 mois de l’expiration de votre abonnement.
+        <p class="panel panel--grey panel--rounded text--center">
+            <?php if ($account->isFree()): ?>
+                Vous bénéficiez d’un abonnement gratuit.
+            <?php elseif ($account->hasExpired()): ?>
+                Votre abonnement a expiré le <strong><?= _d($account->expired_at, 'dd MMMM yyyy') ?>.</strong>
+            <?php else: ?>
+                Votre abonnement expirera le <strong><?= _d($account->expired_at, 'dd MMMM yyyy') ?>.</strong>
+            <?php endif; ?>
         </p>
 
-        <?php if ($account->entity_type === 'legal'): ?>
-            <p class="paragraph--center paragraph--limit">
-                Vous gérez <?= $count_accounts ?> compte(s)
-                → <a href="<?= url('managed accounts') ?>">Gérer</a>
+        <?php if ($account->expired_at > \Minz\Time::fromNow(1, 'month')): ?>
+            <p class="panel panel--topaz panel--rounded text--bold">
+                Vous pourrez renouveler à 1 mois de l’expiration de votre abonnement.
             </p>
-        <?php endif; ?>
-    <?php elseif (!$account->isFree()): ?>
-        <?php if ($ongoing_payment): ?>
-            <p class="paragraph--featured paragraph--limit">
-                <strong>
-                    Attention, vous avez un paiement en cours de traitement, vous devriez attendre avant d’en effectuer un nouveau…
-                </strong>
-            </p>
-        <?php endif; ?>
-
-        <form method="post" action="<?= url('subscription renew') ?>" class="form--renew">
-            <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
-
-            <?php if ($error): ?>
-                <p class="form__error">
-                    <?= $error ?>
+        <?php elseif (!$account->isFree()): ?>
+            <?php if ($ongoing_payment): ?>
+                <p class="panel panel--topaz panel--rounded text--bold">
+                    Attention, vous avez un paiement en cours de traitement, vous devriez attendre avant d’en effectuer un nouveau.
                 </p>
             <?php endif; ?>
 
-            <p class="paragraph--center paragraph--limit">
-                Vous êtes sur le point de renouveler votre abonnement à Flus pour
-                <strong>une période de 1 an.</strong>
-            </p>
-
-            <div
-                class="form-group amount-selector"
-                data-controller="amount-selector"
-                data-amount-selector-initial-amount="<?= $amount ?>"
-                data-amount-selector-count-accounts="<?= $count_accounts ?>"
+            <form
+                method="post"
+                action="<?= url('subscription renew') ?>"
+                class="flow flow--larger"
             >
-                <label>
-                    Sélectionner un tarif (<a href="<?= url('pricing') ?>#choisir">obtenir de l’aide</a>)
-                </label>
+                <?php if ($error): ?>
+                    <p class="form__error">
+                        <?= $error ?>
+                    </p>
+                <?php endif; ?>
 
-                <div class="amount-selector__container">
-                    <div class="amount-selector__item">
-                        <input
-                            id="amount-solidarity"
-                            name="tariff"
-                            value="solidarity"
-                            class="amount-selector__radio"
-                            type="radio"
-                            <?= $amount === 15 ? 'checked' : '' ?>
-                            data-action="amount-selector#select"
-                            data-target="amount-selector.radio"
-                            data-value="15"
-                        />
+                <div class="flow">
+                    <p>
+                        Vous êtes sur le point de renouveler votre abonnement à Flus pour
+                        <strong>une période de 1 an.</strong>
+                    </p>
 
-                        <label
-                            for="amount-solidarity"
-                            class="amount-selector__label"
-                        >
-                            <span class="amount-selector__amount">
-                                15 €
-                            </span>
-
-                            <span class="amount-selector__title">
-                                solidaire
-                            </span>
-                        </label>
-                    </div>
-
-                    <div class="amount-selector__item">
-                        <input
-                            id="amount-stability"
-                            name="tariff"
-                            value="stability"
-                            class="amount-selector__radio"
-                            type="radio"
-                            <?= $amount === 30 ? 'checked' : '' ?>
-                            data-action="amount-selector#select"
-                            data-target="amount-selector.radio"
-                            data-value="30"
-                        />
-
-                        <label
-                            for="amount-stability"
-                            class="amount-selector__label"
-                        >
-                            <span class="amount-selector__amount">
-                                30 €
-                            </span>
-
-                            <span class="amount-selector__title">
-                                équilibre
-                            </span>
-                        </label>
-                    </div>
-
-                    <div class="amount-selector__item">
-                        <input
-                            id="amount-contribution"
-                            name="tariff"
-                            value="contribution"
-                            class="amount-selector__radio"
-                            type="radio"
-                            <?= $amount === $contribution_price ? 'checked' : '' ?>
-                            data-action="amount-selector#select"
-                            data-target="amount-selector.radio"
-                            data-value="<?= $contribution_price ?>"
-                        />
-
-                        <label
-                            for="amount-contribution"
-                            class="amount-selector__label"
-                        >
-                            <span class="amount-selector__amount">
-                                <?= $contribution_price ?> €
-                            </span>
-
-                            <span class="amount-selector__title">
-                                soutien
-                            </span>
-                        </label>
-                    </div>
+                    <p>
+                        De 0 à 120&nbsp;€, c’est vous qui choisissez le prix
+                        (<a href="<?= url('pricing') ?>#choisir">obtenir de l’aide sur le prix libre</a>).
+                    </p>
                 </div>
 
-                <label for="amount" class="amount-selector__choose-label">
-                    <span>
-                        ou choisir
-                    </span>
+                <?php $count_accounts = $account->countManagedAccounts() + 1; ?>
+
+                <div
+                    class="amount-selector flow flow--large"
+                    data-controller="amount-selector"
+                    data-amount-selector-initial-amount="<?= $amount ?>"
+                    data-amount-selector-count-accounts="<?= $count_accounts ?>"
+                >
+                    <?php if (isset($errors['amount'])): ?>
+                        <p class="form-group__error" id="amount-error">
+                            Erreur&nbsp;:
+                            <?= $errors['amount'] ?>
+                        </p>
+                    <?php endif; ?>
+
+                    <label for="amount" class="amount-selector__choose-label">
+                        <span>
+                            Prendre un abonnement à
+                        </span>
+
+                        <input
+                            id="amount"
+                            class="amount-selector__input"
+                            name="amount"
+                            type="number"
+                            step="1"
+                            min="0"
+                            max="120"
+                            value="<?= $amount ?>"
+                            data-action="amount-selector#change"
+                            data-target="amount-selector.amount"
+                            required
+                            <?php if (isset($errors['amount'])): ?>
+                                aria-invalid="true"
+                                aria-errormessage="amount-error"
+                            <?php endif; ?>
+                        />
+
+                        <span>
+                            euros.
+                        </span>
+                    </label>
+
+                    <p>
+                        Ou choisir un tarif recommandé&nbsp;:
+                    </p>
+
+                    <div class="cols cols--gap-large cols--hcenter text--center">
+                        <div class="col--size3">
+                            <input
+                                id="amount-solidarity"
+                                name="tariff"
+                                value="solidarity"
+                                class="amount-selector__radio"
+                                type="radio"
+                                <?= $amount === 15 ? 'checked' : '' ?>
+                                data-action="amount-selector#select"
+                                data-target="amount-selector.radio"
+                                data-value="15"
+                            />
+
+                            <label
+                                for="amount-solidarity"
+                                class="amount-selector__label"
+                            >
+                                <span class="amount-selector__amount">
+                                    15&nbsp;€
+                                </span>
+
+                                <span class="amount-selector__title">
+                                    &nbsp;solidaire
+                                </span>
+                            </label>
+                        </div>
+
+                        <div class="col--size3">
+                            <input
+                                id="amount-stability"
+                                name="tariff"
+                                value="stability"
+                                class="amount-selector__radio"
+                                type="radio"
+                                <?= $amount === 30 ? 'checked' : '' ?>
+                                data-action="amount-selector#select"
+                                data-target="amount-selector.radio"
+                                data-value="30"
+                            />
+
+                            <label
+                                for="amount-stability"
+                                class="amount-selector__label"
+                            >
+                                <span class="amount-selector__amount">
+                                    30&nbsp;€
+                                </span>
+
+                                <span class="amount-selector__title">
+                                    &nbsp;équilibre
+                                </span>
+                            </label>
+                        </div>
+
+                        <div class="col--size3">
+                            <input
+                                id="amount-contribution"
+                                name="tariff"
+                                value="contribution"
+                                class="amount-selector__radio"
+                                type="radio"
+                                <?= $amount === $contribution_price ? 'checked' : '' ?>
+                                data-action="amount-selector#select"
+                                data-target="amount-selector.radio"
+                                data-value="<?= $contribution_price ?>"
+                            />
+
+                            <label
+                                for="amount-contribution"
+                                class="amount-selector__label"
+                            >
+                                <span class="amount-selector__amount">
+                                    <?= $contribution_price ?>&nbsp;€
+                                </span>
+
+                                <span class="amount-selector__title">
+                                    &nbsp;soutien
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <?php if ($account->entity_type === 'legal'): ?>
+                        <p>
+                            Vous allez renouveler pour
+                            <a href="<?= url('managed accounts') ?>"><?= $count_accounts ?> compte(s)</a>,<br>
+                            <span class="text--big text--bold">
+                                soit un total de
+                                <span data-target="amount-selector.totalAmount"></span>&nbsp;€
+                            </span>
+                        </p>
+                    <?php endif; ?>
+                </div>
+
+                <div class="panel panel--grey panel--rounded flow">
+                    <p class="form-group__caption">
+                        Vous devez accepter les
+                        <a href="<?= url('cgv') ?>" target="_blank" rel="noopener noreferrer nofollow">
+                            Conditions Générales de Vente</a>.
+                        Vous serez ensuite redirigé·e vers le prestataire de paiement
+                        Stripe.
+                    </p>
 
                     <input
-                        id="amount"
-                        class="amount-selector__input"
-                        name="amount"
-                        type="number"
-                        step="1"
-                        min="0"
-                        max="120"
-                        value="<?= $amount ?>"
-                        data-action="amount-selector#change"
-                        data-target="amount-selector.amount"
+                        id="cgv"
+                        name="accept_cgv"
+                        type="checkbox"
                         required
-                        <?= isset($errors['amount']) ? 'autofocus' : '' ?>
                     />
 
-                    <span>
-                        euros
-                    </span>
-                </label>
+                    <label for="cgv">
+                        Accepter les Conditions Générales de Vente
+                    </label>
 
-                <?php if (isset($errors['amount'])): ?>
-                    <p class="form-group__error">
-                        <?= $errors['amount'] ?>
-                    </p>
-                <?php endif; ?>
+                    <?php if (isset($errors['cgv'])): ?>
+                        <p class="form-group__error">
+                            <?= $errors['cgv'] ?>
+                        </p>
+                    <?php endif; ?>
+                </div>
 
-                <?php if ($account->entity_type === 'legal'): ?>
-                    <p class="paragraph--center paragraph--limit">
-                        Vous allez renouveler pour <?= $count_accounts ?> compte(s)
-                        → <a href="<?= url('managed accounts') ?>">Gérer</a>
-                    </p>
+                <div class="text--center">
+                    <button type="submit" class="button--primary">
+                        Renouveler votre abonnement
+                    </button>
+                </div>
 
-                    <p class="paragraph--featured">
-                        Soit un total de
-                        <span data-target="amount-selector.totalAmount"></span> €
-                    </p>
-                <?php endif; ?>
-            </div>
-
-            <div class="form-group form-group--cgv <?= isset($errors['cgv']) ? 'form-group--invalid' : '' ?>">
-                <p class="form-group__caption">
-                    Vous devez accepter les
-                    <a href="<?= url('cgv') ?>" target="_blank" rel="noopener noreferrer nofollow">
-                        Conditions Générales de Vente</a>.
-                    Vous serez ensuite redirigé·e vers le prestataire de paiement
-                    <a href="https://stripe.com/fr" target="_blank" rel="noopener noreferrer nofollow">Stripe</a>.
-                </p>
-
-                <input
-                    id="cgv"
-                    name="accept_cgv"
-                    type="checkbox"
-                    required
-                />
-
-                <label for="cgv">
-                    Accepter les Conditions Générales de Vente
-                </label>
-
-                <?php if (isset($errors['cgv'])): ?>
-                    <p class="form-group__error">
-                        <?= $errors['cgv'] ?>
-                    </p>
-                <?php endif; ?>
-            </div>
-
-            <div class="form__actions">
-                <button type="submit" class="button--primary">
-                    Renouveler votre abonnement
-                </button>
-            </div>
-        </form>
-    <?php endif; ?>
+                <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+            </form>
+        <?php endif; ?>
+    </div>
 </section>

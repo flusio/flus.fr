@@ -59,7 +59,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', '/account');
 
         $this->assertResponseCode($response, 401);
-        $this->assertResponseContains($response, 'Désolé, mais vous n’êtes pas connecté‧e');
+        $this->assertResponseContains($response, 'Connexion requise');
     }
 
     public function testLoginRedirectsToShow(): void
@@ -176,7 +176,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
             'access_token' => 'not the token',
         ]);
 
-        $this->assertResponseCode($response, 400);
+        $this->assertResponseCode($response, 401);
         $user = utils\CurrentUser::get();
         $this->assertNull($user);
     }
@@ -195,7 +195,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
             'access_token' => $token->token,
         ]);
 
-        $this->assertResponseCode($response, 400);
+        $this->assertResponseCode($response, 401);
         $user = utils\CurrentUser::get();
         $this->assertNull($user);
     }
@@ -214,7 +214,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
             'access_token' => null,
         ]);
 
-        $this->assertResponseCode($response, 400);
+        $this->assertResponseCode($response, 401);
         $user = utils\CurrentUser::get();
         $this->assertNull($user);
     }

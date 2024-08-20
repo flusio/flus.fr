@@ -2,84 +2,124 @@
 <html lang="fr">
     <head>
         <meta charset="UTF-8" />
+        <title><?= $title ?></title>
         <meta name="viewport" content="initial-scale=1.0" />
-        <link rel="shortcut icon" href="<?= url_static('favicon-32px.png') ?>">
         <meta name="robots" content="noindex, nofollow">
 
-        <link rel="stylesheet" href="<?= url_static('account.css') ?>">
-        <link rel="stylesheet" href="<?= url_static('forms.css') ?>">
+        <link rel="shortcut icon" href="<?= url_static('favicon-32px.png') ?>">
 
-        <script src="<?= url_static('stimulus.min.js') ?>" defer></script>
-        <script src="<?= url_static('amount-selector.js') ?>" defer></script>
-        <script src="<?= url_static('profile.js') ?>" defer></script>
+        <link rel="stylesheet" href="<?= url_static('style/main.css') ?>">
+        <script src="<?= url_static('js/stimulus.min.js') ?>" defer></script>
+        <script src="<?= url_static('js/main.js') ?>" defer></script>
 
         <?php if ($plausible_url): ?>
             <script defer data-domain="<?= $current_host ?>" src="<?= $plausible_url ?>/js/script.js"></script>
         <?php endif; ?>
-
-        <title><?= $title ?></title>
     </head>
 
     <body>
-        <div class="layout">
-            <header class="layout__header">
-                <a href="<?= url('account') ?>">
-                    <img
-                        class="logo"
-                        src="<?= url_static('logo.svg') ?>"
-                        width="125"
-                        height="42"
-                        alt="Flus"
-                     />
-                </a>
+        <nav class="accessibility-nav" aria-label="Menu de liens d’évitement">
+            <a href="#contenu" class="button button--primary">
+                Aller au contenu
+            </a>
+        </nav>
 
-                <div class="layout__header-separator"></div>
+        <div class="layout cols">
+            <aside class="layout__aside">
+                <div class="aside__logo">
+                    <a href="<?= url('account') ?>">
+                        <img
+                            src="<?= url_static('logo-white.svg') ?>"
+                            height="40"
+                            alt="Flus"
+                         />
+                    </a>
+                </div>
 
-                <form method="post" action="<?= url('account logout') ?>">
-                    <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
-                    <button class="button--ghost" type="submit">
-                        Revenir à l’application
+                <nav
+                    class="aside__navigation"
+                    data-controller="navigation"
+                    aria-label="Menu de navigation principal"
+                    role="navigation"
+                >
+                    <button
+                        class="navigation__menubutton button button--ghost only-mobile"
+                        data-action="navigation#switch"
+                        data-target="navigation.button"
+                        aria-expanded="false"
+                    >
+                        <?= icon('bars') ?>
+                        <?= icon('times') ?>
+
+                        <span class="sr-only">
+                            Ouvrir le menu de navigation
+                        </span>
                     </button>
-                </form>
-            </header>
 
-            <?php $nav_disabled = $nav_disabled ?? false; ?>
-            <?php if (!$nav_disabled): ?>
-                <nav class="layout__nav">
-                    <ul>
-                        <?php if ($current_account && !$current_account->mustSetAddress()): ?>
-                            <li class="layout__nav-item--subscription">
+                    <div class="navigation__container flow flow--large">
+                        <form method="post" action="<?= url('account logout') ?>">
+                            <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+                            <button type="submit" class="button--primary button--block">
+                                <?= icon('arrow-left') ?>
+
+                                <?php if ($current_account && $current_account->preferred_service === 'freshrss'): ?>
+                                    Revenir à FreshRSS
+                                <?php else: ?>
+                                    Revenir à Flus
+                                <?php endif; ?>
+                            </button>
+                        </form>
+
+                        <ul class="list--nostyle flow flow--smaller">
+                            <?php if ($current_account && !$current_account->mustSetAddress()): ?>
+                                <li>
+                                    <a
+                                        class="navigation__link"
+                                        href="<?= url('subscription init') ?>"
+                                        <?= $current_page === 'subscription' ? 'aria-current="page"' : '' ?>
+                                    >
+                                        Abonnement
+                                    </a>
+                                </li>
+                            <?php endif; ?>
+
+                            <?php if ($current_account && $current_account->entity_type === 'legal'): ?>
+                                <li>
+                                    <a
+                                        class="navigation__link"
+                                        href="<?= url('managed accounts') ?>"
+                                        <?= $current_page === 'managed accounts' ? 'aria-current="page"' : '' ?>
+                                    >
+                                        Gestion des comptes
+                                    </a>
+                                </li>
+                            <?php endif; ?>
+
+                            <li>
                                 <a
-                                    href="<?= url('subscription init') ?>"
-                                    <?= $current_page === 'subscription' ? 'aria-current="page"' : '' ?>
+                                    class="navigation__link"
+                                    href="<?= url('account profile') ?>"
+                                    <?= $current_page === 'profile' ? 'aria-current="page"' : '' ?>
                                 >
-                                    Abonnement
+                                    Profil de facturation
                                 </a>
                             </li>
-                        <?php endif; ?>
 
-                        <li class="layout__nav-item--profile">
-                            <a
-                                href="<?= url('account profile') ?>"
-                                <?= $current_page === 'profile' ? 'aria-current="page"' : '' ?>
-                            >
-                                Profil
-                            </a>
-                        </li>
-
-                        <li class="layout__nav-item--invoices">
-                            <a
-                                href="<?= url('account invoices') ?>"
-                                <?= $current_page === 'invoices' ? 'aria-current="page"' : '' ?>
-                            >
-                                Factures
-                            </a>
-                        </li>
-                    </ul>
+                            <li>
+                                <a
+                                    class="navigation__link"
+                                    href="<?= url('account invoices') ?>"
+                                    <?= $current_page === 'invoices' ? 'aria-current="page"' : '' ?>
+                                >
+                                    Historique des paiements
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                 </nav>
-            <?php endif; ?>
+            </aside>
 
-            <main class="layout__content" id="contenu">
+            <main class="layout__content col--extend" id="contenu" tabindex="-1">
                 <?= $this->safe('content') ?>
             </main>
         </div>

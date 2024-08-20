@@ -5,25 +5,34 @@
     ]);
 ?>
 
-<section class="section">
-    <p class="paragraph--featured paragraph--limit">
-        Votre paiement a bien été pris en compte, merci pour votre soutien&nbsp;!
-    </p>
+<section class="panel">
+    <div class="wrapper wrapper--small flow flow--larger">
+        <div class="panel panel--primary panel--rounded flow flow--larger text--center">
+            <p class="text--big text--bold">
+                Votre paiement a bien été pris en compte, merci de votre soutien&nbsp;!
+            </p>
 
-    <form method="post" action="<?= url('account logout') ?>">
-        <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+            <form method="post" action="<?= url('account logout') ?>">
+                <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
 
-        <p class="paragraph--center">
-            <button class="button--primary" type="submit">
-                Revenir à l’application
-            </button>
-        </p>
-    </form>
+                <button class="button--primary" type="submit">
+                    <?= icon('arrow-left') ?>
 
-    <img
-        class="illustration illustration--centered"
-        alt=""
-        src="<?= url_static('illustrations/super_thank_you.svg') ?>"
-        height="300"
-    />
+                    <?php if ($current_account && $current_account->preferred_service === 'freshrss'): ?>
+                        Revenir à FreshRSS
+                    <?php else: ?>
+                        Revenir à Flus
+                    <?php endif; ?>
+                </button>
+            </form>
+        </div>
+
+        <div class="text--center">
+            <img
+                alt=""
+                src="<?= url_static('illustrations/a_whole_year.svg') ?>"
+                height="300"
+            />
+        </div>
+    </div>
 </section>

@@ -1,115 +1,112 @@
 <?php
     $this->layout('account.phtml', [
-        'title' => 'Gestion des comptes abonnés',
-        'current_page' => 'subscription',
+        'title' => 'Gestion des comptes',
+        'current_page' => 'managed accounts',
     ]);
 ?>
 
-<section class="section">
-    <div class="header">
-        <h1 class="header__title">
-            Gestion des comptes abonnés
+<section class="panel">
+    <div class="wrapper flow flow--larger">
+        <h1>
+            Gestion des comptes
         </h1>
-    </div>
 
-    <p class="section__intro">
-        Ici, vous pouvez décider de renouveler l’abonnement d’autres comptes.<br>
-        <a href="<?= url('subscription init') ?>">Retourner au renouvellement</a>
-    </p>
+        <p class="wrapper wrapper--small">
+            Ici, vous pouvez ajouter des comptes dont vous renouvellerez l’abonnement.
+        </p>
 
-    <form
-        method="post"
-        action="<?= url('add managed account') ?>"
-    >
-        <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+        <div class="flow">
+            <form
+                class="wrapper wrapper--small flow flow--large"
+                method="post"
+                action="<?= url('add managed account') ?>"
+            >
+                <?php if ($error): ?>
+                    <p class="form__error">
+                        <?= $error ?>
+                    </p>
+                <?php endif; ?>
 
-        <?php if ($error): ?>
-            <p class="form__error">
-                <?= $error ?>
-            </p>
-        <?php endif; ?>
-
-        <div class="form-group <?= isset($errors['email']) ? 'form-group--invalid' : '' ?>">
-            <label for="email">
-                Ajouter une adresse courriel
-            </label>
-
-            <div class="columns columns--center">
-                <div class="columns__item columns__item--size9">
-                    <input
-                        id="email"
-                        name="email"
-                        type="email"
-                        value="<?= $email ?>"
-                        required
-                    />
+                <div class="flow flow--small">
+                    <label for="email">
+                        Ajouter à partir d’une adresse courriel
+                    </label>
 
                     <?php if (isset($errors['email'])): ?>
                         <p class="form-group__error">
+                            Erreur&nbsp;:
                             <?= $errors['email'] ?>
                         </p>
                     <?php endif; ?>
+
+                    <div class="cols cols--gap">
+                        <div class="col--extend">
+                            <input
+                                id="email"
+                                name="email"
+                                type="email"
+                                value="<?= $email ?>"
+                            />
+                        </div>
+
+                        <div class="col--size3">
+                            <button type="submit" class="button--primary button--block">
+                                Ajouter
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="columns__item columns__item--size3">
-                    <button type="submit" class="button--primary">
-                        Ajouter
-                    </button>
-                </div>
-            </div>
+                <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+            </form>
+
+            <?php $has_inactive_account = false; ?>
+            <ul class="list--nostyle list--border list--strip list--padded">
+                <?php array_unshift($managedAccounts, $account); ?>
+
+                <?php foreach ($managedAccounts as $managedAccount): ?>
+                    <li class="cols cols--gap-large cols--center">
+                        <div class="col--extend">
+                            <?= $managedAccount->email ?>
+
+                            <?php if ($managedAccount->id === $account->id): ?>
+                                (vous)
+                            <?php endif; ?>
+
+                            <?php if (!$managedAccount->isSync()): ?>
+                                <?php $has_inactive_account = true; ?>
+                                <span aria-describedby="inactive-description">
+                                    (inactif *)
+                                </span>
+                            <?php endif; ?>
+                        </div>
+
+                        <div class="col--size3">
+                            expire le <?= _d($managedAccount->expired_at, 'dd MMM yyyy') ?>
+                        </div>
+
+                        <div class="col--size2">
+                            <?php if ($managedAccount->id !== $account->id): ?>
+                                <form method="post" action="<?= url('delete managed account', ['id' => $managedAccount->id]) ?>">
+                                    <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+                                    <button type="submit" class="button--default button--block">
+                                        Retirer
+                                    </button>
+                                </form>
+                            <?php endif; ?>
+                        </div>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
         </div>
-    </form>
 
-    <?php $has_inactive_account = false; ?>
-    <table>
-        <thead>
-            <tr>
-                <th>Compte</th>
-                <th>Expire le</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-
-        <tbody>
-            <?php array_unshift($managedAccounts, $account); ?>
-
-            <?php foreach ($managedAccounts as $managedAccount): ?>
-                <tr>
-                    <td>
-                        <?= $managedAccount->email ?>
-                        <?php if ($managedAccount->id === $account->id): ?>
-                            (vous)
-                        <?php endif; ?>
-
-                        <?php if (!$managedAccount->isSync()): ?>
-                            <?php $has_inactive_account = true; ?>
-                            (inactif *)
-                        <?php endif; ?>
-                    </td>
-
-                    <td>
-                        <?= _d($managedAccount->expired_at, 'dd MMM yyyy') ?>
-                    </td>
-
-                    <td>
-                        <?php if ($managedAccount->id !== $account->id): ?>
-                            <form method="post" action="<?= url('delete managed account', ['id' => $managedAccount->id]) ?>">
-                                <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
-                                <button type="submit" class="button--default">
-                                    Supprimer
-                                </button>
-                            </form>
-                        <?php endif; ?>
-                    </td>
-                </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
-
-    <?php if ($has_inactive_account): ?>
-        <p class="paragraph--secondary paragraph--limit">
-            * Les comptes inactifs sont inutilisés. Vous pouvez les supprimer de
-            vos comptes gérés (ou relancer les personnes concernées).
-        </p>
-    <?php endif; ?>
+        <?php if ($has_inactive_account): ?>
+            <div class="wrapper wrapper--small">
+                <p class="panel panel--grey panel--rounded" id="inactive-description">
+                    * Les comptes inactifs sont inutilisés. Vous pouvez les retirer
+                    de vos comptes gérés (ou relancer les personnes concernées).
+                </p>
+            </div>
+        <?php endif; ?>
+    </div>
 </section>

@@ -5,108 +5,122 @@
     ]);
 ?>
 
-<section class="section">
-    <div class="header">
-        <h1 class="header__title">
+<section class="panel">
+    <div class="wrapper wrapper--small flow flow--larger">
+        <h1>
             Votre profil de facturation
         </h1>
-    </div>
 
-    <?php if ($account->mustSetAddress()): ?>
-        <div class="section__intro">
-            <p>
-                <strong>Vous êtes sur le point de renouveler votre abonnement.</strong>
-            </p>
+        <?php if ($account->mustSetAddress()): ?>
+            <div class="panel panel--topaz panel--rounded">
+                <p>
+                    <strong>Vous êtes sur le point de renouveler votre abonnement.</strong>
+                </p>
 
-            <p>
-                Avant cela, j’ai besoin de quelques informations pour pouvoir
-                établir vos factures.
-            </p>
-        </div>
-    <?php endif; ?>
+                <p>
+                    Avant cela, j’ai besoin de quelques informations pour pouvoir
+                    établir vos factures.
+                </p>
+            </div>
+        <?php endif; ?>
 
-    <form
-        method="post"
-        action="<?= url('account update profile') ?>"
-        class="form--address"
-        data-controller="profile"
-    >
-        <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
-
-        <?php if ($error): ?>
-            <p class="form__error">
-                <?= $error ?>
+        <?php $count_managed_accounts = $account->countManagedAccounts(); ?>
+        <?php if ($count_managed_accounts > 0): ?>
+            <p class="panel panel--grey panel--rounded">
+                Information&nbsp;: vous ne pouvez pas changer pour un
+                compte «&nbsp;particulier&nbsp;» car vous gérer les
+                abonnements d’autres comptes.
             </p>
         <?php endif; ?>
 
-        <div class="form-group columns">
-            <div class="columns__item columns__item--size3">
-                Vous êtes
-            </div>
-
-            <?php $count_managed_accounts = $account->countManagedAccounts(); ?>
-            <div
-                class="columns__item columns__item--size4"
-                <?= $count_managed_accounts > 0 ? 'title="Action impossible : vous gérez actuellemement les abonnements d’autres comptes."' : '' ?>
-            >
-                <input
-                    id="entity-type-natural"
-                    name="entity_type"
-                    value="natural"
-                    type="radio"
-                    <?= $entity_type === 'natural' ? 'checked' : '' ?>
-                    <?= $count_managed_accounts > 0 ? 'disabled' : '' ?>
-                    data-action="profile#switchEntityType"
-                />
-
-                <label for="entity-type-natural">
-                    un particulier
-                </label>
-            </div>
-
-            <div class="columns__item columns__item--size4">
-                <input
-                    id="entity-type-legal"
-                    name="entity_type"
-                    value="legal"
-                    type="radio"
-                    <?= $entity_type === 'legal' ? 'checked' : '' ?>
-                    data-action="profile#switchEntityType"
-                />
-
-                <label for="entity-type-legal">
-                    une structure
-                </label>
-            </div>
-        </div>
-
-        <div class="form-group <?= isset($errors['email']) ? 'form-group--invalid' : '' ?>">
-            <label for="email">
-                Adresse courriel
-            </label>
-
-            <input
-                id="email"
-                name="email"
-                type="email"
-                value="<?= $email ?>"
-                required
-            />
-
-            <?php if (isset($errors['email'])): ?>
-                <p class="form-group__error">
-                    <?= $errors['email'] ?>
+        <form
+            method="post"
+            action="<?= url('account update profile') ?>"
+            class="flow flow--large"
+            data-controller="profile"
+        >
+            <?php if ($error): ?>
+                <p class="form__error">
+                    Erreur&nbsp;:
+                    <?= $error ?>
                 </p>
             <?php endif; ?>
-        </div>
 
-        <div data-target="profile.sectionNatural">
-            <div class="columns">
-                <div class="columns__item">
-                    <div class="form-group <?= isset($errors['address_first_name']) ? 'form-group--invalid' : '' ?>">
+            <div class="cols cols--gap">
+                <div class="col--size3">
+                    Vous êtes
+                </div>
+
+                <div class="col--size4">
+                    <input
+                        id="entity-type-natural"
+                        name="entity_type"
+                        value="natural"
+                        type="radio"
+                        <?= $entity_type === 'natural' ? 'checked' : '' ?>
+                        <?= $count_managed_accounts > 0 ? 'disabled' : '' ?>
+                        data-action="profile#switchEntityType"
+                    />
+
+                    <label for="entity-type-natural">
+                        un particulier
+                    </label>
+                </div>
+
+                <div class="col--size4">
+                    <input
+                        id="entity-type-legal"
+                        name="entity_type"
+                        value="legal"
+                        type="radio"
+                        <?= $entity_type === 'legal' ? 'checked' : '' ?>
+                        data-action="profile#switchEntityType"
+                    />
+
+                    <label for="entity-type-legal">
+                        une structure
+                    </label>
+                </div>
+            </div>
+
+            <div class="flow flow--small">
+                <label for="email">
+                    Adresse courriel
+                </label>
+
+                <?php if (isset($errors['email'])): ?>
+                    <p class="form-group__error" id="email-error">
+                        Erreur&nbsp;:
+                        <?= $errors['email'] ?>
+                    </p>
+                <?php endif; ?>
+
+                <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    value="<?= $email ?>"
+                    required
+                    <?php if (isset($errors['email'])): ?>
+                        aria-invalid="true"
+                        aria-errormessage="email-error"
+                    <?php endif; ?>
+                />
+            </div>
+
+            <div data-target="profile.sectionNatural">
+                <div class="cols cols--gap">
+                    <div class="col--size6 flow flow--small">
                         <label for="first-name">
                             Prénom
                         </label>
+
+                        <?php if (isset($errors['address_first_name'])): ?>
+                            <p class="form-group__error" id="first-name-error">
+                                Erreur&nbsp;:
+                                <?= $errors['address_first_name'] ?>
+                            </p>
+                        <?php endif; ?>
 
                         <input
                             id="first-name"
@@ -115,21 +129,24 @@
                             value="<?= $address['first_name'] ?>"
                             required
                             data-target="profile.firstName"
+                            <?php if (isset($errors['address_first_name'])): ?>
+                                aria-invalid="true"
+                                aria-errormessage="first-name-error"
+                            <?php endif; ?>
                         />
-
-                        <?php if (isset($errors['address_first_name'])): ?>
-                            <p class="form-group__error">
-                                <?= $errors['address_first_name'] ?>
-                            </p>
-                        <?php endif; ?>
                     </div>
-                </div>
 
-                <div class="columns__item">
-                    <div class="form-group <?= isset($errors['address_last_name']) ? 'form-group--invalid' : '' ?>">
+                    <div class="col--size6 flow flow--small">
                         <label for="last-name">
                             Nom
                         </label>
+
+                        <?php if (isset($errors['address_last_name'])): ?>
+                            <p class="form-group__error" id="last-name-error">
+                                Erreur&nbsp;:
+                                <?= $errors['address_last_name'] ?>
+                            </p>
+                        <?php endif; ?>
 
                         <input
                             id="last-name"
@@ -138,208 +155,235 @@
                             value="<?= $address['last_name'] ?>"
                             required
                             data-target="profile.lastName"
+                            <?php if (isset($errors['address_last_name'])): ?>
+                                aria-invalid="true"
+                                aria-errormessage="last-name-error"
+                            <?php endif; ?>
                         />
-
-                        <?php if (isset($errors['address_last_name'])): ?>
-                            <p class="form-group__error">
-                                <?= $errors['address_last_name'] ?>
-                            </p>
-                        <?php endif; ?>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div data-target="profile.sectionLegal">
-            <div class="form-group <?= isset($errors['address_legal_name']) ? 'form-group--invalid' : '' ?>">
-                <label for="legal-name">
-                    Raison sociale
-                </label>
+            <div class="flow flow--large" data-target="profile.sectionLegal">
+                <div class="flow flow--small">
+                    <label for="legal-name">
+                        Raison sociale
+                    </label>
 
-                <input
-                    id="legal-name"
-                    name="address[legal_name]"
-                    type="text"
-                    value="<?= $address['legal_name'] ?>"
-                    required
-                    data-target="profile.legalName"
-                />
+                    <?php if (isset($errors['address_legal_name'])): ?>
+                        <p class="form-group__error" id="legal-name-error">
+                            Erreur&nbsp;:
+                            <?= $errors['address_legal_name'] ?>
+                        </p>
+                    <?php endif; ?>
 
-                <?php if (isset($errors['address_legal_name'])): ?>
-                    <p class="form-group__error">
-                        <?= $errors['address_legal_name'] ?>
-                    </p>
-                <?php endif; ?>
+                    <input
+                        id="legal-name"
+                        name="address[legal_name]"
+                        type="text"
+                        value="<?= $address['legal_name'] ?>"
+                        required
+                        data-target="profile.legalName"
+                        <?php if (isset($errors['address_legal_name'])): ?>
+                            aria-invalid="true"
+                            aria-errormessage="legal-name-error"
+                        <?php endif; ?>
+                    />
+                </div>
+
+                <div class="flow flow--small">
+                    <label for="company-vat-number">
+                        Numéro de <abbr>TVA</abbr> (optionel)
+                    </label>
+
+                    <?php if (isset($errors['company_vat_number'])): ?>
+                        <p class="form-group__error" id="company-vat-number-error">
+                            Erreur&nbsp;:
+                            <?= $errors['company_vat_number'] ?>
+                        </p>
+                    <?php endif; ?>
+
+                    <input
+                        id="company-vat-number"
+                        name="company_vat_number"
+                        type="text"
+                        minlength="10"
+                        maxlength="20"
+                        value="<?= $company_vat_number ?>"
+                        <?php if (isset($errors['company_vat_number'])): ?>
+                            aria-invalid="true"
+                            aria-errormessage="company-vat-number-error"
+                        <?php endif; ?>
+                    />
+                </div>
             </div>
 
-            <div class="form-group <?= isset($errors['company_vat_number']) ? 'form-group--invalid' : '' ?>">
-                <label for="company-vat-number">
-                    Numéro de <abbr>TVA</abbr>
-                    <span class="paragraph--secondary">(optionel)</span>
-                </label>
-
+            <div class="flow flow--small">
                 <input
-                    id="company-vat-number"
-                    name="company_vat_number"
-                    type="text"
-                    minlength="10"
-                    maxlength="20"
-                    value="<?= $company_vat_number ?>"
+                    id="show-address"
+                    name="show_address"
+                    type="checkbox"
+                    data-action="profile#switchAddress"
+                    data-target="profile.controlAddress"
+                    <?= $show_address ? 'checked' : '' ?>
                 />
 
-                <?php if (isset($errors['company_vat_number'])): ?>
-                    <p class="form-group__error">
-                        <?= $errors['company_vat_number'] ?>
-                    </p>
-                <?php endif; ?>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <input
-                id="show-address"
-                name="show_address"
-                type="checkbox"
-                data-action="profile#switchAddress"
-                data-target="profile.controlAddress"
-                <?= $show_address ? 'checked' : '' ?>
-            />
-
-            <label for="show-address">
-                Faire apparaître votre adresse postale sur les factures
-            </label>
-        </div>
-
-        <fieldset id="address">
-            <legend>Adresse postale</legend>
-
-            <div class="form-group <?= isset($errors['address_address1']) ? 'form-group--invalid' : '' ?>">
-                <label for="address1">
-                    Adresse
+                <label for="show-address">
+                    Faire apparaître votre adresse postale sur les factures (optionel)
                 </label>
-
-                <input
-                    id="address1"
-                    name="address[address1]"
-                    type="text"
-                    value="<?= $address['address1'] ?>"
-                />
-
-                <?php if (isset($errors['address_address1'])): ?>
-                    <p class="form-group__error">
-                        <?= $errors['address_address1'] ?>
-                    </p>
-                <?php endif; ?>
             </div>
 
-            <div class="columns">
-                <div class="columns__item columns__item--postcode">
-                    <div class="form-group <?= isset($errors['address_postcode']) ? 'form-group--invalid' : '' ?>">
-                        <label for="postcode">
-                            Code postal
+            <fieldset id="address">
+                <legend>Adresse postale</legend>
+
+                <div class="flow flow--large">
+                    <div class="flow flow--small">
+                        <label for="address1">
+                            Adresse
                         </label>
 
-                        <input
-                            id="postcode"
-                            name="address[postcode]"
-                            type="text"
-                            value="<?= $address['postcode'] ?>"
-                        />
-
-                        <?php if (isset($errors['address_postcode'])): ?>
-                            <p class="form-group__error">
-                                <?= $errors['address_postcode'] ?>
+                        <?php if (isset($errors['address_address1'])): ?>
+                            <p class="form-group__error" id="address1-error">
+                                Erreur&nbsp;:
+                                <?= $errors['address_address1'] ?>
                             </p>
                         <?php endif; ?>
-                    </div>
-                </div>
 
-                <div class="columns__item columns__item--city">
-                    <div class="form-group <?= isset($errors['address_city']) ? 'form-group--invalid' : '' ?>">
-                        <label for="city">
-                            Ville
+                        <input
+                            id="address1"
+                            name="address[address1]"
+                            type="text"
+                            value="<?= $address['address1'] ?>"
+                            <?php if (isset($errors['address_address1'])): ?>
+                                aria-invalid="true"
+                                aria-errormessage="address1-error"
+                            <?php endif; ?>
+                        />
+                    </div>
+
+                    <div class="cols cols--gap">
+                        <div class="col--size3 flow flow--small">
+                            <label for="postcode">
+                                Code postal
+                            </label>
+
+                            <?php if (isset($errors['address_postcode'])): ?>
+                                <p class="form-group__error" id="postcode-error">
+                                    Erreur&nbsp;:
+                                    <?= $errors['address_postcode'] ?>
+                                </p>
+                            <?php endif; ?>
+
+                            <input
+                                id="postcode"
+                                name="address[postcode]"
+                                type="text"
+                                value="<?= $address['postcode'] ?>"
+                                <?php if (isset($errors['address_postcode'])): ?>
+                                    aria-invalid="true"
+                                    aria-errormessage="postcode-error"
+                                <?php endif; ?>
+                            />
+                        </div>
+
+                        <div class="col--extend flow flow--small">
+                            <label for="city">
+                                Ville
+                            </label>
+
+                            <?php if (isset($errors['address_city'])): ?>
+                                <p class="form-group__error" id="city-error">
+                                    Erreur&nbsp;:
+                                    <?= $errors['address_city'] ?>
+                                </p>
+                            <?php endif; ?>
+
+                            <input
+                                id="city"
+                                name="address[city]"
+                                type="text"
+                                value="<?= $address['city'] ?>"
+                                <?php if (isset($errors['address_city'])): ?>
+                                    aria-invalid="true"
+                                    aria-errormessage="city-error"
+                                <?php endif; ?>
+                            />
+                        </div>
+                    </div>
+
+                    <div class="flow flow--small">
+                        <label for="country">
+                            Pays
                         </label>
 
-                        <input
-                            id="city"
-                            name="address[city]"
-                            type="text"
-                            value="<?= $address['city'] ?>"
-                        />
-
-                        <?php if (isset($errors['address_city'])): ?>
-                            <p class="form-group__error">
-                                <?= $errors['address_city'] ?>
+                        <?php if (isset($errors['address_country'])): ?>
+                            <p class="form-group__error" id="country-error">
+                                Erreur&nbsp;:
+                                <?= $errors['address_country'] ?>
                             </p>
                         <?php endif; ?>
-                    </div>
-                </div>
-            </div>
 
-            <div class="form-group <?= isset($errors['address_country']) ? 'form-group--invalid' : '' ?>">
-                <label for="country">
-                    Pays
-                </label>
-
-                <select
-                    id="country"
-                    name="address[country]"
-                >
-                    <?php foreach ($countries as $code => $label): ?>
-                        <option
-                            value="<?= $code ?>"
-                            <?= $address['country'] === $code ? 'selected' : '' ?>
+                        <select
+                            id="country"
+                            name="address[country]"
+                            <?php if (isset($errors['address_country'])): ?>
+                                aria-invalid="true"
+                                aria-errormessage="country-error"
+                            <?php endif; ?>
                         >
-                            <?= $label ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
+                            <?php foreach ($countries as $code => $label): ?>
+                                <option
+                                    value="<?= $code ?>"
+                                    <?= $address['country'] === $code ? 'selected' : '' ?>
+                                >
+                                    <?= $label ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                </div>
+            </fieldset>
 
-                <?php if (isset($errors['address_country'])): ?>
-                    <p class="form-group__error">
-                        <?= $errors['address_country'] ?>
-                    </p>
-                <?php endif; ?>
+            <div class="text--center">
+                <button type="submit" class="button--primary">
+                    Enregistrer les modifications
+                </button>
             </div>
-        </fieldset>
 
-        <div class="form__actions">
-            <button type="submit" class="button--primary">
-                Enregistrer les modifications
-            </button>
-        </div>
-    </form>
-
-    <hr />
-
-    <?php if (!$account->isFree()): ?>
-        <form method="post" action="<?= url('account set reminder') ?>">
             <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
-            <input type="hidden" name="from" value="account profile" />
+        </form>
 
-            <?php if ($account->reminder): ?>
-                <p class="paragraph--center paragraph--limit">
-                    Vous recevrez un courriel à l’approche de l’échéance de
-                    votre abonnement.
-                </p>
+        <?php if (!$account->isFree()): ?>
+            <hr />
 
-                <div class="paragraph--center">
-                    <button type="submit" class="button--ghost" name="reminder" value="false">
+            <form
+                class="panel panel--grey panel--rounded flow text--center"
+                method="post"
+                action="<?= url('account set reminder') ?>"
+            >
+                <?php if ($account->reminder): ?>
+                    <p>
+                        Vous recevrez un courriel à l’approche de l’échéance de
+                        votre abonnement.
+                    </p>
+
+                    <button type="submit" name="reminder" value="false">
                         Désactiver le rappel
                     </button>
-                </div>
-            <?php else: ?>
-                <p class="paragraph--center paragraph--limit">
-                    Vous pouvez recevoir un courriel à l’approche de l’échéance
-                    de votre abonnement.
-                </p>
+                <?php else: ?>
+                    <p>
+                        Vous pouvez recevoir un courriel à l’approche de l’échéance
+                        de votre abonnement.
+                    </p>
 
-                <div class="paragraph--center">
-                    <button type="submit" class="button--default" name="reminder" value="true">
+                    <button type="submit" name="reminder" value="true">
                         Activer le rappel
                     </button>
-                </div>
-            <?php endif; ?>
-        </form>
-    <?php endif; ?>
+                <?php endif; ?>
+
+                <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+                <input type="hidden" name="from" value="account profile" />
+            </form>
+        <?php endif; ?>
+    </div>
 </section>
