@@ -249,8 +249,8 @@ class InvoicePDF extends \FPDF
     {
         $support_email = \Minz\Configuration::$application['support_email'];
         $footer = [
-            'Marien Fressinaud Mas de Feix / Flus – 57 rue du Vercors, 38000 Grenoble – ' . $support_email,
-            'micro-entreprise – N° Siret 878 196 278 00013 – 878 196 278 R.C.S. Grenoble',
+            'Marien Fressinaud Mas de Feix / Flus – 4 bis rue Germain, 38100 Grenoble – ' . $support_email,
+            'micro-entreprise – N° Siret 878 196 278 00021 – 878 196 278 R.C.S. Grenoble',
             'TVA non applicable, art. 293 B du CGI',
         ];
 
