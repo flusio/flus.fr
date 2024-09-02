@@ -2,46 +2,92 @@
 <html lang="fr">
     <head>
         <meta charset="UTF-8" />
+        <title><?= $title ?></title>
         <meta name="viewport" content="initial-scale=1.0" />
-        <link rel="shortcut icon" href="<?= url_static('favicon-32px.png') ?>">
         <meta name="robots" content="noindex, nofollow">
 
-        <link rel="stylesheet" href="<?= url_static('admin.css') ?>">
-        <link rel="stylesheet" href="<?= url_static('forms.css') ?>">
+        <link rel="shortcut icon" href="<?= url_static('favicon-32px.png') ?>">
 
-        <title><?= $title ?></title>
+        <link rel="stylesheet" href="<?= url_static('style/main.css') ?>">
+        <script src="<?= url_static('js/stimulus.min.js') ?>" defer></script>
+        <script src="<?= url_static('js/main.js') ?>" defer></script>
     </head>
 
     <body>
-        <div class="layout">
-            <header class="layout__header">
-                <a href="<?= url('admin') ?>">
-                    <img
-                        class="logo"
-                        src="<?= url_static('logo.svg') ?>"
-                        width="125"
-                        height="42"
-                        alt="Flus"
-                     />
-                </a>
+        <nav class="accessibility-nav" aria-label="Menu de liens d’évitement">
+            <a href="#contenu" class="button button--primary">
+                Aller au contenu
+            </a>
+        </nav>
+
+        <div class="layout cols">
+            <aside class="layout__aside">
+                <div class="aside__logo">
+                    <a href="<?= url('admin') ?>">
+                        <img
+                            src="<?= url_static('logo-white.svg') ?>"
+                            height="40"
+                            alt="Flus"
+                         />
+                    </a>
+                </div>
 
                 <?php if ($current_user): ?>
-                    <div class="layout__header-separator"></div>
+                    <nav
+                        class="aside__navigation"
+                        data-controller="navigation"
+                        aria-label="Menu de navigation principal"
+                        role="navigation"
+                    >
+                        <button
+                            class="navigation__menubutton button button--ghost only-mobile"
+                            data-action="navigation#switch"
+                            data-target="navigation.button"
+                            aria-expanded="false"
+                        >
+                            <?= icon('bars') ?>
+                            <?= icon('times') ?>
 
-                    <a class="layout__header-link" href="<?= url('home') ?>">
-                        revenir au site
-                    </a>
-
-                    <form method="post" action="<?= url('logout') ?>">
-                        <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
-                        <button class="button--ghost" type="submit">
-                            Se déconnecter
+                            <span class="sr-only">
+                                Ouvrir le menu de navigation
+                            </span>
                         </button>
-                    </form>
-                <?php endif; ?>
-            </header>
 
-            <main class="layout__content" id="contenu">
+                        <div class="navigation__container flow flow--large">
+                            <form method="post" action="<?= url('logout') ?>">
+                                <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+                                <button class="button--primary button--block" type="submit">
+                                    Se déconnecter
+                                </button>
+                            </form>
+
+                            <ul class="list--nostyle flow flow--smaller">
+                                <li>
+                                    <a
+                                        class="navigation__link"
+                                        href="<?= url('admin') ?>"
+                                        <?= $current_page === 'admin payments' ? 'aria-current="page"' : '' ?>
+                                    >
+                                        Paiements
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a
+                                        class="navigation__link"
+                                        href="<?= url('admin accounts') ?>"
+                                        <?= $current_page === 'admin accounts' ? 'aria-current="page"' : '' ?>
+                                    >
+                                        Comptes
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </nav>
+                <?php endif; ?>
+            </aside>
+
+            <main class="layout__content col--extend" id="contenu" tabindex="-1">
                 <?= $this->safe('content') ?>
             </main>
         </div>

@@ -4,44 +4,49 @@
     ]);
 ?>
 
-<div class="header">
-    <h1 class="header__title">Connexion à l’administration</h1>
-</div>
+<section class="panel">
+    <div class="wrapper wrapper--small flow flow--larger">
+        <h1>
+            Connexion à l’administration
+        </h1>
 
-<form method="post" action="<?= url('create_session') ?>">
-    <?php if ($error): ?>
-        <p class="form__error">
-            <?= $error ?>
+        <form method="post" action="<?= url('create_session') ?>" class="flow flow--large">
+            <?php if ($error): ?>
+                <p class="form__error">
+                    <?= $error ?>
+                </p>
+            <?php endif; ?>
+
+            <div class="flow flow--small">
+                <label for="password">Mot de passe</label>
+
+                <input
+                    type="password"
+                    name="password"
+                    id="password"
+                    required
+                    autofocus
+                    value="<?= isset($password) ? $password : '' ?>"
+                />
+            </div>
+
+            <div class="text--center">
+                <button type="submit" class="button--primary">
+                    Se connecter
+                </button>
+            </div>
+
+            <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+
+            <?php if (isset($from)): ?>
+                <input type="hidden" name="from" value="<?= $from ?>" />
+            <?php endif; ?>
+        </form>
+
+        <p class="text--center">
+            <a href="<?= url('home') ?>">
+                Retour à l’accueil
+            </a>
         </p>
-    <?php endif; ?>
-
-    <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
-
-    <?php if (isset($from)): ?>
-        <input type="hidden" name="from" value="<?= $from ?>" />
-    <?php endif; ?>
-
-    <div class="form-group">
-        <label for="password">Mot de passe</label>
-        <input
-            type="password"
-            name="password"
-            id="password"
-            required
-            autofocus
-            value="<?= isset($password) ? $password : '' ?>"
-        />
     </div>
-
-    <div class="form__actions">
-        <button type="submit" class="button--primary">
-            Se connecter
-        </button>
-    </div>
-</form>
-
-<p class="paragraph--center">
-    <a href="<?= url('home') ?>">
-        Retour à l’accueil
-    </a>
-</p>
+</section>

@@ -57,6 +57,10 @@ button:active,
     --button-border-color: currentcolor;
 }
 
+.button--small {
+    --button-padding: var(--space-smaller) var(--space-small);
+}
+
 .button--block {
     display: block;
     width: 100%;

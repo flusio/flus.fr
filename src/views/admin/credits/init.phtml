@@ -1,61 +1,56 @@
 <?php
     $this->layout('admin.phtml', [
         'title' => 'Rembourser un paiement',
+        'current_page' => 'admin payments',
     ]);
 ?>
 
-<section class="section">
-    <div class="header">
-        <h1 class="header__title">
+<section class="panel">
+    <div class="wrapper wrapper--small flow flow--larger">
+        <h1>
             Rembourser un paiement
         </h1>
-    </div>
 
-    <?php if ($already_credited): ?>
-        <p class="paragraph--center">
-            Ce paiement a déjà été remboursé !
-        </p>
-    <?php elseif ($credited_payment->type === 'credit'): ?>
-        <p class="paragraph--center">
-            Vous ne pouvez pas rembourser un crédit, tss tss !
-        </p>
-    <?php else: ?>
-        <form
-            method="post"
-            action="<?= url('create admin credit') ?>"
-            class="form--common-pot"
-        >
-            <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
-            <input type="hidden" name="credited_payment_id" value="<?= $credited_payment->id ?>" />
+        <?php if ($already_credited): ?>
+            <p class="panel panel--topaz panel--rounded text--bold">
+                Ce paiement a déjà été remboursé&nbsp;!
+            </p>
+        <?php elseif ($credited_payment->type === 'credit'): ?>
+            <p class="panel panel--topaz panel--rounded text--bold">
+                Vous ne pouvez pas rembourser un crédit, tss tss&nbsp;!
+            </p>
+        <?php else: ?>
+            <form
+                method="post"
+                action="<?= url('create admin credit') ?>"
+                class="flow flow--larger"
+            >
+                <?php if ($error): ?>
+                    <p class="form__error">
+                        Erreur&nbsp;:
+                        <?= $error ?>
+                    </p>
+                <?php endif; ?>
 
-            <?php if ($error): ?>
-                <p class="form__error">
-                    <?= $error ?>
-                </p>
-            <?php endif; ?>
+                <?php $account = $credited_payment->account(); ?>
 
-            <?php $account = $credited_payment->account(); ?>
-            <p>
-                <strong>
+                <p class="panel panel--grey panel--rounded text--bold">
                     Vous êtes sur le point de rembourser le paiement de
                     <?= $account->address_first_name ?> <?= $account->address_last_name ?>
                     (<?= $account->email ?>)
-                    du <?= _d($credited_payment->completed_at, 'dd MMM yyyy') ?>
-                    correspondant à la facture <?= $credited_payment->invoice_number ?>.
-                </strong>
-            </p>
+                    du <?= _d($credited_payment->completed_at, 'dd MMMM yyyy') ?>
+                    correspondant à <strong>la facture <?= $credited_payment->invoice_number ?></strong>.
+                </p>
 
-            <div class="form__actions">
-                <button type="submit" class="button--primary">
-                    Confirmer le remboursement
-                </button>
-            </div>
-        </form>
-    <?php endif; ?>
+                <div class="text--center">
+                    <button type="submit" class="button--primary">
+                        Confirmer le remboursement
+                    </button>
+                </div>
 
-    <p class="paragraph--center">
-        <a href="<?= url('admin') ?>">
-            Revenir à l’administration
-        </a>
-    </p>
+                <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+                <input type="hidden" name="credited_payment_id" value="<?= $credited_payment->id ?>" />
+            </form>
+        <?php endif; ?>
+    </div>
 </section>

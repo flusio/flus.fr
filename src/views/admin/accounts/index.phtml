@@ -1,51 +1,56 @@
 <?php
     $this->layout('admin.phtml', [
         'title' => 'Comptes utilisateurices',
+        'current_page' => 'admin accounts',
     ]);
 ?>
 
-<div class="header">
-    <h1 class="header__title"><?= count($accounts) ?> comptes utilisateurices</h1>
-</div>
+<section class="panel">
+    <div class="wrapper flow flow--larger">
+        <h1>
+            <?= count($accounts) ?> comptes utilisateurices
+        </h1>
 
-<p class="paragraph--center">
-    <a href="<?= url('admin') ?>">
-        Voir les paiements
-    </a>
-</p>
+        <?php if ($accounts): ?>
+            <ul class="list--nostyle list--border list--strip list--padded">
+                <?php foreach ($accounts as $account): ?>
+                    <li class="flow flow--small">
+                        <div class="cols cols--gap cols--center">
+                            <div class="col--extend">
+                                <strong>
+                                    <?= $this->protect($account->email) ?>
+                                </strong>
+                            </div>
 
-<?php if ($accounts): ?>
-    <table>
-        <tbody>
-            <?php foreach ($accounts as $account): ?>
-                <tr>
-                    <td>
-                        <?= $this->protect($account->email) ?>
-                    </td>
+                            <div>
+                                <a class="button button--block" href="<?= url('admin account', ['id' => $account->id]) ?>">
+                                    Voir le compte
+                                </a>
+                            </div>
+                        </div>
 
-                    <td>
-                        <?= $account->count_payments ?> paiements
-                    </td>
+                        <div class="cols cols--gap cols--center">
+                            <div class="col--extend">
+                                <?php if ($account->isFree()): ?>
+                                    Compte gratuit
+                                <?php else: ?>
+                                    Expire le <?= _d($account->expired_at, 'dd MMMM yyyy') ?>
+                                <?php endif; ?>
+                            </div>
 
-                    <td>
-                        <?php if ($account->isFree()): ?>
-                            gratuit
-                        <?php else: ?>
-                            <?= _d($account->expired_at, 'dd MMMM yyyy') ?>
-                        <?php endif; ?>
-                    </td>
-
-                    <td>
-                        <a href="<?= url('admin account', ['id' => $account->id]) ?>">
-                            Voir
-                        </a>
-                    </td>
-                </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
-<?php else: ?>
-    <p class="paragraph--center paragraph--secondary">
-        Il n’y a aucun compte à afficher.
-    </p>
-<?php endif; ?>
+                            <div>
+                                <?= $account->count_payments ?> paiements
+                            </div>
+                        </div>
+                    </tr>
+                <?php endforeach; ?>
+            </ul>
+        <?php else: ?>
+            <div class="wrapper wrapper--small">
+                <p class="panel panel--grey panel--rounded text--center text--bold">
+                    Il n’y a aucun compte à afficher.
+                </p>
+            </div>
+        <?php endif; ?>
+    </div>
+</section>

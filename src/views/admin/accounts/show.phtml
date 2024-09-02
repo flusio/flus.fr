@@ -1,117 +1,116 @@
 <?php
     $this->layout('admin.phtml', [
         'title' => 'Compte utilisateurice',
+        'current_page' => 'admin accounts',
     ]);
 ?>
 
-<div class="header">
-    <h1 class="header__title">
-        Abonnement de <?= $this->protect($account->email) ?>
-    </h1>
-</div>
+<section class="panel">
+    <div class="wrapper flow flow--larger">
+        <div class="wrapper wrapper--small flow flow--larger">
+            <h1>
+                Abonnement de <?= $this->protect($account->email) ?>
+            </h1>
 
-<p class="paragraph--center">
-    <a href="<?= url('admin accounts') ?>">
-        Retourner aux comptes
-    </a>
-</p>
+            <p class="panel panel--grey panel--rounded text--center">
+                <?php if ($account->isFree()): ?>
+                    Cette personne bénéficie d’un abonnement gratuit.
+                <?php elseif ($account->hasExpired()): ?>
+                    <strong>
+                        Son abonnement a expiré le <?= _d($account->expired_at, 'dd MMMM yyyy') ?>.
+                    </strong>
+                <?php else: ?>
+                    Son abonnement expirera le <strong><?= _d($account->expired_at, 'dd MMMM yyyy') ?>.</strong>
+                <?php endif; ?>
+            </p>
 
-<div class="section__intro">
-    <p>
-        <?php if ($account->isFree()): ?>
-            Cette personne bénéficie d’un abonnement gratuit.
-        <?php elseif ($account->hasExpired()): ?>
-            <strong>
-                Son abonnement a expiré le <?= _d($account->expired_at, 'dd MMMM yyyy') ?>.
-            </strong>
-        <?php else: ?>
-            Son abonnement expirera le <strong><?= _d($account->expired_at, 'dd MMMM yyyy') ?>.</strong>
-        <?php endif; ?>
-    </p>
-</div>
+            <form method="post" action="<?= url('update admin account', ['id' => $account->id]) ?>" class="flow flow--large">
+                <?php if ($error): ?>
+                    <p class="form__error">
+                        Erreur&nbsp;:
+                        <?= $error ?>
+                    </p>
+                <?php endif; ?>
 
-<form method="post" action="<?= url('update admin account', ['id' => $account->id]) ?>">
-    <?php if ($error): ?>
-        <p class="form__error">
-            <?= $error ?>
-        </p>
-    <?php endif; ?>
+                <div class="flow flow--small">
+                    <label for="expired-at">
+                        Expire le
+                    </label>
 
-    <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+                    <input
+                        id="expired-at"
+                        name="expired-at"
+                        type="date"
+                        value="<?= $expired_at->format('Y-m-d') ?>"
+                        required
+                    />
+                </div>
 
-    <div class="form-group">
-        <label for="expired-at">
-            Expire le
-        </label>
+                <div class="text--center">
+                    <button type="submit">
+                        Modifier l’abonnement
+                    </button>
+                </div>
 
-        <input
-            id="expired-at"
-            name="expired-at"
-            type="date"
-            value="<?= $expired_at->format('Y-m-d') ?>"
-            required
-        />
+                <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+            </form>
+
+            <hr />
+        </div>
+
+        <div class="flow">
+            <h2>
+                Paiements passés
+            </h2>
+
+            <?php if ($payments): ?>
+                <ul class="list--nostyle list--border list--strip list--padded">
+                    <?php foreach ($payments as $payment): ?>
+                        <li class="cols cols--gap-large cols--center <?= !$payment->completed_at ?? 'text--secondary' ?>">
+                            <div class="col--extend">
+                                <?php if ($payment->type === 'subscription' && $payment->frequency === 'month'): ?>
+                                    Abonnement mensuel
+                                <?php elseif ($payment->type === 'subscription' && $payment->frequency === 'year'): ?>
+                                    Abonnement annuel
+                                <?php elseif ($payment->type === 'common_pot'): ?>
+                                    Cagnotte
+                                <?php elseif ($payment->type === 'credit'): ?>
+                                    Crédit
+                                <?php else: ?>
+                                    Inconnu
+                                <?php endif; ?>
+                            </div>
+
+                            <div class="col--size2">
+                                <?= format_amount($payment->totalAmount()) ?>
+                            </div>
+
+                            <div class="col--size2">
+                                <?php if ($payment->completed_at): ?>
+                                    <?= _d($payment->completed_at, 'dd MMM yyyy') ?>
+                                <?php else: ?>
+                                    traitement en cours
+                                <?php endif; ?>
+                            </div>
+
+                            <div class="col--size3">
+                                <?php if ($payment->invoice_number): ?>
+                                    <a class="button button--block" href="<?= url('invoice download pdf', ['id' => $payment->id]) ?>">
+                                        <?= icon('link') ?>
+                                        <?= $payment->invoice_number ?>
+                                    </a>
+                                <?php endif; ?>
+                            </div>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+            <?php else: ?>
+                <div class="wrapper wrapper--small">
+                    <p class="panel panel--grey panel--rounded text--center text--bold">
+                        Il n’y a aucun paiement à afficher.
+                    </p>
+                </div>
+            <?php endif; ?>
+        </div>
     </div>
-
-    <div class="form__actions">
-        <button type="submit" class="button--default">
-            Sauvegarder le changement
-        </button>
-    </div>
-</form>
-
-<hr />
-
-<div class="header">
-    <h2 class="header__title">
-        Paiements passés
-    </h2>
-</div>
-
-<?php if ($payments): ?>
-    <table>
-        <tbody>
-            <?php foreach ($payments as $payment): ?>
-                <tr <?= !$payment->completed_at ? 'class="row--ghost"' : ''?> >
-                    <td class="cell--right">
-                        <?= format_amount($payment->totalAmount()) ?>
-                    </td>
-
-                    <td>
-                        <?php if ($payment->type === 'subscription' && $payment->frequency === 'month'): ?>
-                            Abonnement mois
-                        <?php elseif ($payment->type === 'subscription' && $payment->frequency === 'year'): ?>
-                            Abonnement année
-                        <?php elseif ($payment->type === 'common_pot'): ?>
-                            Cagnotte
-                        <?php elseif ($payment->type === 'credit'): ?>
-                            Crédit
-                        <?php else: ?>
-                            Heu… non
-                        <?php endif; ?>
-                    </td>
-
-                    <td>
-                        <?php if ($payment->completed_at): ?>
-                            <?= _d($payment->completed_at, 'dd MMM yyyy') ?>
-                        <?php else: ?>
-                            traitement en cours
-                        <?php endif; ?>
-                    </td>
-
-                    <td>
-                        <?php if ($payment->invoice_number): ?>
-                            <a href="<?= url('invoice download pdf', ['id' => $payment->id]) ?>">
-                                <?= $payment->invoice_number ?>
-                            </a>
-                        <?php endif; ?>
-                    </td>
-                </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
-<?php else: ?>
-    <p class="paragraph--center paragraph--secondary">
-        Il n’y a aucun paiement à afficher.
-    </p>
-<?php endif; ?>
+</section>

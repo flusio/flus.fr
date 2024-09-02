@@ -1,125 +1,144 @@
 <?php
     $this->layout('admin.phtml', [
         'title' => 'Paiements en ' . $year,
+        'current_page' => 'admin payments',
     ]);
 ?>
 
-<div class="header">
-    <h1 class="header__title">Paiements en <?= $year ?></h1>
-</div>
+<section class="panel">
+    <div class="wrapper flow flow--larger">
+        <div class="wrapper wrapper--small flow">
+            <h1>
+                Paiements en <?= $year ?>
+            </h1>
 
-<p class="paragraph--center">
-    <a href="<?= url('admin accounts') ?>">
-        Comptes
-    </a>
-    ⋅
-    <a target="_blank" href="<?= url('admin', ['format' => 'csv']) ?>">
-        CSV
-    </a>
-    ⋅
-    <a target="_blank" href="<?= url('admin', ['format' => 'recettes']) ?>">
-        Livre des recettes
-    </a>
-</p>
+            <div class="cols cols--gap cols--center">
+                <p class="col--extend">
+                    Exporter en&nbsp;:
+                    <a target="_blank" href="<?= url('admin', ['format' => 'csv']) ?>" class="button button--small">
+                        CSV
+                    </a>
 
-<a href="<?= url('new admin payment') ?>">
-    Créer un paiement
-</a>
+                    <a target="_blank" href="<?= url('admin', ['format' => 'recettes']) ?>" class="button button--small">
+                        Livre des recettes
+                    </a>
+                </p>
 
-<?php foreach (['12', '11', '10', '09', '08', '07', '06', '05', '04', '03', '02', '01'] as $month): ?>
-    <?php
-        $payments = $payments_by_months[$month] ?? [];
-        $count_free_renewals = $count_free_renewals_per_month[$month] ?? 0;
+                <p>
+                    <a href="<?= url('new admin payment') ?>" class="button button--primary">
+                        <?= icon('plus') ?>
+                        Créer un paiement
+                    </a>
+                </p>
+            </div>
+        </div>
 
-        if (empty($payments) && $count_free_renewals === 0) {
-            continue;
-        }
+        <?php foreach (['12', '11', '10', '09', '08', '07', '06', '05', '04', '03', '02', '01'] as $month): ?>
+            <?php
+                $payments = $payments_by_months[$month] ?? [];
+                $count_free_renewals = $count_free_renewals_per_month[$month] ?? 0;
 
-        $month_total_amount = 0;
-        foreach ($payments as $payment) {
-            if (!$payment->is_paid) {
-                continue;
-            }
+                if (empty($payments) && $count_free_renewals === 0) {
+                    continue;
+                }
 
-            if ($payment->type === 'credit') {
-                $month_total_amount -= $payment->totalAmount();
-            } else {
-                $month_total_amount += $payment->totalAmount();
-            }
-        }
-    ?>
+                $month_total_amount = 0;
+                foreach ($payments as $payment) {
+                    if (!$payment->is_paid) {
+                        continue;
+                    }
 
-    <h2><?= format_month(intval($month), 'MMMM') ?>&nbsp;—&nbsp;<?= format_amount($month_total_amount) ?></h2>
+                    if ($payment->type === 'credit') {
+                        $month_total_amount -= $payment->totalAmount();
+                    } else {
+                        $month_total_amount += $payment->totalAmount();
+                    }
+                }
+            ?>
 
-    <?php if ($count_free_renewals > 0): ?>
-        <p>
-            <?= $count_free_renewals ?> renouvellement(s) gratuit(s)
-        </p>
-    <?php endif; ?>
+            <div class="flow">
+                <h2><?= format_month(intval($month), 'MMMM') ?>&nbsp;—&nbsp;<?= format_amount($month_total_amount) ?></h2>
 
-    <table>
-        <tbody>
-            <?php foreach ($payments as $payment): ?>
-                <tr <?= !$payment->completed_at ? 'class="row--ghost"' : ''?> >
-                    <td class="cell--right">
-                        <?= format_amount($payment->totalAmount()) ?>
-                    </td>
+                <?php if ($count_free_renewals > 0): ?>
+                    <p>
+                        <?= $count_free_renewals ?> renouvellement(s) gratuit(s)
+                    </p>
+                <?php endif; ?>
 
-                    <td>
-                        <?php if ($payment->type === 'subscription' && $payment->frequency === 'month'): ?>
-                            Abonnement mois
-                        <?php elseif ($payment->type === 'subscription' && $payment->frequency === 'year'): ?>
-                            Abonnement année
-                        <?php elseif ($payment->type === 'common_pot'): ?>
-                            Cagnotte
-                        <?php elseif ($payment->type === 'credit'): ?>
-                            Crédit
-                        <?php else: ?>
-                            Heu… non
-                        <?php endif; ?>
-                    </td>
+                <ul class="list--nostyle list--border list--strip list--padded">
+                    <?php foreach ($payments as $payment): ?>
+                        <li class="flow flow--small <?= !$payment->completed_at ?? 'text--secondary' ?>">
+                            <div class="cols cols--gap-large cols--center">
+                                <div class="col--extend">
+                                    <?php if ($payment->type === 'subscription' && $payment->frequency === 'month'): ?>
+                                        Abonnement mois
+                                    <?php elseif ($payment->type === 'subscription' && $payment->frequency === 'year'): ?>
+                                        Abonnement année
+                                    <?php elseif ($payment->type === 'common_pot'): ?>
+                                        Cagnotte
+                                    <?php elseif ($payment->type === 'credit'): ?>
+                                        Crédit
+                                    <?php else: ?>
+                                        Inconnu
+                                    <?php endif; ?>
+                                </div>
 
-                    <td>
-                        <?php $account = $payment->account(); ?>
-                        <a href="<?= url('admin account', ['id' => $account->id]) ?>">
-                            <?= $account->email ?>
-                        </a>
-                    </td>
+                                <div class="col--size2">
+                                    <?= format_amount($payment->totalAmount()) ?>
+                                </div>
 
-                    <td>
-                        <?php if ($payment->completed_at): ?>
-                            <?= _d($payment->completed_at, 'dd MMM') ?>
-                            <?php if ($payment->type !== 'credit'): ?>
-                                <a href="<?= url('new admin credit', ['credited_payment_id' => $payment->id]) ?>">
-                                    💸
+                                <div class="col--size2">
+                                    <?php if ($payment->completed_at): ?>
+                                        <?= _d($payment->completed_at, 'dd MMM yyyy') ?>
+                                    <?php elseif ($payment->is_paid): ?>
+                                        traitement en cours
+                                    <?php else: ?>
+                                        <a href="<?= url('admin payment', ['id' => $payment->id]) ?>">
+                                            non payé
+                                        </a>
+                                    <?php endif; ?>
+                                </div>
+
+                                <div class="col--size3">
+                                    <?php if ($payment->invoice_number): ?>
+                                        <a class="button button--block" href="<?= url('invoice download pdf', ['id' => $payment->id]) ?>">
+                                            <?= icon('link') ?>
+                                            <?= $payment->invoice_number ?>
+                                        </a>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+
+                            <div class="cols cols--gap-small cols--center">
+                                <?php $account = $payment->account(); ?>
+                                <a class="col--extend" href="<?= url('admin account', ['id' => $account->id]) ?>">
+                                    <?= $account->email ?>
                                 </a>
-                            <?php endif; ?>
-                        <?php elseif ($payment->is_paid): ?>
-                            traitement en cours
-                        <?php else: ?>
-                            <a href="<?= url('admin payment', ['id' => $payment->id]) ?>">
-                                non payé
-                            </a>
-                        <?php endif; ?>
-                    </td>
 
-                    <td>
-                        <?php if ($payment->invoice_number): ?>
-                            <a href="<?= url('invoice download pdf', ['id' => $payment->id]) ?>">
-                                <?= $payment->invoice_number ?>
-                            </a>
-                        <?php endif; ?>
-                    </td>
+                                <?php if ($payment->completed_at && $payment->type !== 'credit'): ?>
+                                    <?php if ($payment->isReimbursed()): ?>
+                                        <div class="text--secondary text--bold">
+                                            Remboursé
+                                        </div>
+                                    <?php else: ?>
+                                        <a class="button button--small" href="<?= url('new admin credit', ['credited_payment_id' => $payment->id]) ?>">
+                                            💸 Rembourser
+                                        </a>
+                                    <?php endif; ?>
+                                <?php endif; ?>
 
-                    <?php if ($payment->payment_intent_id): ?>
-                        <td>
-                            <a href="https://dashboard.stripe.com/payments/<?= $payment->payment_intent_id ?>">
-                                💰&nbsp;Stripe
-                            </a>
-                        </td>
-                    <?php endif; ?>
-                </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
-<?php endforeach; ?>
+                                <?php if ($payment->payment_intent_id): ?>
+                                    <div>
+                                        <a class="button button--small" href="https://dashboard.stripe.com/payments/<?= $payment->payment_intent_id ?>">
+                                            💰&nbsp;Stripe
+                                        </a>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
+        <?php endforeach; ?>
+    </div>
+</section>

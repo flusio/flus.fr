@@ -35,6 +35,10 @@ h3 {
     color: var(--color-green-gable);
 }
 
+.text--secondary {
+    color: var(--color-corduroy);
+}
+
 .text--bold {
     font-weight: 600;
 }

@@ -26,3 +26,7 @@ input[aria-invalid="true"],
 textarea[aria-invalid="true"] {
     border-color: var(--color-red-persian);
 }
+
+.input--size1 {
+    max-width: 5rem;
+}
