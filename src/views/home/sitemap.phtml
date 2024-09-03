@@ -1,0 +1,96 @@
+<?php
+    $this->layout('base.phtml', [
+        'title' => 'Plan du site · Flus',
+        'canonical' => url_full('sitemap'),
+    ]);
+?>
+
+<nav class="layout__breadcrumb" aria-label="Fil d’Ariane">
+    <ul class="list--nostyle">
+        <li class="breadcrumb__item">
+            <a class="breadcrumb__link" href="<?= url('home') ?>" rel="home">
+
+                Accueil
+            </a>
+        </li>
+
+        <li class="breadcrumb__item">
+            <a class="breadcrumb__link" aria-current="page" href="<?= url('sitemap') ?>">
+
+                Plan du site
+            </a>
+        </li>
+    </ul>
+</nav>
+
+<article>
+    <header class="panel panel--primary panel--header">
+        <div class="wrapper wrapper--larger wrapper--center text--center">
+            <h1>
+                Plan du site
+            </h1>
+        </div>
+    </header>
+
+    <div class="panel">
+        <div class="wrapper wrapper--text wrapper--center text-container">
+            <ul class="flow flow--small">
+                <li>
+                    <a href="<?= url('features') ?>">
+                        Flus en 6 fonctionnalités
+                    </a>
+                </li>
+
+                <li>
+                    <a href="<?= url('pricing') ?>">
+                        Le prix de Flus est le vôtre
+                    </a>
+                </li>
+
+                <li>
+                    <a href="<?= url_full('home') ?>carnet/">
+                        Le carnet de Flus
+                    </a>
+
+                    <ul class="flow flow--small">
+                        <li>
+                            <a href="<?= url_full('home') ?>carnet/abonnement.html">
+                                Suivre le carnet de Flus
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="<?= url_full('home') ?>carnet/markdown.html">
+                                Guide Markdown
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li>
+                    <a href="<?= url('contact') ?>">
+                        Une question&nbsp;? Une suggestion&nbsp;?
+                    </a>
+                </li>
+
+                <li>
+                    <a href="<?= url('legal') ?>">
+                        Mentions légales
+                    </a>
+                </li>
+
+                <li>
+                    <a href="<?= url('security') ?>">
+                        Remonter un problème de sécurité
+                    </a>
+                </li>
+
+                <li>
+                    <a href="<?= url('credits') ?>">
+                        Crédits
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</article>

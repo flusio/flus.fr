@@ -101,7 +101,11 @@ class Home
 
     public function sitemap(Request $request): Response
     {
-        return Response::ok('home/sitemap.xml');
+        if ($request->path() === '/sitemap.xml') {
+            return Response::ok('home/sitemap.xml');
+        } else {
+            return Response::ok('home/sitemap.phtml');
+        }
     }
 
     public function contact(Request $request): Response

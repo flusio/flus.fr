@@ -26,6 +26,7 @@ class Router
         $router->addRoute('POST', '/contact', 'Home#sendContactEmail', 'send contact email');
         $router->addRoute('GET', '/securite', 'Home#security', 'security');
         $router->addRoute('GET', '/cagnotte', 'CommonPots#show', 'common pot');
+        $router->addRoute('GET', '/plan-du-site', 'Home#sitemap', 'sitemap');
 
         $router->addRoute('GET', '/robots.txt', 'Home#robots', 'robots.txt');
         $router->addRoute('GET', '/sitemap.xml', 'Home#sitemap', 'sitemap.xml');
