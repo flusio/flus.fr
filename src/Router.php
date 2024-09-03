@@ -13,11 +13,8 @@ class Router
         $router = new \Minz\Router();
 
         $router->addRoute('GET', '/', 'Home#index', 'home');
-        $router->addRoute('GET', '/projet', 'Home#project', 'project');
         $router->addRoute('GET', '/tarifs', 'Home#pricing', 'pricing');
         $router->addRoute('GET', '/fonctionnalites', 'Home#features', 'features');
-        $router->addRoute('GET', '/visite', 'Home#tour', 'tour');
-        $router->addRoute('GET', '/visite/:page', 'Home#tour', 'tour page');
         $router->addRoute('GET', '/financement', 'Home#funding', 'funding');
         $router->addRoute('GET', '/credits', 'Home#credits', 'credits');
         $router->addRoute('GET', '/mentions-legales', 'Home#legal', 'legal');
@@ -25,12 +22,17 @@ class Router
         $router->addRoute('GET', '/contact', 'Home#contact', 'contact');
         $router->addRoute('POST', '/contact', 'Home#sendContactEmail', 'send contact email');
         $router->addRoute('GET', '/securite', 'Home#security', 'security');
-        $router->addRoute('GET', '/cagnotte', 'CommonPots#show', 'common pot');
         $router->addRoute('GET', '/plan-du-site', 'Home#sitemap', 'sitemap');
 
         $router->addRoute('GET', '/robots.txt', 'Home#robots', 'robots.txt');
         $router->addRoute('GET', '/sitemap.xml', 'Home#sitemap', 'sitemap.xml');
         $router->addRoute('GET', '/.well-known/security.txt', 'Home#securityTxt', 'security.txt');
+
+        // Deprecated
+        $router->addRoute('GET', '/projet', 'Home#project', 'project');
+        $router->addRoute('GET', '/visite', 'Home#tour', 'tour');
+        $router->addRoute('GET', '/visite/:page', 'Home#tour', 'tour page');
+        $router->addRoute('GET', '/cagnotte', 'CommonPots#show', 'common pot');
 
         $router->addRoute('GET', '/account', 'Accounts#show', 'account');
         $router->addRoute('GET', '/account/login', 'Accounts#login', 'account login');

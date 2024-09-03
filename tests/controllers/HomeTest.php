@@ -19,15 +19,6 @@ class HomeTest extends \PHPUnit\Framework\TestCase
         $this->assertResponsePointer($response, 'home/index.phtml');
     }
 
-    public function testProjectRendersCorrectly(): void
-    {
-        $response = $this->appRun('GET', '/projet');
-
-        $this->assertResponseCode($response, 200);
-        $this->assertResponseContains($response, 'Le projet');
-        $this->assertResponsePointer($response, 'home/project.phtml');
-    }
-
     public function testPricingRendersCorrectly(): void
     {
         $response = $this->appRun('GET', '/tarifs');
@@ -35,31 +26,6 @@ class HomeTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, 'Tarifs');
         $this->assertResponsePointer($response, 'home/pricing.phtml');
-    }
-
-    public function testTourRedirectsToTourNews(): void
-    {
-        $response = $this->appRun('GET', '/visite');
-
-        $this->assertResponseCode($response, 302, '/visite/journal');
-    }
-
-    /**
-     * @dataProvider tourPagesProvider
-     */
-    public function testTourPageRendersCorrectly(string $page): void
-    {
-        $response = $this->appRun('GET', "/visite/{$page}");
-
-        $this->assertResponseCode($response, 200);
-        $this->assertResponseContains($response, 'Visite guidée');
-    }
-
-    public function testTourPageFailsIfPageUnknown(): void
-    {
-        $response = $this->appRun('GET', '/visite/unknown');
-
-        $this->assertResponseCode($response, 404);
     }
 
     public function testCreditsRendersCorrectly(): void
@@ -222,20 +188,5 @@ class HomeTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 200);
         $this->assertResponsePointer($response, 'home/security.txt');
-    }
-
-    /**
-     * @return array<array{string}>
-     */
-    public function tourPagesProvider(): array
-    {
-        return [
-            ['flux'],
-            ['signets'],
-            ['journal'],
-            ['collections'],
-            ['pocket'],
-            ['opml'],
-        ];
     }
 }

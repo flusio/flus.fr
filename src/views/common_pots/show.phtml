@@ -3,72 +3,85 @@
         'title' => 'La cagnotte commune · Flus',
         'canonical' => url_full('common pot'),
         'description' => 'Flus propose une cagnotte commune à laquelle n’importe qui peut participer pour fournir des abonnements gratuits à celles et ceux qui n’en ont pas les moyens.',
-        'og' => [
-            'type' => 'website',
-            'image' => url_full_static('illustrations/high-five.svg'),
-            'twitter_card' => 'summary_large_image',
-        ],
     ]);
 ?>
 
-<section class="section section--text">
-    <div class="header">
-        <h1 class="header__title">
-            Cagnotte commune
-        </h1>
+<nav class="layout__breadcrumb" aria-label="Fil d’Ariane">
+    <ul class="list--nostyle">
+        <li class="breadcrumb__item">
+            <a class="breadcrumb__link" href="<?= url('home') ?>" rel="home">
+
+                Accueil
+            </a>
+        </li>
+
+        <li class="breadcrumb__item">
+            <a class="breadcrumb__link" aria-current="page" href="<?= url('common pot') ?>">
+
+                Cagnotte
+            </a>
+        </li>
+    </ul>
+</nav>
+
+<article>
+    <header class="panel panel--primary panel--header">
+        <div class="wrapper wrapper--larger wrapper--center text--center">
+            <h1>
+                Cagnotte commune
+            </h1>
+        </div>
+    </header>
+
+    <div class="panel">
+        <div class="wrapper wrapper--text wrapper--center flow">
+            <p class="text--center">
+                <strong>Depuis juillet 2023, la cagnotte commune n’est plus !</strong>
+            </p>
+
+            <dl class="faq flow">
+                <dt class="faq__question">
+                    En quoi consistait cette cagnotte commune&nbsp;?
+                </dt>
+                <dd class="faq__answer">
+                    Il s’agissait de proposer un système alternatif de paiement pour les
+                    personnes n’ayant pas les moyens de s’offrir un abonnement à Flus.
+                    Cette cagnotte permettait simplement de mettre en commun les moyens des
+                    un·es et des autres pour bénéficier tous ensemble de l’accès à ce
+                    service. Elle permettait également de proposer un autre moyen de
+                    soutenir mon travail aux personnes qui le souhaitaient.
+                </dd>
+
+                <dt class="faq__question">
+                    Pourquoi avoir supprimé la cagnotte ?
+                </dt>
+                <dd class="faq__answer">
+                    En juillet 2023, j’ai modifié mon modèle économique pour
+                    <a href="https://flus.fr/carnet/flus-passe-au-prix-libre.html">passer au prix « libre »</a>.
+                    Avec ce nouveau système, chacun et chacune est libre de
+                    payer le prix qu’elle veut, y compris 0 euro. De fait, la
+                    cagnotte n’était plus nécessaire.<br>
+                    Désormais, il n’y a plus qu’un seul moyen de renouveler son
+                    abonnement. L’avantage principal que j’y vois est qu’il n’y a plus
+                    un renouvellement pour celleux qui ont de l’argent et un pour
+                    celleux qui n’en ont pas. Ainsi, le prix libre se veut moins
+                    stigmatisant que la cagnotte.
+                </dd>
+
+                <dt class="faq__question">
+                    Qu’est devenu le montant de la cagnotte ?
+                </dt>
+                <dd class="faq__answer">
+                    Avant son retrait, la cagnotte s’élevait à <?= format_amount($common_pot_amount) ?>.
+                    J’ai retiré ce montant de mon objectif financier de l’année 2023
+                    qui s’élevait initialement à <?= format_amount(5000 * 100) ?>.
+                    <strong>
+                        Au final, mon objectif s’établit à
+                        <?= format_amount((5000 * 100) - $common_pot_amount) ?>.
+                    </strong>
+                    Cela a eu pour impact de réduire le tarif « soutien » de cette année.
+                </dd>
+            </dl>
+        </div>
     </div>
-
-    <p class="section__intro">
-        Depuis juillet 2023, la cagnotte commune n’est plus !
-    </p>
-
-    <dl class="faq">
-        <dt class="faq__question">
-            En quoi consistait cette cagnotte commune&nbsp;?
-        </dt>
-        <dd class="faq__answer">
-            Il s’agissait de proposer un système alternatif de paiement pour les
-            personnes n’ayant pas les moyens de s’offrir un abonnement à Flus.
-            Cette cagnotte permettait simplement de mettre en commun les moyens des
-            un·es et des autres pour bénéficier tous ensemble de l’accès à ce
-            service. Elle permettait également de proposer un autre moyen de
-            soutenir mon travail aux personnes qui le souhaitaient.
-        </dd>
-
-        <dt class="faq__question">
-            Pourquoi avoir supprimé la cagnotte ?
-        </dt>
-        <dd class="faq__answer">
-            En juillet 2023, j’ai modifié mon modèle économique pour passer au
-            prix « libre ». Avec ce nouveau système, chacun et chacune est
-            libre de payer le prix qu’elle veut, y compris 0 euro. De fait, la
-            cagnotte n’était plus nécessaire.<br>
-            Désormais, il n’y a plus qu’un seul moyen de renouveler son
-            abonnement. L’avantage principal que j’y vois est qu’il n’y a plus
-            un renouvellement pour celleux qui ont de l’argent et un pour
-            celleux qui n’en ont pas. Ainsi, le prix libre est moins
-            stigmatisant que la cagnotte.
-        </dd>
-
-        <dt class="faq__question">
-            Qu’est devenu le montant de la cagnotte ?
-        </dt>
-        <dd class="faq__answer">
-            Avant son retrait, la cagnotte s’élevait à <?= format_amount($common_pot_amount) ?>.
-            J’ai retiré ce montant de mon objectif financier de l’année 2023
-            qui s’élevait initialement à <?= format_amount(5000 * 100) ?>.
-            <strong>
-                Au final, mon objectif s’établit à
-                <?= format_amount((5000 * 100) - $common_pot_amount) ?>.
-            </strong>
-            Cela a eu pour impact de réduire le tarif « soutien » de cette année.
-        </dd>
-    </dl>
-
-    <img
-        class="illustration illustration--centered high-five"
-        alt=""
-        src="<?= url_static('illustrations/high-five.svg') ?>"
-        height="250"
-    />
 </section>

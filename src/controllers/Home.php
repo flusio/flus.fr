@@ -17,7 +17,7 @@ class Home
 
     public function project(Request $request): Response
     {
-        return Response::ok('home/project.phtml');
+        return Response::redirect('home');
     }
 
     public function features(Request $request): Response
@@ -51,27 +51,7 @@ class Home
 
     public function tour(Request $request): Response
     {
-        $page = $request->param('page');
-        if (!$page) {
-            return Response::redirect('tour page', ['page' => 'journal']);
-        }
-
-        $pages_to_views = [
-            'journal' => 'news',
-            'flux' => 'feeds',
-            'signets' => 'bookmarks',
-            'collections' => 'collections',
-            'pocket' => 'pocket',
-            'opml' => 'opml',
-        ];
-        if (!isset($pages_to_views[$page])) {
-            return Response::notFound('not_found.phtml');
-        }
-
-        $view = $pages_to_views[$page];
-        $response = Response::ok("home/tour/{$view}.phtml");
-        $response->setContentSecurityPolicy('media-src', "'self' flus.fr");
-        return $response;
+        return Response::redirect('features');
     }
 
     public function funding(Request $request): Response
