@@ -126,6 +126,8 @@
                     <a
                         href="<?= url('home') ?>"
                         <?= $current_page === 'home' ? 'aria-current="page"' : '' ?>
+                        rel="home"
+                        title="Flus - Accueil"
                     >
                         <img
                             src="<?= url_static('logo-white.svg') ?>"
@@ -154,7 +156,7 @@
             <footer class="layout__footer" role="contentinfo">
                 <div class="wrapper wrapper--larger wrapper--center flow flow--large">
                     <div class="cols cols--center cols--gap-large">
-                        <a href="<?= url('home') ?>">
+                        <a href="<?= url('home') ?>" rel="home" title="Flus - Accueil">
                             <img
                                 class="footer__logo"
                                 alt="Flus"
