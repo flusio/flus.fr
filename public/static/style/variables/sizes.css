@@ -5,11 +5,17 @@
     --font-size-small: 0.9em;
     --font-size-normal: 1em;
     --font-size-big: 1.4em;
-    --font-size-bigger: 1.9em;
+    --font-size-bigger: 1.7em;
 
     --space-smaller: 0.3rem;
     --space-small: 0.6rem;
     --space-medium: 1rem;
     --space-large: 2rem;
     --space-larger: 4rem;
+}
+
+@media (min-width: 800px) {
+    :root {
+        --font-size-bigger: 1.9em;
+    }
 }
