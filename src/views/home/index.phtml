@@ -139,7 +139,7 @@
                 <img
                     class="illustration"
                     loading="lazy"
-                    alt="L’écran « Lecture » de Flus affiche trois onglets : Journal, Signets et Liens lus. Des liens sont présents dans les signets."
+                    alt="L’écran Lecture de Flus affiche trois onglets : Journal, Signets et Liens lus."
                     src="<?= url_static('screenshots/onglet-lecture.webp') ?>"
                 />
             </div>
@@ -317,16 +317,23 @@
         <img
             class="no-mobile"
             loading="lazy"
-            alt="Différents sites Web (Youtube, RSS, Mastodon, Le Monde, podcasts) sont agrégés vers le logo de Flus. De celui-ci sortent 5 services : Accès mobile et extension, éditorialisation de votre veille, prix libre et adapté, respect de votre vie privée, support professionnel dédié."
+            alt="Un schéma montrant des sites agrégés vers Flus, d’où ressortent différents services."
             src="<?= url_static('illustrations/flus-services.svg') ?>"
+            aria-describedby="flus-services-longdesc"
         />
 
         <img
             class="only-mobile"
             loading="lazy"
-            alt="Différents sites Web (Youtube, RSS, Mastodon, Le Monde, podcasts) sont agrégés vers le logo de Flus. De celui-ci sortent 5 services : Accès mobile et extension, éditorialisation de votre veille, prix libre et adapté, respect de votre vie privée, support professionnel dédié."
+            alt="Un schéma montrant des sites agrégés vers Flus, d’où ressortent différents services."
             src="<?= url_static('illustrations/flus-services-mobile.svg') ?>"
+            aria-describedby="flus-services-longdesc"
         />
+
+        <p class="sr-only" id="flus-services-longdesc">
+            Différents sites Web (Youtube, RSS, Mastodon, Le Monde, podcasts) sont agrégés vers le logo de Flus.
+            De celui-ci sortent 5 services&nbsp;: Accès mobile et extension, éditorialisation de votre veille, prix libre et adapté, respect de votre vie privée, support professionnel dédié.
+        </p>
     </div>
 </section>
 
