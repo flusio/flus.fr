@@ -154,6 +154,7 @@ class InvoicePDF extends \FPDF
         $this->addCustomerInformation($this->customer, $this->GetY());
         $this->addPurchases($this->purchases, $this->GetY() + 20);
         $this->addTotalPurchases($this->total_purchases, $this->GetY() + 20);
+        $this->addRenunciationWithdrawalRight($this->GetY() + 60);
 
         // Make sure that the parent directories exist
         $dirname = pathinfo($filepath, PATHINFO_DIRNAME);
@@ -242,6 +243,21 @@ class InvoicePDF extends \FPDF
         $this->SetX(135);
         $this->Cell(25, 10, 'Total TTC', 0, 0, '', true);
         $this->Cell(25, 10, $this->pdfDecode($infos['ttc']), 0, 1);
+    }
+
+    private function addRenunciationWithdrawalRight(int $y_position): void
+    {
+        $this->SetY($y_position);
+        $this->SetFont('', 'I', 11);
+
+        $lines = [
+            'Pour rappel, en vertu de l’article L221-28 du Code de la Consommation, vous avez renoncé à votre droit de',
+            'rétractation pour bénéficier de votre abonnement à Flus.',
+        ];
+
+        foreach ($lines as $line) {
+            $this->Cell(0, 5, $this->pdfDecode($line), 0, 1);
+        }
     }
 
     // phpcs:disable PSR1.Methods.CamelCapsMethodName.NotCamelCaps
