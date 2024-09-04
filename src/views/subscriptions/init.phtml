@@ -198,30 +198,29 @@
                 </div>
 
                 <div class="panel panel--grey panel--rounded flow">
-                    <p class="form-group__caption">
-                        Vous devez accepter les
-                        <a href="<?= url('cgv') ?>" target="_blank" rel="noopener noreferrer nofollow">
-                            Conditions Générales de Vente</a>.
-                        Vous serez ensuite redirigé·e vers le prestataire de paiement
-                        Stripe.
-                    </p>
-
-                    <input
-                        id="cgv"
-                        name="accept_cgv"
-                        type="checkbox"
-                        required
-                    />
-
-                    <label for="cgv">
-                        Accepter les Conditions Générales de Vente
-                    </label>
-
-                    <?php if (isset($errors['cgv'])): ?>
-                        <p class="form-group__error">
-                            <?= $errors['cgv'] ?>
+                    <?php if (isset($errors['right_of_withdrawal'])): ?>
+                        <p class="form-group__error" id="right-of-withdrawal-error">
+                            Erreur&nbsp;:
+                            <?= $errors['right_of_withdrawal'] ?>
                         </p>
                     <?php endif; ?>
+
+                    <input
+                        id="right-of-withdrawal"
+                        name="right_of_withdrawal"
+                        type="checkbox"
+                        required
+                        <?php if (isset($errors['right_of_withdrawal'])): ?>
+                            aria-invalid="true"
+                            aria-errormessage="right-of-withdrawal-error"
+                        <?php endif; ?>
+                    />
+
+                    <label class="label--normal" for="right-of-withdrawal">
+                        Je renonce expressément à mon droit de rétractation de
+                        14 jours pour les prestations dont je bénéficierais
+                        avant l’écoulement de ce délai
+                    </label>
                 </div>
 
                 <div class="text--center">

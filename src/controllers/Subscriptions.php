@@ -89,6 +89,8 @@ class Subscriptions
         /** @var string */
         $tariff = $request->param('tariff', '');
 
+        $right_of_withdrawal = $request->paramBoolean('right_of_withdrawal');
+
         if (!\Minz\Csrf::validate($request->param('csrf', ''))) {
             return Response::badRequest('subscriptions/init.phtml', [
                 'contribution_price' => models\Payment::contributionPrice(),
@@ -111,6 +113,18 @@ class Subscriptions
 
         if ($account->mustSetAddress()) {
             return Response::redirect('account profile');
+        }
+
+        if (!$right_of_withdrawal) {
+            return Response::badRequest('subscriptions/init.phtml', [
+                'contribution_price' => models\Payment::contributionPrice(),
+                'account' => $account,
+                'amount' => $amount,
+                'ongoing_payment' => $account->ongoingPayment(),
+                'errors' => [
+                    'right_of_withdrawal' => 'Vous devez cocher cette case pour continuer',
+                ],
+            ]);
         }
 
         if (in_array($tariff, ['solidarity', 'stability', 'contribution'])) {
