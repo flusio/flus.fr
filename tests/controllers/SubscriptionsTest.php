@@ -142,6 +142,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('POST', '/account/renew', [
             'csrf' => \Minz\Csrf::generate(),
+            'right_of_withdrawal' => true,
             'account_id' => $account->id,
             'amount' => 10,
         ]);
@@ -184,6 +185,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('POST', '/account/renew', [
             'csrf' => \Minz\Csrf::generate(),
+            'right_of_withdrawal' => true,
             'account_id' => $account->id,
             'amount' => 10,
         ]);
@@ -223,6 +225,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('POST', '/account/renew', [
             'csrf' => \Minz\Csrf::generate(),
+            'right_of_withdrawal' => true,
             'account_id' => $account->id,
             'amount' => 0,
         ]);
@@ -253,6 +256,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('POST', '/account/renew', [
             'csrf' => \Minz\Csrf::generate(),
+            'right_of_withdrawal' => true,
             'account_id' => $account->id,
             'amount' => 10,
         ]);
@@ -283,6 +287,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('POST', '/account/renew', [
             'csrf' => \Minz\Csrf::generate(),
+            'right_of_withdrawal' => true,
             'account_id' => $account->id,
             'amount' => 10,
         ]);
@@ -317,6 +322,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('POST', '/account/renew', [
             'csrf' => \Minz\Csrf::generate(),
+            'right_of_withdrawal' => true,
             'account_id' => $account->id,
             'amount' => 121,
         ]);
@@ -345,6 +351,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('POST', '/account/renew', [
             'csrf' => \Minz\Csrf::generate(),
+            'right_of_withdrawal' => true,
             'account_id' => $account->id,
             'amount' => 10,
         ]);
@@ -375,6 +382,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('POST', '/account/renew', [
             'csrf' => 'not the token',
+            'right_of_withdrawal' => true,
             'account_id' => $account->id,
             'amount' => 10,
         ]);
