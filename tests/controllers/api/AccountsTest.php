@@ -42,6 +42,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
      */
     public function testShowCreatesAccountIfDoesNotExist(string $email): void
     {
+        $this->freeze();
         $this->assertSame(0, models\Account::count());
 
         /** @var \Minz\Response */
@@ -61,6 +62,11 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($email, $account->email);
         $output = json_decode($response->render(), true);
         $this->assertSame($account->id, $output['id']);
+        $expected_expired_at = \Minz\Time::fromNow(31, 'days');
+        $this->assertSame(
+            $expected_expired_at->format(\Minz\Database\Column::DATETIME_FORMAT),
+            $output['expired_at']
+        );
     }
 
     public function testShowUpdatesLastSyncAt(): void

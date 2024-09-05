@@ -103,7 +103,7 @@ class Account
     {
         $this->id = \Minz\Random::hex(32);
         $this->email = \Minz\Email::sanitize($email);
-        $this->expired_at = \Minz\Time::fromNow(1, 'month');
+        $this->expired_at = \Minz\Time::fromNow(31, 'days');
         $this->preferred_service = 'flus';
         $this->preferred_tariff = 'stability';
         $this->reminder = true;
