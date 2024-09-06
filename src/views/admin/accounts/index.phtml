@@ -36,6 +36,13 @@
                                 <?php else: ?>
                                     Expire le <?= _d($account->expired_at, 'dd MMMM yyyy') ?>
                                 <?php endif; ?>
+
+                                —
+                                <?php if ($account->preferred_service === 'freshrss'): ?>
+                                    FreshRSS
+                                <?php else: ?>
+                                    Flus
+                                <?php endif; ?>
                             </div>
 
                             <div>
