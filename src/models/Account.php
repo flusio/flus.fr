@@ -323,16 +323,22 @@ class Account
      */
     public static function listWithCountPayments(): array
     {
+        $email = \Minz\Configuration::$application['support_email'];
+
         $sql = <<<SQL
             SELECT a.*, (
                 SELECT COUNT(p.id) FROM payments p
                 WHERE p.account_id = a.id
             ) AS count_payments
             FROM accounts a
+            WHERE a.email != :email
         SQL;
 
         $database = Database::get();
-        $statement = $database->query($sql);
+        $statement = $database->prepare($sql);
+        $statement->execute([
+            ':email' => $email,
+        ]);
         return self::fromDatabaseRows($statement->fetchAll());
     }
 
