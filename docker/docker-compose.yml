@@ -31,6 +31,13 @@ services:
         links:
             - php
 
+    mailpit:
+        image: axllent/mailpit
+        restart: unless-stopped
+        ports:
+            - "8025:8025"
+            - "1025:1025"
+
     stripe-mock:
         image: stripe/stripe-mock:latest
         restart: unless-stopped

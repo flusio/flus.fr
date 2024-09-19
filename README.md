@@ -32,8 +32,7 @@ Copy the `env.sample` file:
 $ cp env.sample .env
 ```
 
-And adapt the `.env` file to your needs. The `SMTP_` variables should be set to
-be used with an existing email account.
+And adapt the `.env` file to your needs.
 
 Initialize the database with:
 
@@ -52,6 +51,9 @@ The first time you call it, it will download the Docker images and build the
 `php` one with the information from the `docker/Dockerfile` file.
 
 Now, you should be able to access flus.fr at [localhost:8000](http://localhost:8000).
+
+Mailpit is configured to catch all the outgoing emails.
+You can access its interface at [localhost:8025](http://localhost:8025).
 
 ## Deploy in production
 
