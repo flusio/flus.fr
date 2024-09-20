@@ -12,7 +12,6 @@
         <link rel="canonical" href="<?= $canonical ?>">
         <link rel="alternate" href="<?= url_full('home') ?>carnet/feeds/all.atom.xml" type="application/atom+xml" title="Articles du carnet de flus" />
         <link rel="shortcut icon" href="<?= url_static('favicon-32px.png') ?>">
-        <link rel="me" href="https://piaille.fr/@flus">
 
         <link rel="stylesheet" href="<?= url_static('style/main.css') ?>">
         <script src="<?= url_static('js/stimulus.min.js') ?>" defer></script>
@@ -237,6 +236,22 @@
                             </a>
                         </li>
                     </ul>
+
+                    <p class="text--center">
+                        Retrouvez Flus sur
+
+                        <a class="footer__link" rel="me" href="https://www.linkedin.com/company/flus-fr">
+                            <img width="25" alt="" src="<?= url_static('icon-linkedin.svg') ?>" />
+                            LinkedIn
+                        </a>
+
+                        et
+
+                        <a class="footer__link" rel="me" href="https://piaille.fr/@flus">
+                            <img width="25" alt="" src="<?= url_static('icon-mastodon.svg') ?>" />
+                            Mastodon
+                        </a>
+                    </p>
 
                     <p class="footer__license text--small text--center">
                         Licence libre
