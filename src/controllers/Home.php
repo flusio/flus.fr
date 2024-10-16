@@ -64,16 +64,6 @@ class Home
         return Response::ok('home/credits.phtml');
     }
 
-    public function legal(Request $request): Response
-    {
-        return Response::ok('home/legal.phtml');
-    }
-
-    public function cgv(Request $request): Response
-    {
-        return Response::ok('home/cgv.phtml');
-    }
-
     public function robots(Request $request): Response
     {
         return Response::ok('home/robots.txt');

@@ -17,8 +17,6 @@ class Router
         $router->addRoute('GET', '/fonctionnalites', 'Home#features', 'features');
         $router->addRoute('GET', '/financement', 'Home#funding', 'funding');
         $router->addRoute('GET', '/credits', 'Home#credits', 'credits');
-        $router->addRoute('GET', '/mentions-legales', 'Home#legal', 'legal');
-        $router->addRoute('GET', '/cgv', 'Home#cgv', 'cgv');
         $router->addRoute('GET', '/contact', 'Home#contact', 'contact');
         $router->addRoute('POST', '/contact', 'Home#sendContactEmail', 'send contact email');
         $router->addRoute('GET', '/securite', 'Home#security', 'security');
@@ -28,11 +26,18 @@ class Router
         $router->addRoute('GET', '/sitemap.xml', 'Home#sitemap', 'sitemap.xml');
         $router->addRoute('GET', '/.well-known/security.txt', 'Home#securityTxt', 'security.txt');
 
+        $router->addRoute('GET', '/informations-legales', 'Legals#index', 'legal');
+        $router->addRoute('GET', '/mentions-legales', 'Legals#notices', 'legal notices');
+        $router->addRoute('GET', '/conditions-generales', 'Legals#generalTerms', 'general terms');
+        $router->addRoute('GET', '/politique-confidentialite', 'Legals#privacyPolicy', 'privacy policy');
+        $router->addRoute('GET', '/politique-cookies', 'Legals#cookiesPolicy', 'cookies policy');
+
         // Deprecated
         $router->addRoute('GET', '/projet', 'Home#project', 'project');
         $router->addRoute('GET', '/visite', 'Home#tour', 'tour');
         $router->addRoute('GET', '/visite/:page', 'Home#tour', 'tour page');
         $router->addRoute('GET', '/cagnotte', 'CommonPots#show', 'common pot');
+        $router->addRoute('GET', '/cgv', 'Legals#cgv', 'cgv');
 
         $router->addRoute('GET', '/account', 'Accounts#show', 'account');
         $router->addRoute('GET', '/account/login', 'Accounts#login', 'account login');

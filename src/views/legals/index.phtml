@@ -1,0 +1,70 @@
+<?php
+    $this->layout('base.phtml', [
+        'title' => 'Informations légales · Flus',
+        'canonical' => url_full('legal'),
+    ]);
+?>
+
+<nav class="layout__breadcrumb" aria-label="Fil d’Ariane">
+    <ul class="list--nostyle">
+        <li class="breadcrumb__item">
+            <a class="breadcrumb__link" href="<?= url('home') ?>" rel="home">
+                Accueil
+            </a>
+        </li>
+
+        <li class="breadcrumb__item">
+            <a class="breadcrumb__link" aria-current="page" href="<?= url('legal') ?>">
+                Informations légales
+            </a>
+        </li>
+    </ul>
+</nav>
+
+<article>
+    <header class="panel panel--primary panel--header">
+        <div class="wrapper wrapper--larger wrapper--center text--center">
+            <h1>Informations légales</h1>
+        </div>
+    </header>
+
+    <div class="panel">
+        <div class="wrapper wrapper--text wrapper--center text-container">
+            <p>
+                Retrouvez ici tous les documents légaux relatifs à Flus&nbsp;:
+            </p>
+
+            <ul>
+                <li>
+                    <a href="<?= url('legal notices') ?>">
+                        Mentions légales
+                    </a>
+                </li>
+
+                <li>
+                    <a href="<?= url('cgv') ?>">
+                        Conditions Générales de Vente (jusqu’au 24 novembre)
+                    </a>
+                </li>
+
+                <li>
+                    <a href="<?= url('general terms') ?>">
+                        Conditions générales (à partir du 25 novembre)
+                    </a>
+                </li>
+
+                <li>
+                    <a href="<?= url('privacy policy') ?>">
+                        Politique de confidentialité
+                    </a>
+                </li>
+
+                <li>
+                    <a href="<?= url('cookies policy') ?>">
+                        Politique de cookies
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</article>

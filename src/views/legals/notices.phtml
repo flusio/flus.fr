@@ -1,0 +1,78 @@
+<?php
+    $this->layout('base.phtml', [
+        'title' => 'Mentions légales · Flus',
+        'canonical' => url_full('legal notices'),
+    ]);
+?>
+
+<nav class="layout__breadcrumb" aria-label="Fil d’Ariane">
+    <ul class="list--nostyle">
+        <li class="breadcrumb__item">
+            <a class="breadcrumb__link" href="<?= url('home') ?>" rel="home">
+                Accueil
+            </a>
+        </li>
+
+        <li class="breadcrumb__item">
+            <a class="breadcrumb__link" href="<?= url('legal') ?>">
+                Informations légales
+            </a>
+        </li>
+
+        <li class="breadcrumb__item">
+            <a class="breadcrumb__link" aria-current="page" href="<?= url('legal notices') ?>">
+                Mentions légales
+            </a>
+        </li>
+    </ul>
+</nav>
+
+<article>
+    <header class="panel panel--primary panel--header">
+        <div class="wrapper wrapper--larger wrapper--center text--center flow">
+            <h1>Mentions légales</h1>
+
+            <p>
+                Applicable à compter du
+                <time datetime="2024-10-19T00:00:00">
+                    19 octobre 2024
+                </time>
+            </p>
+        </div>
+    </header>
+
+    <div class="panel">
+        <div class="wrapper wrapper--text wrapper--center text-container">
+            <h2 id="éditeur-et-directeur-de-la-publication">Éditeur et directeur de la publication</h2>
+
+            <p>
+                Vous êtes actuellement connecté·e au site Internet flus.fr,
+                édité par Marien Fressinaud Mas de Feix, entrepreneur
+                individuel exerçant sous le nom commercial «&nbsp;FLUS&nbsp;».
+                Siège social&nbsp;: 4 bis rue Germain, 38100 Grenoble, France.
+                Numéro <abbr>RCS</abbr>&nbsp;: Grenoble 878 196 278.
+                Email&nbsp;: support@flus.fr
+            </p>
+
+            <p>
+                <a href="<?= url('contact') ?>">Formulaire de contact</a>
+            </p>
+
+            <h2 id="hébergeur">Hébergeur</h2>
+
+            <p>
+                Le Site est hébergé par <a href="https://www.hetzner.com">Hetzner Online GmbH</a>.
+                Siège social&nbsp;: Industriestr. 25, 91710 Gunzenhausen, Allemagne.
+                Email&nbsp;: support@hetzner.com
+            </p>
+
+            <hr />
+
+            <p class="text--center">
+                <a class="button button--primary" href="<?= url('legal') ?>">
+                    Retourner aux informations légales
+                </a>
+            </p>
+        </div>
+    </div>
+</article>

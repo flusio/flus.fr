@@ -37,24 +37,6 @@ class HomeTest extends \PHPUnit\Framework\TestCase
         $this->assertResponsePointer($response, 'home/credits.phtml');
     }
 
-    public function testLegalRendersCorrectly(): void
-    {
-        $response = $this->appRun('GET', '/mentions-legales');
-
-        $this->assertResponseCode($response, 200);
-        $this->assertResponseContains($response, 'Mentions légales');
-        $this->assertResponsePointer($response, 'home/legal.phtml');
-    }
-
-    public function testCgvRendersCorrectly(): void
-    {
-        $response = $this->appRun('GET', '/cgv');
-
-        $this->assertResponseCode($response, 200);
-        $this->assertResponseContains($response, 'Conditions Générales de Vente');
-        $this->assertResponsePointer($response, 'home/cgv.phtml');
-    }
-
     public function testRobotsRendersCorrectly(): void
     {
         $response = $this->appRun('GET', '/robots.txt');
