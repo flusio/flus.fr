@@ -37,11 +37,16 @@ class Stripe
             'customer_email' => $account->email,
             'payment_method_types' => ['card'],
             'line_items' => [[
-                'name' => $name,
-                'amount' => $payment->amount,
-                'currency' => 'eur',
                 'quantity' => $payment->quantity,
+                'price_data' => [
+                    'unit_amount' => $payment->amount,
+                    'currency' => 'eur',
+                    'product_data' => [
+                        'name' => $name,
+                    ],
+                ],
             ]],
+            'mode' => 'payment',
             'success_url' => $success_url,
             'cancel_url' => $cancel_url,
         ]);
