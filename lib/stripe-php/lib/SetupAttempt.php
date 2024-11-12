@@ -5,14 +5,14 @@
 namespace Stripe;
 
 /**
- * A SetupAttempt describes one attempted confirmation of a SetupIntent, whether
- * that confirmation was successful or unsuccessful. You can use SetupAttempts to
- * inspect details of a specific attempt at setting up a payment method using a
- * SetupIntent.
+ * A SetupAttempt describes one attempted confirmation of a SetupIntent,
+ * whether that confirmation is successful or unsuccessful. You can use
+ * SetupAttempts to inspect details of a specific attempt at setting up a
+ * payment method using a SetupIntent.
  *
  * @property string $id Unique identifier for the object.
  * @property string $object String representing the object's type. Objects of the same type share the same value.
- * @property null|string|\Stripe\StripeObject $application The value of <a href="https://stripe.com/docs/api/setup_intents/object#setup_intent_object-application">application</a> on the SetupIntent at the time of this confirmation.
+ * @property null|string|\Stripe\Application $application The value of <a href="https://stripe.com/docs/api/setup_intents/object#setup_intent_object-application">application</a> on the SetupIntent at the time of this confirmation.
  * @property null|bool $attach_to_self <p>If present, the SetupIntent's payment method will be attached to the in-context Stripe Account.</p><p>It can only be used for this Stripe Account’s own money movement flows like InboundTransfer and OutboundTransfers. It cannot be set to true when setting up a PaymentMethod for a Customer, and defaults to false when attaching a PaymentMethod to a Customer.</p>
  * @property int $created Time at which the object was created. Measured in seconds since the Unix epoch.
  * @property null|string|\Stripe\Customer $customer The value of <a href="https://stripe.com/docs/api/setup_intents/object#setup_intent_object-customer">customer</a> on the SetupIntent at the time of this confirmation.
@@ -30,5 +30,20 @@ class SetupAttempt extends ApiResource
 {
     const OBJECT_NAME = 'setup_attempt';
 
-    use ApiOperations\All;
+    /**
+     * Returns a list of SetupAttempts that associate with a provided SetupIntent.
+     *
+     * @param null|array $params
+     * @param null|array|string $opts
+     *
+     * @throws \Stripe\Exception\ApiErrorException if the request fails
+     *
+     * @return \Stripe\Collection<\Stripe\SetupAttempt> of ApiResources
+     */
+    public static function all($params = null, $opts = null)
+    {
+        $url = static::classUrl();
+
+        return static::_requestPage($url, \Stripe\Collection::class, $params, $opts);
+    }
 }

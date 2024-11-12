@@ -4,6 +4,10 @@
 
 namespace Stripe\Service;
 
+/**
+ * @phpstan-import-type RequestOptionsArray from \Stripe\Util\RequestOptions
+ * @psalm-import-type RequestOptionsArray from \Stripe\Util\RequestOptions
+ */
 class AccountService extends \Stripe\Service\AbstractService
 {
     /**
@@ -11,7 +15,7 @@ class AccountService extends \Stripe\Service\AbstractService
      * href="/docs/connect">Connect</a>. If you’re not a platform, the list is empty.
      *
      * @param null|array $params
-     * @param null|array|\Stripe\Util\RequestOptions $opts
+     * @param null|RequestOptionsArray|\Stripe\Util\RequestOptions $opts
      *
      * @throws \Stripe\Exception\ApiErrorException if the request fails
      *
@@ -29,7 +33,7 @@ class AccountService extends \Stripe\Service\AbstractService
      *
      * @param string $parentId
      * @param null|array $params
-     * @param null|array|\Stripe\Util\RequestOptions $opts
+     * @param null|RequestOptionsArray|\Stripe\Util\RequestOptions $opts
      *
      * @throws \Stripe\Exception\ApiErrorException if the request fails
      *
@@ -45,7 +49,7 @@ class AccountService extends \Stripe\Service\AbstractService
      *
      * @param string $parentId
      * @param null|array $params
-     * @param null|array|\Stripe\Util\RequestOptions $opts
+     * @param null|RequestOptionsArray|\Stripe\Util\RequestOptions $opts
      *
      * @throws \Stripe\Exception\ApiErrorException if the request fails
      *
@@ -63,7 +67,7 @@ class AccountService extends \Stripe\Service\AbstractService
      *
      * @param string $parentId
      * @param null|array $params
-     * @param null|array|\Stripe\Util\RequestOptions $opts
+     * @param null|RequestOptionsArray|\Stripe\Util\RequestOptions $opts
      *
      * @throws \Stripe\Exception\ApiErrorException if the request fails
      *
@@ -81,13 +85,13 @@ class AccountService extends \Stripe\Service\AbstractService
      * platform</a>.
      *
      * If you’ve already collected information for your connected accounts, you <a
-     * href="/docs/connect/best-practices#onboarding">can pre-fill that information</a>
-     * when creating the account. Connect Onboarding won’t ask for the pre-filled
-     * information during account onboarding. You can pre-fill any information on the
+     * href="/docs/connect/best-practices#onboarding">can prefill that information</a>
+     * when creating the account. Connect Onboarding won’t ask for the prefilled
+     * information during account onboarding. You can prefill any information on the
      * account.
      *
      * @param null|array $params
-     * @param null|array|\Stripe\Util\RequestOptions $opts
+     * @param null|RequestOptionsArray|\Stripe\Util\RequestOptions $opts
      *
      * @throws \Stripe\Exception\ApiErrorException if the request fails
      *
@@ -103,7 +107,7 @@ class AccountService extends \Stripe\Service\AbstractService
      *
      * @param string $parentId
      * @param null|array $params
-     * @param null|array|\Stripe\Util\RequestOptions $opts
+     * @param null|RequestOptionsArray|\Stripe\Util\RequestOptions $opts
      *
      * @throws \Stripe\Exception\ApiErrorException if the request fails
      *
@@ -115,16 +119,15 @@ class AccountService extends \Stripe\Service\AbstractService
     }
 
     /**
-     * Creates a single-use login link for an Express account to access their Stripe
-     * dashboard.
+     * Creates a login link for a connected account to access the Express Dashboard.
      *
-     * <strong>You may only create login links for <a
-     * href="/docs/connect/express-accounts">Express accounts</a> connected to your
-     * platform</strong>.
+     * <strong>You can only create login links for accounts that use the <a
+     * href="/connect/express-dashboard">Express Dashboard</a> and are connected to
+     * your platform</strong>.
      *
      * @param string $parentId
      * @param null|array $params
-     * @param null|array|\Stripe\Util\RequestOptions $opts
+     * @param null|RequestOptionsArray|\Stripe\Util\RequestOptions $opts
      *
      * @throws \Stripe\Exception\ApiErrorException if the request fails
      *
@@ -140,7 +143,7 @@ class AccountService extends \Stripe\Service\AbstractService
      *
      * @param string $parentId
      * @param null|array $params
-     * @param null|array|\Stripe\Util\RequestOptions $opts
+     * @param null|RequestOptionsArray|\Stripe\Util\RequestOptions $opts
      *
      * @throws \Stripe\Exception\ApiErrorException if the request fails
      *
@@ -152,20 +155,23 @@ class AccountService extends \Stripe\Service\AbstractService
     }
 
     /**
-     * With <a href="/docs/connect">Connect</a>, you can delete accounts you manage.
+     * With <a href="/connect">Connect</a>, you can delete accounts you manage.
      *
-     * Accounts created using test-mode keys can be deleted at any time. Standard
-     * accounts created using live-mode keys cannot be deleted. Custom or Express
-     * accounts created using live-mode keys can only be deleted once all balances are
-     * zero.
+     * Test-mode accounts can be deleted at any time.
+     *
+     * Live-mode accounts where Stripe is responsible for negative account balances
+     * cannot be deleted, which includes Standard accounts. Live-mode accounts where
+     * your platform is liable for negative account balances, which includes Custom and
+     * Express accounts, can be deleted when all <a
+     * href="/api/balance/balance_object">balances</a> are zero.
      *
      * If you want to delete your own account, use the <a
-     * href="https://dashboard.stripe.com/account">account information tab in your
-     * account settings</a> instead.
+     * href="https://dashboard.stripe.com/settings/account">account information tab in
+     * your account settings</a> instead.
      *
      * @param string $id
      * @param null|array $params
-     * @param null|array|\Stripe\Util\RequestOptions $opts
+     * @param null|RequestOptionsArray|\Stripe\Util\RequestOptions $opts
      *
      * @throws \Stripe\Exception\ApiErrorException if the request fails
      *
@@ -182,7 +188,7 @@ class AccountService extends \Stripe\Service\AbstractService
      * @param string $parentId
      * @param string $id
      * @param null|array $params
-     * @param null|array|\Stripe\Util\RequestOptions $opts
+     * @param null|RequestOptionsArray|\Stripe\Util\RequestOptions $opts
      *
      * @throws \Stripe\Exception\ApiErrorException if the request fails
      *
@@ -203,7 +209,7 @@ class AccountService extends \Stripe\Service\AbstractService
      * @param string $parentId
      * @param string $id
      * @param null|array $params
-     * @param null|array|\Stripe\Util\RequestOptions $opts
+     * @param null|RequestOptionsArray|\Stripe\Util\RequestOptions $opts
      *
      * @throws \Stripe\Exception\ApiErrorException if the request fails
      *
@@ -215,14 +221,17 @@ class AccountService extends \Stripe\Service\AbstractService
     }
 
     /**
-     * With <a href="/docs/connect">Connect</a>, you may flag accounts as suspicious.
+     * With <a href="/connect">Connect</a>, you can reject accounts that you have
+     * flagged as suspicious.
      *
-     * Test-mode Custom and Express accounts can be rejected at any time. Accounts
-     * created using live-mode keys may only be rejected once all balances are zero.
+     * Only accounts where your platform is liable for negative account balances, which
+     * includes Custom and Express accounts, can be rejected. Test-mode accounts can be
+     * rejected at any time. Live-mode accounts can only be rejected after all balances
+     * are zero.
      *
      * @param string $id
      * @param null|array $params
-     * @param null|array|\Stripe\Util\RequestOptions $opts
+     * @param null|RequestOptionsArray|\Stripe\Util\RequestOptions $opts
      *
      * @throws \Stripe\Exception\ApiErrorException if the request fails
      *
@@ -239,7 +248,7 @@ class AccountService extends \Stripe\Service\AbstractService
      * @param string $parentId
      * @param string $id
      * @param null|array $params
-     * @param null|array|\Stripe\Util\RequestOptions $opts
+     * @param null|RequestOptionsArray|\Stripe\Util\RequestOptions $opts
      *
      * @throws \Stripe\Exception\ApiErrorException if the request fails
      *
@@ -256,7 +265,7 @@ class AccountService extends \Stripe\Service\AbstractService
      * @param string $parentId
      * @param string $id
      * @param null|array $params
-     * @param null|array|\Stripe\Util\RequestOptions $opts
+     * @param null|RequestOptionsArray|\Stripe\Util\RequestOptions $opts
      *
      * @throws \Stripe\Exception\ApiErrorException if the request fails
      *
@@ -273,7 +282,7 @@ class AccountService extends \Stripe\Service\AbstractService
      * @param string $parentId
      * @param string $id
      * @param null|array $params
-     * @param null|array|\Stripe\Util\RequestOptions $opts
+     * @param null|RequestOptionsArray|\Stripe\Util\RequestOptions $opts
      *
      * @throws \Stripe\Exception\ApiErrorException if the request fails
      *
@@ -285,24 +294,29 @@ class AccountService extends \Stripe\Service\AbstractService
     }
 
     /**
-     * Updates a <a href="/docs/connect/accounts">connected account</a> by setting the
+     * Updates a <a href="/connect/accounts">connected account</a> by setting the
      * values of the parameters passed. Any parameters not provided are left unchanged.
      *
-     * For Custom accounts, you can update any information on the account. For other
-     * accounts, you can update all information until that account has started to go
-     * through Connect Onboarding. Once you create an <a
-     * href="/docs/api/account_links">Account Link</a> for a Standard or Express
-     * account, some parameters can no longer be changed. These are marked as
-     * <strong>Custom Only</strong> or <strong>Custom and Express</strong> below.
+     * For accounts where <a
+     * href="/api/accounts/object#account_object-controller-requirement_collection">controller.requirement_collection</a>
+     * is <code>application</code>, which includes Custom accounts, you can update any
+     * information on the account.
+     *
+     * For accounts where <a
+     * href="/api/accounts/object#account_object-controller-requirement_collection">controller.requirement_collection</a>
+     * is <code>stripe</code>, which includes Standard and Express accounts, you can
+     * update all information until you create an <a href="/api/account_links">Account
+     * Link</a> or <a href="/api/account_sessions">Account Session</a> to start Connect
+     * onboarding, after which some properties can no longer be updated.
      *
      * To update your own account, use the <a
-     * href="https://dashboard.stripe.com/account">Dashboard</a>. Refer to our <a
-     * href="/docs/connect/updating-accounts">Connect</a> documentation to learn more
-     * about updating accounts.
+     * href="https://dashboard.stripe.com/settings/account">Dashboard</a>. Refer to our
+     * <a href="/docs/connect/updating-accounts">Connect</a> documentation to learn
+     * more about updating accounts.
      *
      * @param string $id
      * @param null|array $params
-     * @param null|array|\Stripe\Util\RequestOptions $opts
+     * @param null|RequestOptionsArray|\Stripe\Util\RequestOptions $opts
      *
      * @throws \Stripe\Exception\ApiErrorException if the request fails
      *
@@ -314,12 +328,13 @@ class AccountService extends \Stripe\Service\AbstractService
     }
 
     /**
-     * Updates an existing Account Capability.
+     * Updates an existing Account Capability. Request or remove a capability by
+     * updating its <code>requested</code> parameter.
      *
      * @param string $parentId
      * @param string $id
      * @param null|array $params
-     * @param null|array|\Stripe\Util\RequestOptions $opts
+     * @param null|RequestOptionsArray|\Stripe\Util\RequestOptions $opts
      *
      * @throws \Stripe\Exception\ApiErrorException if the request fails
      *
@@ -332,9 +347,13 @@ class AccountService extends \Stripe\Service\AbstractService
 
     /**
      * Updates the metadata, account holder name, account holder type of a bank account
-     * belonging to a <a href="/docs/connect/custom-accounts">Custom account</a>, and
-     * optionally sets it as the default for its currency. Other bank account details
-     * are not editable by design.
+     * belonging to a connected account and optionally sets it as the default for its
+     * currency. Other bank account details are not editable by design.
+     *
+     * You can only update bank accounts when <a
+     * href="/api/accounts/object#account_object-controller-requirement_collection">account.controller.requirement_collection</a>
+     * is <code>application</code>, which includes <a
+     * href="/connect/custom-accounts">Custom accounts</a>.
      *
      * You can re-enable a disabled bank account by performing an update call without
      * providing any arguments or changes.
@@ -342,7 +361,7 @@ class AccountService extends \Stripe\Service\AbstractService
      * @param string $parentId
      * @param string $id
      * @param null|array $params
-     * @param null|array|\Stripe\Util\RequestOptions $opts
+     * @param null|RequestOptionsArray|\Stripe\Util\RequestOptions $opts
      *
      * @throws \Stripe\Exception\ApiErrorException if the request fails
      *
@@ -359,7 +378,7 @@ class AccountService extends \Stripe\Service\AbstractService
      * @param string $parentId
      * @param string $id
      * @param null|array $params
-     * @param null|array|\Stripe\Util\RequestOptions $opts
+     * @param null|RequestOptionsArray|\Stripe\Util\RequestOptions $opts
      *
      * @throws \Stripe\Exception\ApiErrorException if the request fails
      *
@@ -375,7 +394,7 @@ class AccountService extends \Stripe\Service\AbstractService
      *
      * @param null|string $id
      * @param null|array $params
-     * @param null|array|StripeUtilRequestOptions $opts
+     * @param null|array|\Stripe\Util\RequestOptions $opts
      *
      * @throws \Stripe\Exception\ApiErrorException if the request fails
      *

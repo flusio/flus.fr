@@ -5,11 +5,10 @@
 namespace Stripe\Sigma;
 
 /**
- * If you have <a href="https://stripe.com/docs/sigma/scheduled-queries">scheduled
- * a Sigma query</a>, you'll receive a
- * <code>sigma.scheduled_query_run.created</code> webhook each time the query runs.
- * The webhook contains a <code>ScheduledQueryRun</code> object, which you can use
- * to retrieve the query results.
+ * If you have <a href="https://stripe.com/docs/sigma/scheduled-queries">scheduled a Sigma query</a>, you'll
+ * receive a <code>sigma.scheduled_query_run.created</code> webhook each time the query
+ * runs. The webhook contains a <code>ScheduledQueryRun</code> object, which you can use to
+ * retrieve the query results.
  *
  * @property string $id Unique identifier for the object.
  * @property string $object String representing the object's type. Objects of the same type share the same value.
@@ -27,8 +26,41 @@ class ScheduledQueryRun extends \Stripe\ApiResource
 {
     const OBJECT_NAME = 'scheduled_query_run';
 
-    use \Stripe\ApiOperations\All;
-    use \Stripe\ApiOperations\Retrieve;
+    /**
+     * Returns a list of scheduled query runs.
+     *
+     * @param null|array $params
+     * @param null|array|string $opts
+     *
+     * @throws \Stripe\Exception\ApiErrorException if the request fails
+     *
+     * @return \Stripe\Collection<\Stripe\Sigma\ScheduledQueryRun> of ApiResources
+     */
+    public static function all($params = null, $opts = null)
+    {
+        $url = static::classUrl();
+
+        return static::_requestPage($url, \Stripe\Collection::class, $params, $opts);
+    }
+
+    /**
+     * Retrieves the details of an scheduled query run.
+     *
+     * @param array|string $id the ID of the API resource to retrieve, or an options array containing an `id` key
+     * @param null|array|string $opts
+     *
+     * @throws \Stripe\Exception\ApiErrorException if the request fails
+     *
+     * @return \Stripe\Sigma\ScheduledQueryRun
+     */
+    public static function retrieve($id, $opts = null)
+    {
+        $opts = \Stripe\Util\RequestOptions::parse($opts);
+        $instance = new static($id, $opts);
+        $instance->refresh();
+
+        return $instance;
+    }
 
     public static function classUrl()
     {

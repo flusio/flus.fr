@@ -4,6 +4,10 @@
 
 namespace Stripe\Service\Tax;
 
+/**
+ * @phpstan-import-type RequestOptionsArray from \Stripe\Util\RequestOptions
+ * @psalm-import-type RequestOptionsArray from \Stripe\Util\RequestOptions
+ */
 class TransactionService extends \Stripe\Service\AbstractService
 {
     /**
@@ -11,7 +15,7 @@ class TransactionService extends \Stripe\Service\AbstractService
      *
      * @param string $id
      * @param null|array $params
-     * @param null|array|\Stripe\Util\RequestOptions $opts
+     * @param null|RequestOptionsArray|\Stripe\Util\RequestOptions $opts
      *
      * @throws \Stripe\Exception\ApiErrorException if the request fails
      *
@@ -23,10 +27,11 @@ class TransactionService extends \Stripe\Service\AbstractService
     }
 
     /**
-     * Creates a Tax <code>Transaction</code> from a calculation.
+     * Creates a Tax Transaction from a calculation, if that calculation hasn’t
+     * expired. Calculations expire after 90 days.
      *
      * @param null|array $params
-     * @param null|array|\Stripe\Util\RequestOptions $opts
+     * @param null|RequestOptionsArray|\Stripe\Util\RequestOptions $opts
      *
      * @throws \Stripe\Exception\ApiErrorException if the request fails
      *
@@ -41,7 +46,7 @@ class TransactionService extends \Stripe\Service\AbstractService
      * Partially or fully reverses a previously created <code>Transaction</code>.
      *
      * @param null|array $params
-     * @param null|array|\Stripe\Util\RequestOptions $opts
+     * @param null|RequestOptionsArray|\Stripe\Util\RequestOptions $opts
      *
      * @throws \Stripe\Exception\ApiErrorException if the request fails
      *
@@ -57,7 +62,7 @@ class TransactionService extends \Stripe\Service\AbstractService
      *
      * @param string $id
      * @param null|array $params
-     * @param null|array|\Stripe\Util\RequestOptions $opts
+     * @param null|RequestOptionsArray|\Stripe\Util\RequestOptions $opts
      *
      * @throws \Stripe\Exception\ApiErrorException if the request fails
      *
