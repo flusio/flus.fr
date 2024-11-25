@@ -54,7 +54,6 @@ class LegalsTest extends \PHPUnit\Framework\TestCase
     {
         $response = $this->appRun('GET', '/cgv');
 
-        $this->assertResponseCode($response, 200);
-        $this->assertResponseContains($response, 'Conditions Générales de Vente');
+        $this->assertResponseCode($response, 302, '/conditions-generales');
     }
 }

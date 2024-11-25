@@ -34,6 +34,6 @@ class Legals
 
     public function cgv(Request $request): Response
     {
-        return Response::ok('legals/cgv.phtml');
+        return Response::redirect('general terms');
     }
 }
