@@ -8,7 +8,6 @@ class Migration20200526ChangeDateTimeColumnsIntoText
     {
         $database = \Minz\Database::get();
         $sql = <<<SQL
-            BEGIN TRANSACTION;
             ALTER TABLE payments RENAME TO payments_old;
 
             CREATE TABLE payments (
@@ -73,7 +72,6 @@ class Migration20200526ChangeDateTimeColumnsIntoText
             FROM payments_old;
 
             DROP TABLE payments_old;
-            COMMIT;
         SQL;
 
         $database->exec($sql);
@@ -86,7 +84,6 @@ class Migration20200526ChangeDateTimeColumnsIntoText
         $database = \Minz\Database::get();
 
         $database->exec(<<<'SQL'
-            BEGIN TRANSACTION;
             ALTER TABLE payments RENAME TO payments_old;
 
             CREATE TABLE payments (
@@ -151,7 +148,6 @@ class Migration20200526ChangeDateTimeColumnsIntoText
             FROM payments_old;
 
             DROP TABLE payments_old;
-            COMMIT;
         SQL);
 
         return true;

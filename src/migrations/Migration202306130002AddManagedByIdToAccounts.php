@@ -25,8 +25,6 @@ class Migration202306130002AddManagedByIdToAccounts
             PRAGMA foreign_keys = OFF;
             PRAGMA legacy_alter_table = ON;
 
-            BEGIN TRANSACTION;
-
             CREATE TABLE accounts_tmp (
                 id TEXT PRIMARY KEY,
                 created_at TEXT NOT NULL,
@@ -99,8 +97,6 @@ class Migration202306130002AddManagedByIdToAccounts
             DROP TABLE accounts;
 
             ALTER TABLE accounts_tmp RENAME TO accounts;
-
-            COMMIT;
 
             PRAGMA legacy_alter_table = OFF;
             PRAGMA foreign_keys = ON;

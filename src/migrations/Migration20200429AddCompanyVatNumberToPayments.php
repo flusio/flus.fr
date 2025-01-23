@@ -21,7 +21,6 @@ class Migration20200429AddCompanyVatNumberToPayments
         $database = \Minz\Database::get();
 
         $database->exec(<<<'SQL'
-            BEGIN TRANSACTION;
             ALTER TABLE payments RENAME TO payments_old;
 
             CREATE TABLE payments (
@@ -83,7 +82,6 @@ class Migration20200429AddCompanyVatNumberToPayments
             FROM payments_old;
 
             DROP TABLE payments_old;
-            COMMIT;
         SQL);
 
         return true;

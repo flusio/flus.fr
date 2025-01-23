@@ -10,7 +10,6 @@ class Migration2021040101ReorganizePayments
 
         $database->exec(<<<'SQL'
             PRAGMA foreign_keys = OFF;
-            BEGIN TRANSACTION;
 
             ALTER TABLE accounts ADD COLUMN company_vat_number TEXT;
 
@@ -68,7 +67,6 @@ class Migration2021040101ReorganizePayments
 
             ALTER TABLE payments_new RENAME TO payments;
 
-            COMMIT;
             PRAGMA foreign_keys = ON;
         SQL);
 
@@ -81,7 +79,6 @@ class Migration2021040101ReorganizePayments
 
         $database->exec(<<<'SQL'
             PRAGMA foreign_keys = OFF;
-            BEGIN TRANSACTION;
 
             CREATE TABLE payments_new (
                 id TEXT PRIMARY KEY NOT NULL,
@@ -208,7 +205,6 @@ class Migration2021040101ReorganizePayments
 
             ALTER TABLE accounts_new RENAME TO accounts;
 
-            COMMIT;
             PRAGMA foreign_keys = ON;
         SQL);
 

@@ -23,8 +23,6 @@ class Migration202306140001AddQuantityToPayments
             PRAGMA foreign_keys = OFF;
             PRAGMA legacy_alter_table = ON;
 
-            BEGIN TRANSACTION;
-
             CREATE TABLE payments_tmp (
                 id TEXT PRIMARY KEY NOT NULL,
                 created_at TEXT NOT NULL,
@@ -77,8 +75,6 @@ class Migration202306140001AddQuantityToPayments
             DROP TABLE payments;
 
             ALTER TABLE payments_tmp RENAME TO payments;
-
-            COMMIT;
 
             PRAGMA legacy_alter_table = OFF;
             PRAGMA foreign_keys = ON;

@@ -12,7 +12,6 @@ class Migration202305190001ChangePreferredFieldsOfAccounts
             PRAGMA foreign_keys = OFF;
             PRAGMA legacy_alter_table = ON;
 
-            BEGIN TRANSACTION;
             ALTER TABLE accounts RENAME TO accounts_old;
 
             CREATE TABLE accounts (
@@ -77,7 +76,6 @@ class Migration202305190001ChangePreferredFieldsOfAccounts
             FROM accounts_old;
 
             DROP TABLE accounts_old;
-            COMMIT;
 
             PRAGMA legacy_alter_table = OFF;
             PRAGMA foreign_keys = ON;
@@ -94,7 +92,6 @@ class Migration202305190001ChangePreferredFieldsOfAccounts
             PRAGMA foreign_keys = OFF;
             PRAGMA legacy_alter_table = ON;
 
-            BEGIN TRANSACTION;
             ALTER TABLE accounts RENAME TO accounts_old;
 
             CREATE TABLE accounts (
@@ -160,7 +157,6 @@ class Migration202305190001ChangePreferredFieldsOfAccounts
             FROM accounts_old;
 
             DROP TABLE accounts_old;
-            COMMIT;
 
             PRAGMA legacy_alter_table = OFF;
             PRAGMA foreign_keys = ON;

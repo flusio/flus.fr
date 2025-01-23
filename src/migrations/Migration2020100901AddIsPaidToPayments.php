@@ -23,7 +23,6 @@ class Migration2020100901AddIsPaidToPayments
         $database = \Minz\Database::get();
 
         $database->exec(<<<'SQL'
-            BEGIN TRANSACTION;
             ALTER TABLE payments RENAME TO payments_old;
 
             CREATE TABLE payments (
@@ -105,7 +104,6 @@ class Migration2020100901AddIsPaidToPayments
             FROM payments_old;
 
             DROP TABLE payments_old;
-            COMMIT;
         SQL);
 
         return true;
