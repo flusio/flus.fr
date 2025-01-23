@@ -48,9 +48,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/admin/login?from=admin%2Fpayments%23init');
     }
 
-    /**
-     * @dataProvider createProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('createProvider')]
     public function testCreateRedirectsCorrectly(string $email, int $amount): void
     {
         $this->loginAdmin();
@@ -64,9 +62,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/admin?status=payment_created');
     }
 
-    /**
-     * @dataProvider createProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('createProvider')]
     public function testCreateGenerateAnInvoiceNumber(string $email, int $amount): void
     {
         $this->loginAdmin();
@@ -85,9 +81,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($payment->is_paid);
     }
 
-    /**
-     * @dataProvider createProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('createProvider')]
     public function testCreateFailsIfEmailIsInvalid(string $email, int $amount): void
     {
         $this->loginAdmin();
@@ -102,9 +96,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseContains($response, 'L’adresse courriel que vous avez fournie est invalide.');
     }
 
-    /**
-     * @dataProvider createProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('createProvider')]
     public function testCreateFailsIfNotConnected(string $email, int $amount): void
     {
         $response = $this->appRun('POST', '/admin/payments/new', [
@@ -116,9 +108,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/admin/login?from=admin%2Fpayments%23init');
     }
 
-    /**
-     * @dataProvider createProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('createProvider')]
     public function testCreateFailsIfCsrfIsInvalid(string $email, int $amount): void
     {
         $this->loginAdmin();
@@ -336,7 +326,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     /**
      * @return array<array{string, int}>
      */
-    public function createProvider(): array
+    public static function createProvider(): array
     {
         $faker = \Faker\Factory::create();
         $datasets = [];

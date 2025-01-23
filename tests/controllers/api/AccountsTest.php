@@ -13,9 +13,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\TimeHelper;
     use \Minz\Tests\ResponseAsserts;
 
-    /**
-     * @dataProvider showParamsProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('showParamsProvider')]
     public function testShowReturnsAccountId(string $email): void
     {
         $account = AccountFactory::create([
@@ -37,9 +35,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($account->id, $output['id']);
     }
 
-    /**
-     * @dataProvider showParamsProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('showParamsProvider')]
     public function testShowCreatesAccountIfDoesNotExist(string $email): void
     {
         $this->freeze();
@@ -90,9 +86,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($now, $account->last_sync_at);
     }
 
-    /**
-     * @dataProvider showParamsProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('showParamsProvider')]
     public function testShowFailsIfMissingAuth(string $email): void
     {
         $account = AccountFactory::create([
@@ -378,7 +372,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     /**
      * @return array<array{string}>
      */
-    public function showParamsProvider(): array
+    public static function showParamsProvider(): array
     {
         $faker = \Faker\Factory::create();
         $datasets = [];

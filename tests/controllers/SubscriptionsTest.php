@@ -20,10 +20,9 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\TimeHelper;
 
     /**
-     * @dataProvider addressProvider
-     *
      * @param AccountAddress $address
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('addressProvider')]
     public function testInitRendersCorrectly(array $address): void
     {
         $this->loginUser([
@@ -41,10 +40,9 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider addressProvider
-     *
      * @param AccountAddress $address
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('addressProvider')]
     public function testInitShowsInfoIfNotExpired(array $address): void
     {
         $expired_at = \Minz\Time::fromNow($this->fake('randomDigitNotNull'), 'days');
@@ -64,10 +62,9 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider addressProvider
-     *
      * @param AccountAddress $address
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('addressProvider')]
     public function testInitRendersIfOngoingPayment(array $address): void
     {
         $expired_at = \Minz\Time::fromNow($this->fake('randomDigitNotNull'), 'days');
@@ -100,10 +97,9 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider addressProvider
-     *
      * @param AccountAddress $address
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('addressProvider')]
     public function testInitFailsIfNotConnected(array $address): void
     {
         AccountFactory::create([
@@ -120,10 +116,9 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider addressProvider
-     *
      * @param AccountAddress $address
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('addressProvider')]
     public function testRenewCreatesAPaymentAndRedirects(array $address): void
     {
         $expired_at = \Minz\Time::fromNow(15, 'days');
@@ -161,10 +156,9 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider addressProvider
-     *
      * @param AccountAddress $address
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('addressProvider')]
     public function testRenewConsidersManagedAccounts(array $address): void
     {
         $expired_at = \Minz\Time::fromNow(15, 'days');
@@ -201,10 +195,9 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider addressProvider
-     *
      * @param AccountAddress $address
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('addressProvider')]
     public function testRenewCreatesAcceptsAmountOfZero(array $address): void
     {
         $this->freeze();
@@ -240,10 +233,9 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider addressProvider
-     *
      * @param AccountAddress $address
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('addressProvider')]
     public function testRenewRedirectsIfNoAddress(array $address): void
     {
         $expired_at = \Minz\Time::fromNow(15, 'days');
@@ -266,10 +258,9 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider addressProvider
-     *
      * @param AccountAddress $address
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('addressProvider')]
     public function testRenewFailsIfExpiresInMoreThanOneMonth(array $address): void
     {
         $expired_at = \Minz\Time::fromNow(2, 'months');
@@ -301,10 +292,9 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider addressProvider
-     *
      * @param AccountAddress $address
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('addressProvider')]
     public function testRenewFailsIfAmountIsInvalid(array $address): void
     {
         $expired_at = \Minz\Time::fromNow(15, 'days');
@@ -333,10 +323,9 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider addressProvider
-     *
      * @param AccountAddress $address
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('addressProvider')]
     public function testRenewFailsIfNotConnected(array $address): void
     {
         $expired_at = \Minz\Time::fromNow(15, 'days');
@@ -361,10 +350,9 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider addressProvider
-     *
      * @param AccountAddress $address
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('addressProvider')]
     public function testRenewFailsIfCsrfIsInvalid(array $address): void
     {
         $expired_at = \Minz\Time::fromNow(15, 'days');
@@ -395,7 +383,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
     /**
      * @return array<array{AccountAddress}>
      */
-    public function addressProvider(): array
+    public static function addressProvider(): array
     {
         $faker = \Faker\Factory::create();
         $datasets = [];

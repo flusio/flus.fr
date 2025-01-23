@@ -4,7 +4,6 @@ namespace Website\jobs;
 
 use tests\factories\AccountFactory;
 use tests\factories\PaymentFactory;
-use Website\models;
 
 class PaymentsCompleterTest extends \PHPUnit\Framework\TestCase
 {
@@ -14,18 +13,14 @@ class PaymentsCompleterTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\ResponseAsserts;
     use \Minz\Tests\MailerAsserts;
 
-    /**
-     * @beforeClass
-     */
+    #[\PHPUnit\Framework\Attributes\BeforeClass]
     public static function initRouter(): void
     {
         $router = \Website\Router::loadApp();
         \Minz\Engine::init($router);
     }
 
-    /**
-     * @afterClass
-     */
+    #[\PHPUnit\Framework\Attributes\AfterClass]
     public static function dropInvoices(): void
     {
         $files = @glob(\Minz\Configuration::$data_path . '/invoices/*');

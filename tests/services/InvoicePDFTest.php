@@ -6,7 +6,6 @@ use PHPUnit\Framework\TestCase;
 use Minz\Output\ViewHelpers;
 use tests\factories\AccountFactory;
 use tests\factories\PaymentFactory;
-use Website\models;
 use Website\utils;
 
 class InvoicePDFTest extends TestCase

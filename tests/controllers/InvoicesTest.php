@@ -12,9 +12,7 @@ class InvoicesTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\ResponseAsserts;
 
-    /**
-     * @afterClass
-     */
+    #[\PHPUnit\Framework\Attributes\AfterClass]
     public static function dropInvoices(): void
     {
         $files = @glob(\Minz\Configuration::$data_path . '/invoices/*');
@@ -26,9 +24,7 @@ class InvoicesTest extends \PHPUnit\Framework\TestCase
         }
     }
 
-    /**
-     * @dataProvider completedParametersProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('completedParametersProvider')]
     public function testDownloadPdfWithAuthenticatedAdminRendersAPdf(
         \DateTimeImmutable $completed_at,
         string $invoice_number
@@ -50,9 +46,7 @@ class InvoicesTest extends \PHPUnit\Framework\TestCase
         ]);
     }
 
-    /**
-     * @dataProvider completedParametersProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('completedParametersProvider')]
     public function testDownloadPdfWithAuthenticatedUserRendersAPdf(
         \DateTimeImmutable $completed_at,
         string $invoice_number
@@ -96,9 +90,7 @@ class InvoicesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 404);
     }
 
-    /**
-     * @dataProvider completedParametersProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('completedParametersProvider')]
     public function testDownloadPdfWithMissingAuthenticationReturnsUnauthorized(
         \DateTimeImmutable $completed_at,
         string $invoice_number
@@ -113,9 +105,7 @@ class InvoicesTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 401);
     }
 
-    /**
-     * @dataProvider completedParametersProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('completedParametersProvider')]
     public function testDownloadPdfWithAuthenticatedNotOwningUserReturnsUnauthorized(
         \DateTimeImmutable $completed_at,
         string $invoice_number
@@ -136,7 +126,7 @@ class InvoicesTest extends \PHPUnit\Framework\TestCase
     /**
      * @return array<array{\DateTimeImmutable, string}>
      */
-    public function completedParametersProvider(): array
+    public static function completedParametersProvider(): array
     {
         $faker = \Faker\Factory::create();
         $datasets = [];

@@ -56,13 +56,13 @@ else
 endif
 
 .PHONY: test
-test: ## Run the test suite
-	XDEBUG_MODE=coverage $(PHP) ./vendor/bin/phpunit \
-		$(COVERAGE) --whitelist ./src \
-		--bootstrap ./tests/bootstrap.php \
-		--testdox \
-		$(PHPUNIT_FILTER) \
-		$(PHPUNIT_FILE)
+test: FILE ?= ./tests
+ifdef FILTER
+test: override FILTER := --filter=$(FILTER)
+endif
+test: COVERAGE ?= --coverage-html ./coverage
+test: ## Run the test suite (can take FILE, FILTER and COVERAGE arguments)
+	$(PHP) ./vendor/bin/phpunit -c .phpunit.xml $(COVERAGE) $(FILTER) $(FILE)
 
 .PHONY: lint
 lint: ## Run the linters on the PHP files

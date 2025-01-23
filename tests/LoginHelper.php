@@ -53,9 +53,8 @@ trait LoginHelper
     /**
      * Simulate a user who logs out. It is called before each test to make sure
      * to reset the context.
-     *
-     * @after
      */
+    #[\PHPUnit\Framework\Attributes\After]
     public function logout(): void
     {
         CurrentUser::logOut();

@@ -3,8 +3,6 @@
 namespace Website\jobs;
 
 use tests\factories\AccountFactory;
-use tests\factories\PaymentFactory;
-use Website\models;
 
 class ReminderTest extends \PHPUnit\Framework\TestCase
 {
@@ -14,9 +12,7 @@ class ReminderTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\ResponseAsserts;
     use \Minz\Tests\MailerAsserts;
 
-    /**
-     * @beforeClass
-     */
+    #[\PHPUnit\Framework\Attributes\BeforeClass]
     public static function setupRouter(): void
     {
         $router = \Website\Router::loadCli();

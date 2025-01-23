@@ -7,9 +7,7 @@ class MigrationsTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\ApplicationHelper;
     use \Minz\Tests\ResponseAsserts;
 
-    /**
-     * @before
-     */
+    #[\PHPUnit\Framework\Attributes\Before]
     public function uninstall(): void
     {
         $migration_file = \Minz\Configuration::$data_path . '/migrations_version.txt';

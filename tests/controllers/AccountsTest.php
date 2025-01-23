@@ -3,7 +3,6 @@
 namespace Website\controllers;
 
 use tests\factories\AccountFactory;
-use tests\factories\PaymentFactory;
 use tests\factories\TokenFactory;
 use Website\models;
 use Website\utils;
@@ -21,10 +20,9 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     use \Minz\Tests\TimeHelper;
 
     /**
-     * @dataProvider addressesProvider
-     *
      * @param AccountAddress $address
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('addressesProvider')]
     public function testShowRedirectsToRenew(string $email, array $address): void
     {
         $this->loginUser([
@@ -271,10 +269,9 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider addressesProvider
-     *
      * @param AccountAddress $address
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('addressesProvider')]
     public function testUpdateProfileChangesAddressAndRedirects(string $email, array $address): void
     {
         $user = $this->loginUser();
@@ -298,10 +295,9 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider addressesProvider
-     *
      * @param AccountAddress $address
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('addressesProvider')]
     public function testUpdateProfileAcceptsLegalEntityInfo(string $email, array $address): void
     {
         $user = $this->loginUser();
@@ -333,10 +329,9 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider addressesProvider
-     *
      * @param AccountAddress $address
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('addressesProvider')]
     public function testUpdateProfileAcceptsNoPhysicalAddress(string $email, array $address): void
     {
         $user = $this->loginUser();
@@ -363,10 +358,9 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider addressesProvider
-     *
      * @param AccountAddress $address
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('addressesProvider')]
     public function testUpdateProfileResetsManagedAccounts(string $email, array $address): void
     {
         $user = $this->loginUser();
@@ -390,10 +384,9 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider addressesProvider
-     *
      * @param AccountAddress $address
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('addressesProvider')]
     public function testUpdateProfileFailsIfNotConnected(string $email, array $address): void
     {
         $response = $this->appRun('POST', '/account/profile', [
@@ -407,10 +400,9 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider addressesProvider
-     *
      * @param AccountAddress $address
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('addressesProvider')]
     public function testUpdateProfileFailsIfCsrfIsInvalid(string $email, array $address): void
     {
         $user = $this->loginUser();
@@ -427,10 +419,9 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider addressesProvider
-     *
      * @param AccountAddress $address
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('addressesProvider')]
     public function testUpdateProfileFailsWithInvalidEmail(string $email, array $address): void
     {
         $user = $this->loginUser();
@@ -451,10 +442,9 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider addressesProvider
-     *
      * @param AccountAddress $address
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('addressesProvider')]
     public function testUpdateProfileFailsWithMissingEmail(string $email, array $address): void
     {
         $user = $this->loginUser();
@@ -470,10 +460,9 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider addressesProvider
-     *
      * @param AccountAddress $address
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('addressesProvider')]
     public function testUpdateProfileFailsWithMissingFirstName(string $email, array $address): void
     {
         $user = $this->loginUser();
@@ -491,10 +480,9 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider addressesProvider
-     *
      * @param AccountAddress $address
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('addressesProvider')]
     public function testUpdateProfileFailsWithMissingLastName(string $email, array $address): void
     {
         $user = $this->loginUser();
@@ -512,10 +500,9 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider addressesProvider
-     *
      * @param AccountAddress $address
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('addressesProvider')]
     public function testUpdateProfileFailsWithMissingAddress1(string $email, array $address): void
     {
         $user = $this->loginUser();
@@ -533,10 +520,9 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider addressesProvider
-     *
      * @param AccountAddress $address
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('addressesProvider')]
     public function testUpdateProfileFailsWithMissingPostcode(string $email, array $address): void
     {
         $user = $this->loginUser();
@@ -554,10 +540,9 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider addressesProvider
-     *
      * @param AccountAddress $address
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('addressesProvider')]
     public function testUpdateProfileFailsWithMissingCity(string $email, array $address): void
     {
         $user = $this->loginUser();
@@ -575,10 +560,9 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider addressesProvider
-     *
      * @param AccountAddress $address
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('addressesProvider')]
     public function testUpdateProfileFailsWithInvalidCountry(string $email, array $address): void
     {
         $user = $this->loginUser();
@@ -920,7 +904,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     /**
      * @return array<array{string, AccountAddress}>
      */
-    public function addressesProvider(): array
+    public static function addressesProvider(): array
     {
         $faker = \Faker\Factory::create();
         $datasets = [];
