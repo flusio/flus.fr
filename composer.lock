@@ -72,16 +72,16 @@
         },
         {
             "name": "myclabs/deep-copy",
-            "version": "1.12.1",
+            "version": "1.13.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/myclabs/DeepCopy.git",
-                "reference": "123267b2c49fbf30d78a7b2d333f6be754b94845"
+                "reference": "024473a478be9df5fdaca2c793f2232fe788e414"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/myclabs/DeepCopy/zipball/123267b2c49fbf30d78a7b2d333f6be754b94845",
-                "reference": "123267b2c49fbf30d78a7b2d333f6be754b94845",
+                "url": "https://api.github.com/repos/myclabs/DeepCopy/zipball/024473a478be9df5fdaca2c793f2232fe788e414",
+                "reference": "024473a478be9df5fdaca2c793f2232fe788e414",
                 "shasum": ""
             },
             "require": {
@@ -120,7 +120,7 @@
             ],
             "support": {
                 "issues": "https://github.com/myclabs/DeepCopy/issues",
-                "source": "https://github.com/myclabs/DeepCopy/tree/1.12.1"
+                "source": "https://github.com/myclabs/DeepCopy/tree/1.13.0"
             },
             "funding": [
                 {
@@ -128,7 +128,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-11-08T17:47:46+00:00"
+            "time": "2025-02-12T12:17:51+00:00"
         },
         {
             "name": "nikic/php-parser",
@@ -308,16 +308,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "1.12.16",
+            "version": "1.12.18",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "e0bb5cb78545aae631220735aa706eac633a6be9"
+                "reference": "fef9f07814a573399229304bb0046affdf558812"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/e0bb5cb78545aae631220735aa706eac633a6be9",
-                "reference": "e0bb5cb78545aae631220735aa706eac633a6be9",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/fef9f07814a573399229304bb0046affdf558812",
+                "reference": "fef9f07814a573399229304bb0046affdf558812",
                 "shasum": ""
             },
             "require": {
@@ -362,7 +362,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-01-21T14:50:05+00:00"
+            "time": "2025-02-13T12:44:44+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -689,16 +689,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "11.5.3",
+            "version": "11.5.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "30e319e578a7b5da3543073e30002bf82042f701"
+                "reference": "c9bd61aab12f0fc5e82ecfe621ff518a1d1f1049"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/30e319e578a7b5da3543073e30002bf82042f701",
-                "reference": "30e319e578a7b5da3543073e30002bf82042f701",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/c9bd61aab12f0fc5e82ecfe621ff518a1d1f1049",
+                "reference": "c9bd61aab12f0fc5e82ecfe621ff518a1d1f1049",
                 "shasum": ""
             },
             "require": {
@@ -770,7 +770,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
                 "security": "https://github.com/sebastianbergmann/phpunit/security/policy",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/11.5.3"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/11.5.8"
             },
             "funding": [
                 {
@@ -786,7 +786,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-01-13T09:36:00+00:00"
+            "time": "2025-02-18T06:26:59+00:00"
         },
         {
             "name": "psr/container",
@@ -1769,16 +1769,16 @@
         },
         {
             "name": "squizlabs/php_codesniffer",
-            "version": "3.11.2",
+            "version": "3.11.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPCSStandards/PHP_CodeSniffer.git",
-                "reference": "1368f4a58c3c52114b86b1abe8f4098869cb0079"
+                "reference": "ba05f990e79cbe69b9f35c8c1ac8dca7eecc3a10"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPCSStandards/PHP_CodeSniffer/zipball/1368f4a58c3c52114b86b1abe8f4098869cb0079",
-                "reference": "1368f4a58c3c52114b86b1abe8f4098869cb0079",
+                "url": "https://api.github.com/repos/PHPCSStandards/PHP_CodeSniffer/zipball/ba05f990e79cbe69b9f35c8c1ac8dca7eecc3a10",
+                "reference": "ba05f990e79cbe69b9f35c8c1ac8dca7eecc3a10",
                 "shasum": ""
             },
             "require": {
@@ -1843,9 +1843,13 @@
                 {
                     "url": "https://opencollective.com/php_codesniffer",
                     "type": "open_collective"
+                },
+                {
+                    "url": "https://thanks.dev/phpcsstandards",
+                    "type": "thanks_dev"
                 }
             ],
-            "time": "2024-12-11T16:04:26+00:00"
+            "time": "2025-01-23T17:04:15+00:00"
         },
         {
             "name": "staabm/side-effects-detector",
@@ -2019,10 +2023,10 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {},
     "prefer-stable": false,
     "prefer-lowest": false,
-    "platform": [],
-    "platform-dev": [],
+    "platform": {},
+    "platform-dev": {},
     "plugin-api-version": "2.6.0"
 }
