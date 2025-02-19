@@ -115,9 +115,10 @@ class Home
         $honeypot = $request->param('website');
         if (!$honeypot) {
             $mailer = new mailers\Support();
-            $sent = $mailer->sendMessage($message);
 
-            if (!$sent) {
+            try {
+                $mailer->sendMessage($message);
+            } catch (\Minz\Errors\MailerError $e) {
                 return Response::badRequest('home/contact.phtml', [
                     'email' => $email,
                     'subject' => $subject,

@@ -1,11 +1,5 @@
 # How to run the test suite
 
-First, install the dev dependencies with:
-
-```console
-$ make install
-```
-
 To execute the tests, run:
 
 ```console

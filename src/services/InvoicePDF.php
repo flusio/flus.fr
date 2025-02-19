@@ -2,6 +2,7 @@
 
 namespace Website\services;
 
+use Fpdf\Fpdf;
 use Minz\Output\ViewHelpers;
 use Website\models;
 use Website\utils;
@@ -25,7 +26,7 @@ use Website\utils;
  * @author Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class InvoicePDF extends \FPDF
+class InvoicePDF extends Fpdf
 {
     public string $logo;
 

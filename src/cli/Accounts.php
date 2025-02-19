@@ -5,7 +5,6 @@ namespace Website\cli;
 use Minz\Request;
 use Minz\Response;
 use Website\models;
-use Website\mailers;
 
 /**
  * @author Marien Fressinaud <dev@marienfressinaud.fr>

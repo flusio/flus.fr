@@ -3,8 +3,8 @@
 Installing flus.fr on your own server is quite simple but still requires basic notions in sysadmin.
 First, make sure you match with the following requirements:
 
-- Git, Nginx, PHP 8.2 are installed on your server;
-- PHP requires `intl` and `pcntl` extensions;
+- Git, Nginx, PHP 8.2 and [Composer](https://getcomposer.org/) are installed on your server;
+- PHP requires `intl`, `pcntl`, `pdo` and `pdo_sqlite` extensions;
 - flus.fr must be served over <abbr>HTTPS</abbr>.
 
 **Other configurations might work but aren’t officialy supported.**
@@ -19,8 +19,16 @@ First, start by getting the code with Git (you might need to run the commands as
 
 ```console
 # cd /var/www/
-# git clone --recurse-submodules https://github.com/flusio/flus.fr.git
+# git clone https://github.com/flusio/flus.fr.git
 # cd flus.fr
+```
+
+## Install the dependencies
+
+Install the Composer dependencies with:
+
+```console
+$ composer install --no-dev --optimize-autoloader
 ```
 
 ## Configure the environment
@@ -184,7 +192,13 @@ Then, you can pull the new code from GitHub:
 
 ```console
 $ git status # check that you didn't make any change in your working directory
-$ git pull --recurse-submodules
+$ git pull
+```
+
+Then, install the dependencies:
+
+```console
+$ composer install --no-dev --optimize-autoloader
 ```
 
 Change the owner of the files:

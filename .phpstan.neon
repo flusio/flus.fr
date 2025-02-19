@@ -1,12 +1,6 @@
 parameters:
     level: 8
     paths:
+        - public/index.php
         - src
-        - lib
         - tests
-
-    excludePaths:
-        analyse:
-            - lib/fpdf/*
-            - lib/Minz/*
-            - lib/stripe-php/*

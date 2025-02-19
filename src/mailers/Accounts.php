@@ -3,17 +3,19 @@
 namespace Website\mailers;
 
 use Website\models;
+use Minz\Mailer;
 
 /**
  * @author Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class Accounts extends \Minz\Mailer
+class Accounts extends Mailer
 {
-    public function sendReminderSubscriptionEnding(models\Account $account): bool
+    public function sendReminderSubscriptionEnding(models\Account $account): Mailer\Email
     {
-        $subject = '[Flus] Votre abonnement arrive à échéance';
-        $this->setBody(
+        $email = new Mailer\Email();
+        $email->setSubject('[Flus] Votre abonnement arrive à échéance');
+        $email->setBody(
             'mailers/accounts/reminder_subscription_ending.phtml',
             'mailers/accounts/reminder_subscription_ending.txt',
             [
@@ -26,13 +28,16 @@ class Accounts extends \Minz\Mailer
             ]
         );
 
-        return $this->send($account->email, $subject);
+        $this->send($email, to: $account->email);
+
+        return $email;
     }
 
-    public function sendReminderSubscriptionEnded(models\Account $account): bool
+    public function sendReminderSubscriptionEnded(models\Account $account): Mailer\Email
     {
-        $subject = '[Flus] Votre abonnement a expiré';
-        $this->setBody(
+        $email = new Mailer\Email();
+        $email->setSubject('[Flus] Votre abonnement a expiré');
+        $email->setBody(
             'mailers/accounts/reminder_subscription_ended.phtml',
             'mailers/accounts/reminder_subscription_ended.txt',
             [
@@ -44,6 +49,9 @@ class Accounts extends \Minz\Mailer
                 'service' => $account->preferred_service,
             ]
         );
-        return $this->send($account->email, $subject);
+
+        $this->send($email, to: $account->email);
+
+        return $email;
     }
 }

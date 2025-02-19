@@ -7,8 +7,14 @@ You’ll also need an account on [Stripe](https://stripe.com/).
 First, download flus.fr with Git:
 
 ```console
-$ git clone --recurse-submodules https://github.com/flusio/flus.fr.git
+$ git clone https://github.com/flusio/flus.fr.git
 $ cd flus.fr
+```
+
+Then, install the dependencies:
+
+```console
+$ make install
 ```
 
 Copy the `env.sample` file:

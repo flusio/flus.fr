@@ -23,13 +23,26 @@ class Application
             $this->initApp($request);
         }
 
-        return \Minz\Engine::run($request);
+        $response = \Minz\Engine::run($request);
+
+        if ($response instanceof \Minz\Response) {
+            $response->setHeader('Permissions-Policy', 'interest-cohort=()'); // @see https://cleanuptheweb.org/
+            $response->setHeader('Referrer-Policy', 'same-origin');
+            $response->setHeader('X-Content-Type-Options', 'nosniff');
+            $response->setHeader('X-Frame-Options', 'deny');
+
+            $plausible_url = \Minz\Configuration::$application['plausible_url'];
+            if ($plausible_url) {
+                $response->addContentSecurityPolicy('connect-src', "'self' {$plausible_url}");
+                $response->addContentSecurityPolicy('script-src', "'self' {$plausible_url}");
+            }
+        }
+
+        return $response;
     }
 
     private function initApp(Request $request): void
     {
-        include_once('utils/view_helpers.php');
-
         $router = Router::loadApp();
 
         \Minz\Engine::init($router, [

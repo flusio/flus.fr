@@ -38,7 +38,11 @@ class PaymentCompleter
 
             if ($account) {
                 $invoice_mailer = new mailers\Invoices();
-                $invoice_mailer->sendInvoice($account->email, $invoice_filepath);
+                try {
+                    $invoice_mailer->sendInvoice($account->email, $invoice_filepath);
+                } catch (\Minz\Errors\MailerError $e) {
+                    \Minz\Log::error("[PaymentCompleter#complete] Can't send {$payment->id} invoice by email.");
+                }
             }
         } else {
             \Minz\Log::error("[PaymentCompleter#complete] Payment {$payment->id} has no invoice filepath.");

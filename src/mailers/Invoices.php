@@ -2,22 +2,28 @@
 
 namespace Website\mailers;
 
+use Minz\Mailer;
+
 /**
  * The invoices mailer allows to send invoice by email.
  *
  * @author Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class Invoices extends \Minz\Mailer
+class Invoices extends Mailer
 {
-    public function sendInvoice(string $to, string $invoice_path): bool
+    public function sendInvoice(string $to, string $invoice_path): Mailer\Email
     {
-        $subject = '[Flus] Reçu pour votre paiement';
-        $this->setBody(
+        $email = new Mailer\Email();
+        $email->setSubject('[Flus] Reçu pour votre paiement');
+        $email->setBody(
             'mailers/invoices/send_invoice.phtml',
             'mailers/invoices/send_invoice.txt',
         );
-        $this->mailer->addAttachment($invoice_path);
-        return $this->send($to, $subject);
+        $email->addAttachment($invoice_path);
+
+        $this->send($email, to: $to);
+
+        return $email;
     }
 }

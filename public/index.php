@@ -2,24 +2,30 @@
 
 $app_path = realpath(__DIR__ . '/..');
 
-include $app_path . '/autoload.php';
+assert($app_path !== false);
+
+include $app_path . '/vendor/autoload.php';
 
 \Minz\Configuration::load('dotenv', $app_path);
 
-$request = \Minz\Request::initFromGlobals();
+try {
+    $application = new \Website\Application();
 
-$application = new \Website\Application();
-$response = $application->run($request);
-$response->setHeader('Permissions-Policy', 'interest-cohort=()'); // @see https://cleanuptheweb.org/
-$response->setHeader('Referrer-Policy', 'same-origin');
-$response->setHeader('X-Content-Type-Options', 'nosniff');
-$response->setHeader('X-Frame-Options', 'deny');
+    $request = \Minz\Request::initFromGlobals();
 
-$plausible_url = \Minz\Configuration::$application['plausible_url'];
-if ($plausible_url) {
-    $response->addContentSecurityPolicy('connect-src', "'self' {$plausible_url}");
-    $response->addContentSecurityPolicy('script-src', "'self' {$plausible_url}");
+    $response = $application->run($request);
+} catch (\Minz\Errors\RequestError $e) {
+    $response = \Minz\Response::notFound('not_found.phtml', [
+        'error' => $e,
+    ]);
+} catch (\Exception $e) {
+    $response = \Minz\Response::internalServerError('internal_server_error.phtml', [
+        'error' => $e,
+    ]);
 }
 
-$is_head = strtoupper($_SERVER['REQUEST_METHOD']) === 'HEAD';
+/** @var string */
+$request_method = $_SERVER['REQUEST_METHOD'];
+$is_head = strtoupper($request_method) === 'HEAD';
+
 \Minz\Response::sendByHttp($response, echo_output: !$is_head);

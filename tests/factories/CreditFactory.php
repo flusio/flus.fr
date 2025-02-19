@@ -20,7 +20,7 @@ class CreditFactory extends Database\Factory
         $faker = \Faker\Factory::create();
 
         return [
-            'id' => function () {
+            'id' => function (): string {
                 return \Minz\Random::hex(32);
             },
 

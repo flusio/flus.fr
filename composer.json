@@ -1,4 +1,33 @@
 {
+    "name": "flus/flus.fr",
+    "description": "Source code of flus.fr",
+    "type": "project",
+    "license": "AGPL-3.0",
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "autoload": {
+        "psr-4": {
+            "Website\\": "src/"
+        },
+        "files": [
+            "src/utils/view_helpers.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "tests\\": "tests/"
+        }
+    },
+    "require": {
+        "php": ">=8.2",
+        "ext-intl": "*",
+        "ext-pcntl": "*",
+        "ext-pdo": "*",
+        "ext-pdo_sqlite": "*",
+        "flus/minz": "^1.0",
+        "stripe/stripe-php": "^16.5",
+        "fpdf/fpdf": "^1.86"
+    },
     "require-dev": {
         "fakerphp/faker": "^1.21",
         "phpstan/phpstan": "^1.10",
