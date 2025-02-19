@@ -2,6 +2,8 @@
 
 USER = $(shell id -u):$(shell id -g)
 
+DOCKER_COMPOSE = docker compose -f docker/development/docker-compose.yml
+
 ifdef NODOCKER
 	PHP = php
 	COMPOSER = composer
@@ -27,17 +29,22 @@ else
 endif
 
 .PHONY: docker-start
-docker-start: ## Start a development server
-	@echo "Running webserver on http://localhost:8000"
-	docker compose -p flusfr -f docker/docker-compose.yml up
+docker-start: PORT ?= 8000
+docker-start: ## Start a development server (can take a PORT argument)
+	@echo "Running webserver on http://localhost:$(PORT)"
+	$(DOCKER_COMPOSE) up
 
 .PHONY: docker-build
 docker-build: ## Rebuild the Docker containers
-	docker compose -p flusfr -f docker/docker-compose.yml build
+	$(DOCKER_COMPOSE) build --pull
+
+.PHONY: docker-pull
+docker-pull: ## Pull the Docker images from the Docker Hub
+	$(DOCKER_COMPOSE) pull --ignore-buildable
 
 .PHONY: docker-clean
 docker-clean: ## Clean the Docker stuff
-	docker compose -p flusfr -f docker/docker-compose.yml down
+	$(DOCKER_COMPOSE) down -v
 
 .PHONY: install
 install: ## Install the dependencies

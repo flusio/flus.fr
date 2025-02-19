@@ -31,7 +31,7 @@ Then, start the services:
 $ make docker-start
 ```
 
-This command calls `docker compose` with the file under the `docker/` folder.
+This command calls `docker compose` with the file under the `docker/development/` folder.
 The first time you call it, it will download the Docker images and build the `php` one with the information from the `docker/Dockerfile` file.
 
 Now, you should be able to access flus.fr at [localhost:8000](http://localhost:8000).
