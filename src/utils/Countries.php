@@ -50,7 +50,7 @@ class Countries
     public static function listSorted(): array
     {
         $countries = self::COUNTRIES;
-        uasort($countries, function ($country_1, $country_2) {
+        uasort($countries, function ($country_1, $country_2): int {
             if ($country_1 === 'France') {
                 return -1;
             }

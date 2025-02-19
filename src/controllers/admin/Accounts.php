@@ -29,7 +29,7 @@ class Accounts
 
         $accounts = models\Account::listWithCountPayments();
 
-        usort($accounts, function ($account1, $account2) {
+        usort($accounts, function ($account1, $account2): int {
             return $account1->email <=> $account2->email;
         });
 

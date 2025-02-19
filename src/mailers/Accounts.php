@@ -2,18 +2,15 @@
 
 namespace Website\mailers;
 
+use Website\models;
+
 /**
  * @author Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
 class Accounts extends \Minz\Mailer
 {
-    /**
-     * @param \Website\models\Account $account
-     *
-     * @return boolean
-     */
-    public function sendReminderSubscriptionEnding($account)
+    public function sendReminderSubscriptionEnding(models\Account $account): bool
     {
         $subject = '[Flus] Votre abonnement arrive à échéance';
         $this->setBody(
@@ -32,12 +29,7 @@ class Accounts extends \Minz\Mailer
         return $this->send($account->email, $subject);
     }
 
-    /**
-     * @param \Website\models\Account $account
-     *
-     * @return boolean
-     */
-    public function sendReminderSubscriptionEnded($account)
+    public function sendReminderSubscriptionEnded(models\Account $account): bool
     {
         $subject = '[Flus] Votre abonnement a expiré';
         $this->setBody(

@@ -190,7 +190,7 @@ class Account
      *
      * @return AccountAddress
      */
-    public function address()
+    public function address(): array
     {
         return [
             'first_name' => $this->address_first_name ?? '',
@@ -291,7 +291,7 @@ class Account
             'managed_by_id' => $this->id,
         ]);
 
-        usort($accounts, function ($account1, $account2) {
+        usort($accounts, function ($account1, $account2): int {
             return $account1->email <=> $account2->email;
         });
 

@@ -10,13 +10,7 @@ namespace Website\mailers;
  */
 class Invoices extends \Minz\Mailer
 {
-    /**
-     * @param string $to A valid email address
-     * @param string $invoice_path A path to an existing invoice PDF
-     *
-     * @return boolean
-     */
-    public function sendInvoice($to, $invoice_path)
+    public function sendInvoice(string $to, string $invoice_path): bool
     {
         $subject = '[Flus] Reçu pour votre paiement';
         $this->setBody(

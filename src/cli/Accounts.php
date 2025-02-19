@@ -19,7 +19,7 @@ class Accounts
     public function index(Request $request): Response
     {
         $accounts = models\Account::listAll();
-        $formatted_accounts = array_map(function ($account) {
+        $formatted_accounts = array_map(function ($account): string {
             return "{$account->id} {$account->email}";
         }, $accounts);
 

@@ -45,7 +45,7 @@ class PotUsageFactory extends Database\Factory
                 return $faker->dateTime;
             },
 
-            'is_paid' => function () {
+            'is_paid' => function (): true {
                 return true;
             },
         ];

@@ -2,6 +2,8 @@
 
 namespace Website\services;
 
+use Website\models;
+
 /**
  * This class allows an easy use of the Stripe service.
  *
@@ -17,16 +19,13 @@ class Stripe
 
     /**
      * Create and return a Stripe checkout session
-     *
-     * @param \Website\models\Payment $payment
-     * @param string $name
-     * @param string $success_url
-     * @param string $cancel_url
-     *
-     * @return ?\Stripe\Checkout\Session
      */
-    public function createSession($payment, $name, $success_url, $cancel_url)
-    {
+    public function createSession(
+        models\Payment $payment,
+        string $name,
+        string $success_url,
+        string $cancel_url
+    ): ?\Stripe\Checkout\Session {
         $account = $payment->account();
 
         if (!$account) {
@@ -54,12 +53,8 @@ class Stripe
 
     /**
      * Retrieve a Stripe checkout session
-     *
-     * @param string $session_id
-     *
-     * @return \Stripe\Checkout\Session
      */
-    public function retrieveSession($session_id)
+    public function retrieveSession(string $session_id): \Stripe\Checkout\Session
     {
         return \Stripe\Checkout\Session::retrieve([
             'id' => $session_id,

@@ -54,10 +54,8 @@ class PotUsage
 
     /**
      * Return the amount actually available in the common pot
-     *
-     * @return integer
      */
-    public static function findAvailableAmount()
+    public static function findAvailableAmount(): int
     {
         $sql = <<<'SQL'
             SELECT COALESCE(SUM(p.amount), 0) - (
@@ -84,11 +82,8 @@ class PotUsage
      * Change account_id of the given pot_usages
      *
      * @param string[] $pot_usages_ids
-     * @param string $account_id
-     *
-     * @return boolean
      */
-    public static function moveToAccountId($pot_usages_ids, $account_id)
+    public static function moveToAccountId(array $pot_usages_ids, string $account_id): bool
     {
         $question_marks = array_fill(0, count($pot_usages_ids), '?');
         $in_statement = implode(',', $question_marks);

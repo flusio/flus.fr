@@ -2,18 +2,15 @@
 
 namespace Website\mailers;
 
+use Website\models;
+
 /**
  * @author Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
 class Support extends \Minz\Mailer
 {
-    /**
-     * @param \Website\models\Message $message
-     *
-     * @return boolean
-     */
-    public function sendMessage($message)
+    public function sendMessage(models\Message $message): bool
     {
         $subject = '[Flus] Contact : ' . $message->subject;
         $this->setBody(

@@ -32,7 +32,7 @@ class CreditFactory extends Database\Factory
                 return $faker->boolean;
             },
 
-            'type' => function () {
+            'type' => function (): string {
                 return 'credit';
             },
 

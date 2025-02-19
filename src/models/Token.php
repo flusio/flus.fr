@@ -29,12 +29,8 @@ class Token
      * Initialize a token valid for a certain amount of time.
      *
      * @see \Minz\Time
-     *
-     * @param integer $number
-     * @param string $duration
-     * @param integer $complexity default is 32
      */
-    public function __construct($number, $duration, $complexity = 32)
+    public function __construct(int $number, string $duration, int $complexity = 32)
     {
         $this->token = \Minz\Random::hex($complexity);
         $this->expired_at = \Minz\Time::fromNow($number, $duration);
@@ -42,30 +38,24 @@ class Token
 
     /**
      * Return whether the token has expired.
-     *
-     * @return boolean
      */
-    public function hasExpired()
+    public function hasExpired(): bool
     {
         return \Minz\Time::now() >= $this->expired_at;
     }
 
     /**
      * Return whether the token has been invalidated.
-     *
-     * @return boolean
      */
-    public function isInvalidated()
+    public function isInvalidated(): bool
     {
         return $this->invalidated_at !== null;
     }
 
     /**
      * Return whether the token is valid (i.e. not expired and not invalidated)
-     *
-     * @return boolean
      */
-    public function isValid()
+    public function isValid(): bool
     {
         return !$this->hasExpired() && !$this->isInvalidated();
     }
@@ -74,13 +64,8 @@ class Token
      * Return wheter the token is going to expire in the next $number of $units.
      *
      * @see https://www.php.net/manual/datetime.formats.relative.php
-     *
-     * @param integer $number
-     * @param string $unit
-     *
-     * @return boolean
      */
-    public function expiresIn($number, $unit)
+    public function expiresIn(int $number, string $unit): bool
     {
         return \Minz\Time::fromNow($number, $unit) >= $this->expired_at;
     }
