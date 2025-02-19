@@ -66,7 +66,7 @@ test: ## Run the test suite (can take FILE, FILTER and COVERAGE arguments)
 
 .PHONY: lint
 lint: ## Run the linters on the PHP files
-	$(PHP) ./vendor/bin/phpstan analyse --memory-limit 1G -c phpstan.neon
+	$(PHP) ./vendor/bin/phpstan analyse --memory-limit 1G -c .phpstan.neon
 	$(PHP) ./vendor/bin/rector process --dry-run --config .rector.php
 	$(PHP) ./vendor/bin/phpcs -s --standard=PSR12 ./src ./tests
 
