@@ -22,7 +22,7 @@ And adapt the `.env` file to your needs.
 Initialize the database with:
 
 ```console
-$ make setup
+$ make db-setup
 ```
 
 Then, start the services:

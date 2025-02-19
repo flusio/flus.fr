@@ -12,22 +12,6 @@ else
 	COMPOSER = ./docker/bin/composer
 endif
 
-ifndef COVERAGE
-	COVERAGE = --coverage-html ./coverage
-endif
-
-ifdef FILTER
-	PHPUNIT_FILTER = --filter=$(FILTER)
-else
-	PHPUNIT_FILTER =
-endif
-
-ifdef FILE
-	PHPUNIT_FILE = $(FILE)
-else
-	PHPUNIT_FILE = ./tests
-endif
-
 .PHONY: docker-start
 docker-start: PORT ?= 8000
 docker-start: ## Start a development server (can take a PORT argument)
@@ -50,12 +34,12 @@ docker-clean: ## Clean the Docker stuff
 install: ## Install the dependencies
 	$(COMPOSER) install
 
-.PHONY: setup
-setup: ## Initialize or migration the application
+.PHONY: db-setup
+db-setup: ## Initialize or migration the application
 	$(PHP) ./cli migrations setup --seed
 
-.PHONY: rollback
-rollback: ## Reverse the last migration
+.PHONY: db-rollback
+db-rollback: ## Reverse the last migration
 ifdef STEPS
 	$(PHP) ./cli migrations rollback --steps=$(STEPS)
 else
@@ -72,19 +56,31 @@ test: ## Run the test suite (can take FILE, FILTER and COVERAGE arguments)
 	$(PHP) ./vendor/bin/phpunit -c .phpunit.xml $(COVERAGE) $(FILTER) $(FILE)
 
 .PHONY: lint
+lint: LINTER ?= all
 lint: ## Run the linters on the PHP files
+ifeq ($(LINTER), $(filter $(LINTER), all phpstan))
 	$(PHP) ./vendor/bin/phpstan analyse --memory-limit 1G -c .phpstan.neon
+endif
+ifeq ($(LINTER), $(filter $(LINTER), all rector))
 	$(PHP) ./vendor/bin/rector process --dry-run --config .rector.php
-	$(PHP) ./vendor/bin/phpcs -s --standard=PSR12 ./src ./tests
+endif
+ifeq ($(LINTER), $(filter $(LINTER), all phpcs))
+	$(PHP) ./vendor/bin/phpcs
+endif
 
 .PHONY: lint-fix
+lint-fix: LINTER ?= all
 lint-fix: ## Fix the errors raised by the linter
+ifeq ($(LINTER), $(filter $(LINTER), all rector))
 	$(PHP) ./vendor/bin/rector process --config .rector.php
-	$(PHP) ./vendor/bin/phpcbf --standard=PSR12 ./src ./tests
+endif
+ifeq ($(LINTER), $(filter $(LINTER), all phpcs))
+	$(PHP) ./vendor/bin/phpcbf
+endif
 
 .PHONY: tree
 tree:  ## Display the structure of the application
-	tree -I 'Minz|stripe-php|fpdf|coverage|vendor' --dirsfirst -CA
+	tree -I 'Minz|stripe-php|fpdf|coverage|vendor|carnet' --dirsfirst -CA
 
 .PHONY: help
 help:
