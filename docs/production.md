@@ -3,7 +3,7 @@
 Installing flus.fr on your own server is quite simple but still requires basic notions in sysadmin.
 First, make sure you match with the following requirements:
 
-- Git, Nginx, PHP 8.2 and [Composer](https://getcomposer.org/) are installed on your server;
+- Git, Nginx, PHP 8.2+ and [Composer](https://getcomposer.org/) are installed on your server;
 - PHP requires `intl`, `pcntl`, `pdo` and `pdo_sqlite` extensions;
 - flus.fr must be served over <abbr>HTTPS</abbr>.
 

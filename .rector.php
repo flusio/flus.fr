@@ -15,5 +15,6 @@ return RectorConfig::configure()
     ->withSets([
         SetList::PHP_82,
         SetList::PHP_83,
+        SetList::PHP_84,
         SetList::TYPE_DECLARATION,
     ]);
