@@ -1,6 +1,7 @@
 /vendor
 /coverage
-/.phpunit.result.cache
+/.phpunit-cache
+
 /.env
 /data/*
 !/data/.keep
