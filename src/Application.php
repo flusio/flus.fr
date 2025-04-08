@@ -16,6 +16,7 @@ class Application
     public function run(Request $request): mixed
     {
         setlocale(LC_ALL, 'fr_FR.UTF8');
+        ini_set('intl.default_locale', 'fr');
 
         if ($request->method() === 'CLI') {
             $this->initCli($request);
