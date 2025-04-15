@@ -38,7 +38,12 @@ class Stripe
         }
 
         if ($event->type === 'checkout.session.completed') {
-            $session = $event->data->object; // @phpstan-ignore-line
+            $session = $event->data->object;
+
+            if (!($session instanceof \Stripe\Checkout\Session)) {
+                \Minz\Log::error('Stripe checkout.session.completed data object must be a Checkout Session object.');
+                return Response::badRequest();
+            }
 
             $payment = models\Payment::findBy([
                 'payment_intent_id' => $session->payment_intent,

@@ -127,10 +127,12 @@ class Payments
         $session = $stripe_service->retrieveSession($ongoing_payment->session_id);
         $payment_intent = $session->payment_intent;
         // see statuses lifecycle at https://stripe.com/docs/payments/intents#intent-statuses
-        // @phpstan-ignore-next-line
-        if ($payment_intent->status !== 'processing' && $payment_intent->status !== 'succeeded') {
+        if (
+            $payment_intent instanceof \Stripe\PaymentIntent &&
+            $payment_intent->status !== 'processing' &&
+            $payment_intent->status !== 'succeeded'
+        ) {
             try {
-                // @phpstan-ignore-next-line
                 $payment_intent->cancel();
             } catch (\Stripe\Exception\ApiErrorException $e) {
                 // do nothing on purpose: the payment was already canceled
