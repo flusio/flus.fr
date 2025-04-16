@@ -59,7 +59,7 @@ class HomeTest extends \PHPUnit\Framework\TestCase
         $this->assertResponsePointer($response, 'home/contact.phtml');
     }
 
-    public function testSendContactEmailSendsEmails(): void
+    public function testSendContactMessageSendsEmails(): void
     {
         $email = $this->fake('email');
         $subject = $this->fake('sentence');
@@ -86,7 +86,7 @@ class HomeTest extends \PHPUnit\Framework\TestCase
         $this->assertEmailContainsBody($email_sent, nl2br($content));
     }
 
-    public function testSendContactEmailFailsIfEmailIsMissing(): void
+    public function testSendContactMessageFailsIfEmailIsMissing(): void
     {
         $response = $this->appRun('POST', '/contact', [
             'subject' => $this->fake('sentence'),
@@ -99,7 +99,7 @@ class HomeTest extends \PHPUnit\Framework\TestCase
         $this->assertEmailsCount(0);
     }
 
-    public function testSendContactEmailFailsIfEmailIsInvalid(): void
+    public function testSendContactMessageFailsIfEmailIsInvalid(): void
     {
         $response = $this->appRun('POST', '/contact', [
             'email' => $this->fake('word'),
@@ -113,7 +113,7 @@ class HomeTest extends \PHPUnit\Framework\TestCase
         $this->assertEmailsCount(0);
     }
 
-    public function testSendContactEmailFailsIfSubjectIsMissing(): void
+    public function testSendContactMessageFailsIfSubjectIsMissing(): void
     {
         $response = $this->appRun('POST', '/contact', [
             'email' => $this->fake('email'),
@@ -126,7 +126,7 @@ class HomeTest extends \PHPUnit\Framework\TestCase
         $this->assertEmailsCount(0);
     }
 
-    public function testSendContactEmailFailsIfContentIsMissing(): void
+    public function testSendContactMessageFailsIfContentIsMissing(): void
     {
         $response = $this->appRun('POST', '/contact', [
             'email' => $this->fake('email'),
@@ -139,7 +139,7 @@ class HomeTest extends \PHPUnit\Framework\TestCase
         $this->assertEmailsCount(0);
     }
 
-    public function testSendContactEmailFailsIfWebsiteIsPresent(): void
+    public function testSendContactMessageFailsIfWebsiteIsPresent(): void
     {
         // The website parameter MUST NOT be sent: it’s a trap for the bots.
         // The field is hidden with CSS so people don't fill it.

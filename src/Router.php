@@ -18,7 +18,7 @@ class Router
         $router->addRoute('GET', '/financement', 'Home#funding', 'funding');
         $router->addRoute('GET', '/credits', 'Home#credits', 'credits');
         $router->addRoute('GET', '/contact', 'Home#contact', 'contact');
-        $router->addRoute('POST', '/contact', 'Home#sendContactEmail', 'send contact email');
+        $router->addRoute('POST', '/contact', 'Home#sendContactMessage', 'send contact message');
         $router->addRoute('GET', '/securite', 'Home#security', 'security');
         $router->addRoute('GET', '/plan-du-site', 'Home#sitemap', 'sitemap');
 

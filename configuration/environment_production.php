@@ -24,6 +24,9 @@ return [
         'financial_goal' => intval($dotenv->pop('APP_FINANCIAL_GOAL', '36000')),
 
         'plausible_url' => $dotenv->pop('PLAUSIBLE_URL'),
+
+        'bileto_url' => $dotenv->pop('BILETO_URL'),
+        'bileto_api_token' => $dotenv->pop('BILETO_API_TOKEN'),
     ],
 
     'database' => [

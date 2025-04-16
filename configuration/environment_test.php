@@ -31,6 +31,9 @@ return [
 
         'plausible_url' => null,
 
+        'bileto_url' => null,
+        'bileto_api_token' => null,
+
         // used only in tests
         'number_of_datasets' => $number_of_datasets,
     ],

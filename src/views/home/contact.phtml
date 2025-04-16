@@ -66,7 +66,7 @@
 
         <div class="panel panel--grey panel--rounded">
             <div class="wrapper wrapper--small wrapper--center flow flow--larger">
-                <?php if (isset($email_sent) && $email_sent): ?>
+                <?php if (isset($message_sent) && $message_sent): ?>
                     <div class="panel panel--topaz panel--rounded text--center text--bold flow flow--large">
                         <div class="text--bigger">
                             <?= icon('check') ?>
@@ -80,7 +80,7 @@
                 <?php else: ?>
                     <form
                          method="post"
-                         action="<?= url('send contact email') ?>#formulaire"
+                         action="<?= url('send contact message') ?>#formulaire"
                          class="flow flow--large"
                      >
                         <?php if (isset($errors['_'])): ?>

@@ -6,6 +6,7 @@ use Minz\Request;
 use Minz\Response;
 use Website\mailers;
 use Website\models;
+use Website\services;
 use Website\utils;
 
 class Home
@@ -94,7 +95,7 @@ class Home
         ]);
     }
 
-    public function sendContactEmail(Request $request): Response
+    public function sendContactMessage(Request $request): Response
     {
         $email = $request->param('email', '');
         $subject = $request->param('subject', '');
@@ -114,11 +115,21 @@ class Home
         // The website input is just a trap for bots, don't fill it!
         $honeypot = $request->param('website');
         if (!$honeypot) {
-            $mailer = new mailers\Support();
+            $bileto = new services\Bileto();
 
-            try {
-                $mailer->sendMessage($message);
-            } catch (\Minz\Errors\MailerError $e) {
+            if ($bileto->isEnabled()) {
+                $result = $bileto->sendMessage($message);
+            } else {
+                $mailer = new mailers\Support();
+                try {
+                    $result = $mailer->sendMessage($message);
+                } catch (\Minz\Errors\MailerError $e) {
+                    \Minz\Log::error($e->getMessage());
+                    $result = false;
+                }
+            }
+
+            if (!$result) {
                 return Response::badRequest('home/contact.phtml', [
                     'email' => $email,
                     'subject' => $subject,
@@ -131,7 +142,7 @@ class Home
         }
 
         return Response::ok('home/contact.phtml', [
-            'email_sent' => true,
+            'message_sent' => true,
             'email' => $email,
             'subject' => $subject,
             'content' => $content,
