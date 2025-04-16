@@ -8,6 +8,7 @@ use Rector\Set\ValueObject\SetList;
 return RectorConfig::configure()
     ->withPaths([
         __DIR__ . '/configuration',
+        __DIR__ . '/lib',
         __DIR__ . '/public',
         __DIR__ . '/src',
         __DIR__ . '/tests',
