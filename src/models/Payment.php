@@ -314,50 +314,6 @@ class Payment
     }
 
     /**
-     * Return the sum of amounts for completed common pot payments
-     */
-    public static function findCommonPotRevenue(int $year): int
-    {
-        $sql = <<<'SQL'
-            SELECT SUM(amount) FROM payments
-            WHERE type = "common_pot"
-            AND completed_at IS NOT NULL
-            AND id NOT IN (
-                SELECT p2.credited_payment_id FROM payments p2
-                WHERE p2.type = 'credit'
-            )
-            AND strftime('%Y', completed_at) = ?
-        SQL;
-
-        $database = \Minz\Database::get();
-        $statement = $database->prepare($sql);
-        $statement->execute([$year]);
-        return intval($statement->fetchColumn());
-    }
-
-    /**
-     * Return the sum of amounts for completed subscriptions payments
-     */
-    public static function findSubscriptionsRevenue(int $year): int
-    {
-        $sql = <<<'SQL'
-            SELECT SUM(amount) FROM payments
-            WHERE type = "subscription"
-            AND completed_at IS NOT NULL
-            AND id NOT IN (
-                SELECT p2.credited_payment_id FROM payments p2
-                WHERE p2.type = 'credit'
-            )
-            AND strftime('%Y', completed_at) = ?
-        SQL;
-
-        $database = \Minz\Database::get();
-        $statement = $database->prepare($sql);
-        $statement->execute([$year]);
-        return intval($statement->fetchColumn());
-    }
-
-    /**
      * Return the payments for a given year
      *
      * @return self[]
