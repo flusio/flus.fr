@@ -297,7 +297,7 @@ class Payment
     public static function findTotalRevenue(int $year): int
     {
         $sql = <<<'SQL'
-            SELECT SUM(amount) FROM payments
+            SELECT SUM(amount * quantity) FROM payments
             WHERE completed_at IS NOT NULL
             AND type != 'credit'
             AND id NOT IN (
