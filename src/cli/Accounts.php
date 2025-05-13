@@ -38,7 +38,6 @@ class Accounts
         $email = $request->param('email', '');
         $account = new models\Account($email);
 
-        /** @var array<string, string> */
         $errors = $account->validate();
         if ($errors) {
             return Response::text(400, implode(' ', $errors));

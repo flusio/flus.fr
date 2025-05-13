@@ -134,7 +134,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $account = $account->reload();
-        $this->assertNotEmpty($account->access_token);
+        $this->assertNotNull($account->access_token);
         $token = models\Token::find($account->access_token);
         $this->assertNotNull($token);
         $this->assertTrue($token->isValid());
