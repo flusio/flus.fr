@@ -21,7 +21,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', '/admin');
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponsePointer($response, 'admin/payments/index.phtml');
+        $this->assertResponseTemplateName($response, 'admin/payments/index.phtml');
     }
 
     public function testIndexFailsIfNotConnected(): void
@@ -38,7 +38,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', '/admin/payments/new');
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponsePointer($response, 'admin/payments/init.phtml');
+        $this->assertResponseTemplateName($response, 'admin/payments/init.phtml');
     }
 
     public function testInitFailsIfNotConnected(): void
@@ -54,7 +54,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         $this->loginAdmin();
 
         $response = $this->appRun('POST', '/admin/payments/new', [
-            'csrf' => \Minz\Csrf::generate(),
+            'csrf' => \Website\Csrf::generate(),
             'email' => $email,
             'amount' => $amount,
         ]);
@@ -68,7 +68,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         $this->loginAdmin();
 
         $response = $this->appRun('POST', '/admin/payments/new', [
-            'csrf' => \Minz\Csrf::generate(),
+            'csrf' => \Website\Csrf::generate(),
             'email' => $email,
             'amount' => $amount,
         ]);
@@ -87,7 +87,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         $this->loginAdmin();
 
         $response = $this->appRun('POST', '/admin/payments/new', [
-            'csrf' => \Minz\Csrf::generate(),
+            'csrf' => \Website\Csrf::generate(),
             'email' => 'not an email',
             'amount' => $amount,
         ]);
@@ -100,7 +100,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     public function testCreateFailsIfNotConnected(string $email, int $amount): void
     {
         $response = $this->appRun('POST', '/admin/payments/new', [
-            'csrf' => \Minz\Csrf::generate(),
+            'csrf' => \Website\Csrf::generate(),
             'email' => $email,
             'amount' => $amount,
         ]);
@@ -131,7 +131,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', '/admin/payments/' . $payment->id);
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponsePointer($response, 'admin/payments/show.phtml');
+        $this->assertResponseTemplateName($response, 'admin/payments/show.phtml');
     }
 
     public function testShowFailsIfInvalidId(): void
@@ -160,7 +160,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/admin/payments/{$payment->id}/confirm", [
-            'csrf' => \Minz\Csrf::generate(),
+            'csrf' => \Website\Csrf::generate(),
         ]);
 
         $this->assertResponseCode($response, 302, '/admin?status=payment_confirmed');
@@ -176,7 +176,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/admin/payments/not-an-id/confirm", [
-            'csrf' => \Minz\Csrf::generate(),
+            'csrf' => \Website\Csrf::generate(),
         ]);
 
         $this->assertResponseCode($response, 404);
@@ -190,7 +190,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/admin/payments/{$payment->id}/confirm", [
-            'csrf' => \Minz\Csrf::generate(),
+            'csrf' => \Website\Csrf::generate(),
         ]);
 
         $this->assertResponseCode($response, 400);
@@ -204,7 +204,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/admin/payments/{$payment->id}/confirm", [
-            'csrf' => \Minz\Csrf::generate(),
+            'csrf' => \Website\Csrf::generate(),
         ]);
 
         $this->assertResponseCode($response, 302, '/admin/login?from=admin%2Fpayments%23index');
@@ -238,7 +238,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/admin/payments/' . $payment->id . '/destroy', [
-            'csrf' => \Minz\Csrf::generate(),
+            'csrf' => \Website\Csrf::generate(),
         ]);
 
         $this->assertResponseCode($response, 302, '/admin?status=payment_deleted');
@@ -250,7 +250,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         $this->loginAdmin();
 
         $response = $this->appRun('POST', '/admin/payments/invalid/destroy', [
-            'csrf' => \Minz\Csrf::generate(),
+            'csrf' => \Website\Csrf::generate(),
         ]);
 
         $this->assertResponseCode($response, 404);
@@ -264,7 +264,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/admin/payments/' . $payment->id . '/destroy', [
-            'csrf' => \Minz\Csrf::generate(),
+            'csrf' => \Website\Csrf::generate(),
         ]);
 
         $this->assertResponseCode($response, 302, '/admin/login?from=admin%2Fpayments%23index');
@@ -297,7 +297,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/admin/payments/' . $payment->id . '/destroy', [
-            'csrf' => \Minz\Csrf::generate(),
+            'csrf' => \Website\Csrf::generate(),
         ]);
 
         $this->assertResponseCode($response, 400);
@@ -315,7 +315,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/admin/payments/' . $payment->id . '/destroy', [
-            'csrf' => \Minz\Csrf::generate(),
+            'csrf' => \Website\Csrf::generate(),
         ]);
 
         $this->assertResponseCode($response, 400);

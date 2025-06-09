@@ -44,6 +44,6 @@ class CommonPotsTest extends \PHPUnit\Framework\TestCase
         $expected_formatted_amount = number_format($expected_amount, 2, ',', '&nbsp') . '&nbsp;€';
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, $expected_formatted_amount);
-        $this->assertResponsePointer($response, 'common_pots/show.phtml');
+        $this->assertResponseTemplateName($response, 'common_pots/show.phtml');
     }
 }

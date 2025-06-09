@@ -48,14 +48,14 @@ class Application
 
         \Minz\Engine::init($router, [
             'start_session' => \Minz\Configuration::$environment !== 'test',
-            'not_found_view_pointer' => 'not_found.phtml',
-            'internal_server_error_view_pointer' => 'internal_server_error.phtml',
+            'not_found_template' => 'not_found.phtml',
+            'internal_server_error_template' => 'internal_server_error.phtml',
             'controller_namespace' => '\\Website\\controllers',
         ]);
 
-        \Minz\Output\View::declareDefaultVariables([
+        \Minz\Template\Simple::addGlobals([
             'environment' => \Minz\Configuration::$environment,
-            'csrf_token' => \Minz\Csrf::generate(),
+            'csrf_token' => \Website\Csrf::generate(),
             'errors' => [],
             'error' => null,
             'load_form_statics' => false,
@@ -73,18 +73,18 @@ class Application
         $router = Router::loadCli();
 
         \Minz\Engine::init($router, [
-            'not_found_view_pointer' => 'cli/not_found.txt',
-            'internal_server_error_view_pointer' => 'cli/internal_server_error.txt',
+            'not_found_template' => 'cli/not_found.txt',
+            'internal_server_error_template' => 'cli/internal_server_error.txt',
             'controller_namespace' => '\\Website\\cli',
         ]);
 
-        $bin = $request->param('bin');
+        $bin = $request->parameters->getString('bin');
         $bin = $bin === 'cli' ? 'php cli' : $bin;
 
         $current_command = $request->path();
         $current_command = trim(str_replace('/', ' ', $current_command));
 
-        \Minz\Output\View::declareDefaultVariables([
+        \Minz\Template\Simple::addGlobals([
             'environment' => \Minz\Configuration::$environment,
             'errors' => [],
             'error' => null,

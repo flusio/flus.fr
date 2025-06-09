@@ -35,12 +35,11 @@ class Accounts
      */
     public function create(Request $request): Response
     {
-        $email = $request->param('email', '');
+        $email = $request->parameters->getString('email', '');
         $account = new models\Account($email);
 
-        $errors = $account->validate();
-        if ($errors) {
-            return Response::text(400, implode(' ', $errors));
+        if (!$account->validate()) {
+            return Response::text(400, implode(' ', $account->errors()));
         }
 
         $account->save();
@@ -58,7 +57,7 @@ class Accounts
      */
     public function loginUrl(Request $request): Response
     {
-        $id = $request->param('id', '');
+        $id = $request->parameters->getString('id', '');
 
         $account = models\Account::find($id);
         if (!$account) {

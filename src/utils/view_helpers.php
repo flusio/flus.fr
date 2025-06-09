@@ -17,7 +17,7 @@ function format_month(int $month, string $format): string
     if ($date === false) {
         return strval($month);
     } else {
-        return \Minz\Output\ViewHelpers::formatDate($date, $format);
+        return \Minz\Template\SimpleTemplateHelpers::formatDate($date, $format);
     }
 }
 
@@ -39,7 +39,7 @@ function icon(string $icon_name, string $additional_class_names = ''): string
         $class .= ' ' . $additional_class_names;
     }
 
-    $url_icons = \Minz\Output\ViewHelpers::urlStatic('icons/icons.svg');
+    $url_icons = \Minz\Template\SimpleTemplateHelpers::urlStatic('icons/icons.svg');
     $svg = "<svg class=\"{$class}\" aria-hidden=\"true\" width=\"36\" height=\"36\">";
     $svg .= "<use xlink:href=\"{$url_icons}#{$icon_name}\"/>";
     $svg .= '</svg>';

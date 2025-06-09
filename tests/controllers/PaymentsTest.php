@@ -18,7 +18,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', "/payments/{$payment->id}/pay");
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponsePointer($response, 'stripe/redirection.phtml');
+        $this->assertResponseTemplateName($response, 'stripe/redirection.phtml');
     }
 
     public function testPayConfiguresStripe(): void
@@ -31,20 +31,22 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         /** @var \Minz\Response */
         $response = $this->appRun('GET', "/payments/{$payment->id}/pay");
 
-        /** @var \Minz\Output\View */
         $output = $response->output();
-        $variables = $output->variables();
-        $headers = $response->headers(true);
+        $this->assertInstanceOf(\Minz\Output\Template::class, $output);
+        $template = $output->template();
+        $this->assertInstanceOf(\Minz\Template\Simple::class, $template);
+        $context = $template->context();
+        $headers = $response->headers(raw: true);
         /** @var array<string, string> */
         $csp = $headers['Content-Security-Policy'];
 
         $this->assertSame(
             \Minz\Configuration::$application['stripe_public_key'],
-            $variables['stripe_public_key']
+            $context['stripe_public_key']
         );
         $this->assertSame(
             $session_id,
-            $variables['stripe_session_id']
+            $context['stripe_session_id']
         );
         $this->assertSame(
             "'self' js.stripe.com",

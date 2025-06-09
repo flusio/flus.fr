@@ -23,7 +23,7 @@ class Credits
             return Response::redirect('login', ['from' => 'admin/payments#init']);
         }
 
-        $credited_payment_id = $request->param('credited_payment_id', '');
+        $credited_payment_id = $request->parameters->getString('credited_payment_id', '');
         $credited_payment = models\Payment::find($credited_payment_id);
         if (!$credited_payment) {
             return Response::notFound('not_found.phtml');
@@ -59,7 +59,7 @@ class Credits
             return Response::redirect('login', ['from' => 'admin/payments#init']);
         }
 
-        $credited_payment_id = $request->param('credited_payment_id', '');
+        $credited_payment_id = $request->parameters->getString('credited_payment_id', '');
         $credited_payment = models\Payment::find($credited_payment_id);
         if (!$credited_payment) {
             return Response::notFound('not_found.phtml');
@@ -83,7 +83,7 @@ class Credits
             ]);
         }
 
-        if (!\Minz\Csrf::validate($request->param('csrf', ''))) {
+        if (!\Website\Csrf::validate($request->parameters->getString('csrf', ''))) {
             return Response::badRequest('admin/credits/init.phtml', [
                 'credited_payment' => $credited_payment,
                 'already_credited' => $already_credited,

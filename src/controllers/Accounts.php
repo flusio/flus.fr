@@ -54,8 +54,8 @@ class Accounts
      */
     public function login(Request $request): Response
     {
-        $account_id = $request->param('account_id', '');
-        $access_token = $request->param('access_token', '');
+        $account_id = $request->parameters->getString('account_id', '');
+        $access_token = $request->parameters->getString('access_token', '');
 
         $account = models\Account::find($account_id);
         if (!$account) {
@@ -83,7 +83,7 @@ class Accounts
     {
         $user = utils\CurrentUser::get();
 
-        if (\Minz\Csrf::validate($request->param('csrf', '')) && $user) {
+        if (\Website\Csrf::validate($request->parameters->getString('csrf', '')) && $user) {
             utils\CurrentUser::logOut();
 
             $account = models\Account::find($user['account_id']);
@@ -154,11 +154,11 @@ class Accounts
             return Response::unauthorized('accounts/blocked.phtml');
         }
 
-        $email = $request->param('email', '');
-        $entity_type = $request->param('entity_type', 'natural');
-        $company_vat_number = $request->param('company_vat_number', '');
-        $address = $request->paramArray('address', $account->address());
-        $show_address = $request->paramBoolean('show_address', false);
+        $email = $request->parameters->getString('email', '');
+        $entity_type = $request->parameters->getString('entity_type', 'natural');
+        $company_vat_number = $request->parameters->getString('company_vat_number', '');
+        $address = $request->parameters->getArray('address', $account->address());
+        $show_address = $request->parameters->getBoolean('show_address', false);
 
         if ($entity_type === 'natural') {
             $company_vat_number = '';
@@ -177,36 +177,11 @@ class Accounts
 
         $account->email = $email;
         $account->entity_type = $entity_type;
+        $account->show_address = $show_address;
         $account->setAddress($address);
         $account->company_vat_number = $company_vat_number;
 
-        $errors = $account->validate();
-
-        if ($entity_type === 'natural') {
-            if (!$account->address_first_name) {
-                $errors['address_first_name'] = 'Votre prénom est obligatoire.';
-            }
-
-            if (!$account->address_last_name) {
-                $errors['address_last_name'] = 'Votre nom est obligatoire.';
-            }
-        } elseif (!$account->address_legal_name) {
-            $errors['address_legal_name'] = 'Votre raison sociale est obligatoire.';
-        }
-
-        if ($show_address) {
-            if (!$account->address_address1) {
-                $errors['address_address1'] = 'Votre adresse est incomplète.';
-            }
-            if (!$account->address_postcode) {
-                $errors['address_postcode'] = 'Votre adresse est incomplète.';
-            }
-            if (!$account->address_city) {
-                $errors['address_city'] = 'Votre adresse est incomplète.';
-            }
-        }
-
-        if ($errors) {
+        if (!$account->validate()) {
             return Response::badRequest('accounts/profile.phtml', [
                 'account' => $account,
                 'email' => $email,
@@ -215,11 +190,11 @@ class Accounts
                 'address' => $address,
                 'company_vat_number' => $company_vat_number,
                 'countries' => utils\Countries::listSorted(),
-                'errors' => $errors,
+                'errors' => $account->errors(),
             ]);
         }
 
-        if (!\Minz\Csrf::validate($request->param('csrf', ''))) {
+        if (!\Website\Csrf::validate($request->parameters->getString('csrf', ''))) {
             return Response::badRequest('accounts/profile.phtml', [
                 'account' => $account,
                 'email' => $email,
@@ -272,14 +247,14 @@ class Accounts
             return Response::unauthorized('accounts/blocked.phtml');
         }
 
-        $reminder = $request->paramBoolean('reminder', false);
-        $from = $request->param('from', '');
+        $reminder = $request->parameters->getBoolean('reminder', false);
+        $from = $request->parameters->getString('from', '');
 
         if (!$from) {
             $from = 'account';
         }
 
-        if (\Minz\Csrf::validate($request->param('csrf', ''))) {
+        if (\Website\Csrf::validate($request->parameters->getString('csrf', ''))) {
             $account->reminder = $reminder;
             $account->save();
         }
@@ -379,10 +354,10 @@ class Accounts
             return Response::notFound('not_found.phtml');
         }
 
-        $email = $request->param('email', '');
-        $csrf = $request->param('csrf', '');
+        $email = $request->parameters->getString('email', '');
+        $csrf = $request->parameters->getString('csrf', '');
 
-        if (!\Minz\Csrf::validate($csrf)) {
+        if (!\Website\Csrf::validate($csrf)) {
             return Response::badRequest('accounts/managed.phtml', [
                 'account' => $account,
                 'managedAccounts' => $account->managedAccounts(),
@@ -481,10 +456,10 @@ class Accounts
             return Response::notFound('not_found.phtml');
         }
 
-        $id = $request->param('id', '');
-        $csrf = $request->param('csrf', '');
+        $id = $request->parameters->getString('id', '');
+        $csrf = $request->parameters->getString('csrf', '');
 
-        if (!\Minz\Csrf::validate($csrf)) {
+        if (!\Website\Csrf::validate($csrf)) {
             return Response::redirect('managed accounts');
         }
 

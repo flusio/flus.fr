@@ -24,7 +24,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', '/api/account', [
             'email' => $email,
         ], [
-            'PHP_AUTH_USER' => \Minz\Configuration::$application['flus_private_key'],
+            'Authorization' => $this->authorizationHeader(),
         ]);
 
         $this->assertResponseCode($response, 200);
@@ -45,7 +45,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', '/api/account', [
             'email' => $email,
         ], [
-            'PHP_AUTH_USER' => \Minz\Configuration::$application['flus_private_key'],
+            'Authorization' => $this->authorizationHeader(),
         ]);
 
         $this->assertResponseCode($response, 200);
@@ -78,7 +78,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', '/api/account', [
             'email' => $email,
         ], [
-            'PHP_AUTH_USER' => \Minz\Configuration::$application['flus_private_key'],
+            'Authorization' => $this->authorizationHeader(),
         ]);
 
         $this->assertResponseCode($response, 200);
@@ -107,7 +107,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', '/api/account', [
             'email' => $email,
         ], [
-            'PHP_AUTH_USER' => \Minz\Configuration::$application['flus_private_key'],
+            'Authorization' => $this->authorizationHeader(),
         ]);
 
         $this->assertResponseCode($response, 400);
@@ -125,7 +125,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', '/api/account/login-url', [
             'account_id' => $account->id,
         ], [
-            'PHP_AUTH_USER' => \Minz\Configuration::$application['flus_private_key'],
+            'Authorization' => $this->authorizationHeader(),
         ]);
 
         $this->assertResponseCode($response, 200);
@@ -174,7 +174,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', '/api/account/login-url', [
             'account_id' => 'not the id',
         ], [
-            'PHP_AUTH_USER' => \Minz\Configuration::$application['flus_private_key'],
+            'Authorization' => $this->authorizationHeader(),
         ]);
 
         $this->assertResponseCode($response, 404);
@@ -193,7 +193,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', '/api/account/expired-at', [
             'account_id' => $account->id,
         ], [
-            'PHP_AUTH_USER' => \Minz\Configuration::$application['flus_private_key'],
+            'Authorization' => $this->authorizationHeader(),
         ]);
 
         $this->assertResponseCode($response, 200);
@@ -218,7 +218,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', '/api/account/expired-at', [
             'account_id' => $account->id,
         ], [
-            'PHP_AUTH_USER' => \Minz\Configuration::$application['flus_private_key'],
+            'Authorization' => $this->authorizationHeader(),
         ]);
 
         $this->assertResponseCode($response, 200);
@@ -244,7 +244,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', '/api/account/expired-at', [
             'account_id' => 'not the id',
         ], [
-            'PHP_AUTH_USER' => \Minz\Configuration::$application['flus_private_key'],
+            'Authorization' => $this->authorizationHeader(),
         ]);
 
         $this->assertResponseCode($response, 404);
@@ -261,7 +261,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('POST', '/api/accounts/sync', [
             'account_ids' => json_encode([$account->id]),
         ], [
-            'PHP_AUTH_USER' => \Minz\Configuration::$application['flus_private_key'],
+            'Authorization' => $this->authorizationHeader(),
         ]);
 
         $this->assertResponseCode($response, 200);
@@ -287,7 +287,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('POST', '/api/accounts/sync', [
             'account_ids' => json_encode([$account->id]),
         ], [
-            'PHP_AUTH_USER' => \Minz\Configuration::$application['flus_private_key'],
+            'Authorization' => $this->authorizationHeader(),
         ]);
 
         $this->assertResponseCode($response, 200);
@@ -303,7 +303,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('POST', '/api/accounts/sync', [
             'account_ids' => json_encode([$account_id]),
         ], [
-            'PHP_AUTH_USER' => \Minz\Configuration::$application['flus_private_key'],
+            'Authorization' => $this->authorizationHeader(),
         ]);
 
         $this->assertResponseCode($response, 200);
@@ -322,7 +322,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('POST', '/api/accounts/sync', [
             'account_ids' => json_encode([null, $account->id]),
         ], [
-            'PHP_AUTH_USER' => \Minz\Configuration::$application['flus_private_key'],
+            'Authorization' => $this->authorizationHeader(),
         ]);
 
         $this->assertResponseCode($response, 200);
@@ -346,7 +346,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('POST', '/api/accounts/sync', [
             'account_ids' => $account->id,
         ], [
-            'PHP_AUTH_USER' => \Minz\Configuration::$application['flus_private_key'],
+            'Authorization' => $this->authorizationHeader(),
         ]);
 
         $this->assertResponseCode($response, 400);
@@ -383,5 +383,11 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         }
 
         return $datasets;
+    }
+
+    private function authorizationHeader(): string
+    {
+        $header = ':' . \Minz\Configuration::$application['flus_private_key'];
+        return 'Basic ' . base64_encode($header);
     }
 }

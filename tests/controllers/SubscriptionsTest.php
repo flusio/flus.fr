@@ -36,7 +36,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', '/account/renew');
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponsePointer($response, 'subscriptions/init.phtml');
+        $this->assertResponseTemplateName($response, 'subscriptions/init.phtml');
     }
 
     /**
@@ -136,7 +136,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($account);
 
         $response = $this->appRun('POST', '/account/renew', [
-            'csrf' => \Minz\Csrf::generate(),
+            'csrf' => \Website\Csrf::generate(),
             'right_of_withdrawal' => true,
             'account_id' => $account->id,
             'amount' => 10,
@@ -178,7 +178,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(0, models\Payment::count());
 
         $response = $this->appRun('POST', '/account/renew', [
-            'csrf' => \Minz\Csrf::generate(),
+            'csrf' => \Website\Csrf::generate(),
             'right_of_withdrawal' => true,
             'account_id' => $account->id,
             'amount' => 10,
@@ -217,7 +217,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($account);
 
         $response = $this->appRun('POST', '/account/renew', [
-            'csrf' => \Minz\Csrf::generate(),
+            'csrf' => \Website\Csrf::generate(),
             'right_of_withdrawal' => true,
             'account_id' => $account->id,
             'amount' => 0,
@@ -247,7 +247,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($account);
 
         $response = $this->appRun('POST', '/account/renew', [
-            'csrf' => \Minz\Csrf::generate(),
+            'csrf' => \Website\Csrf::generate(),
             'right_of_withdrawal' => true,
             'account_id' => $account->id,
             'amount' => 10,
@@ -277,7 +277,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($account);
 
         $response = $this->appRun('POST', '/account/renew', [
-            'csrf' => \Minz\Csrf::generate(),
+            'csrf' => \Website\Csrf::generate(),
             'right_of_withdrawal' => true,
             'account_id' => $account->id,
             'amount' => 10,
@@ -311,7 +311,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull($account);
 
         $response = $this->appRun('POST', '/account/renew', [
-            'csrf' => \Minz\Csrf::generate(),
+            'csrf' => \Website\Csrf::generate(),
             'right_of_withdrawal' => true,
             'account_id' => $account->id,
             'amount' => 121,
@@ -339,7 +339,7 @@ class SubscriptionsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/account/renew', [
-            'csrf' => \Minz\Csrf::generate(),
+            'csrf' => \Website\Csrf::generate(),
             'right_of_withdrawal' => true,
             'account_id' => $account->id,
             'amount' => 10,

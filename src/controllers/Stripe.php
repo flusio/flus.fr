@@ -14,7 +14,7 @@ class Stripe
      * @see https://stripe.com/docs/payments/checkout/fulfillment#webhooks
      *
      * @request_param string @input
-     * @request_header string HTTP_STRIPE_SIGNATURE
+     * @request_header string Stripe-Signature
      *
      * @response 400
      *     If an error occurs during processing the Stripe request
@@ -23,8 +23,8 @@ class Stripe
      */
     public function hooks(Request $request): Response
     {
-        $payload = $request->param('@input', '');
-        $signature = $request->header('HTTP_STRIPE_SIGNATURE');
+        $payload = $request->parameters->getString('@input', '');
+        $signature = $request->headers->getString('Stripe-Signature', '');
         $hook_secret = \Minz\Configuration::$application['stripe_webhook_secret'];
 
         try {

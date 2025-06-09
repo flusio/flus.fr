@@ -84,14 +84,14 @@ class Subscriptions
         }
 
         /** @var int */
-        $amount = $request->paramInteger('amount', 0);
+        $amount = $request->parameters->getInteger('amount', 0);
 
         /** @var string */
-        $tariff = $request->param('tariff', '');
+        $tariff = $request->parameters->getString('tariff', '');
 
-        $right_of_withdrawal = $request->paramBoolean('right_of_withdrawal');
+        $right_of_withdrawal = $request->parameters->getBoolean('right_of_withdrawal');
 
-        if (!\Minz\Csrf::validate($request->param('csrf', ''))) {
+        if (!\Website\Csrf::validate($request->parameters->getString('csrf', ''))) {
             return Response::badRequest('subscriptions/init.phtml', [
                 'contribution_price' => models\Payment::contributionPrice(),
                 'account' => $account,
@@ -155,14 +155,13 @@ class Subscriptions
 
         $payment = models\Payment::initSubscriptionFromAccount($account, $amount);
 
-        $errors = $payment->validate();
-        if ($errors) {
+        if (!$payment->validate()) {
             return Response::badRequest('subscriptions/init.phtml', [
                 'contribution_price' => models\Payment::contributionPrice(),
                 'account' => $account,
                 'amount' => $amount,
                 'ongoing_payment' => $account->ongoingPayment(),
-                'errors' => $errors,
+                'errors' => $payment->errors(),
             ]);
         }
 
@@ -171,8 +170,8 @@ class Subscriptions
         $stripe_session = $stripe_service->createSession(
             $payment,
             "Abonnement à Flus ({$period})",
-            $request->param('success_url', \Minz\Url::absoluteFor('Payments#succeeded')),
-            $request->param('cancel_url', \Minz\Url::absoluteFor('Payments#canceled'))
+            $request->parameters->getString('success_url', \Minz\Url::absoluteFor('Payments#succeeded')),
+            $request->parameters->getString('cancel_url', \Minz\Url::absoluteFor('Payments#canceled'))
         );
 
         if (!$stripe_session) {

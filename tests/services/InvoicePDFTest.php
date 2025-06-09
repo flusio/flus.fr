@@ -3,7 +3,7 @@
 namespace Website\services;
 
 use PHPUnit\Framework\TestCase;
-use Minz\Output\ViewHelpers;
+use Minz\Template\SimpleTemplateHelpers;
 use tests\factories\AccountFactory;
 use tests\factories\PaymentFactory;
 use Website\utils;
@@ -34,9 +34,9 @@ class InvoicePDFTest extends TestCase
         $invoice_pdf = new InvoicePDF($payment);
 
         $global_info = $invoice_pdf->global_info;
-        $expected_established = ViewHelpers::formatDate($payment->created_at, 'dd MMMM yyyy');
+        $expected_established = SimpleTemplateHelpers::formatDate($payment->created_at, 'dd MMMM yyyy');
         assert($payment->completed_at !== null);
-        $expected_paid = ViewHelpers::formatDate($payment->completed_at, 'dd MMMM yyyy');
+        $expected_paid = SimpleTemplateHelpers::formatDate($payment->completed_at, 'dd MMMM yyyy');
         $this->assertSame($payment->invoice_number, $global_info['N° facture']);
         $this->assertSame($expected_established, $global_info['Établie le']);
         $this->assertSame($expected_paid, $global_info['Payée le']);
@@ -68,7 +68,7 @@ class InvoicePDFTest extends TestCase
             'completed_at' => $this->fake('dateTime'),
         ]);
         assert($payment->completed_at !== null);
-        $expected_credited_at = ViewHelpers::formatDate($payment->completed_at, 'dd MMMM yyyy');
+        $expected_credited_at = SimpleTemplateHelpers::formatDate($payment->completed_at, 'dd MMMM yyyy');
 
         $invoice_pdf = new InvoicePDF($payment);
 

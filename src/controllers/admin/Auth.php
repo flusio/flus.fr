@@ -27,7 +27,7 @@ class Auth
         }
 
         return Response::ok('admin/auth/login.phtml', [
-            'from' => $request->param('from'),
+            'from' => $request->parameters->getString('from', ''),
         ]);
     }
 
@@ -53,10 +53,10 @@ class Auth
             return Response::redirect('admin');
         }
 
-        $password = $request->param('password', '');
-        $from = $request->param('from', '');
+        $password = $request->parameters->getString('password', '');
+        $from = $request->parameters->getString('from', '');
 
-        if (!\Minz\Csrf::validate($request->param('csrf', ''))) {
+        if (!\Website\Csrf::validate($request->parameters->getString('csrf', ''))) {
             return Response::badRequest('admin/auth/login.phtml', [
                 'from' => $from,
                 'error' => 'Une vérification de sécurité a échoué, veuillez réessayer de soumettre le formulaire.',
@@ -94,7 +94,7 @@ class Auth
      */
     public function deleteSession(Request $request): Response
     {
-        if (\Minz\Csrf::validate($request->param('csrf', '')) && utils\CurrentUser::isAdmin()) {
+        if (\Website\Csrf::validate($request->parameters->getString('csrf', '')) && utils\CurrentUser::isAdmin()) {
             utils\CurrentUser::logOut();
         }
 

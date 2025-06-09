@@ -16,7 +16,7 @@ class HomeTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, 'Flus, le complément éditorial de votre veille');
-        $this->assertResponsePointer($response, 'home/index.phtml');
+        $this->assertResponseTemplateName($response, 'home/index.phtml');
     }
 
     public function testPricingRendersCorrectly(): void
@@ -25,7 +25,7 @@ class HomeTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, 'Tarifs');
-        $this->assertResponsePointer($response, 'home/pricing.phtml');
+        $this->assertResponseTemplateName($response, 'home/pricing.phtml');
     }
 
     public function testCreditsRendersCorrectly(): void
@@ -34,7 +34,7 @@ class HomeTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, 'Crédits');
-        $this->assertResponsePointer($response, 'home/credits.phtml');
+        $this->assertResponseTemplateName($response, 'home/credits.phtml');
     }
 
     public function testRobotsRendersCorrectly(): void
@@ -56,7 +56,7 @@ class HomeTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', '/contact');
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponsePointer($response, 'home/contact.phtml');
+        $this->assertResponseTemplateName($response, 'home/contact.phtml');
     }
 
     public function testSendContactMessageSendsEmails(): void
@@ -75,7 +75,7 @@ class HomeTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, 'Votre message a bien été envoyé.');
-        $this->assertResponsePointer($response, 'home/contact.phtml');
+        $this->assertResponseTemplateName($response, 'home/contact.phtml');
         $this->assertEmailsCount(1);
 
         $email_sent = \Minz\Tests\Mailer::take(0);
@@ -95,7 +95,7 @@ class HomeTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'Saisissez une adresse courriel.');
-        $this->assertResponsePointer($response, 'home/contact.phtml');
+        $this->assertResponseTemplateName($response, 'home/contact.phtml');
         $this->assertEmailsCount(0);
     }
 
@@ -109,7 +109,7 @@ class HomeTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'Saisissez une adresse courriel valide.');
-        $this->assertResponsePointer($response, 'home/contact.phtml');
+        $this->assertResponseTemplateName($response, 'home/contact.phtml');
         $this->assertEmailsCount(0);
     }
 
@@ -122,7 +122,7 @@ class HomeTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'Saisissez un sujet.');
-        $this->assertResponsePointer($response, 'home/contact.phtml');
+        $this->assertResponseTemplateName($response, 'home/contact.phtml');
         $this->assertEmailsCount(0);
     }
 
@@ -135,7 +135,7 @@ class HomeTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'Saisissez un message.');
-        $this->assertResponsePointer($response, 'home/contact.phtml');
+        $this->assertResponseTemplateName($response, 'home/contact.phtml');
         $this->assertEmailsCount(0);
     }
 
@@ -152,7 +152,7 @@ class HomeTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, 'Votre message a bien été envoyé.');
-        $this->assertResponsePointer($response, 'home/contact.phtml');
+        $this->assertResponseTemplateName($response, 'home/contact.phtml');
         $this->assertEmailsCount(0);
     }
 
@@ -161,7 +161,7 @@ class HomeTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', '/securite');
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponsePointer($response, 'home/security.phtml');
+        $this->assertResponseTemplateName($response, 'home/security.phtml');
     }
 
     public function testSecurityTxtRendersCorrectly(): void
@@ -169,6 +169,6 @@ class HomeTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', '/.well-known/security.txt');
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponsePointer($response, 'home/security.txt');
+        $this->assertResponseTemplateName($response, 'home/security.txt');
     }
 }

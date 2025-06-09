@@ -3,7 +3,7 @@
 namespace Website\services;
 
 use Fpdf\Fpdf;
-use Minz\Output\ViewHelpers;
+use Minz\Template\SimpleTemplateHelpers;
 use Website\models;
 use Website\utils;
 
@@ -54,7 +54,7 @@ class InvoicePDF extends Fpdf
 
         $this->logo = \Minz\Configuration::$app_path . '/public/static/logo-512px.png';
 
-        $established_at = ViewHelpers::formatDate($payment->created_at, 'dd MMMM yyyy');
+        $established_at = SimpleTemplateHelpers::formatDate($payment->created_at, 'dd MMMM yyyy');
         $this->global_info = [
             'N° facture' => $payment->invoice_number ?? '',
             'Établie le' => $established_at,
@@ -62,13 +62,15 @@ class InvoicePDF extends Fpdf
 
         if ($payment->type === 'credit') {
             if ($payment->completed_at) {
-                $this->global_info['Créditée le'] = ViewHelpers::formatDate($payment->completed_at, 'dd MMMM yyyy');
+                $date = SimpleTemplateHelpers::formatDate($payment->completed_at, 'dd MMMM yyyy');
+                $this->global_info['Créditée le'] = $date;
             } else {
                 $this->global_info['Créditée le'] = 'à créditer';
             }
         } else {
             if ($payment->completed_at) {
-                $this->global_info['Payée le'] = ViewHelpers::formatDate($payment->completed_at, 'dd MMMM yyyy');
+                $date = SimpleTemplateHelpers::formatDate($payment->completed_at, 'dd MMMM yyyy');
+                $this->global_info['Payée le'] = $date;
             } else {
                 $this->global_info['Payée le'] = 'à payer';
             }
@@ -281,6 +283,12 @@ class InvoicePDF extends Fpdf
 
     private function pdfDecode(string $string): string
     {
-        return mb_convert_encoding($string, 'windows-1252', 'utf-8');
+        $data = mb_convert_encoding($string, 'windows-1252', 'utf-8');
+
+        if (!$data) {
+            return '';
+        }
+
+        return $data;
     }
 }

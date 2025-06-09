@@ -225,7 +225,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/account/logout', [
-            'csrf' => \Minz\Csrf::generate(),
+            'csrf' => \Website\Csrf::generate(),
         ]);
 
         if ($service === 'flus') {
@@ -258,7 +258,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', '/account/profile');
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponsePointer($response, 'accounts/profile.phtml');
+        $this->assertResponseTemplateName($response, 'accounts/profile.phtml');
     }
 
     public function testProfileFailsIfNotConnected(): void
@@ -277,7 +277,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $user = $this->loginUser();
 
         $response = $this->appRun('POST', '/account/profile', [
-            'csrf' => \Minz\Csrf::generate(),
+            'csrf' => \Website\Csrf::generate(),
             'email' => $email,
             'show_address' => true,
             'address' => $address,
@@ -307,7 +307,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $address['legal_name'] = $legal_name;
 
         $response = $this->appRun('POST', '/account/profile', [
-            'csrf' => \Minz\Csrf::generate(),
+            'csrf' => \Website\Csrf::generate(),
             'entity_type' => 'legal',
             'email' => $email,
             'show_address' => true,
@@ -340,7 +340,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         unset($address['city']);
 
         $response = $this->appRun('POST', '/account/profile', [
-            'csrf' => \Minz\Csrf::generate(),
+            'csrf' => \Website\Csrf::generate(),
             'email' => $email,
             'show_address' => false,
             'address' => $address,
@@ -369,7 +369,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/account/profile', [
-            'csrf' => \Minz\Csrf::generate(),
+            'csrf' => \Website\Csrf::generate(),
             'email' => $email,
             'show_address' => true,
             'address' => $address,
@@ -390,7 +390,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     public function testUpdateProfileFailsIfNotConnected(string $email, array $address): void
     {
         $response = $this->appRun('POST', '/account/profile', [
-            'csrf' => \Minz\Csrf::generate(),
+            'csrf' => \Website\Csrf::generate(),
             'email' => $email,
             'show_address' => true,
             'address' => $address,
@@ -428,7 +428,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $email = $this->fake('domainName');
 
         $response = $this->appRun('POST', '/account/profile', [
-            'csrf' => \Minz\Csrf::generate(),
+            'csrf' => \Website\Csrf::generate(),
             'email' => $email,
             'show_address' => true,
             'address' => $address,
@@ -450,7 +450,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $user = $this->loginUser();
 
         $response = $this->appRun('POST', '/account/profile', [
-            'csrf' => \Minz\Csrf::generate(),
+            'csrf' => \Website\Csrf::generate(),
             'show_address' => true,
             'address' => $address,
         ]);
@@ -469,7 +469,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         unset($address['first_name']);
 
         $response = $this->appRun('POST', '/account/profile', [
-            'csrf' => \Minz\Csrf::generate(),
+            'csrf' => \Website\Csrf::generate(),
             'email' => $email,
             'show_address' => true,
             'address' => $address,
@@ -489,7 +489,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         unset($address['last_name']);
 
         $response = $this->appRun('POST', '/account/profile', [
-            'csrf' => \Minz\Csrf::generate(),
+            'csrf' => \Website\Csrf::generate(),
             'email' => $email,
             'show_address' => true,
             'address' => $address,
@@ -509,7 +509,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         unset($address['address1']);
 
         $response = $this->appRun('POST', '/account/profile', [
-            'csrf' => \Minz\Csrf::generate(),
+            'csrf' => \Website\Csrf::generate(),
             'email' => $email,
             'show_address' => true,
             'address' => $address,
@@ -529,7 +529,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         unset($address['postcode']);
 
         $response = $this->appRun('POST', '/account/profile', [
-            'csrf' => \Minz\Csrf::generate(),
+            'csrf' => \Website\Csrf::generate(),
             'email' => $email,
             'show_address' => true,
             'address' => $address,
@@ -549,7 +549,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         unset($address['city']);
 
         $response = $this->appRun('POST', '/account/profile', [
-            'csrf' => \Minz\Csrf::generate(),
+            'csrf' => \Website\Csrf::generate(),
             'email' => $email,
             'show_address' => true,
             'address' => $address,
@@ -569,7 +569,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $address['country'] = 'invalid';
 
         $response = $this->appRun('POST', '/account/profile', [
-            'csrf' => \Minz\Csrf::generate(),
+            'csrf' => \Website\Csrf::generate(),
             'email' => $email,
             'show_address' => true,
             'address' => $address,
@@ -588,7 +588,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/account/reminder', [
-            'csrf' => \Minz\Csrf::generate(),
+            'csrf' => \Website\Csrf::generate(),
             'reminder' => $new_reminder,
         ]);
 
@@ -607,7 +607,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/account/reminder', [
-            'csrf' => \Minz\Csrf::generate(),
+            'csrf' => \Website\Csrf::generate(),
             'reminder' => $new_reminder,
         ]);
 
@@ -644,7 +644,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('GET', '/account/managed');
 
         $this->assertResponseCode($response, 200);
-        $this->assertResponsePointer($response, 'accounts/managed.phtml');
+        $this->assertResponseTemplateName($response, 'accounts/managed.phtml');
     }
 
     public function testManagedAccountsFailsIfNotConnected(): void
@@ -675,7 +675,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $email = $this->fake('email');
 
         $response = $this->appRun('POST', '/account/managed', [
-            'csrf' => \Minz\Csrf::generate(),
+            'csrf' => \Website\Csrf::generate(),
             'email' => $email,
         ]);
 
@@ -700,7 +700,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/account/managed', [
-            'csrf' => \Minz\Csrf::generate(),
+            'csrf' => \Website\Csrf::generate(),
             'email' => $managed_account->email,
         ]);
 
@@ -738,7 +738,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $email = 'not an email';
 
         $response = $this->appRun('POST', '/account/managed', [
-            'csrf' => \Minz\Csrf::generate(),
+            'csrf' => \Website\Csrf::generate(),
             'email' => $email,
         ]);
 
@@ -754,7 +754,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $default_account = models\Account::defaultAccount();
 
         $response = $this->appRun('POST', '/account/managed', [
-            'csrf' => \Minz\Csrf::generate(),
+            'csrf' => \Website\Csrf::generate(),
             'email' => $default_account->email,
         ]);
 
@@ -777,7 +777,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/account/managed', [
-            'csrf' => \Minz\Csrf::generate(),
+            'csrf' => \Website\Csrf::generate(),
             'email' => $managed_account->email,
         ]);
 
@@ -794,7 +794,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $email = $this->fake('email');
 
         $response = $this->appRun('POST', '/account/managed', [
-            'csrf' => \Minz\Csrf::generate(),
+            'csrf' => \Website\Csrf::generate(),
             'email' => $email,
         ]);
 
@@ -807,7 +807,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $email = $this->fake('email');
 
         $response = $this->appRun('POST', '/account/managed', [
-            'csrf' => \Minz\Csrf::generate(),
+            'csrf' => \Website\Csrf::generate(),
             'email' => $email,
         ]);
 
@@ -827,7 +827,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/account/managed/{$managed_account->id}/delete", [
-            'csrf' => \Minz\Csrf::generate(),
+            'csrf' => \Website\Csrf::generate(),
         ]);
 
         $this->assertResponseCode($response, 302, '/account/managed');
@@ -845,7 +845,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/account/managed/{$managed_account->id}/delete", [
-            'csrf' => \Minz\Csrf::generate(),
+            'csrf' => \Website\Csrf::generate(),
         ]);
 
         $this->assertResponseCode($response, 302, '/account/managed');
@@ -860,7 +860,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/account/managed/not-exist/delete', [
-            'csrf' => \Minz\Csrf::generate(),
+            'csrf' => \Website\Csrf::generate(),
         ]);
 
         $this->assertResponseCode($response, 404);
@@ -893,7 +893,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', "/account/managed/{$managed_account->id}/delete", [
-            'csrf' => \Minz\Csrf::generate(),
+            'csrf' => \Website\Csrf::generate(),
         ]);
 
         $this->assertResponseCode($response, 401);

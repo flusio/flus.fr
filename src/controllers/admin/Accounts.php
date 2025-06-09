@@ -56,7 +56,7 @@ class Accounts
             return Response::redirect('login');
         }
 
-        $account_id = $request->param('id', '');
+        $account_id = $request->parameters->getString('id', '');
         $account = models\Account::find($account_id);
         if (!$account) {
             return Response::notFound('not_found.phtml');
@@ -91,14 +91,14 @@ class Accounts
             return Response::redirect('login');
         }
 
-        $account_id = $request->param('id', '');
+        $account_id = $request->parameters->getString('id', '');
         $account = models\Account::find($account_id);
         if (!$account) {
             return Response::notFound('not_found.phtml');
         }
 
-        $csrf = $request->param('csrf', '');
-        $expired_at = $request->param('expired-at', '');
+        $csrf = $request->parameters->getString('csrf', '');
+        $expired_at = $request->parameters->getString('expired-at', '');
 
         if ($expired_at === '1970-01-01') {
             $expired_at = new \DateTimeImmutable('@0');
@@ -115,7 +115,7 @@ class Accounts
             ]);
         }
 
-        if (!\Minz\Csrf::validate($csrf)) {
+        if (!\Website\Csrf::validate($csrf)) {
             return Response::badRequest('admin/accounts/show.phtml', [
                 'account' => $account,
                 'payments' => $account->payments(),

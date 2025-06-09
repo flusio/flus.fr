@@ -29,7 +29,7 @@ class Invoices
      */
     public function downloadPdf(Request $request): Response
     {
-        $payment_id = $request->param('id', '');
+        $payment_id = $request->parameters->getString('id', '');
         $payment = models\Payment::find($payment_id);
 
         if (!$payment || !$payment->invoice_number) {

@@ -90,30 +90,29 @@ class Home
 
         return Response::ok('home/contact.phtml', [
             'email' => $email,
-            'subject' => $request->param('subject', ''),
+            'subject' => $request->parameters->getString('subject', ''),
             'content' => '',
         ]);
     }
 
     public function sendContactMessage(Request $request): Response
     {
-        $email = $request->param('email', '');
-        $subject = $request->param('subject', '');
-        $content = $request->param('content', '');
+        $email = $request->parameters->getString('email', '');
+        $subject = $request->parameters->getString('subject', '');
+        $content = $request->parameters->getString('content', '');
 
         $message = new models\Message($email, $subject, $content);
-        $errors = $message->validate();
-        if ($errors) {
+        if (!$message->validate()) {
             return Response::badRequest('home/contact.phtml', [
                 'email' => $email,
                 'subject' => $subject,
                 'content' => $content,
-                'errors' => $errors,
+                'errors' => $message->errors(),
             ]);
         }
 
         // The website input is just a trap for bots, don't fill it!
-        $honeypot = $request->param('website');
+        $honeypot = $request->parameters->getString('website');
         if (!$honeypot) {
             $bileto = new services\Bileto();
 
