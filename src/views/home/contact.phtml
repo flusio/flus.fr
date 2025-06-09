@@ -83,10 +83,10 @@
                          action="<?= url('send contact message') ?>#formulaire"
                          class="flow flow--large"
                      >
-                        <?php if (isset($errors['_'])): ?>
+                         <?php if ($form->isInvalid('@base')): ?>
                             <p class="form-group__error">
                                 Erreur&nbsp;:
-                                <?= $errors['_'] ?>
+                                <?= $form->error('@base') ?>
                             </p>
                         <?php endif; ?>
 
@@ -100,10 +100,10 @@
                                 dont vous voulez me parler.
                             </p>
 
-                            <?php if (isset($errors['subject'])): ?>
+                            <?php if ($form->isInvalid('subject')): ?>
                                 <p class="form-group__error" id="subject-error">
                                     Erreur&nbsp;:
-                                    <?= $errors['subject'] ?>
+                                    <?= $form->error('subject') ?>
                                 </p>
                             <?php endif; ?>
 
@@ -111,9 +111,9 @@
                                 id="subject"
                                 name="subject"
                                 type="text"
-                                value="<?= $subject ?>"
+                                value="<?= $form->subject ?>"
                                 required
-                                <?php if (isset($errors['subject'])): ?>
+                                <?php if ($form->isInvalid('subject')): ?>
                                     aria-invalid="true"
                                     aria-errormessage="subject-error"
                                 <?php endif; ?>
@@ -125,10 +125,10 @@
                                 Votre message
                             </label>
 
-                            <?php if (isset($errors['content'])): ?>
+                            <?php if ($form->isInvalid('content')): ?>
                                 <p class="form-group__error" id="content-error">
                                     Erreur&nbsp;:
-                                    <?= $errors['content'] ?>
+                                    <?= $form->error('content') ?>
                                 </p>
                             <?php endif; ?>
 
@@ -136,11 +136,11 @@
                                 id="content"
                                 name="content"
                                 required
-                                <?php if (isset($errors['content'])): ?>
+                                <?php if ($form->isInvalid('content')): ?>
                                     aria-invalid="true"
                                     aria-errormessage="content-error"
                                 <?php endif; ?>
-                            ><?= $content ?></textarea>
+                            ><?= $form->content ?></textarea>
                         </div>
 
                         <div class="flow flow--small">
@@ -153,10 +153,10 @@
                                 au-delà de notre échange.
                             </p>
 
-                            <?php if (isset($errors['email'])): ?>
+                            <?php if ($form->isInvalid('email')): ?>
                                 <p class="form-group__error" id="email-error">
                                     Erreur&nbsp;:
-                                    <?= $errors['email'] ?>
+                                    <?= $form->error('email') ?>
                                 </p>
                             <?php endif; ?>
 
@@ -164,9 +164,9 @@
                                 id="email"
                                 name="email"
                                 type="email"
-                                value="<?= $email ?>"
+                                value="<?= $form->email ?>"
                                 required
-                                <?php if (isset($errors['email'])): ?>
+                                <?php if ($form->isInvalid('email')): ?>
                                     aria-invalid="true"
                                     aria-errormessage="email-error"
                                 <?php endif; ?>
@@ -187,7 +187,7 @@
                                 id="website"
                                 name="website"
                                 type="text"
-                                value=""
+                                value="<?= $form->website ?>"
                             />
                         </div>
 
@@ -196,6 +196,8 @@
                                 Envoyer votre message
                             </button>
                         </div>
+
+                        <input type="hidden" name="csrf_token" value="<?= $form->csrfToken() ?>">
                     </form>
                 <?php endif; ?>
 

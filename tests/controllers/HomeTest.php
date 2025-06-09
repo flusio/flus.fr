@@ -2,11 +2,14 @@
 
 namespace Website\controllers;
 
+use Website\forms;
+
 class HomeTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\FakerHelper;
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\ApplicationHelper;
+    use \Minz\Tests\CsrfHelper;
     use \Minz\Tests\ResponseAsserts;
     use \Minz\Tests\MailerAsserts;
 
@@ -71,6 +74,7 @@ class HomeTest extends \PHPUnit\Framework\TestCase
             'email' => $email,
             'subject' => $subject,
             'content' => $content,
+            'csrf_token' => $this->csrfToken(forms\Contact::class),
         ]);
 
         $this->assertResponseCode($response, 200);
@@ -91,6 +95,7 @@ class HomeTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('POST', '/contact', [
             'subject' => $this->fake('sentence'),
             'content' => implode("\n", $this->fake('paragraphs')),
+            'csrf_token' => $this->csrfToken(forms\Contact::class),
         ]);
 
         $this->assertResponseCode($response, 400);
@@ -105,6 +110,7 @@ class HomeTest extends \PHPUnit\Framework\TestCase
             'email' => $this->fake('word'),
             'subject' => $this->fake('sentence'),
             'content' => implode("\n", $this->fake('paragraphs')),
+            'csrf_token' => $this->csrfToken(forms\Contact::class),
         ]);
 
         $this->assertResponseCode($response, 400);
@@ -118,6 +124,7 @@ class HomeTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('POST', '/contact', [
             'email' => $this->fake('email'),
             'content' => implode("\n", $this->fake('paragraphs')),
+            'csrf_token' => $this->csrfToken(forms\Contact::class),
         ]);
 
         $this->assertResponseCode($response, 400);
@@ -131,6 +138,7 @@ class HomeTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('POST', '/contact', [
             'email' => $this->fake('email'),
             'subject' => $this->fake('sentence'),
+            'csrf_token' => $this->csrfToken(forms\Contact::class),
         ]);
 
         $this->assertResponseCode($response, 400);
@@ -148,10 +156,26 @@ class HomeTest extends \PHPUnit\Framework\TestCase
             'subject' => $this->fake('sentence'),
             'content' => implode("\n", $this->fake('paragraphs')),
             'website' => $this->fake('url'),
+            'csrf_token' => $this->csrfToken(forms\Contact::class),
         ]);
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseContains($response, 'Votre message a bien été envoyé.');
+        $this->assertResponseTemplateName($response, 'home/contact.phtml');
+        $this->assertEmailsCount(0);
+    }
+
+    public function testSendContactMessageFailsIfCsrfTokenIsInvalid(): void
+    {
+        $response = $this->appRun('POST', '/contact', [
+            'email' => $this->fake('email'),
+            'subject' => $this->fake('sentence'),
+            'content' => implode("\n", $this->fake('paragraphs')),
+            'csrf_token' => 'not a token',
+        ]);
+
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'Une vérification de sécurité a échoué');
         $this->assertResponseTemplateName($response, 'home/contact.phtml');
         $this->assertEmailsCount(0);
     }

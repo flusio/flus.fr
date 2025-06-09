@@ -4,6 +4,7 @@ namespace Website\controllers;
 
 use Minz\Request;
 use Minz\Response;
+use Website\forms;
 use Website\mailers;
 use Website\models;
 use Website\services;
@@ -88,32 +89,33 @@ class Home
             $email = $account->email ?? '';
         }
 
-        return Response::ok('home/contact.phtml', [
+        $form = new forms\Contact([
             'email' => $email,
             'subject' => $request->parameters->getString('subject', ''),
-            'content' => '',
+        ]);
+
+        return Response::ok('home/contact.phtml', [
+            'form' => $form,
         ]);
     }
 
     public function sendContactMessage(Request $request): Response
     {
-        $email = $request->parameters->getString('email', '');
-        $subject = $request->parameters->getString('subject', '');
-        $content = $request->parameters->getString('content', '');
+        $message = new models\Message();
+        $form = new forms\Contact(model: $message);
 
-        $message = new models\Message($email, $subject, $content);
-        if (!$message->validate()) {
+        $form->handleRequest($request);
+
+        if (!$form->validate()) {
             return Response::badRequest('home/contact.phtml', [
-                'email' => $email,
-                'subject' => $subject,
-                'content' => $content,
-                'errors' => $message->errors(),
+                'form' => $form,
             ]);
         }
 
+        $message = $form->model();
+
         // The website input is just a trap for bots, don't fill it!
-        $honeypot = $request->parameters->getString('website');
-        if (!$honeypot) {
+        if (!$form->website) {
             $bileto = new services\Bileto();
 
             if ($bileto->isEnabled()) {
@@ -129,22 +131,21 @@ class Home
             }
 
             if (!$result) {
+                $form->addError(
+                    '@base',
+                    'internal_error',
+                    'Une erreur est survenue durant l’envoi de votre message. Veuillez réessayer plus tard.'
+                );
+
                 return Response::badRequest('home/contact.phtml', [
-                    'email' => $email,
-                    'subject' => $subject,
-                    'content' => $content,
-                    'errors' => [
-                        '_' => 'Une erreur est survenue durant l’envoi de votre message. Veuillez réessayer plus tard.',
-                    ],
+                    'form' => $form,
                 ]);
             }
         }
 
         return Response::ok('home/contact.phtml', [
             'message_sent' => true,
-            'email' => $email,
-            'subject' => $subject,
-            'content' => $content,
+            'form' => $form,
         ]);
     }
 
