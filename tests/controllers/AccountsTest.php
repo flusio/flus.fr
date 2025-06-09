@@ -4,6 +4,7 @@ namespace Website\controllers;
 
 use tests\factories\AccountFactory;
 use tests\factories\TokenFactory;
+use Website\forms;
 use Website\models;
 use Website\utils;
 
@@ -16,6 +17,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     use \tests\FakerHelper;
     use \Minz\Tests\InitializerHelper;
     use \Minz\Tests\ApplicationHelper;
+    use \Minz\Tests\CsrfHelper;
     use \Minz\Tests\ResponseAsserts;
     use \Minz\Tests\TimeHelper;
 
@@ -277,10 +279,15 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $user = $this->loginUser();
 
         $response = $this->appRun('POST', '/account/profile', [
-            'csrf' => \Website\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\Profile::class),
+            'entity_type' => 'natural',
             'email' => $email,
             'show_address' => true,
-            'address' => $address,
+            'address_first_name' => $address['first_name'],
+            'address_last_name' => $address['last_name'],
+            'address_address1' => $address['address1'],
+            'address_postcode' => $address['postcode'],
+            'address_city' => $address['city'],
         ]);
 
         $this->assertResponseCode($response, 302, '/account');
@@ -307,11 +314,16 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $address['legal_name'] = $legal_name;
 
         $response = $this->appRun('POST', '/account/profile', [
-            'csrf' => \Website\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\Profile::class),
             'entity_type' => 'legal',
             'email' => $email,
             'show_address' => true,
-            'address' => $address,
+            'address_first_name' => $address['first_name'],
+            'address_last_name' => $address['last_name'],
+            'address_legal_name' => $address['legal_name'],
+            'address_address1' => $address['address1'],
+            'address_postcode' => $address['postcode'],
+            'address_city' => $address['city'],
             'company_vat_number' => $vat_number,
         ]);
 
@@ -335,15 +347,14 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     public function testUpdateProfileAcceptsNoPhysicalAddress(string $email, array $address): void
     {
         $user = $this->loginUser();
-        unset($address['address1']);
-        unset($address['postcode']);
-        unset($address['city']);
 
         $response = $this->appRun('POST', '/account/profile', [
-            'csrf' => \Website\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\Profile::class),
+            'entity_type' => 'natural',
             'email' => $email,
             'show_address' => false,
-            'address' => $address,
+            'address_first_name' => $address['first_name'],
+            'address_last_name' => $address['last_name'],
         ]);
 
         $this->assertResponseCode($response, 302, '/account');
@@ -361,7 +372,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
      * @param AccountAddress $address
      */
     #[\PHPUnit\Framework\Attributes\DataProvider('addressesProvider')]
-    public function testUpdateProfileResetsManagedAccounts(string $email, array $address): void
+    public function testUpdateProfileResetsManagedAccountsIfEntityTypeIsNatural(string $email, array $address): void
     {
         $user = $this->loginUser();
         $managed_account = AccountFactory::create([
@@ -369,10 +380,15 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $response = $this->appRun('POST', '/account/profile', [
-            'csrf' => \Website\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\Profile::class),
+            'entity_type' => 'natural',
             'email' => $email,
             'show_address' => true,
-            'address' => $address,
+            'address_first_name' => $address['first_name'],
+            'address_last_name' => $address['last_name'],
+            'address_address1' => $address['address1'],
+            'address_postcode' => $address['postcode'],
+            'address_city' => $address['city'],
         ]);
 
         $this->assertResponseCode($response, 302, '/account');
@@ -390,10 +406,15 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     public function testUpdateProfileFailsIfNotConnected(string $email, array $address): void
     {
         $response = $this->appRun('POST', '/account/profile', [
-            'csrf' => \Website\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\Profile::class),
+            'entity_type' => 'natural',
             'email' => $email,
             'show_address' => true,
-            'address' => $address,
+            'address_first_name' => $address['first_name'],
+            'address_last_name' => $address['last_name'],
+            'address_address1' => $address['address1'],
+            'address_postcode' => $address['postcode'],
+            'address_city' => $address['city'],
         ]);
 
         $this->assertResponseCode($response, 401);
@@ -408,10 +429,15 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $user = $this->loginUser();
 
         $response = $this->appRun('POST', '/account/profile', [
-            'csrf' => 'not the token',
+            'csrf_token' => 'not the token',
+            'entity_type' => 'natural',
             'email' => $email,
             'show_address' => true,
-            'address' => $address,
+            'address_first_name' => $address['first_name'],
+            'address_last_name' => $address['last_name'],
+            'address_address1' => $address['address1'],
+            'address_postcode' => $address['postcode'],
+            'address_city' => $address['city'],
         ]);
 
         $this->assertResponseCode($response, 400);
@@ -428,10 +454,15 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $email = $this->fake('domainName');
 
         $response = $this->appRun('POST', '/account/profile', [
-            'csrf' => \Website\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\Profile::class),
+            'entity_type' => 'natural',
             'email' => $email,
             'show_address' => true,
-            'address' => $address,
+            'address_first_name' => $address['first_name'],
+            'address_last_name' => $address['last_name'],
+            'address_address1' => $address['address1'],
+            'address_postcode' => $address['postcode'],
+            'address_city' => $address['city'],
         ]);
 
         $this->assertResponseCode($response, 400);
@@ -450,9 +481,15 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $user = $this->loginUser();
 
         $response = $this->appRun('POST', '/account/profile', [
-            'csrf' => \Website\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\Profile::class),
+            'entity_type' => 'natural',
+            'email' => '',
             'show_address' => true,
-            'address' => $address,
+            'address_first_name' => $address['first_name'],
+            'address_last_name' => $address['last_name'],
+            'address_address1' => $address['address1'],
+            'address_postcode' => $address['postcode'],
+            'address_city' => $address['city'],
         ]);
 
         $this->assertResponseCode($response, 400);
@@ -466,13 +503,17 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     public function testUpdateProfileFailsWithMissingFirstName(string $email, array $address): void
     {
         $user = $this->loginUser();
-        unset($address['first_name']);
 
         $response = $this->appRun('POST', '/account/profile', [
-            'csrf' => \Website\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\Profile::class),
+            'entity_type' => 'natural',
             'email' => $email,
             'show_address' => true,
-            'address' => $address,
+            'address_first_name' => '',
+            'address_last_name' => $address['last_name'],
+            'address_address1' => $address['address1'],
+            'address_postcode' => $address['postcode'],
+            'address_city' => $address['city'],
         ]);
 
         $this->assertResponseCode($response, 400);
@@ -486,13 +527,17 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     public function testUpdateProfileFailsWithMissingLastName(string $email, array $address): void
     {
         $user = $this->loginUser();
-        unset($address['last_name']);
 
         $response = $this->appRun('POST', '/account/profile', [
-            'csrf' => \Website\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\Profile::class),
+            'entity_type' => 'natural',
             'email' => $email,
             'show_address' => true,
-            'address' => $address,
+            'address_first_name' => $address['first_name'],
+            'address_last_name' => '',
+            'address_address1' => $address['address1'],
+            'address_postcode' => $address['postcode'],
+            'address_city' => $address['city'],
         ]);
 
         $this->assertResponseCode($response, 400);
@@ -503,16 +548,44 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
      * @param AccountAddress $address
      */
     #[\PHPUnit\Framework\Attributes\DataProvider('addressesProvider')]
+    public function testUpdateProfileFailsWithMissingLegalName(string $email, array $address): void
+    {
+        $user = $this->loginUser();
+
+        $response = $this->appRun('POST', '/account/profile', [
+            'csrf_token' => $this->csrfToken(forms\Profile::class),
+            'entity_type' => 'legal',
+            'email' => $email,
+            'show_address' => true,
+            'address_legal_name' => '',
+            'address_last_name' => $address['last_name'],
+            'address_address1' => $address['address1'],
+            'address_postcode' => $address['postcode'],
+            'address_city' => $address['city'],
+        ]);
+
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'Votre raison sociale est obligatoire');
+    }
+
+    /**
+     * @param AccountAddress $address
+     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('addressesProvider')]
     public function testUpdateProfileFailsWithMissingAddress1(string $email, array $address): void
     {
         $user = $this->loginUser();
-        unset($address['address1']);
 
         $response = $this->appRun('POST', '/account/profile', [
-            'csrf' => \Website\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\Profile::class),
+            'entity_type' => 'natural',
             'email' => $email,
             'show_address' => true,
-            'address' => $address,
+            'address_first_name' => $address['first_name'],
+            'address_last_name' => $address['last_name'],
+            'address_address1' => '',
+            'address_postcode' => $address['postcode'],
+            'address_city' => $address['city'],
         ]);
 
         $this->assertResponseCode($response, 400);
@@ -526,13 +599,17 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     public function testUpdateProfileFailsWithMissingPostcode(string $email, array $address): void
     {
         $user = $this->loginUser();
-        unset($address['postcode']);
 
         $response = $this->appRun('POST', '/account/profile', [
-            'csrf' => \Website\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\Profile::class),
+            'entity_type' => 'natural',
             'email' => $email,
             'show_address' => true,
-            'address' => $address,
+            'address_first_name' => $address['first_name'],
+            'address_last_name' => $address['last_name'],
+            'address_address1' => $address['address1'],
+            'address_postcode' => '',
+            'address_city' => $address['city'],
         ]);
 
         $this->assertResponseCode($response, 400);
@@ -546,13 +623,17 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     public function testUpdateProfileFailsWithMissingCity(string $email, array $address): void
     {
         $user = $this->loginUser();
-        unset($address['city']);
 
         $response = $this->appRun('POST', '/account/profile', [
-            'csrf' => \Website\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\Profile::class),
+            'entity_type' => 'natural',
             'email' => $email,
             'show_address' => true,
-            'address' => $address,
+            'address_first_name' => $address['first_name'],
+            'address_last_name' => $address['last_name'],
+            'address_address1' => $address['address1'],
+            'address_postcode' => $address['postcode'],
+            'address_city' => '',
         ]);
 
         $this->assertResponseCode($response, 400);
@@ -566,13 +647,18 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     public function testUpdateProfileFailsWithInvalidCountry(string $email, array $address): void
     {
         $user = $this->loginUser();
-        $address['country'] = 'invalid';
 
         $response = $this->appRun('POST', '/account/profile', [
-            'csrf' => \Website\Csrf::generate(),
+            'csrf_token' => $this->csrfToken(forms\Profile::class),
+            'entity_type' => 'natural',
             'email' => $email,
             'show_address' => true,
-            'address' => $address,
+            'address_first_name' => $address['first_name'],
+            'address_last_name' => $address['last_name'],
+            'address_address1' => $address['address1'],
+            'address_postcode' => $address['postcode'],
+            'address_city' => $address['city'],
+            'address_country' => 'invalid',
         ]);
 
         $this->assertResponseCode($response, 400);

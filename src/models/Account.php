@@ -62,8 +62,6 @@ class Account
     #[Database\Column]
     public string $entity_type;
 
-    public bool $show_address = false;
-
     #[Database\Column]
     public ?string $address_first_name;
 
@@ -206,88 +204,11 @@ class Account
     }
 
     /**
-     * @param array{
-     *     'first_name'?: string,
-     *     'last_name'?: string,
-     *     'legal_name'?: string,
-     *     'address1'?: string,
-     *     'postcode'?: string,
-     *     'city'?: string,
-     *     'country'?: CountryCode,
-     * } $address
-     */
-    public function setAddress(array $address): void
-    {
-        $this->address_first_name = trim($address['first_name'] ?? '');
-        $this->address_last_name = trim($address['last_name'] ?? '');
-        $this->address_legal_name = trim($address['legal_name'] ?? '');
-        $this->address_address1 = trim($address['address1'] ?? '');
-        $this->address_postcode = trim($address['postcode'] ?? '');
-        $this->address_city = trim($address['city'] ?? '');
-        $this->address_country = $address['country'] ?? 'FR';
-    }
-
-    /**
      * Return whether the user needs to set its address or not.
      */
     public function mustSetAddress(): bool
     {
         return !$this->address_first_name && !$this->address_legal_name;
-    }
-
-    #[Validable\Check]
-    public function checkAddress(): void
-    {
-        $address = $this->address();
-        if ($this->entity_type === 'natural') {
-            if (!$address['first_name']) {
-                $this->addError(
-                    'address_first_name',
-                    'missing_first_name',
-                    'Votre prénom est obligatoire.'
-                );
-            }
-
-            if (!$address['last_name']) {
-                $this->addError(
-                    'address_last_name',
-                    'missing_last_name',
-                    'Votre nom est obligatoire.'
-                );
-            }
-        } elseif (!$address['legal_name']) {
-            $this->addError(
-                'address_legal_name',
-                'missing_legal_name',
-                'Votre raison sociale est obligatoire.'
-            );
-        }
-
-        if ($this->show_address) {
-            if (!$address['address1']) {
-                $this->addError(
-                    'address_address1',
-                    'invalid_address',
-                    'Votre adresse est incomplète.'
-                );
-            }
-
-            if (!$address['postcode']) {
-                $this->addError(
-                    'address_postcode',
-                    'invalid_address',
-                    'Votre adresse est incomplète.'
-                );
-            }
-
-            if (!$address['city']) {
-                $this->addError(
-                    'address_city',
-                    'invalid_address',
-                    'Votre adresse est incomplète.'
-                );
-            }
-        }
     }
 
     /**

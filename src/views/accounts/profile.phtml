@@ -39,10 +39,10 @@
             class="flow flow--large"
             data-controller="profile"
         >
-            <?php if ($error): ?>
-                <p class="form__error">
+            <?php if ($form->isInvalid('@base')): ?>
+                <p class="form-group__error">
                     Erreur&nbsp;:
-                    <?= $error ?>
+                    <?= $form->error('@base') ?>
                 </p>
             <?php endif; ?>
 
@@ -57,7 +57,7 @@
                         name="entity_type"
                         value="natural"
                         type="radio"
-                        <?= $entity_type === 'natural' ? 'checked' : '' ?>
+                        <?= $form->entity_type === 'natural' ? 'checked' : '' ?>
                         <?= $count_managed_accounts > 0 ? 'disabled' : '' ?>
                         data-action="profile#switchEntityType"
                     />
@@ -73,7 +73,7 @@
                         name="entity_type"
                         value="legal"
                         type="radio"
-                        <?= $entity_type === 'legal' ? 'checked' : '' ?>
+                        <?= $form->entity_type === 'legal' ? 'checked' : '' ?>
                         data-action="profile#switchEntityType"
                     />
 
@@ -88,10 +88,10 @@
                     Adresse courriel
                 </label>
 
-                <?php if (isset($errors['email'])): ?>
+                <?php if ($form->isInvalid('email')): ?>
                     <p class="form-group__error" id="email-error">
                         Erreur&nbsp;:
-                        <?= $errors['email'] ?>
+                        <?= $form->error('email') ?>
                     </p>
                 <?php endif; ?>
 
@@ -99,9 +99,9 @@
                     id="email"
                     name="email"
                     type="email"
-                    value="<?= $email ?>"
+                    value="<?= $form->email ?>"
                     required
-                    <?php if (isset($errors['email'])): ?>
+                    <?php if ($form->isInvalid('email')): ?>
                         aria-invalid="true"
                         aria-errormessage="email-error"
                     <?php endif; ?>
@@ -115,21 +115,21 @@
                             Prénom
                         </label>
 
-                        <?php if (isset($errors['address_first_name'])): ?>
+                        <?php if ($form->isInvalid('address_first_name')): ?>
                             <p class="form-group__error" id="first-name-error">
                                 Erreur&nbsp;:
-                                <?= $errors['address_first_name'] ?>
+                                <?= $form->error('address_first_name') ?>
                             </p>
                         <?php endif; ?>
 
                         <input
                             id="first-name"
-                            name="address[first_name]"
+                            name="address_first_name"
                             type="text"
-                            value="<?= $address['first_name'] ?>"
+                            value="<?= $form->address_first_name ?>"
                             required
                             data-target="profile.firstName"
-                            <?php if (isset($errors['address_first_name'])): ?>
+                            <?php if ($form->isInvalid('address_first_name')): ?>
                                 aria-invalid="true"
                                 aria-errormessage="first-name-error"
                             <?php endif; ?>
@@ -141,21 +141,21 @@
                             Nom
                         </label>
 
-                        <?php if (isset($errors['address_last_name'])): ?>
+                        <?php if ($form->isInvalid('address_last_name')): ?>
                             <p class="form-group__error" id="last-name-error">
                                 Erreur&nbsp;:
-                                <?= $errors['address_last_name'] ?>
+                                <?= $form->error('address_last_name') ?>
                             </p>
                         <?php endif; ?>
 
                         <input
                             id="last-name"
-                            name="address[last_name]"
+                            name="address_last_name"
                             type="text"
-                            value="<?= $address['last_name'] ?>"
+                            value="<?= $form->address_last_name ?>"
                             required
                             data-target="profile.lastName"
-                            <?php if (isset($errors['address_last_name'])): ?>
+                            <?php if ($form->isInvalid('address_last_name')): ?>
                                 aria-invalid="true"
                                 aria-errormessage="last-name-error"
                             <?php endif; ?>
@@ -170,21 +170,21 @@
                         Raison sociale
                     </label>
 
-                    <?php if (isset($errors['address_legal_name'])): ?>
+                    <?php if ($form->isInvalid('address_legal_name')): ?>
                         <p class="form-group__error" id="legal-name-error">
                             Erreur&nbsp;:
-                            <?= $errors['address_legal_name'] ?>
+                            <?= $form->error('address_legal_name') ?>
                         </p>
                     <?php endif; ?>
 
                     <input
                         id="legal-name"
-                        name="address[legal_name]"
+                        name="address_legal_name"
                         type="text"
-                        value="<?= $address['legal_name'] ?>"
+                        value="<?= $form->address_legal_name ?>"
                         required
                         data-target="profile.legalName"
-                        <?php if (isset($errors['address_legal_name'])): ?>
+                        <?php if ($form->isInvalid('address_legal_name')): ?>
                             aria-invalid="true"
                             aria-errormessage="legal-name-error"
                         <?php endif; ?>
@@ -196,10 +196,10 @@
                         Numéro de <abbr>TVA</abbr> (optionel)
                     </label>
 
-                    <?php if (isset($errors['company_vat_number'])): ?>
+                    <?php if ($form->isInvalid('company_vat_number')): ?>
                         <p class="form-group__error" id="company-vat-number-error">
                             Erreur&nbsp;:
-                            <?= $errors['company_vat_number'] ?>
+                            <?= $form->error('company_vat_number') ?>
                         </p>
                     <?php endif; ?>
 
@@ -209,8 +209,8 @@
                         type="text"
                         minlength="10"
                         maxlength="20"
-                        value="<?= $company_vat_number ?>"
-                        <?php if (isset($errors['company_vat_number'])): ?>
+                        value="<?= $form->company_vat_number ?>"
+                        <?php if ($form->isInvalid('company_vat_number')): ?>
                             aria-invalid="true"
                             aria-errormessage="company-vat-number-error"
                         <?php endif; ?>
@@ -225,7 +225,7 @@
                     type="checkbox"
                     data-action="profile#switchAddress"
                     data-target="profile.controlAddress"
-                    <?= $show_address ? 'checked' : '' ?>
+                    <?= $form->show_address ? 'checked' : '' ?>
                 />
 
                 <label for="show-address">
@@ -242,19 +242,19 @@
                             Adresse
                         </label>
 
-                        <?php if (isset($errors['address_address1'])): ?>
+                        <?php if ($form->isInvalid('address_address1')): ?>
                             <p class="form-group__error" id="address1-error">
                                 Erreur&nbsp;:
-                                <?= $errors['address_address1'] ?>
+                                <?= $form->error('address_address1') ?>
                             </p>
                         <?php endif; ?>
 
                         <input
                             id="address1"
-                            name="address[address1]"
+                            name="address_address1"
                             type="text"
-                            value="<?= $address['address1'] ?>"
-                            <?php if (isset($errors['address_address1'])): ?>
+                            value="<?= $form->address_address1 ?>"
+                            <?php if ($form->isInvalid('address_address1')): ?>
                                 aria-invalid="true"
                                 aria-errormessage="address1-error"
                             <?php endif; ?>
@@ -267,19 +267,19 @@
                                 Code postal
                             </label>
 
-                            <?php if (isset($errors['address_postcode'])): ?>
+                            <?php if ($form->isInvalid('address_postcode')): ?>
                                 <p class="form-group__error" id="postcode-error">
                                     Erreur&nbsp;:
-                                    <?= $errors['address_postcode'] ?>
+                                    <?= $form->error('address_postcode') ?>
                                 </p>
                             <?php endif; ?>
 
                             <input
                                 id="postcode"
-                                name="address[postcode]"
+                                name="address_postcode"
                                 type="text"
-                                value="<?= $address['postcode'] ?>"
-                                <?php if (isset($errors['address_postcode'])): ?>
+                                value="<?= $form->address_postcode ?>"
+                                <?php if ($form->isInvalid('address_postcode')): ?>
                                     aria-invalid="true"
                                     aria-errormessage="postcode-error"
                                 <?php endif; ?>
@@ -291,19 +291,19 @@
                                 Ville
                             </label>
 
-                            <?php if (isset($errors['address_city'])): ?>
+                            <?php if ($form->isInvalid('address_city')): ?>
                                 <p class="form-group__error" id="city-error">
                                     Erreur&nbsp;:
-                                    <?= $errors['address_city'] ?>
+                                    <?= $form->error('address_city') ?>
                                 </p>
                             <?php endif; ?>
 
                             <input
                                 id="city"
-                                name="address[city]"
+                                name="address_city"
                                 type="text"
-                                value="<?= $address['city'] ?>"
-                                <?php if (isset($errors['address_city'])): ?>
+                                value="<?= $form->address_city ?>"
+                                <?php if ($form->isInvalid('address_city')): ?>
                                     aria-invalid="true"
                                     aria-errormessage="city-error"
                                 <?php endif; ?>
@@ -316,25 +316,25 @@
                             Pays
                         </label>
 
-                        <?php if (isset($errors['address_country'])): ?>
+                        <?php if ($form->isInvalid('address_country')): ?>
                             <p class="form-group__error" id="country-error">
                                 Erreur&nbsp;:
-                                <?= $errors['address_country'] ?>
+                                <?= $form->error('address_country') ?>
                             </p>
                         <?php endif; ?>
 
                         <select
                             id="country"
-                            name="address[country]"
-                            <?php if (isset($errors['address_country'])): ?>
+                            name="address_country"
+                            <?php if ($form->isInvalid('address_country')): ?>
                                 aria-invalid="true"
                                 aria-errormessage="country-error"
                             <?php endif; ?>
                         >
-                            <?php foreach ($countries as $code => $label): ?>
+                            <?php foreach ($form->countries() as $code => $label): ?>
                                 <option
                                     value="<?= $code ?>"
-                                    <?= $address['country'] === $code ? 'selected' : '' ?>
+                                    <?= $form->address_country === $code ? 'selected' : '' ?>
                                 >
                                     <?= $label ?>
                                 </option>
@@ -350,7 +350,7 @@
                 </button>
             </div>
 
-            <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+            <input type="hidden" name="csrf_token" value="<?= $form->csrfToken() ?>" />
         </form>
 
         <?php if (!$account->isFree()): ?>

@@ -4,6 +4,7 @@ namespace Website\controllers;
 
 use Minz\Request;
 use Minz\Response;
+use Website\forms;
 use Website\models;
 use Website\services;
 use Website\utils;
@@ -119,14 +120,11 @@ class Accounts
             return Response::unauthorized('accounts/blocked.phtml');
         }
 
+        $form = new forms\Profile(model: $account);
+
         return Response::ok('accounts/profile.phtml', [
             'account' => $account,
-            'email' => $account->email,
-            'entity_type' => $account->entity_type,
-            'show_address' => false,
-            'address' => $account->address(),
-            'company_vat_number' => $account->company_vat_number,
-            'countries' => utils\Countries::listSorted(),
+            'form' => $form,
         ]);
     }
 
@@ -154,66 +152,27 @@ class Accounts
             return Response::unauthorized('accounts/blocked.phtml');
         }
 
-        $email = $request->parameters->getString('email', '');
-        $entity_type = $request->parameters->getString('entity_type', 'natural');
-        $company_vat_number = $request->parameters->getString('company_vat_number', '');
-        $address = $request->parameters->getArray('address', $account->address());
-        $show_address = $request->parameters->getBoolean('show_address', false);
+        $form = new forms\Profile(model: $account);
 
-        if ($entity_type === 'natural') {
-            $company_vat_number = '';
-            $address['legal_name'] = '';
-        } else {
-            $show_address = true;
-            $address['first_name'] = '';
-            $address['last_name'] = '';
-        }
+        $form->handleRequest($request);
 
-        if (!$show_address) {
-            $address['address1'] = '';
-            $address['postcode'] = '';
-            $address['city'] = '';
-        }
-
-        $account->email = $email;
-        $account->entity_type = $entity_type;
-        $account->show_address = $show_address;
-        $account->setAddress($address);
-        $account->company_vat_number = $company_vat_number;
-
-        if (!$account->validate()) {
+        if (!$form->validate()) {
             return Response::badRequest('accounts/profile.phtml', [
                 'account' => $account,
-                'email' => $email,
-                'entity_type' => $entity_type,
-                'show_address' => $show_address,
-                'address' => $address,
-                'company_vat_number' => $company_vat_number,
-                'countries' => utils\Countries::listSorted(),
-                'errors' => $account->errors(),
+                'form' => $form,
             ]);
         }
 
-        if (!\Website\Csrf::validate($request->parameters->getString('csrf', ''))) {
-            return Response::badRequest('accounts/profile.phtml', [
-                'account' => $account,
-                'email' => $email,
-                'entity_type' => $entity_type,
-                'show_address' => $show_address,
-                'address' => $address,
-                'company_vat_number' => $company_vat_number,
-                'countries' => utils\Countries::listSorted(),
-                'error' => 'Une vérification de sécurité a échoué, veuillez réessayer de soumettre le formulaire.',
-            ]);
-        }
-
+        $account = $form->model();
         $account->save();
 
-        // Stop managing accounts.
-        $managed_accounts = $account->managedAccounts();
-        foreach ($managed_accounts as $managed_account) {
-            $managed_account->managed_by_id = null;
-            $managed_account->save();
+        if ($account->entity_type === 'natural') {
+            // Stop managing accounts.
+            $managed_accounts = $account->managedAccounts();
+            foreach ($managed_accounts as $managed_account) {
+                $managed_account->managed_by_id = null;
+                $managed_account->save();
+            }
         }
 
         return Response::redirect('account');
