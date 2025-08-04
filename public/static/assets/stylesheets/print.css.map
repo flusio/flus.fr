@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../../../src/assets/stylesheets/print.css"],
+  "sourcesContent": ["body {\n    font-family: sans-serif;\n}\n\nh1 {\n    text-align: center;\n}\n\ntable {\n    width: 100%;\n    max-width: 1200px;\n    margin: auto;\n\n    font-size: 90%;\n\n    border: 1px solid black;\n    border-collapse: collapse;\n}\n\n.cell {\n    padding: 5px;\n\n    border: 1px solid black;\n}\n\n.cell--date {\n    width: 90px;\n}\n\n.cell--ref {\n    width: 110px;\n}\n\n.cell--nature {\n    width: 100px;\n}\n\n.cell--amount {\n    width: 50px;\n}\n\ntd.cell--amount {\n    text-align: right;\n}\n\n.cell--type {\n    width: 90px;\n}\n"],
+  "mappings": "AAAA,KACI,YAAa,UACjB,CAEA,GACI,WAAY,MAChB,CAEA,MACI,MAAO,KACP,UAAW,OAVf,OAWY,KAER,UAAW,IAEX,OAAQ,IAAI,MAAM,MAClB,gBAAiB,QACrB,CAEA,CAAC,KAnBD,QAoBa,IAET,OAAQ,IAAI,MAAM,KACtB,CAEA,CAAC,WACG,MAAO,IACX,CAEA,CAAC,UACG,MAAO,KACX,CAEA,CAAC,aACG,MAAO,KACX,CAEA,CAAC,aACG,MAAO,IACX,CAEA,EAAE,CAJD,aAKG,WAAY,KAChB,CAEA,CAAC,WACG,MAAO,IACX",
+  "names": []
+}

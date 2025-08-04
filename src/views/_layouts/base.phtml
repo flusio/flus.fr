@@ -13,9 +13,8 @@
         <link rel="alternate" href="<?= url_full('home') ?>carnet/feeds/all.atom.xml" type="application/atom+xml" title="Articles du carnet de flus" />
         <link rel="shortcut icon" href="<?= url_static('favicon-32px.png') ?>">
 
-        <link rel="stylesheet" href="<?= url_static('style/main.css') ?>">
-        <script src="<?= url_static('js/stimulus.min.js') ?>" defer></script>
-        <script src="<?= url_static('js/main.js') ?>" defer></script>
+        <link rel="stylesheet" href="<?= url_static('assets/stylesheets/application.css') ?>">
+        <script src="<?= url_static('assets/javascripts/application.js') ?>" defer></script>
 
         <?php if ($plausible_url): ?>
             <script src="<?= $plausible_url ?>/js/script.js" defer data-domain="<?= $current_host ?>"></script>

@@ -1,0 +1,18 @@
+{
+  "name": "flus.fr",
+  "license": "AGPL-3.0-or-later",
+  "repository": "github:flusio/flus.fr",
+  "type": "module",
+  "scripts": {
+    "watch": "esbuild --bundle --loader:.woff2=file --loader:.svg=file --sourcemap --outdir=public/static/assets --watch=forever --minify src/assets/*/application.* src/assets/stylesheets/print.css src/assets/stylesheets/stripe_redirection.css"
+  },
+  "alias": {
+    "js": "./src/assets/javascripts"
+  },
+  "devDependencies": {
+    "esbuild": "0.25.8"
+  },
+  "dependencies": {
+    "@hotwired/stimulus": "^3.2.0"
+  }
+}

@@ -27,6 +27,15 @@ services:
             - ../..:/var/www/html:z
             - ./nginx.conf:/etc/nginx/conf.d/default.conf:z
 
+    bundler:
+        image: node:22-alpine
+        restart: unless-stopped
+        command: npm run watch
+        working_dir: /app
+        volumes:
+            - ../..:/app:z
+        user: $USER
+
     mailpit:
         image: axllent/mailpit
         restart: unless-stopped
