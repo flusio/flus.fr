@@ -1,3 +1,6 @@
+import 'altcha';
+import 'altcha/i18n/fr-fr';
+
 import { Application, Controller } from '@hotwired/stimulus';
 
 const application = Application.start();

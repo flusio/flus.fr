@@ -32,6 +32,8 @@ class Router
         $router->addRoute('GET', '/politique-confidentialite', 'Legals#privacyPolicy', 'privacy policy');
         $router->addRoute('GET', '/politique-cookies', 'Legals#cookiesPolicy', 'cookies policy');
 
+        $router->addRoute('GET', '/altcha', 'Altcha#show', 'altcha');
+
         // Deprecated
         $router->addRoute('GET', '/projet', 'Home#project', 'project');
         $router->addRoute('GET', '/visite', 'Home#tour', 'tour');

@@ -173,22 +173,8 @@
                             />
                         </div>
 
-                        <div class="flow flow--small" hidden>
-                            <label class="text--big" for="website">
-                                Votre site Internet
-                            </label>
-
-                            <p class="form-group__caption">
-                                En vérité, vous ne devriez sans doute pas remplir ce
-                                champ&nbsp;: il s’agit d’un piège à robots.
-                            </p>
-
-                            <input
-                                id="website"
-                                name="website"
-                                type="text"
-                                value="<?= $form->website ?>"
-                            />
+                        <div>
+                            <altcha-widget challengeurl="<?= url('altcha') ?>"></altcha-widget>
                         </div>
 
                         <div class="text--center">

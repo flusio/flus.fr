@@ -2,6 +2,7 @@
 
 namespace Website\controllers;
 
+use AltchaOrg;
 use Website\forms;
 
 class HomeTest extends \PHPUnit\Framework\TestCase
@@ -74,6 +75,7 @@ class HomeTest extends \PHPUnit\Framework\TestCase
             'email' => $email,
             'subject' => $subject,
             'content' => $content,
+            'altcha' => $this->altchaPayload(),
             'csrf_token' => $this->csrfToken(forms\Contact::class),
         ]);
 
@@ -95,6 +97,7 @@ class HomeTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('POST', '/contact', [
             'subject' => $this->fake('sentence'),
             'content' => implode("\n", $this->fake('paragraphs')),
+            'altcha' => $this->altchaPayload(),
             'csrf_token' => $this->csrfToken(forms\Contact::class),
         ]);
 
@@ -110,6 +113,7 @@ class HomeTest extends \PHPUnit\Framework\TestCase
             'email' => $this->fake('word'),
             'subject' => $this->fake('sentence'),
             'content' => implode("\n", $this->fake('paragraphs')),
+            'altcha' => $this->altchaPayload(),
             'csrf_token' => $this->csrfToken(forms\Contact::class),
         ]);
 
@@ -124,6 +128,7 @@ class HomeTest extends \PHPUnit\Framework\TestCase
         $response = $this->appRun('POST', '/contact', [
             'email' => $this->fake('email'),
             'content' => implode("\n", $this->fake('paragraphs')),
+            'altcha' => $this->altchaPayload(),
             'csrf_token' => $this->csrfToken(forms\Contact::class),
         ]);
 
@@ -147,20 +152,18 @@ class HomeTest extends \PHPUnit\Framework\TestCase
         $this->assertEmailsCount(0);
     }
 
-    public function testSendContactMessageFailsIfWebsiteIsPresent(): void
+    public function testSendContactMessageFailsIfAltchaIsInvalid(): void
     {
-        // The website parameter MUST NOT be sent: it’s a trap for the bots.
-        // The field is hidden with CSS so people don't fill it.
         $response = $this->appRun('POST', '/contact', [
             'email' => $this->fake('email'),
             'subject' => $this->fake('sentence'),
             'content' => implode("\n", $this->fake('paragraphs')),
-            'website' => $this->fake('url'),
+            'altcha' => $this->altchaPayload(valid: false),
             'csrf_token' => $this->csrfToken(forms\Contact::class),
         ]);
 
-        $this->assertResponseCode($response, 200);
-        $this->assertResponseContains($response, 'Votre message a bien été envoyé.');
+        $this->assertResponseCode($response, 400);
+        $this->assertResponseContains($response, 'Le captcha est invalide');
         $this->assertResponseTemplateName($response, 'home/contact.phtml');
         $this->assertEmailsCount(0);
     }
@@ -171,6 +174,7 @@ class HomeTest extends \PHPUnit\Framework\TestCase
             'email' => $this->fake('email'),
             'subject' => $this->fake('sentence'),
             'content' => implode("\n", $this->fake('paragraphs')),
+            'altcha' => $this->altchaPayload(),
             'csrf_token' => 'not a token',
         ]);
 
@@ -194,5 +198,30 @@ class HomeTest extends \PHPUnit\Framework\TestCase
 
         $this->assertResponseCode($response, 200);
         $this->assertResponseTemplateName($response, 'home/security.txt');
+    }
+
+    private function altchaPayload(bool $valid = true): string
+    {
+        $altcha = new AltchaOrg\Altcha\Altcha(\Minz\Configuration::$secret_key);
+        $challenge = $altcha->createChallenge();
+
+        $solution = $altcha->solveChallenge(
+            $challenge->challenge,
+            $challenge->salt,
+            AltchaOrg\Altcha\Hasher\Algorithm::from($challenge->algorithm),
+            $challenge->maxNumber
+        );
+
+        assert($solution !== null);
+
+        $payload = [
+            'algorithm' => $challenge->algorithm,
+            'challenge' => $challenge->challenge,
+            'salt' => $challenge->salt,
+            'signature' => $challenge->signature,
+            'number' => $valid ? $solution->number : 42,
+        ];
+
+        return base64_encode(json_encode($payload) ?: '');
     }
 }

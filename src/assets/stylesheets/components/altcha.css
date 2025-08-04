@@ -1,0 +1,20 @@
+:root {
+  --altcha-border-width: 1px;
+  --altcha-border-radius: var(--border-radius);
+  --altcha-color-base: var(--color-white);
+  --altcha-color-border: var(--color-gable);
+  --altcha-color-text: currentcolor;
+  --altcha-color-border-focus: currentcolor;
+  --altcha-color-error-text: var(--color-red-persian);
+  --altcha-max-width: 300px;
+}
+
+.altcha-label {
+    font-weight: normal;
+}
+
+.altcha-checkbox input[type="checkbox"] {
+    position: static;
+    overflow: visible;
+    clip: unset;
+}

@@ -2,6 +2,7 @@
 
 namespace Website\controllers;
 
+use Minz\Controller;
 use Minz\Request;
 use Minz\Response;
 use Website\forms;
@@ -114,39 +115,46 @@ class Home
 
         $message = $form->model();
 
-        // The website input is just a trap for bots, don't fill it!
-        if (!$form->website) {
-            $bileto = new services\Bileto();
+        $bileto = new services\Bileto();
 
-            if ($bileto->isEnabled()) {
-                $result = $bileto->sendMessage($message);
-            } else {
-                $mailer = new mailers\Support();
-                try {
-                    $result = $mailer->sendMessage($message);
-                } catch (\Minz\Errors\MailerError $e) {
-                    \Minz\Log::error($e->getMessage());
-                    $result = false;
-                }
+        if ($bileto->isEnabled()) {
+            $result = $bileto->sendMessage($message);
+        } else {
+            $mailer = new mailers\Support();
+            try {
+                $result = $mailer->sendMessage($message);
+            } catch (\Minz\Errors\MailerError $e) {
+                \Minz\Log::error($e->getMessage());
+                $result = false;
             }
+        }
 
-            if (!$result) {
-                $form->addError(
-                    '@base',
-                    'internal_error',
-                    'Une erreur est survenue durant l’envoi de votre message. Veuillez réessayer plus tard.'
-                );
+        if (!$result) {
+            $form->addError(
+                '@base',
+                'internal_error',
+                'Une erreur est survenue durant l’envoi de votre message. Veuillez réessayer plus tard.'
+            );
 
-                return Response::badRequest('home/contact.phtml', [
-                    'form' => $form,
-                ]);
-            }
+            return Response::badRequest('home/contact.phtml', [
+                'form' => $form,
+            ]);
         }
 
         return Response::ok('home/contact.phtml', [
             'message_sent' => true,
             'form' => $form,
         ]);
+    }
+
+    #[Controller\AfterAction(only: ['contact', 'sendContactMessage'])]
+    public function setContactCSPHeaders(Request $request, Response $response): void
+    {
+        $response->setContentSecurityPolicy('worker-src', "'self' blob:");
+        $response->setContentSecurityPolicy(
+            'style-src-elem',
+            "'self' 'sha256-pg+oQARqMq4wCazyrsMt8HY89BJkXkEFkwNWxg2iPdg=' 'unsafe-hashes'"
+        );
     }
 
     public function security(Request $request): Response

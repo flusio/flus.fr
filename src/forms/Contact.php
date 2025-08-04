@@ -13,6 +13,8 @@ use Website\models;
  */
 class Contact extends BaseForm
 {
+    use Altcha;
+
     #[Form\Field(transform: '\Minz\Email::sanitize')]
     public string $email = '';
 
@@ -21,7 +23,4 @@ class Contact extends BaseForm
 
     #[Form\Field(transform: 'trim')]
     public string $content = '';
-
-    #[Form\Field(bind: false)]
-    public string $website = '';
 }
