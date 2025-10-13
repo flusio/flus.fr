@@ -126,17 +126,21 @@ class PaymentTest extends \PHPUnit\Framework\TestCase
     public function testContributionPrice(): void
     {
         \Minz\Configuration::$application['financial_goal'] = 200;
-        $account_1 = AccountFactory::create([
-            'expired_at' => \Minz\Time::fromNow(1, 'month'),
-        ]);
-        $account_2 = AccountFactory::create([
-            'expired_at' => \Minz\Time::fromNow(1, 'month'),
-        ]);
+        $account_1 = AccountFactory::create();
+        $account_2 = AccountFactory::create();
         PaymentFactory::create([
             'account_id' => $account_1->id,
+            'created_at' => \Minz\Time::ago(1, 'month'),
+            'type' => 'subscription',
+            'is_paid' => true,
+            'quantity' => 1,
         ]);
         PaymentFactory::create([
             'account_id' => $account_2->id,
+            'created_at' => \Minz\Time::ago(1, 'month'),
+            'type' => 'subscription',
+            'is_paid' => true,
+            'quantity' => 1,
         ]);
 
         $contribution_price = Payment::contributionPrice();
@@ -144,20 +148,49 @@ class PaymentTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(67, $contribution_price);
     }
 
-    public function testContributionPriceExcludesExpiredAccounts(): void
+    public function testContributionPriceCountsQuantity(): void
     {
         \Minz\Configuration::$application['financial_goal'] = 200;
-        $account_1 = AccountFactory::create([
-            'expired_at' => \Minz\Time::fromNow(1, 'month'),
-        ]);
-        $account_2 = AccountFactory::create([
-            'expired_at' => \Minz\Time::ago(1, 'month'),
-        ]);
+        $account_1 = AccountFactory::create();
+        $account_2 = AccountFactory::create();
         PaymentFactory::create([
             'account_id' => $account_1->id,
+            'created_at' => \Minz\Time::ago(1, 'month'),
+            'type' => 'subscription',
+            'is_paid' => true,
+            'quantity' => 2,
         ]);
         PaymentFactory::create([
             'account_id' => $account_2->id,
+            'created_at' => \Minz\Time::ago(1, 'month'),
+            'type' => 'subscription',
+            'is_paid' => true,
+            'quantity' => 1,
+        ]);
+
+        $contribution_price = Payment::contributionPrice();
+
+        $this->assertSame(50, $contribution_price);
+    }
+
+    public function testContributionPriceExcludesPaymentsOlderThanOneYear(): void
+    {
+        \Minz\Configuration::$application['financial_goal'] = 200;
+        $account_1 = AccountFactory::create();
+        $account_2 = AccountFactory::create();
+        PaymentFactory::create([
+            'account_id' => $account_1->id,
+            'created_at' => \Minz\Time::ago(12, 'months'),
+            'type' => 'subscription',
+            'is_paid' => true,
+            'quantity' => 1,
+        ]);
+        PaymentFactory::create([
+            'account_id' => $account_2->id,
+            'created_at' => \Minz\Time::ago(13, 'months'),
+            'type' => 'subscription',
+            'is_paid' => true,
+            'quantity' => 1,
         ]);
 
         $contribution_price = Payment::contributionPrice();
@@ -165,38 +198,24 @@ class PaymentTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(100, $contribution_price);
     }
 
-    public function testContributionPriceExcludesFreeMonthAccounts(): void
+    public function testContributionPriceExcludesUnpaidPayments(): void
     {
         \Minz\Configuration::$application['financial_goal'] = 200;
-        $account_1 = AccountFactory::create([
-            'expired_at' => \Minz\Time::fromNow(1, 'month'),
-        ]);
-        $account_2 = AccountFactory::create([
-            'expired_at' => \Minz\Time::fromNow(1, 'month'),
-        ]);
+        $account_1 = AccountFactory::create();
+        $account_2 = AccountFactory::create();
         PaymentFactory::create([
             'account_id' => $account_1->id,
-        ]);
-
-        $contribution_price = Payment::contributionPrice();
-
-        $this->assertSame(100, $contribution_price);
-    }
-
-    public function testContributionPriceExcludesFreeAccounts(): void
-    {
-        \Minz\Configuration::$application['financial_goal'] = 200;
-        $account_1 = AccountFactory::create([
-            'expired_at' => \Minz\Time::fromNow(1, 'month'),
-        ]);
-        $account_2 = AccountFactory::create([
-            'expired_at' => \Minz\Time::relative('@0'),
-        ]);
-        PaymentFactory::create([
-            'account_id' => $account_1->id,
+            'created_at' => \Minz\Time::ago(1, 'month'),
+            'type' => 'subscription',
+            'is_paid' => true,
+            'quantity' => 1,
         ]);
         PaymentFactory::create([
             'account_id' => $account_2->id,
+            'created_at' => \Minz\Time::ago(1, 'month'),
+            'type' => 'subscription',
+            'is_paid' => false,
+            'quantity' => 1,
         ]);
 
         $contribution_price = Payment::contributionPrice();

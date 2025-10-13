@@ -374,23 +374,27 @@ class Account
     /**
      * Return the number of accounts with an active subscription.
      *
-     * This counts only accounts which already made a payment, in order to
-     * exclude accounts using the first free month.
+     * This actually counts the number of payments made over the past year.
+     * This excludes accounts that are still using the first free month, or
+     * free renewals. By summing the payments' quantities, it also allows to
+     * count subscriptions made for several accounts.
      */
     public static function countActive(): int
     {
         $sql = <<<SQL
-            SELECT COUNT(DISTINCT a.id) FROM accounts a
-            INNER JOIN payments p
-            ON p.account_id = a.id
-            WHERE a.expired_at >= :now
+            SELECT SUM(p.quantity) FROM payments p
+            WHERE p.created_at >= :one_year_ago
+            AND p.type = 'subscription'
+            AND p.is_paid = true
+            AND p.account_id != :support_account
         SQL;
 
-        $now = \Minz\Time::now();
+        $one_year_ago = \Minz\Time::ago(1, 'year');
         $database = Database::get();
         $statement = $database->prepare($sql);
         $statement->execute([
-            'now' => $now->format(Database\Column::DATETIME_FORMAT),
+            'one_year_ago' => $one_year_ago->format(Database\Column::DATETIME_FORMAT),
+            'support_account' => self::defaultAccount()->id,
         ]);
 
         return intval($statement->fetchColumn());
