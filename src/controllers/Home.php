@@ -43,6 +43,7 @@ class Home
 
         $response = Response::ok('home/pricing.phtml', [
             'account' => $account,
+            'count_active_accounts' => models\Account::countActive(),
             'contribution_price' => models\Payment::contributionPrice(),
             'total_revenue' => number_format($total_revenue, 2, ',', '&nbsp;'),
             'revenue_target' => number_format($revenue_target, 0, ',', '&nbsp;'),
