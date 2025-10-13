@@ -141,7 +141,7 @@ class PaymentTest extends \PHPUnit\Framework\TestCase
 
         $contribution_price = Payment::contributionPrice();
 
-        $this->assertSame(66, $contribution_price);
+        $this->assertSame(67, $contribution_price);
     }
 
     public function testContributionPriceExcludesExpiredAccounts(): void

@@ -369,7 +369,7 @@ class Payment
         $min_price = self::MIN_AMOUNT / 100;
         $max_price = self::MAX_AMOUNT / 100;
 
-        $price = intval($financial_goal / $active_accounts);
+        $price = intval(round($financial_goal / $active_accounts));
 
         return max($min_price, min($max_price, $price));
     }
