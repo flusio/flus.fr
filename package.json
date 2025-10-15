@@ -10,7 +10,7 @@
     "js": "./src/assets/javascripts"
   },
   "devDependencies": {
-    "esbuild": "0.25.9"
+    "esbuild": "0.25.11"
   },
   "dependencies": {
     "@hotwired/stimulus": "^3.2.0",

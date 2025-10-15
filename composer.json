@@ -26,7 +26,7 @@
         "ext-pdo": "*",
         "ext-pdo_sqlite": "*",
         "flus/minz": "^2.0",
-        "stripe/stripe-php": "^17.0",
+        "stripe/stripe-php": "^18.0",
         "fpdf/fpdf": "^1.86",
         "altcha-org/altcha": "^1.1"
     },
