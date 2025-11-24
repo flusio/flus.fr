@@ -4,7 +4,6 @@ namespace Website\models;
 
 use Minz\Database;
 use Minz\Validable;
-use Website\utils;
 
 /**
  * A Payment represents a payment by a customer. It allows easy manipulations
@@ -17,6 +16,7 @@ use Website\utils;
 class Payment
 {
     use Database\Recordable;
+    use Database\Resource;
     use Validable;
 
     public const MIN_AMOUNT = 1 * 100;

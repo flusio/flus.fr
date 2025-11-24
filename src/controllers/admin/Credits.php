@@ -21,12 +21,7 @@ class Credits extends BaseController
     {
         auth\CurrentUser::requireAdmin();
 
-        $credited_payment_id = $request->parameters->getString('credited_payment_id', '');
-        $credited_payment = models\Payment::find($credited_payment_id);
-        if (!$credited_payment) {
-            return Response::notFound('not_found.phtml');
-        }
-
+        $credited_payment = models\Payment::requireFromRequest($request, parameter: 'credited_payment_id');
         $already_credited = models\Payment::existsBy([
             'credited_payment_id' => $credited_payment->id,
         ]);
@@ -55,12 +50,7 @@ class Credits extends BaseController
     {
         auth\CurrentUser::requireAdmin();
 
-        $credited_payment_id = $request->parameters->getString('credited_payment_id', '');
-        $credited_payment = models\Payment::find($credited_payment_id);
-        if (!$credited_payment) {
-            return Response::notFound('not_found.phtml');
-        }
-
+        $credited_payment = models\Payment::requireFromRequest($request, parameter: 'credited_payment_id');
         $already_credited = models\Payment::existsBy([
             'credited_payment_id' => $credited_payment->id,
         ]);

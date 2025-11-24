@@ -52,11 +52,7 @@ class Accounts extends BaseController
     {
         auth\CurrentUser::requireAdmin();
 
-        $account_id = $request->parameters->getString('id', '');
-        $account = models\Account::find($account_id);
-        if (!$account) {
-            return Response::notFound('not_found.phtml');
-        }
+        $account = models\Account::requireFromRequest($request);
 
         return Response::ok('admin/accounts/show.phtml', [
             'account' => $account,
@@ -85,11 +81,7 @@ class Accounts extends BaseController
     {
         auth\CurrentUser::requireAdmin();
 
-        $account_id = $request->parameters->getString('id', '');
-        $account = models\Account::find($account_id);
-        if (!$account) {
-            return Response::notFound('not_found.phtml');
-        }
+        $account = models\Account::requireFromRequest($request);
 
         $csrf = $request->parameters->getString('csrf', '');
         $expired_at = $request->parameters->getString('expired-at', '');

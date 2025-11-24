@@ -143,11 +143,7 @@ class Payments extends BaseController
     {
         auth\CurrentUser::requireAdmin();
 
-        $payment_id = $request->parameters->getString('id', '');
-        $payment = models\Payment::find($payment_id);
-        if (!$payment) {
-            return Response::notFound('not_found.phtml');
-        }
+        $payment = models\Payment::requireFromRequest($request);
 
         return Response::ok('admin/payments/show.phtml', [
             'payment' => $payment,
@@ -173,11 +169,7 @@ class Payments extends BaseController
     {
         auth\CurrentUser::requireAdmin();
 
-        $payment_id = $request->parameters->getString('id', '');
-        $payment = models\Payment::find($payment_id);
-        if (!$payment) {
-            return Response::notFound('not_found.phtml');
-        }
+        $payment = models\Payment::requireFromRequest($request);
 
         if ($payment->is_paid) {
             return Response::badRequest('admin/payments/show.phtml', [
@@ -226,11 +218,7 @@ class Payments extends BaseController
     {
         auth\CurrentUser::requireAdmin();
 
-        $payment_id = $request->parameters->getString('id', '');
-        $payment = models\Payment::find($payment_id);
-        if (!$payment) {
-            return Response::notFound('not_found.phtml');
-        }
+        $payment = models\Payment::requireFromRequest($request);
 
         if ($payment->is_paid) {
             return Response::badRequest('admin/payments/show.phtml', [

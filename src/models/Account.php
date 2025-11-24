@@ -26,6 +26,7 @@ use Website\utils;
 class Account
 {
     use Database\Recordable;
+    use Database\Resource;
     use Validable;
 
     #[Database\Column]

@@ -20,4 +20,14 @@ class BaseController
     ): Response {
         return Response::redirect('login');
     }
+
+    #[Controller\ErrorHandler(\Minz\Errors\MissingRecordError::class)]
+    public function showNotFoundOnMissingRecordError(
+        Request $request,
+        \Minz\Errors\MissingRecordError $error,
+    ): Response {
+        return Response::notFound('not_found.phtml', [
+            'error' => $error,
+        ]);
+    }
 }
