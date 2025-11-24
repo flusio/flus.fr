@@ -26,6 +26,7 @@ CREATE TABLE accounts (
     address_city TEXT,
     address_country TEXT,
     company_vat_number TEXT,
+    company_department TEXT,
 
     managed_by_id TEXT,
 

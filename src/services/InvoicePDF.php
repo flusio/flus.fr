@@ -88,6 +88,10 @@ class InvoicePDF extends Fpdf
             $this->customer[] = $address['legal_name'];
         }
 
+        if ($account->company_department) {
+            $this->customer[] = $account->company_department;
+        }
+
         if ($address['address1']) {
             $this->customer[] = $address['address1'];
             $this->customer[] = $address['postcode'] . ' ' . $address['city'];

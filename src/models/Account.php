@@ -90,6 +90,9 @@ class Account
     #[Database\Column]
     public ?string $address_country;
 
+    #[Database\Column]
+    public ?string $company_department = null;
+
     #[Validable\Length(min: 10, max: 20, message: 'Saisissez un numéro de TVA valide.')]
     #[Database\Column]
     public ?string $company_vat_number = null;

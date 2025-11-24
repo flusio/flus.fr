@@ -25,6 +25,9 @@ class Profile extends BaseForm
     #[Form\Field(transform: 'trim')]
     public string $company_vat_number = '';
 
+    #[Form\Field(transform: 'trim')]
+    public string $company_department = '';
+
     #[Form\Field(bind: false)]
     public bool $show_address = false;
 

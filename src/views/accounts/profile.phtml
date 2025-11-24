@@ -192,6 +192,30 @@
                 </div>
 
                 <div class="flow flow--small">
+                    <label for="company-department">
+                        Service destinataire (optionel)
+                    </label>
+
+                    <?php if ($form->isInvalid('company_department')): ?>
+                        <p class="form-group__error" id="company-department-error">
+                            Erreur&nbsp;:
+                            <?= $form->error('company_department') ?>
+                        </p>
+                    <?php endif; ?>
+
+                    <input
+                        id="company-department"
+                        name="company_department"
+                        type="text"
+                        value="<?= $form->company_department ?>"
+                        <?php if ($form->isInvalid('company_department')): ?>
+                            aria-invalid="true"
+                            aria-errormessage="company-department-error"
+                        <?php endif; ?>
+                    />
+                </div>
+
+                <div class="flow flow--small">
                     <label for="company-vat-number">
                         Numéro de <abbr>TVA</abbr> (optionel)
                     </label>
