@@ -4,14 +4,14 @@ namespace Website\controllers\admin;
 
 use Minz\Request;
 use Minz\Response;
+use Website\auth;
 use Website\models;
-use Website\utils;
 
 /**
  * @author Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class Accounts
+class Accounts extends BaseController
 {
     /**
      * List accounts for the admin
@@ -23,9 +23,7 @@ class Accounts
      */
     public function index(Request $request): Response
     {
-        if (!utils\CurrentUser::isAdmin()) {
-            return Response::redirect('login');
-        }
+        auth\CurrentUser::requireAdmin();
 
         $accounts = models\Account::listWithCountPayments();
 
@@ -52,9 +50,7 @@ class Accounts
      */
     public function show(Request $request): Response
     {
-        if (!utils\CurrentUser::isAdmin()) {
-            return Response::redirect('login');
-        }
+        auth\CurrentUser::requireAdmin();
 
         $account_id = $request->parameters->getString('id', '');
         $account = models\Account::find($account_id);
@@ -87,9 +83,7 @@ class Accounts
      */
     public function update(Request $request): Response
     {
-        if (!utils\CurrentUser::isAdmin()) {
-            return Response::redirect('login');
-        }
+        auth\CurrentUser::requireAdmin();
 
         $account_id = $request->parameters->getString('id', '');
         $account = models\Account::find($account_id);

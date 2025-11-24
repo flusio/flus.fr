@@ -45,7 +45,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     {
         $response = $this->appRun('GET', '/admin/payments/new');
 
-        $this->assertResponseCode($response, 302, '/admin/login?from=admin%2Fpayments%23init');
+        $this->assertResponseCode($response, 302, '/admin/login');
     }
 
     #[\PHPUnit\Framework\Attributes\DataProvider('createProvider')]
@@ -105,7 +105,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
             'amount' => $amount,
         ]);
 
-        $this->assertResponseCode($response, 302, '/admin/login?from=admin%2Fpayments%23init');
+        $this->assertResponseCode($response, 302, '/admin/login');
     }
 
     #[\PHPUnit\Framework\Attributes\DataProvider('createProvider')]
@@ -149,7 +149,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
 
         $response = $this->appRun('GET', '/admin/payments/' . $payment->id);
 
-        $this->assertResponseCode($response, 302, '/admin/login?from=admin%2Fpayments%23index');
+        $this->assertResponseCode($response, 302, '/admin/login');
     }
 
     public function testConfirmRendersCorrectly(): void
@@ -207,7 +207,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
             'csrf' => \Website\Csrf::generate(),
         ]);
 
-        $this->assertResponseCode($response, 302, '/admin/login?from=admin%2Fpayments%23index');
+        $this->assertResponseCode($response, 302, '/admin/login');
         $payment = $payment->reload();
         $this->assertFalse($payment->is_paid);
     }
@@ -267,7 +267,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
             'csrf' => \Website\Csrf::generate(),
         ]);
 
-        $this->assertResponseCode($response, 302, '/admin/login?from=admin%2Fpayments%23index');
+        $this->assertResponseCode($response, 302, '/admin/login');
         $this->assertTrue(models\Payment::exists($payment->id));
     }
 

@@ -4,9 +4,9 @@ namespace Website\controllers\admin;
 
 use Minz\Request;
 use Minz\Response;
-use Website\utils;
+use Website\auth;
 
-class Auth
+class Authentication extends BaseController
 {
     /**
      * Show the admin login page
@@ -22,7 +22,7 @@ class Auth
      */
     public function login(Request $request): Response
     {
-        if (utils\CurrentUser::isAdmin()) {
+        if (auth\CurrentUser::isAdmin()) {
             return Response::redirect('admin');
         }
 
@@ -49,7 +49,7 @@ class Auth
      */
     public function createSession(Request $request): Response
     {
-        if (utils\CurrentUser::isAdmin()) {
+        if (auth\CurrentUser::isAdmin()) {
             return Response::redirect('admin');
         }
 
@@ -65,18 +65,9 @@ class Auth
 
         $hash = \Minz\Configuration::$application['admin_secret'];
         if (\password_verify($password, $hash)) {
-            utils\CurrentUser::logAdminIn();
+            auth\CurrentUser::logAdminIn();
 
-            $location = '';
-            if ($from) {
-                $location = urldecode($from);
-            }
-
-            if (!$location) {
-                $location = 'admin';
-            }
-
-            return Response::redirect($location, ['status' => 'connected']);
+            return Response::redirect('admin', ['status' => 'connected']);
         } else {
             return Response::badRequest('admin/auth/login.phtml', [
                 'from' => $from,
@@ -94,8 +85,8 @@ class Auth
      */
     public function deleteSession(Request $request): Response
     {
-        if (\Website\Csrf::validate($request->parameters->getString('csrf', '')) && utils\CurrentUser::isAdmin()) {
-            utils\CurrentUser::logOut();
+        if (\Website\Csrf::validate($request->parameters->getString('csrf', '')) && auth\CurrentUser::isAdmin()) {
+            auth\CurrentUser::logOut();
         }
 
         return Response::redirect('home');

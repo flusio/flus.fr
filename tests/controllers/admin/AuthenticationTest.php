@@ -2,7 +2,7 @@
 
 namespace Website\controllers\admin;
 
-class AuthTest extends \PHPUnit\Framework\TestCase
+class AuthenticationTest extends \PHPUnit\Framework\TestCase
 {
     use \tests\LoginHelper;
     use \Minz\Tests\InitializerHelper;
@@ -62,18 +62,6 @@ class AuthTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/admin');
-    }
-
-    public function testCreateSessionWithFromParameter(): void
-    {
-        $response = $this->appRun('POST', '/admin/login', [
-            'csrf' => \Website\Csrf::generate(),
-            'password' => 'secret',
-            'from' => urlencode('home'),
-        ]);
-
-        $this->assertResponseCode($response, 302, '/?status=connected');
-        $this->assertSame('the administrator', $_SESSION['account_id']);
     }
 
     public function testCreateSessionFailsIfCsrfIsWrong(): void

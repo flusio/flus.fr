@@ -4,9 +4,9 @@ namespace Website\controllers;
 
 use Minz\Request;
 use Minz\Response;
+use Website\auth;
 use Website\models;
 use Website\services;
-use Website\utils;
 
 /**
  * @author Marien Fressinaud <dev@marienfressinaud.fr>
@@ -36,8 +36,8 @@ class Invoices
             return Response::notFound();
         }
 
-        $is_admin = utils\CurrentUser::isAdmin();
-        $user = utils\CurrentUser::get();
+        $is_admin = auth\CurrentUser::isAdmin();
+        $user = auth\CurrentUser::get();
         $account_owns = $user && $user['account_id'] === $payment->account_id;
         if (!$is_admin && !$account_owns) {
             return Response::unauthorized();

@@ -5,11 +5,11 @@ namespace Website\controllers;
 use Minz\Controller;
 use Minz\Request;
 use Minz\Response;
+use Website\auth;
 use Website\forms;
 use Website\mailers;
 use Website\models;
 use Website\services;
-use Website\utils;
 
 class Home
 {
@@ -36,8 +36,8 @@ class Home
         $percent_target = min(100, $total_revenue * 100 / $revenue_target);
 
         $account = null;
-        $user = utils\CurrentUser::get();
-        if ($user && !utils\CurrentUser::isAdmin()) {
+        $user = auth\CurrentUser::get();
+        if ($user && !auth\CurrentUser::isAdmin()) {
             $account = models\Account::find($user['account_id']);
         }
 
@@ -85,8 +85,8 @@ class Home
     public function contact(Request $request): Response
     {
         $email = '';
-        $user = utils\CurrentUser::get();
-        if ($user && !utils\CurrentUser::isAdmin()) {
+        $user = auth\CurrentUser::get();
+        if ($user && !auth\CurrentUser::isAdmin()) {
             $account = models\Account::find($user['account_id']);
             $email = $account->email ?? '';
         }

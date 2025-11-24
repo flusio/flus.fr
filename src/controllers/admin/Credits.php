@@ -4,10 +4,10 @@ namespace Website\controllers\admin;
 
 use Minz\Request;
 use Minz\Response;
-use Website\utils;
+use Website\auth;
 use Website\models;
 
-class Credits
+class Credits extends BaseController
 {
     /**
      * Display a form to create a payment.
@@ -19,9 +19,7 @@ class Credits
      */
     public function init(Request $request): Response
     {
-        if (!utils\CurrentUser::isAdmin()) {
-            return Response::redirect('login', ['from' => 'admin/payments#init']);
-        }
+        auth\CurrentUser::requireAdmin();
 
         $credited_payment_id = $request->parameters->getString('credited_payment_id', '');
         $credited_payment = models\Payment::find($credited_payment_id);
@@ -55,9 +53,7 @@ class Credits
      */
     public function create(Request $request): Response
     {
-        if (!utils\CurrentUser::isAdmin()) {
-            return Response::redirect('login', ['from' => 'admin/payments#init']);
-        }
+        auth\CurrentUser::requireAdmin();
 
         $credited_payment_id = $request->parameters->getString('credited_payment_id', '');
         $credited_payment = models\Payment::find($credited_payment_id);

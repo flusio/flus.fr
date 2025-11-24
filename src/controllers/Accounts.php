@@ -4,10 +4,10 @@ namespace Website\controllers;
 
 use Minz\Request;
 use Minz\Response;
+use Website\auth;
 use Website\forms;
 use Website\models;
 use Website\services;
-use Website\utils;
 
 /**
  * @author Marien Fressinaud <dev@marienfressinaud.fr>
@@ -25,8 +25,8 @@ class Accounts
      */
     public function show(Request $request): Response
     {
-        $user = utils\CurrentUser::get();
-        if (!$user || utils\CurrentUser::isAdmin()) {
+        $user = auth\CurrentUser::get();
+        if (!$user || auth\CurrentUser::isAdmin()) {
             return Response::unauthorized('unauthorized.phtml');
         }
 
@@ -67,7 +67,7 @@ class Accounts
             return Response::unauthorized('unauthorized.phtml');
         }
 
-        utils\CurrentUser::logUserIn($account->id);
+        auth\CurrentUser::logUserIn($account->id);
 
         // Reset the access token immediately.
         if ($account->access_token) {
@@ -82,10 +82,10 @@ class Accounts
      */
     public function logout(Request $request): Response
     {
-        $user = utils\CurrentUser::get();
+        $user = auth\CurrentUser::get();
 
         if (\Website\Csrf::validate($request->parameters->getString('csrf', '')) && $user) {
-            utils\CurrentUser::logOut();
+            auth\CurrentUser::logOut();
 
             $account = models\Account::find($user['account_id']);
             if ($account && $account->preferred_service === 'freshrss') {
@@ -106,8 +106,8 @@ class Accounts
      */
     public function profile(Request $request): Response
     {
-        $user = utils\CurrentUser::get();
-        if (!$user || utils\CurrentUser::isAdmin()) {
+        $user = auth\CurrentUser::get();
+        if (!$user || auth\CurrentUser::isAdmin()) {
             return Response::unauthorized('unauthorized.phtml');
         }
 
@@ -138,8 +138,8 @@ class Accounts
      */
     public function updateProfile(Request $request): Response
     {
-        $user = utils\CurrentUser::get();
-        if (!$user || utils\CurrentUser::isAdmin()) {
+        $user = auth\CurrentUser::get();
+        if (!$user || auth\CurrentUser::isAdmin()) {
             return Response::unauthorized('unauthorized.phtml');
         }
 
@@ -192,8 +192,8 @@ class Accounts
      */
     public function setReminder(Request $request): Response
     {
-        $user = utils\CurrentUser::get();
-        if (!$user || utils\CurrentUser::isAdmin()) {
+        $user = auth\CurrentUser::get();
+        if (!$user || auth\CurrentUser::isAdmin()) {
             return Response::unauthorized('unauthorized.phtml');
         }
 
@@ -229,8 +229,8 @@ class Accounts
      */
     public function invoices(Request $request): Response
     {
-        $user = utils\CurrentUser::get();
-        if (!$user || utils\CurrentUser::isAdmin()) {
+        $user = auth\CurrentUser::get();
+        if (!$user || auth\CurrentUser::isAdmin()) {
             return Response::unauthorized('unauthorized.phtml');
         }
 
@@ -255,8 +255,8 @@ class Accounts
      */
     public function managed(Request $request): Response
     {
-        $user = utils\CurrentUser::get();
-        if (!$user || utils\CurrentUser::isAdmin()) {
+        $user = auth\CurrentUser::get();
+        if (!$user || auth\CurrentUser::isAdmin()) {
             return Response::unauthorized('unauthorized.phtml');
         }
 
@@ -295,8 +295,8 @@ class Accounts
      */
     public function addManaged(Request $request): Response
     {
-        $user = utils\CurrentUser::get();
-        if (!$user || utils\CurrentUser::isAdmin()) {
+        $user = auth\CurrentUser::get();
+        if (!$user || auth\CurrentUser::isAdmin()) {
             return Response::unauthorized('unauthorized.phtml');
         }
 
@@ -397,8 +397,8 @@ class Accounts
      */
     public function deleteManaged(Request $request): Response
     {
-        $user = utils\CurrentUser::get();
-        if (!$user || utils\CurrentUser::isAdmin()) {
+        $user = auth\CurrentUser::get();
+        if (!$user || auth\CurrentUser::isAdmin()) {
             return Response::unauthorized('unauthorized.phtml');
         }
 

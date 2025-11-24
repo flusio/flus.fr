@@ -4,6 +4,7 @@ namespace Website\controllers;
 
 use tests\factories\AccountFactory;
 use tests\factories\TokenFactory;
+use Website\auth;
 use Website\forms;
 use Website\models;
 use Website\utils;
@@ -77,7 +78,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/account');
-        $user = utils\CurrentUser::get();
+        $user = auth\CurrentUser::get();
         $this->assertNotNull($user);
         $this->assertSame($account->id, $user['account_id']);
     }
@@ -117,7 +118,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/account');
-        $user = utils\CurrentUser::get();
+        $user = auth\CurrentUser::get();
         $this->assertNotNull($user);
         $this->assertSame($account_id, $user['account_id']);
     }
@@ -138,7 +139,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/account');
-        $user = utils\CurrentUser::get();
+        $user = auth\CurrentUser::get();
         $this->assertNotNull($user);
         $this->assertSame($account->id, $user['account_id']);
     }
@@ -158,7 +159,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 404);
-        $user = utils\CurrentUser::get();
+        $user = auth\CurrentUser::get();
         $this->assertNull($user);
     }
 
@@ -177,7 +178,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 401);
-        $user = utils\CurrentUser::get();
+        $user = auth\CurrentUser::get();
         $this->assertNull($user);
     }
 
@@ -196,7 +197,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 401);
-        $user = utils\CurrentUser::get();
+        $user = auth\CurrentUser::get();
         $this->assertNull($user);
     }
 
@@ -215,7 +216,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 401);
-        $user = utils\CurrentUser::get();
+        $user = auth\CurrentUser::get();
         $this->assertNull($user);
     }
 
@@ -236,7 +237,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
             $expected_location = 'https://rss.flus.fr';
         }
         $this->assertResponseCode($response, 302, $expected_location);
-        $user = utils\CurrentUser::get();
+        $user = auth\CurrentUser::get();
         $this->assertNull($user);
     }
 
@@ -249,7 +250,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertResponseCode($response, 302, '/');
-        $user = utils\CurrentUser::get();
+        $user = auth\CurrentUser::get();
         $this->assertNotNull($user);
     }
 

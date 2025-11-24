@@ -66,9 +66,9 @@ class Router
         $router->addRoute('POST', '/api/accounts/sync', 'api/Accounts#sync');
 
         $router->addRoute('GET', '/admin', 'admin/Payments#index', 'admin');
-        $router->addRoute('GET', '/admin/login', 'admin/Auth#login', 'login');
-        $router->addRoute('POST', '/admin/login', 'admin/Auth#createSession', 'create_session');
-        $router->addRoute('POST', '/admin/logout', 'admin/Auth#deleteSession', 'logout');
+        $router->addRoute('GET', '/admin/login', 'admin/Authentication#login', 'login');
+        $router->addRoute('POST', '/admin/login', 'admin/Authentication#createSession', 'create_session');
+        $router->addRoute('POST', '/admin/logout', 'admin/Authentication#deleteSession', 'logout');
         $router->addRoute('GET', '/admin/credits/new', 'admin/Credits#init', 'new admin credit');
         $router->addRoute('POST', '/admin/credits/new', 'admin/Credits#create', 'create admin credit');
         $router->addRoute('GET', '/admin/payments/new', 'admin/Payments#init', 'new admin payment');

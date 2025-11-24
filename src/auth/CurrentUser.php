@@ -1,6 +1,6 @@
 <?php
 
-namespace Website\utils;
+namespace Website\auth;
 
 use Website\models;
 
@@ -60,5 +60,12 @@ class CurrentUser
     {
         $user = self::get();
         return $user && $user['account_id'] === 'the administrator';
+    }
+
+    public static function requireAdmin(): void
+    {
+        if (!self::isAdmin()) {
+            throw new NotAdminError();
+        }
     }
 }

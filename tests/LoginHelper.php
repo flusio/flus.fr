@@ -2,7 +2,7 @@
 
 namespace tests;
 
-use Website\utils\CurrentUser;
+use Website\auth\CurrentUser;
 
 /**
  * Provide login utility methods during tests.

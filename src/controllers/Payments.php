@@ -4,9 +4,9 @@ namespace Website\controllers;
 
 use Minz\Request;
 use Minz\Response;
+use Website\auth;
 use Website\models;
 use Website\services;
-use Website\utils;
 
 class Payments
 {
@@ -63,8 +63,8 @@ class Payments
             'samesite' => 'Lax',
         ]);
 
-        $user = utils\CurrentUser::get();
-        if (!$user || utils\CurrentUser::isAdmin()) {
+        $user = auth\CurrentUser::get();
+        if (!$user || auth\CurrentUser::isAdmin()) {
             return $response;
         }
 
@@ -108,8 +108,8 @@ class Payments
             'samesite' => 'Lax',
         ]);
 
-        $user = utils\CurrentUser::get();
-        if (!$user || utils\CurrentUser::isAdmin()) {
+        $user = auth\CurrentUser::get();
+        if (!$user || auth\CurrentUser::isAdmin()) {
             return $response;
         }
 

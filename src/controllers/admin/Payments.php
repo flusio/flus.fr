@@ -4,10 +4,10 @@ namespace Website\controllers\admin;
 
 use Minz\Request;
 use Minz\Response;
-use Website\utils;
+use Website\auth;
 use Website\models;
 
-class Payments
+class Payments extends BaseController
 {
     /**
      * Show the admin main page
@@ -24,9 +24,7 @@ class Payments
      */
     public function index(Request $request): Response
     {
-        if (!utils\CurrentUser::isAdmin()) {
-            return Response::redirect('login');
-        }
+        auth\CurrentUser::requireAdmin();
 
         $current_year = intval(\Minz\Time::now()->format('Y'));
         $year = $request->parameters->getInteger('year', $current_year);
@@ -68,9 +66,7 @@ class Payments
      */
     public function init(Request $request): Response
     {
-        if (!utils\CurrentUser::isAdmin()) {
-            return Response::redirect('login', ['from' => 'admin/payments#init']);
-        }
+        auth\CurrentUser::requireAdmin();
 
         return Response::ok('admin/payments/init.phtml', [
             'email' => '',
@@ -94,9 +90,7 @@ class Payments
      */
     public function create(Request $request): Response
     {
-        if (!utils\CurrentUser::isAdmin()) {
-            return Response::redirect('login', ['from' => 'admin/payments#init']);
-        }
+        auth\CurrentUser::requireAdmin();
 
         $email = \Minz\Email::sanitize($request->parameters->getString('email', ''));
         /** @var int */
@@ -147,9 +141,7 @@ class Payments
      */
     public function show(Request $request): Response
     {
-        if (!utils\CurrentUser::isAdmin()) {
-            return Response::redirect('login', ['from' => 'admin/payments#index']);
-        }
+        auth\CurrentUser::requireAdmin();
 
         $payment_id = $request->parameters->getString('id', '');
         $payment = models\Payment::find($payment_id);
@@ -179,9 +171,7 @@ class Payments
      */
     public function confirm(Request $request): Response
     {
-        if (!utils\CurrentUser::isAdmin()) {
-            return Response::redirect('login', ['from' => 'admin/payments#index']);
-        }
+        auth\CurrentUser::requireAdmin();
 
         $payment_id = $request->parameters->getString('id', '');
         $payment = models\Payment::find($payment_id);
@@ -234,9 +224,7 @@ class Payments
      */
     public function destroy(Request $request): Response
     {
-        if (!utils\CurrentUser::isAdmin()) {
-            return Response::redirect('login', ['from' => 'admin/payments#index']);
-        }
+        auth\CurrentUser::requireAdmin();
 
         $payment_id = $request->parameters->getString('id', '');
         $payment = models\Payment::find($payment_id);
