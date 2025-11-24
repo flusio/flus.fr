@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "01e6fa7642e65bf74acb91a6e3715a75",
+    "content-hash": "584e4fc2f0c3026c5a0471e845acb177",
     "packages": [
         {
             "name": "altcha-org/altcha",
-            "version": "v1.1.2",
+            "version": "v1.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/altcha-org/altcha-lib-php.git",
-                "reference": "293eb649e41593046f06885098de8ef2359a2064"
+                "reference": "725e604719a47fa9187a795bf5ca6f945342b017"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/altcha-org/altcha-lib-php/zipball/293eb649e41593046f06885098de8ef2359a2064",
-                "reference": "293eb649e41593046f06885098de8ef2359a2064",
+                "url": "https://api.github.com/repos/altcha-org/altcha-lib-php/zipball/725e604719a47fa9187a795bf5ca6f945342b017",
+                "reference": "725e604719a47fa9187a795bf5ca6f945342b017",
                 "shasum": ""
             },
             "require": {
@@ -49,27 +49,27 @@
             ],
             "support": {
                 "issues": "https://github.com/altcha-org/altcha-lib-php/issues",
-                "source": "https://github.com/altcha-org/altcha-lib-php/tree/v1.1.2"
+                "source": "https://github.com/altcha-org/altcha-lib-php/tree/v1.2.0"
             },
-            "time": "2025-04-06T13:37:00+00:00"
+            "time": "2025-11-17T00:15:21+00:00"
         },
         {
             "name": "flus/minz",
-            "version": "2.0.3",
+            "version": "2.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/flusio/Minz.git",
-                "reference": "1d50585fe791be492b71b8695272b7bff78abad0"
+                "reference": "cd0c2f6c1c0b4bfaab1f62e7c8a05e1a012b5515"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/flusio/Minz/zipball/1d50585fe791be492b71b8695272b7bff78abad0",
-                "reference": "1d50585fe791be492b71b8695272b7bff78abad0",
+                "url": "https://api.github.com/repos/flusio/Minz/zipball/cd0c2f6c1c0b4bfaab1f62e7c8a05e1a012b5515",
+                "reference": "cd0c2f6c1c0b4bfaab1f62e7c8a05e1a012b5515",
                 "shasum": ""
             },
             "require": {
                 "php": ">=8.2",
-                "phpmailer/phpmailer": "^6.9",
+                "phpmailer/phpmailer": "^7.0",
                 "twig/twig": "^3.21"
             },
             "require-dev": {
@@ -95,9 +95,9 @@
             "homepage": "https://github.com/flusio/Minz",
             "support": {
                 "issues": "https://github.com/flusio/Minz/issues",
-                "source": "https://github.com/flusio/Minz/tree/2.0.3"
+                "source": "https://github.com/flusio/Minz/tree/2.2.1"
             },
-            "time": "2025-10-15T14:12:12+00:00"
+            "time": "2025-11-14T16:48:36+00:00"
         },
         {
             "name": "fpdf/fpdf",
@@ -154,16 +154,16 @@
         },
         {
             "name": "phpmailer/phpmailer",
-            "version": "v6.11.1",
+            "version": "v7.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPMailer/PHPMailer.git",
-                "reference": "d9e3b36b47f04b497a0164c5a20f92acb4593284"
+                "reference": "c7111310c6116ba508a6a170a89eaaed2129bd42"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPMailer/PHPMailer/zipball/d9e3b36b47f04b497a0164c5a20f92acb4593284",
-                "reference": "d9e3b36b47f04b497a0164c5a20f92acb4593284",
+                "url": "https://api.github.com/repos/PHPMailer/PHPMailer/zipball/c7111310c6116ba508a6a170a89eaaed2129bd42",
+                "reference": "c7111310c6116ba508a6a170a89eaaed2129bd42",
                 "shasum": ""
             },
             "require": {
@@ -224,7 +224,7 @@
             "description": "PHPMailer is a full-featured email creation and transfer class for PHP",
             "support": {
                 "issues": "https://github.com/PHPMailer/PHPMailer/issues",
-                "source": "https://github.com/PHPMailer/PHPMailer/tree/v6.11.1"
+                "source": "https://github.com/PHPMailer/PHPMailer/tree/v7.0.0"
             },
             "funding": [
                 {
@@ -232,20 +232,20 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-09-30T11:54:53+00:00"
+            "time": "2025-10-15T16:40:02+00:00"
         },
         {
             "name": "stripe/stripe-php",
-            "version": "v18.0.0",
+            "version": "v19.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/stripe/stripe-php.git",
-                "reference": "70d6c286f0eca002b60ccd62afa7140c43c14bbb"
+                "reference": "8f868a7825d2680e917f89839e4b67851dad96e2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/stripe/stripe-php/zipball/70d6c286f0eca002b60ccd62afa7140c43c14bbb",
-                "reference": "70d6c286f0eca002b60ccd62afa7140c43c14bbb",
+                "url": "https://api.github.com/repos/stripe/stripe-php/zipball/8f868a7825d2680e917f89839e4b67851dad96e2",
+                "reference": "8f868a7825d2680e917f89839e4b67851dad96e2",
                 "shasum": ""
             },
             "require": {
@@ -289,9 +289,9 @@
             ],
             "support": {
                 "issues": "https://github.com/stripe/stripe-php/issues",
-                "source": "https://github.com/stripe/stripe-php/tree/v18.0.0"
+                "source": "https://github.com/stripe/stripe-php/tree/v19.0.0"
             },
-            "time": "2025-09-30T22:56:22+00:00"
+            "time": "2025-11-18T18:50:16+00:00"
         },
         {
             "name": "symfony/deprecation-contracts",
@@ -530,16 +530,16 @@
         },
         {
             "name": "twig/twig",
-            "version": "v3.21.1",
+            "version": "v3.22.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "285123877d4dd97dd7c11842ac5fb7e86e60d81d"
+                "reference": "4509984193026de413baf4ba80f68590a7f2c51d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/285123877d4dd97dd7c11842ac5fb7e86e60d81d",
-                "reference": "285123877d4dd97dd7c11842ac5fb7e86e60d81d",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/4509984193026de413baf4ba80f68590a7f2c51d",
+                "reference": "4509984193026de413baf4ba80f68590a7f2c51d",
                 "shasum": ""
             },
             "require": {
@@ -593,7 +593,7 @@
             ],
             "support": {
                 "issues": "https://github.com/twigphp/Twig/issues",
-                "source": "https://github.com/twigphp/Twig/tree/v3.21.1"
+                "source": "https://github.com/twigphp/Twig/tree/v3.22.0"
             },
             "funding": [
                 {
@@ -605,7 +605,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-05-03T07:21:55+00:00"
+            "time": "2025-10-29T15:56:47+00:00"
         }
     ],
     "packages-dev": [
@@ -734,16 +734,16 @@
         },
         {
             "name": "nikic/php-parser",
-            "version": "v5.6.1",
+            "version": "v5.6.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nikic/PHP-Parser.git",
-                "reference": "f103601b29efebd7ff4a1ca7b3eeea9e3336a2a2"
+                "reference": "3a454ca033b9e06b63282ce19562e892747449bb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/f103601b29efebd7ff4a1ca7b3eeea9e3336a2a2",
-                "reference": "f103601b29efebd7ff4a1ca7b3eeea9e3336a2a2",
+                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/3a454ca033b9e06b63282ce19562e892747449bb",
+                "reference": "3a454ca033b9e06b63282ce19562e892747449bb",
                 "shasum": ""
             },
             "require": {
@@ -786,9 +786,9 @@
             ],
             "support": {
                 "issues": "https://github.com/nikic/PHP-Parser/issues",
-                "source": "https://github.com/nikic/PHP-Parser/tree/v5.6.1"
+                "source": "https://github.com/nikic/PHP-Parser/tree/v5.6.2"
             },
-            "time": "2025-08-13T20:13:15+00:00"
+            "time": "2025-10-21T19:32:17+00:00"
         },
         {
             "name": "phar-io/manifest",
@@ -910,11 +910,11 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "2.1.31",
+            "version": "2.1.32",
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/ead89849d879fe203ce9292c6ef5e7e76f867b96",
-                "reference": "ead89849d879fe203ce9292c6ef5e7e76f867b96",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/e126cad1e30a99b137b8ed75a85a676450ebb227",
+                "reference": "e126cad1e30a99b137b8ed75a85a676450ebb227",
                 "shasum": ""
             },
             "require": {
@@ -959,7 +959,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-10-10T14:14:11+00:00"
+            "time": "2025-11-11T15:18:17+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -1298,16 +1298,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "11.5.42",
+            "version": "11.5.44",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "1c6cb5dfe412af3d0dfd414cfd110e3b9cfdbc3c"
+                "reference": "c346885c95423eda3f65d85a194aaa24873cda82"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/1c6cb5dfe412af3d0dfd414cfd110e3b9cfdbc3c",
-                "reference": "1c6cb5dfe412af3d0dfd414cfd110e3b9cfdbc3c",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/c346885c95423eda3f65d85a194aaa24873cda82",
+                "reference": "c346885c95423eda3f65d85a194aaa24873cda82",
                 "shasum": ""
             },
             "require": {
@@ -1379,7 +1379,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
                 "security": "https://github.com/sebastianbergmann/phpunit/security/policy",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/11.5.42"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/11.5.44"
             },
             "funding": [
                 {
@@ -1403,7 +1403,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-09-28T12:09:13+00:00"
+            "time": "2025-11-13T07:17:35+00:00"
         },
         {
             "name": "psr/container",
@@ -1460,21 +1460,21 @@
         },
         {
             "name": "rector/rector",
-            "version": "2.2.3",
+            "version": "2.2.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/rectorphp/rector.git",
-                "reference": "d27f976a332a87b5d03553c2e6f04adbe5da034f"
+                "reference": "303aa811649ccd1d32e51e62d5c85949d01b5f1b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/rectorphp/rector/zipball/d27f976a332a87b5d03553c2e6f04adbe5da034f",
-                "reference": "d27f976a332a87b5d03553c2e6f04adbe5da034f",
+                "url": "https://api.github.com/repos/rectorphp/rector/zipball/303aa811649ccd1d32e51e62d5c85949d01b5f1b",
+                "reference": "303aa811649ccd1d32e51e62d5c85949d01b5f1b",
                 "shasum": ""
             },
             "require": {
                 "php": "^7.4|^8.0",
-                "phpstan/phpstan": "^2.1.26"
+                "phpstan/phpstan": "^2.1.32"
             },
             "conflict": {
                 "rector/rector-doctrine": "*",
@@ -1508,7 +1508,7 @@
             ],
             "support": {
                 "issues": "https://github.com/rectorphp/rector/issues",
-                "source": "https://github.com/rectorphp/rector/tree/2.2.3"
+                "source": "https://github.com/rectorphp/rector/tree/2.2.8"
             },
             "funding": [
                 {
@@ -1516,7 +1516,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-10-11T21:50:23+00:00"
+            "time": "2025-11-12T18:38:00+00:00"
         },
         {
             "name": "sebastian/cli-parser",
@@ -2506,16 +2506,16 @@
         },
         {
             "name": "squizlabs/php_codesniffer",
-            "version": "4.0.0",
+            "version": "4.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPCSStandards/PHP_CodeSniffer.git",
-                "reference": "06113cfdaf117fc2165f9cd040bd0f17fcd5242d"
+                "reference": "0525c73950de35ded110cffafb9892946d7771b5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPCSStandards/PHP_CodeSniffer/zipball/06113cfdaf117fc2165f9cd040bd0f17fcd5242d",
-                "reference": "06113cfdaf117fc2165f9cd040bd0f17fcd5242d",
+                "url": "https://api.github.com/repos/PHPCSStandards/PHP_CodeSniffer/zipball/0525c73950de35ded110cffafb9892946d7771b5",
+                "reference": "0525c73950de35ded110cffafb9892946d7771b5",
                 "shasum": ""
             },
             "require": {
@@ -2581,7 +2581,7 @@
                     "type": "thanks_dev"
                 }
             ],
-            "time": "2025-09-15T11:28:58+00:00"
+            "time": "2025-11-10T16:43:36+00:00"
         },
         {
             "name": "staabm/side-effects-detector",
@@ -2637,16 +2637,16 @@
         },
         {
             "name": "theseer/tokenizer",
-            "version": "1.2.3",
+            "version": "1.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/theseer/tokenizer.git",
-                "reference": "737eda637ed5e28c3413cb1ebe8bb52cbf1ca7a2"
+                "reference": "b7489ce515e168639d17feec34b8847c326b0b3c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/theseer/tokenizer/zipball/737eda637ed5e28c3413cb1ebe8bb52cbf1ca7a2",
-                "reference": "737eda637ed5e28c3413cb1ebe8bb52cbf1ca7a2",
+                "url": "https://api.github.com/repos/theseer/tokenizer/zipball/b7489ce515e168639d17feec34b8847c326b0b3c",
+                "reference": "b7489ce515e168639d17feec34b8847c326b0b3c",
                 "shasum": ""
             },
             "require": {
@@ -2675,7 +2675,7 @@
             "description": "A small library for converting tokenized PHP source code into XML and potentially other formats",
             "support": {
                 "issues": "https://github.com/theseer/tokenizer/issues",
-                "source": "https://github.com/theseer/tokenizer/tree/1.2.3"
+                "source": "https://github.com/theseer/tokenizer/tree/1.3.1"
             },
             "funding": [
                 {
@@ -2683,7 +2683,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-03-03T12:36:25+00:00"
+            "time": "2025-11-17T20:03:58+00:00"
         }
     ],
     "aliases": [],
