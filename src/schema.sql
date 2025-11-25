@@ -42,6 +42,7 @@ CREATE TABLE payments (
     type TEXT NOT NULL,
 
     invoice_number TEXT,
+    additional_references TEXT NOT NULL DEFAULT '',
     amount INTEGER NOT NULL,
     quantity INTEGER NOT NULL DEFAULT 1,
     frequency TEXT,

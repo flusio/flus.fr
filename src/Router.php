@@ -71,14 +71,24 @@ class Router
         $router->addRoute('POST', '/admin/logout', 'admin/Authentication#deleteSession', 'logout');
         $router->addRoute('GET', '/admin/credits/new', 'admin/Credits#init', 'new admin credit');
         $router->addRoute('POST', '/admin/credits/new', 'admin/Credits#create', 'create admin credit');
-        $router->addRoute('GET', '/admin/payments/new', 'admin/Payments#init', 'new admin payment');
-        $router->addRoute('POST', '/admin/payments/new', 'admin/Payments#create', 'create admin payment');
         $router->addRoute('GET', '/admin/payments/:id', 'admin/Payments#show', 'admin payment');
         $router->addRoute('POST', '/admin/payments/:id/confirm', 'admin/Payments#confirm', 'confirm admin payment');
         $router->addRoute('POST', '/admin/payments/:id/destroy', 'admin/Payments#destroy', 'destroy admin payment');
         $router->addRoute('GET', '/admin/accounts', 'admin/Accounts#index', 'admin accounts');
         $router->addRoute('GET', '/admin/accounts/:id', 'admin/Accounts#show', 'admin account');
         $router->addRoute('POST', '/admin/accounts/:id', 'admin/Accounts#update', 'update admin account');
+        $router->addRoute(
+            'GET',
+            '/admin/accounts/:id/payments/new',
+            'admin/accounts/Payments#new',
+            'new admin account payment',
+        );
+        $router->addRoute(
+            'POST',
+            '/admin/accounts/:id/payments/new',
+            'admin/accounts/Payments#create',
+            'create admin account payment'
+        );
 
         $router->addRoute('POST', '/stripe/hooks', 'Stripe#hooks');
 

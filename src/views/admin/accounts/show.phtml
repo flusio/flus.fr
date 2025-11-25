@@ -59,9 +59,16 @@
         </div>
 
         <div class="flow">
-            <h2>
-                Paiements passés
-            </h2>
+            <div class="cols cols--always cols--gap">
+                <h2 class="col--extend">
+                    Paiements passés
+                </h2>
+
+                <a class="button button--primary" href="<?= url('new admin account payment', ['id' => $account->id]) ?>">
+                    <?= icon('plus') ?>
+                    Nouveau paiement
+                </a>
+            </div>
 
             <?php if ($payments): ?>
                 <ul class="list--nostyle list--border list--strip list--padded">
@@ -88,8 +95,12 @@
                             <div class="col--size2">
                                 <?php if ($payment->completed_at): ?>
                                     <?= _d($payment->completed_at, 'dd MMM yyyy') ?>
-                                <?php else: ?>
+                                <?php elseif ($payment->is_paid): ?>
                                     traitement en cours
+                                <?php else: ?>
+                                    <a href="<?= url('admin payment', ['id' => $payment->id]) ?>">
+                                        non payé
+                                    </a>
                                 <?php endif; ?>
                             </div>
 

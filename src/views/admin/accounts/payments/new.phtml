@@ -1,0 +1,132 @@
+<?php
+    $this->layout('admin.phtml', [
+        'title' => 'Créer un nouveau paiement',
+        'current_page' => 'admin payments',
+    ]);
+?>
+
+<section class="panel">
+    <div class="wrapper wrapper--small flow flow--larger">
+        <h1>
+            Nouveau paiement pour <?= protect($account->email) ?>
+        </h1>
+
+        <form
+            method="post"
+            action="<?= url('create admin account payment', ['id' => $account->id]) ?>"
+            class="flow flow--large"
+        >
+            <?php if ($form->isInvalid('@base')): ?>
+                <p class="form-group__error">
+                    Erreur&nbsp;:
+                    <?= $form->error('@base') ?>
+                </p>
+            <?php endif; ?>
+
+            <div class="cols cols--gap">
+                <div class="col--size6 flow flow--small">
+                    <label for="euros-amount">
+                        Montant du paiement en euros
+                    </label>
+
+                    <?php if ($form->isInvalid('amount')): ?>
+                        <p class="form-group__error" id="euros-amount-error">
+                            Erreur&nbsp;:
+                            <?= $form->error('amount') ?>
+                        </p>
+                    <?php endif; ?>
+
+                    <div>
+                        <input
+                            id="euros-amount"
+                            name="euros_amount"
+                            type="number"
+                            step="1"
+                            min="1"
+                            value="<?= $form->euros_amount ?>"
+                            <?php if ($form->isInvalid('amount')): ?>
+                                aria-invalid="true"
+                                aria-errormessage="euros-amount-error"
+                            <?php endif; ?>
+                        />
+                    </div>
+                </div>
+
+                <div class="col--size6 flow flow--small">
+                    <label for="quantity">
+                        Quantité
+                    </label>
+
+                    <?php if ($form->isInvalid('quantity')): ?>
+                        <p class="form-group__error" id="quantity-error">
+                            Erreur&nbsp;:
+                            <?= $form->error('quantity') ?>
+                        </p>
+                    <?php endif; ?>
+
+                    <div>
+                        <input
+                            id="quantity"
+                            name="quantity"
+                            type="number"
+                            step="1"
+                            min="1"
+                            value="<?= $form->quantity ?>"
+                            <?php if ($form->isInvalid('quantity')): ?>
+                                aria-invalid="true"
+                                aria-errormessage="quantity-error"
+                            <?php endif; ?>
+                        />
+                    </div>
+                </div>
+            </div>
+
+            <div class="col--size6 flow flow--small">
+                <label for="additional-references">
+                    Références additionnelles
+                </label>
+
+                <?php if ($form->isInvalid('additional_references')): ?>
+                    <p class="form-group__error" id="additional-references-error">
+                        Erreur&nbsp;:
+                        <?= $form->error('additional_references') ?>
+                    </p>
+                <?php endif; ?>
+
+                <div>
+                    <input
+                        id="additional-references"
+                        name="additional_references"
+                        type="text"
+                        value="<?= protect($form->additional_references) ?>"
+                        <?php if ($form->isInvalid('additional_references')): ?>
+                            aria-invalid="true"
+                            aria-errormessage="additional-references-error"
+                        <?php endif; ?>
+                    />
+                </div>
+            </div>
+
+            <div class="flow flow--small">
+                <input
+                    id="generate-invoice"
+                    name="generate_invoice"
+                    type="checkbox"
+                    <?= $form->generate_invoice ? 'checked' : '' ?>
+                />
+
+                <label for="generate-invoice">
+                    Générer une facture
+                </label>
+            </div>
+
+            <div class="text--center">
+                <button type="submit" class="button--primary">
+                    Créer le paiement
+                </button>
+            </div>
+
+            <input type="hidden" name="csrf_token" value="<?= $form->csrfToken() ?>" />
+        </form>
+    </div>
+</section>

@@ -31,98 +31,6 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 302, '/admin/login');
     }
 
-    public function testInitRendersCorrectly(): void
-    {
-        $this->loginAdmin();
-
-        $response = $this->appRun('GET', '/admin/payments/new');
-
-        $this->assertResponseCode($response, 200);
-        $this->assertResponseTemplateName($response, 'admin/payments/init.phtml');
-    }
-
-    public function testInitFailsIfNotConnected(): void
-    {
-        $response = $this->appRun('GET', '/admin/payments/new');
-
-        $this->assertResponseCode($response, 302, '/admin/login');
-    }
-
-    #[\PHPUnit\Framework\Attributes\DataProvider('createProvider')]
-    public function testCreateRedirectsCorrectly(string $email, int $amount): void
-    {
-        $this->loginAdmin();
-
-        $response = $this->appRun('POST', '/admin/payments/new', [
-            'csrf' => \Website\Csrf::generate(),
-            'email' => $email,
-            'amount' => $amount,
-        ]);
-
-        $this->assertResponseCode($response, 302, '/admin?status=payment_created');
-    }
-
-    #[\PHPUnit\Framework\Attributes\DataProvider('createProvider')]
-    public function testCreateGenerateAnInvoiceNumber(string $email, int $amount): void
-    {
-        $this->loginAdmin();
-
-        $response = $this->appRun('POST', '/admin/payments/new', [
-            'csrf' => \Website\Csrf::generate(),
-            'email' => $email,
-            'amount' => $amount,
-        ]);
-
-        $this->assertResponseCode($response, 302, '/admin?status=payment_created');
-        $payment = models\Payment::take();
-        $this->assertNotNull($payment);
-        $this->assertNotNull($payment->invoice_number);
-        $this->assertNull($payment->completed_at);
-        $this->assertFalse($payment->is_paid);
-    }
-
-    #[\PHPUnit\Framework\Attributes\DataProvider('createProvider')]
-    public function testCreateFailsIfEmailIsInvalid(string $email, int $amount): void
-    {
-        $this->loginAdmin();
-
-        $response = $this->appRun('POST', '/admin/payments/new', [
-            'csrf' => \Website\Csrf::generate(),
-            'email' => 'not an email',
-            'amount' => $amount,
-        ]);
-
-        $this->assertResponseCode($response, 400);
-        $this->assertResponseContains($response, 'L’adresse courriel que vous avez fournie est invalide.');
-    }
-
-    #[\PHPUnit\Framework\Attributes\DataProvider('createProvider')]
-    public function testCreateFailsIfNotConnected(string $email, int $amount): void
-    {
-        $response = $this->appRun('POST', '/admin/payments/new', [
-            'csrf' => \Website\Csrf::generate(),
-            'email' => $email,
-            'amount' => $amount,
-        ]);
-
-        $this->assertResponseCode($response, 302, '/admin/login');
-    }
-
-    #[\PHPUnit\Framework\Attributes\DataProvider('createProvider')]
-    public function testCreateFailsIfCsrfIsInvalid(string $email, int $amount): void
-    {
-        $this->loginAdmin();
-
-        $response = $this->appRun('POST', '/admin/payments/new', [
-            'csrf' => 'not the token',
-            'email' => $email,
-            'amount' => $amount,
-        ]);
-
-        $this->assertResponseCode($response, 400);
-        $this->assertResponseContains($response, 'Une vérification de sécurité a échoué');
-    }
-
     public function testShowRendersCorrectly(): void
     {
         $this->loginAdmin();
@@ -321,22 +229,5 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseCode($response, 400);
         $this->assertResponseContains($response, 'Ce paiement est associé à une facture');
         $this->assertTrue(models\Payment::exists($payment->id));
-    }
-
-    /**
-     * @return array<array{string, int}>
-     */
-    public static function createProvider(): array
-    {
-        $faker = \Faker\Factory::create();
-        $datasets = [];
-        foreach (range(1, \Minz\Configuration::$application['number_of_datasets']) as $n) {
-            $datasets[] = [
-                $faker->email,
-                $faker->numberBetween(1, 120),
-            ];
-        }
-
-        return $datasets;
     }
 }

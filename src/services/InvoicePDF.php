@@ -36,6 +36,9 @@ class InvoicePDF extends Fpdf
     /** @var string[] */
     public array $customer;
 
+    /** @var string[] */
+    public array $additional_references;
+
     /** @var InvoicePurchase[] */
     public array $purchases;
 
@@ -98,6 +101,8 @@ class InvoicePDF extends Fpdf
             $this->customer[] = utils\Countries::codeToLabel($address['country']);
         };
 
+        $this->additional_references = explode("\n", $payment->additional_references);
+
         $amount = $payment->amount / 100 . ' €';
         $total_amount = $payment->totalAmount() / 100 . ' €';
 
@@ -159,9 +164,12 @@ class InvoicePDF extends Fpdf
 
         $this->addGlobalInformation($this->global_info, 20);
         $this->addCustomerInformation($this->customer, $this->GetY());
-        $this->addPurchases($this->purchases, $this->GetY() + 20);
+        if ($this->additional_references) {
+            $this->addAdditionalReferences($this->additional_references, $this->GetY() + 10);
+        }
+        $this->addPurchases($this->purchases, $this->GetY() + 10);
         $this->addTotalPurchases($this->total_purchases, $this->GetY() + 20);
-        $this->addRenunciationWithdrawalRight($this->GetY() + 60);
+        $this->addRenunciationWithdrawalRight($this->GetY() + 40);
 
         // Make sure that the parent directories exist
         $dirname = pathinfo($filepath, PATHINFO_DIRNAME);
@@ -202,6 +210,19 @@ class InvoicePDF extends Fpdf
         foreach ($infos as $info) {
             $this->SetX(-100);
             $this->Cell(0, 5, $this->pdfDecode($info), 0, 1);
+        }
+    }
+
+    /**
+     * @param string[] $additional_references
+     */
+    private function addAdditionalReferences(array $additional_references, int $y_position): void
+    {
+        $this->SetXY(20, $y_position);
+
+        $this->SetFont('', '');
+        foreach ($additional_references as $additional_reference) {
+            $this->Cell(0, 5, $this->pdfDecode($additional_reference), 0, 1);
         }
     }
 

@@ -12,25 +12,16 @@
                 Paiements en <?= $year ?>
             </h1>
 
-            <div class="cols cols--gap cols--center">
-                <p class="col--extend">
-                    Exporter en&nbsp;:
-                    <a target="_blank" href="<?= url('admin', ['format' => 'csv']) ?>" class="button button--small">
-                        CSV
-                    </a>
+            <p>
+                Exporter en&nbsp;:
+                <a target="_blank" href="<?= url('admin', ['format' => 'csv']) ?>" class="button button--small">
+                    CSV
+                </a>
 
-                    <a target="_blank" href="<?= url('admin', ['format' => 'recettes']) ?>" class="button button--small">
-                        Livre des recettes
-                    </a>
-                </p>
-
-                <p>
-                    <a href="<?= url('new admin payment') ?>" class="button button--primary">
-                        <?= icon('plus') ?>
-                        Créer un paiement
-                    </a>
-                </p>
-            </div>
+                <a target="_blank" href="<?= url('admin', ['format' => 'recettes']) ?>" class="button button--small">
+                    Livre des recettes
+                </a>
+            </p>
         </div>
 
         <?php foreach (['12', '11', '10', '09', '08', '07', '06', '05', '04', '03', '02', '01'] as $month): ?>

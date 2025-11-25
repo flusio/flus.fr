@@ -56,8 +56,15 @@ class Payment
     #[Database\Column]
     public int $amount;
 
+    #[Validable\Comparison(
+        greater_or_equal: 1,
+        message: 'La quantité doit être égale ou supérieure à 1.',
+    )]
     #[Database\Column]
     public int $quantity;
+
+    #[Database\Column]
+    public string $additional_references = '';
 
     #[Validable\Length(min: 1, message: 'La génération du paiement Stripe a échoué.')]
     #[Database\Column]
@@ -82,7 +89,7 @@ class Payment
      *
      * Amount is always in cents.
      */
-    private function __construct(string $type, int $amount)
+    private function __construct(string $type, int $amount = 30 * 100)
     {
         $this->id = \Minz\Random::hex(32);
         $this->type = $type;
@@ -93,14 +100,11 @@ class Payment
 
     /**
      * Init a subscription payment from an account.
-     *
-     * @param integer|float $euros
      */
-    public static function initSubscriptionFromAccount(Account $account, mixed $euros): self
+    public static function initSubscriptionFromAccount(Account $account, int|float $euros = 30): self
     {
-        $amount = intval($euros * 100);
-
-        $payment = new self('subscription', $amount);
+        $payment = new self('subscription');
+        $payment->setEurosAmount($euros);
         $payment->frequency = 'year';
         $payment->account_id = $account->id;
         $payment->quantity = $account->countManagedAccounts() + 1;
@@ -126,6 +130,11 @@ class Payment
     public function totalAmount(): int
     {
         return $this->amount * $this->quantity;
+    }
+
+    public function setEurosAmount(int|float $euros): void
+    {
+        $this->amount = intval($euros * 100);
     }
 
     /**
