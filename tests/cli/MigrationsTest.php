@@ -15,6 +15,16 @@ class MigrationsTest extends \PHPUnit\Framework\TestCase
         \Minz\Database::reset();
     }
 
+    #[\PHPUnit\Framework\Attributes\AfterClass]
+    public static function recreateDatabase(): void
+    {
+        \Minz\Database::reset();
+        $schema = @file_get_contents(\Minz\Configuration::$schema_path);
+        assert($schema !== false);
+        $database = \Minz\Database::get();
+        $database->exec($schema);
+    }
+
     public function testAllMigrationsCanBeApplied(): void
     {
         $migration_file = \Minz\Configuration::$data_path . '/migrations_version.txt';
