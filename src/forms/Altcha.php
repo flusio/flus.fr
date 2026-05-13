@@ -2,9 +2,9 @@
 
 namespace Website\forms;
 
-use AltchaOrg;
 use Minz\Form;
 use Minz\Validable;
+use Website\services;
 
 trait Altcha
 {
@@ -19,8 +19,12 @@ trait Altcha
             return;
         }
 
-        $altcha = new AltchaOrg\Altcha\Altcha(\Minz\Configuration::$secret_key);
-        $verified = $altcha->verifySolution($this->altcha);
+        try {
+            $altcha_service = new services\AltchaService();
+            $verified = $altcha_service->verifySolution($this->altcha);
+        } catch (\Exception $e) {
+            $verified = false;
+        }
 
         if (!$verified) {
             $this->addError('@base', 'altcha_invalid', $this->altchaInvalidErrorMessage());

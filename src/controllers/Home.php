@@ -154,7 +154,7 @@ class Home
         $response->setContentSecurityPolicy('worker-src', "'self' blob:");
         $response->setContentSecurityPolicy(
             'style-src-elem',
-            "'self' 'sha256-pg+oQARqMq4wCazyrsMt8HY89BJkXkEFkwNWxg2iPdg=' 'unsafe-hashes'"
+            "'self' 'sha256-egofkfASsSTkzuyfBiXWBobV9ZDK4UIMKiNlvLr9nNE=' 'unsafe-hashes'"
         );
     }
 

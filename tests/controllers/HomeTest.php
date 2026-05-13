@@ -4,6 +4,7 @@ namespace Website\controllers;
 
 use AltchaOrg;
 use Website\forms;
+use Website\services;
 
 class HomeTest extends \PHPUnit\Framework\TestCase
 {
@@ -202,26 +203,18 @@ class HomeTest extends \PHPUnit\Framework\TestCase
 
     private function altchaPayload(bool $valid = true): string
     {
-        $altcha = new AltchaOrg\Altcha\Altcha(\Minz\Configuration::$secret_key);
-        $challenge = $altcha->createChallenge();
+        $altcha_service = new services\AltchaService();
 
-        $solution = $altcha->solveChallenge(
-            $challenge->challenge,
-            $challenge->salt,
-            AltchaOrg\Altcha\Hasher\Algorithm::from($challenge->algorithm),
-            $challenge->maxNumber
-        );
+        $challenge = $altcha_service->buildChallenge(cost: 1);
 
-        assert($solution !== null);
+        if ($valid) {
+            $solution = $altcha_service->solveChallenge($challenge);
+        } else {
+            $solution = new AltchaOrg\Altcha\Solution(0, '');
+        }
 
-        $payload = [
-            'algorithm' => $challenge->algorithm,
-            'challenge' => $challenge->challenge,
-            'salt' => $challenge->salt,
-            'signature' => $challenge->signature,
-            'number' => $valid ? $solution->number : 42,
-        ];
+        $payload = $altcha_service->buildPayload($challenge, $solution);
 
-        return base64_encode(json_encode($payload) ?: '');
+        return $payload->toBase64();
     }
 }
