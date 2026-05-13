@@ -330,7 +330,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
             'Content-Type' => 'application/json',
         ]);
         $result = json_decode($response->render(), true);
-        $this->assertFalse(isset($result[null]));
+        $this->assertArrayNotHasKey('', $result);
         $this->assertArrayHasKey($account->id, $result);
         $this->assertEquals(
             $expired_at->format(\Minz\Database\Column::DATETIME_FORMAT),
