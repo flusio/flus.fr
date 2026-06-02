@@ -3,6 +3,7 @@
 namespace Website\forms;
 
 use Minz\Form;
+use Minz\Validable;
 use Website\models;
 
 /**
@@ -23,4 +24,15 @@ class Contact extends BaseForm
 
     #[Form\Field(transform: 'trim')]
     public string $content = '';
+
+    #[Validable\Check]
+    public function checkSpamContent(): void
+    {
+        $splitted_content = explode(' ', $this->content);
+        $count_words = count($splitted_content);
+        if ($count_words < 3) {
+            $this->addError('content', 'invalid', 'Veuillez être plus explicite dans votre demande.');
+            return;
+        }
+    }
 }
