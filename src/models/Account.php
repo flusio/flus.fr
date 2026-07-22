@@ -351,7 +351,8 @@ class Account
 
     /**
      * List the accounts which have a last_sync_at property older than the
-     * given date and that are not managed by another account.
+     * given date, that are not managed by another account and that is not
+     * the default account.
      *
      * @return self[]
      */
@@ -361,12 +362,16 @@ class Account
             SELECT * FROM accounts
             WHERE (last_sync_at < ? OR last_sync_at IS NULL)
             AND managed_by_id IS NULL
+            AND id != ?
         SQL;
+
+        $default_account = self::defaultAccount();
 
         $database = Database::get();
         $statement = $database->prepare($sql);
         $statement->execute([
             $date->format(Database\Column::DATETIME_FORMAT),
+            $default_account->id,
         ]);
         return self::fromDatabaseRows($statement->fetchAll());
     }

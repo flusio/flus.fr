@@ -98,6 +98,21 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(models\Account::exists($account->id));
     }
 
+    public function testPerformKeepsDefaultAccount(): void
+    {
+        $now = $this->fake('dateTime');
+        $this->freeze($now);
+        $days = $this->fake('numberBetween', 3, 30);
+        $default_account = models\Account::defaultAccount();
+        $default_account->last_sync_at = \Minz\Time::ago($days, 'days');
+        $default_account->save();
+
+        $cleaner = new Cleaner();
+        $cleaner->perform();
+
+        $this->assertTrue(models\Account::exists($default_account->id));
+    }
+
     public function testPerformDoesNotMovePaymentsAndPotUsagesOfSyncAccounts(): void
     {
         $now = $this->fake('dateTime');
