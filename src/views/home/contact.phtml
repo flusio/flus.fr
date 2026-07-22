@@ -111,7 +111,7 @@
                                 id="subject"
                                 name="subject"
                                 type="text"
-                                value="<?= $form->subject ?>"
+                                value="<?= protect($form->subject) ?>"
                                 required
                                 <?php if ($form->isInvalid('subject')): ?>
                                     aria-invalid="true"
@@ -140,7 +140,7 @@
                                     aria-invalid="true"
                                     aria-errormessage="content-error"
                                 <?php endif; ?>
-                            ><?= $form->content ?></textarea>
+                            ><?= protect($form->content) ?></textarea>
                         </div>
 
                         <div class="flow flow--small">
@@ -164,7 +164,7 @@
                                 id="email"
                                 name="email"
                                 type="email"
-                                value="<?= $form->email ?>"
+                                value="<?= protect($form->email) ?>"
                                 required
                                 <?php if ($form->isInvalid('email')): ?>
                                     aria-invalid="true"

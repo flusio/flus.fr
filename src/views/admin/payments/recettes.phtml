@@ -23,14 +23,14 @@
                 </td>
 
                 <td class="cell cell--ref">
-                    <?= $payment->invoice_number ?>
+                    <?= protect($payment->invoice_number) ?>
                 </td>
 
                 <td class="cell cell--customer">
                     <?php if ($account->entity_type === 'natural'): ?>
-                        <?= $account->address_first_name . ' ' . $account->address_last_name ?>
+                        <?= protect($account->address_first_name . ' ' . $account->address_last_name) ?>
                     <?php else: ?>
-                        <?= $account->address_legal_name ?>
+                        <?= protect($account->address_legal_name) ?>
                     <?php endif; ?>
                 </td>
 

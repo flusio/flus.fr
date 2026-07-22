@@ -99,7 +99,7 @@
                     id="email"
                     name="email"
                     type="email"
-                    value="<?= $form->email ?>"
+                    value="<?= protect($form->email) ?>"
                     required
                     <?php if ($form->isInvalid('email')): ?>
                         aria-invalid="true"
@@ -126,7 +126,7 @@
                             id="first-name"
                             name="address_first_name"
                             type="text"
-                            value="<?= $form->address_first_name ?>"
+                            value="<?= protect($form->address_first_name) ?>"
                             required
                             data-target="profile.firstName"
                             <?php if ($form->isInvalid('address_first_name')): ?>
@@ -152,7 +152,7 @@
                             id="last-name"
                             name="address_last_name"
                             type="text"
-                            value="<?= $form->address_last_name ?>"
+                            value="<?= protect($form->address_last_name) ?>"
                             required
                             data-target="profile.lastName"
                             <?php if ($form->isInvalid('address_last_name')): ?>
@@ -181,7 +181,7 @@
                         id="legal-name"
                         name="address_legal_name"
                         type="text"
-                        value="<?= $form->address_legal_name ?>"
+                        value="<?= protect($form->address_legal_name) ?>"
                         required
                         data-target="profile.legalName"
                         <?php if ($form->isInvalid('address_legal_name')): ?>
@@ -207,7 +207,7 @@
                         id="company-department"
                         name="company_department"
                         type="text"
-                        value="<?= $form->company_department ?>"
+                        value="<?= protect($form->company_department) ?>"
                         <?php if ($form->isInvalid('company_department')): ?>
                             aria-invalid="true"
                             aria-errormessage="company-department-error"
@@ -233,7 +233,7 @@
                         type="text"
                         minlength="10"
                         maxlength="20"
-                        value="<?= $form->company_vat_number ?>"
+                        value="<?= protect($form->company_vat_number) ?>"
                         <?php if ($form->isInvalid('company_vat_number')): ?>
                             aria-invalid="true"
                             aria-errormessage="company-vat-number-error"
@@ -277,7 +277,7 @@
                             id="address1"
                             name="address_address1"
                             type="text"
-                            value="<?= $form->address_address1 ?>"
+                            value="<?= protect($form->address_address1) ?>"
                             <?php if ($form->isInvalid('address_address1')): ?>
                                 aria-invalid="true"
                                 aria-errormessage="address1-error"
@@ -302,7 +302,7 @@
                                 id="postcode"
                                 name="address_postcode"
                                 type="text"
-                                value="<?= $form->address_postcode ?>"
+                                value="<?= protect($form->address_postcode) ?>"
                                 <?php if ($form->isInvalid('address_postcode')): ?>
                                     aria-invalid="true"
                                     aria-errormessage="postcode-error"
@@ -326,7 +326,7 @@
                                 id="city"
                                 name="address_city"
                                 type="text"
-                                value="<?= $form->address_city ?>"
+                                value="<?= protect($form->address_city) ?>"
                                 <?php if ($form->isInvalid('address_city')): ?>
                                     aria-invalid="true"
                                     aria-errormessage="city-error"

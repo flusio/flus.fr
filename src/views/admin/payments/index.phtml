@@ -94,7 +94,7 @@
                                     <?php if ($payment->invoice_number): ?>
                                         <a class="button button--block" href="<?= url('invoice download pdf', ['id' => $payment->id]) ?>">
                                             <?= icon('link') ?>
-                                            <?= $payment->invoice_number ?>
+                                            <?= protect($payment->invoice_number) ?>
                                         </a>
                                     <?php endif; ?>
                                 </div>
@@ -103,7 +103,7 @@
                             <div class="cols cols--gap-small cols--center">
                                 <?php $account = $payment->account(); ?>
                                 <a class="col--extend" href="<?= url('admin account', ['id' => $account->id]) ?>">
-                                    <?= $account->email ?>
+                                    <?= protect($account->email) ?>
                                 </a>
 
                                 <?php if ($payment->completed_at && $payment->type !== 'credit'): ?>
@@ -120,7 +120,7 @@
 
                                 <?php if ($payment->payment_intent_id): ?>
                                     <div>
-                                        <a class="button button--small" href="https://dashboard.stripe.com/payments/<?= $payment->payment_intent_id ?>">
+                                        <a class="button button--small" href="https://dashboard.stripe.com/payments/<?= protect($payment->payment_intent_id) ?>">
                                             💰&nbsp;Stripe
                                         </a>
                                     </div>

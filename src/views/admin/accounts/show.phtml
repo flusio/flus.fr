@@ -108,7 +108,7 @@
                                 <?php if ($payment->invoice_number): ?>
                                     <a class="button button--block" href="<?= url('invoice download pdf', ['id' => $payment->id]) ?>">
                                         <?= icon('link') ?>
-                                        <?= $payment->invoice_number ?>
+                                        <?= protect($payment->invoice_number) ?>
                                     </a>
                                 <?php endif; ?>
                             </div>

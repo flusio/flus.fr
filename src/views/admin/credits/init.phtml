@@ -36,10 +36,10 @@
 
                 <p class="panel panel--grey panel--rounded text--bold">
                     Vous êtes sur le point de rembourser le paiement de
-                    <?= $account->address_first_name ?> <?= $account->address_last_name ?>
-                    (<?= $account->email ?>)
+                    <?= protect($account->address_first_name) ?> <?= protect($account->address_last_name) ?>
+                    (<?= protect($account->email) ?>)
                     du <?= _d($credited_payment->completed_at, 'dd MMMM yyyy') ?>
-                    correspondant à <strong>la facture <?= $credited_payment->invoice_number ?></strong>.
+                    correspondant à <strong>la facture <?= protect($credited_payment->invoice_number) ?></strong>.
                 </p>
 
                 <div class="text--center">
@@ -49,7 +49,7 @@
                 </div>
 
                 <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
-                <input type="hidden" name="credited_payment_id" value="<?= $credited_payment->id ?>" />
+                <input type="hidden" name="credited_payment_id" value="<?= protect($credited_payment->id) ?>" />
             </form>
         <?php endif; ?>
     </div>

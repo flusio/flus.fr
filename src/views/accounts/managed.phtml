@@ -67,7 +67,7 @@
                 <?php foreach ($managedAccounts as $managedAccount): ?>
                     <li class="cols cols--gap-large cols--center">
                         <div class="col--extend">
-                            <?= $managedAccount->email ?>
+                            <?= protect($managedAccount->email) ?>
 
                             <?php if ($managedAccount->id === $account->id): ?>
                                 (vous)

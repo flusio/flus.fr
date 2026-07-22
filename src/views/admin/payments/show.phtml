@@ -9,7 +9,7 @@
     <div class="wrapper wrapper--small flow flow--larger">
         <h1>
             Paiement du <?= _d($payment->created_at, 'dd MMMM') ?><br />
-            <?= $payment->account()->email ?>
+            <?= protect($payment->account()->email) ?>
         </h1>
 
         <?php if ($error): ?>
