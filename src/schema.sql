@@ -91,3 +91,10 @@ CREATE TABLE jobs (
     last_error TEXT NOT NULL DEFAULT '',
     failed_at TEXT
 );
+
+CREATE TABLE pro_registrations (
+    id TEXT PRIMARY KEY NOT NULL,
+    created_at TEXT NOT NULL,
+    email TEXT NOT NULL UNIQUE,
+    organisation TEXT NOT NULL DEFAULT ''
+);

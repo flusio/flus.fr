@@ -45,3 +45,18 @@ function icon(string $icon_name, string $additional_class_names = ''): string
     $svg .= '</svg>';
     return $svg;
 }
+
+/**
+ * Escape a value to be outputted in a CSV file.
+ *
+ * Values starting with a formula character are prefixed by a single quote so
+ * spreadsheet software doesn't interpret them.
+ */
+function csv_escape(string $value): string
+{
+    if (preg_match('/^[=+\-@\t\r]/', $value)) {
+        $value = "'" . $value;
+    }
+
+    return '"' . str_replace('"', '""', $value) . '"';
+}

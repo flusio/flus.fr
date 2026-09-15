@@ -1,0 +1,8 @@
+<?php
+    echo "email;organisation;created_at\n";
+    foreach ($pro_registrations as $pro_registration):
+        echo csv_escape($pro_registration->email) . ';';
+        echo csv_escape($pro_registration->organisation) . ';';
+        echo $pro_registration->created_at->format('Y-m-d') . "\n";
+    endforeach;
+?>

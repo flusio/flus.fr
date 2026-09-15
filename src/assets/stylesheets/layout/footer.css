@@ -6,44 +6,73 @@
     background-color: var(--color-green-gable);
 }
 
-@media(max-width: 799px) {
+@media (max-width: 799px) {
     .layout__footer {
-        text-align: center;
+        padding-right: var(--space-medium);
+        padding-left: var(--space-medium);
     }
-
-    .layout__footer .cols--center {
-        align-items: center;
-    }
-}
-
-.layout__footer .footer__link {
-    display: inline-block;
-    padding: var(--space-smaller);
-
-    color: currentcolor;
-    font-weight: 600;
-    text-decoration: none;
-
-    transition: color 0.2s ease-in-out;
-}
-
-.layout__footer .footer__license a {
-    color: currentcolor;
-
-    transition: color 0.2s ease-in-out;
-}
-
-.layout__footer .footer__link:hover,
-.layout__footer .footer__license a:hover {
-    color: var(--color-green-caribbean);
-    text-decoration: underline;
 }
 
 .layout__footer .footer__logo {
     width: 120px;
 }
 
-.layout__footer .footer__separator {
-    border: none;
-    border-top: 1px solid var(--color-pampas);
+.layout__footer .footer__tagline {
+    max-width: 35ch;
+
+    font-size: var(--font-size-small);
+}
+
+.layout__footer .footer__sections {
+    display: grid;
+
+    gap: var(--space-large);
+}
+
+@media (min-width: 800px) {
+    .layout__footer .footer__sections {
+        grid-template-columns: 1fr auto auto;
+        gap: var(--space-larger);
+    }
+}
+
+@media (max-width: 799px) {
+    .layout__footer .footer__section--follow ul {
+        display: flex;
+
+        flex-wrap: wrap;
+        column-gap: var(--space-medium);
+    }
+}
+
+.layout__footer .footer__title {
+    color: var(--color-green-caribbean);
+    font-size: var(--font-size-smaller);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.layout__footer .footer__link {
+    display: inline-block;
+    padding-top: var(--space-smaller);
+    padding-bottom: var(--space-smaller);
+
+    color: currentcolor;
+    text-decoration: none;
+    border-radius: var(--border-radius);
+
+    transition: color 0.2s ease-in-out;
+}
+
+.layout__footer .footer__link:hover {
+    color: var(--color-green-caribbean);
+    text-decoration: underline;
+}
+
+.layout__footer .footer__icon {
+    width: 1.25em;
+    height: 1.25em;
+    margin-right: var(--space-smaller);
+
+    vertical-align: text-bottom;
 }

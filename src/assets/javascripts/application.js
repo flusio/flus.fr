@@ -123,3 +123,15 @@ application.register('amount-selector', class extends Controller {
         }
     }
 })
+
+application.register('confirm', class extends Controller {
+    static get values() {
+        return { message: String };
+    }
+
+    check(event) {
+        if (!window.confirm(this.messageValue)) {
+            event.preventDefault();
+        }
+    }
+})
