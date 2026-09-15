@@ -201,6 +201,15 @@ class HomeTest extends \PHPUnit\Framework\TestCase
         $this->assertResponseTemplateName($response, 'home/security.txt');
     }
 
+    public function testPressKitRendersCorrectly(): void
+    {
+        $response = $this->appRun('GET', '/kit-presse');
+
+        $this->assertResponseCode($response, 200);
+        $this->assertResponseContains($response, 'Kit de presse');
+        $this->assertResponseTemplateName($response, 'home/press_kit.phtml');
+    }
+
     private function altchaPayload(bool $valid = true): string
     {
         $altcha_service = new services\AltchaService();

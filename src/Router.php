@@ -20,6 +20,7 @@ class Router
         $router->addRoute('GET', '/contact', 'Home#contact', 'contact');
         $router->addRoute('POST', '/contact', 'Home#sendContactMessage', 'send contact message');
         $router->addRoute('GET', '/securite', 'Home#security', 'security');
+        $router->addRoute('GET', '/kit-presse', 'Home#pressKit', 'press kit');
         $router->addRoute('GET', '/plan-du-site', 'Home#sitemap', 'sitemap');
 
         $router->addRoute('GET', '/robots.txt', 'Home#robots', 'robots.txt');

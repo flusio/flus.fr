@@ -167,4 +167,9 @@ class Home
     {
         return Response::ok('home/security.txt');
     }
+
+    public function pressKit(Request $request): Response
+    {
+        return Response::ok('home/press_kit.phtml');
+    }
 }

@@ -1,0 +1,326 @@
+<?php
+    $this->layout('base.phtml', [
+        'title' => 'Kit de presse · Flus',
+        'canonical' => url_full('press kit'),
+        'description' => 'Présentation, informations clés, logos, captures d’écran et couleurs : tout ce qu’il faut pour parler de Flus.',
+        'og' => [
+            'type' => 'website',
+            'image' => url_full_static('og-card.png'),
+            'twitter_card' => 'summary',
+        ],
+    ]);
+?>
+
+<nav class="layout__breadcrumb" aria-label="Fil d’Ariane">
+    <ul class="list--nostyle">
+        <li class="breadcrumb__item">
+            <a class="breadcrumb__link" href="<?= url('home') ?>" rel="home">
+                Accueil
+            </a>
+        </li>
+
+        <li class="breadcrumb__item">
+            <a class="breadcrumb__link" aria-current="page" href="<?= url('press kit') ?>">
+                Kit de presse
+            </a>
+        </li>
+    </ul>
+</nav>
+
+<article>
+    <header class="panel panel--primary panel--header">
+        <div class="wrapper wrapper--larger wrapper--center cols cols--gap-larger">
+            <div class="col--size6 wrapper wrapper--text flow flow--large">
+                <h1>Kit de presse</h1>
+
+                <p>
+                    Vous souhaitez parler de Flus dans un article, un podcast ou une newsletter&nbsp;?
+                    Cette page rassemble les éléments dont vous avez besoin&nbsp;: présentation, informations clés, logos, captures d’écran et couleurs.
+                </p>
+
+                <p>
+                    <a class="button button--primary" href="<?= url('contact', ['subject' => 'Demande presse']) ?>">
+                        <?= icon('arrow-left', 'rotate180') ?>
+                        Me contacter
+                    </a>
+                </p>
+            </div>
+
+            <div class="col--size6 text--right">
+                <img
+                    class="panel--header__illustration"
+                    alt=""
+                    src="<?= url_static('illustrations/link.svg') ?>"
+                />
+            </div>
+        </div>
+    </header>
+
+    <section class="panel" id="presentation">
+        <div class="wrapper wrapper--large wrapper--center flow flow--large">
+            <h2>Présentation de Flus</h2>
+
+            <div class="cols cols--gap-large">
+                <div class="col--size4 card card--topaz">
+                    <div class="card__body flow">
+                        <h3 class="text--bold">En une phrase</h3>
+
+                        <p>
+                            Flus est un service en ligne libre qui combine agrégateur de flux, liste «&nbsp;à lire plus tard&nbsp;» et partage de signets pour collecter, organiser et partager sa veille.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col--size8 card">
+                    <div class="card__body flow">
+                        <h3 class="text--bold">En un paragraphe</h3>
+
+                        <p>
+                            Flus est un service en ligne pour éditorialiser sa veille.
+                            Il permet de suivre des sources telles que des blogs, des podcasts ou des chaînes vidéo (par flux RSS), organisées en fils thématiques&nbsp;;
+                            de lire à son rythme grâce au Journal et aux listes «&nbsp;À lire&nbsp;» et «&nbsp;Liens lus&nbsp;»&nbsp;;
+                            de conserver ses liens dans des collections et enrichis de notes et de tags&nbsp;;
+                            et de les partager publiquement sur son profil ou en privé avec ses collègues.
+                            Flus est un logiciel libre (licence AGPL-3.0), sans publicité, auto-financé grâce à un prix libre.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel panel--grey" id="informations">
+        <div class="wrapper wrapper--large wrapper--center flow flow--large">
+            <h2>Informations clés</h2>
+
+            <table>
+                <tbody>
+                    <tr>
+                        <th scope="row">Site Web</th>
+                        <td><a href="https://flus.fr">https://flus.fr</a></td>
+                    </tr>
+
+                    <tr>
+                        <th scope="row">Prix</th>
+                        <td>
+                            Prix libre de 0 à 120&nbsp;€ par an, avec 1 mois
+                            d’essai gratuit. Les tarifs recommandés sont de
+                            15&nbsp;€ (solidaire) et 30&nbsp;€ (équilibre) par an.
+                            <a href="<?= url('pricing') ?>">En savoir plus sur les tarifs.</a>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th scope="row">Dernière version</th>
+                        <td>
+                            <?php /* TODO: Flus 3.0 is not released yet, add the URL to the article when it's published. */ ?>
+                            Flus 3.0 (sortie le XX octobre 2026)
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th scope="row">Plateformes</th>
+                        <td>
+                            <ul class="flow flow--smaller">
+                                <li>Application Web (Firefox, Chrome, Edge, Safari, etc.)&nbsp;;</li>
+                                <li>
+                                    mobile (Android et iOS) grâce à son interface adaptative
+                                    (<a href="<?= url_full('home') ?>carnet/flus-mobile.html">utiliser Flus sur mobile</a>)&nbsp;;
+                                </li>
+                                <li>
+                                    extension pour
+                                    <a href="https://addons.mozilla.org/fr/firefox/addon/flus/">Firefox</a>
+                                    et
+                                    <a href="https://chromewebstore.google.com/detail/flus/gikjpohbbimicecbndkefebbpjobokjd">Chrome</a>&nbsp;;
+                                </li>
+                                <li>
+                                    auto-hébergeable à partir du
+                                    <a href="https://github.com/flusio/Flus">code source</a>.
+                                </li>
+                            </ul>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th scope="row">Licence</th>
+                        <td>
+                            Logiciel libre sous licence
+                            <a href="https://github.com/flusio/Flus/blob/main/LICENSE.txt">AGPL-3.0</a>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th scope="row">Créateur</th>
+                        <td>Marien Fressinaud, développeur indépendant</td>
+                    </tr>
+
+                    <tr>
+                        <th scope="row">Contact</th>
+                        <td>
+                            <a href="<?= url('contact') ?>">Formulaire de contact</a>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th scope="row">Réseaux</th>
+                        <td>
+                            <a rel="me" href="https://piaille.fr/@flus">Mastodon</a>
+                            et
+                            <a rel="me" href="https://www.linkedin.com/company/flus-fr">LinkedIn</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="panel" id="logos">
+        <div class="wrapper wrapper--large wrapper--center flow flow--large">
+            <div class="wrapper wrapper--text flow">
+                <h2>Logos</h2>
+
+                <p>
+                    Le logo est disponible en trois variantes aux formats <abbr>SVG</abbr> (vectoriel) et <abbr>PNG</abbr>.
+                    Merci de ne pas le déformer, le recolorer ni le modifier, et de conserver une marge autour.
+                    La version blanche est destinée aux fonds sombres.
+                </p>
+
+                <p>
+                    Le logo a été réalisé par <a href="https://www.clara-chambon.fr/">Clara Chambon</a>.
+                </p>
+            </div>
+
+            <div class="cols cols--gap-large">
+                <div class="col--size4 flow">
+                    <div class="press-kit__logo">
+                        <img alt="Logo de Flus en couleur" src="<?= url_static('logo.svg') ?>">
+                    </div>
+
+                    <p class="text--bold">Logo horizontal en couleur</p>
+
+                    <div class="cols cols--always cols--gap">
+                        <a class="button button--small" download href="<?= url_static('logo.svg') ?>"><abbr>SVG</abbr></a>
+                        <a class="button button--small" download href="<?= url_static('logo-512px.png') ?>"><abbr>PNG</abbr></a>
+                    </div>
+                </div>
+
+                <div class="col--size4 flow">
+                    <div class="press-kit__logo press-kit__logo--dark">
+                        <img alt="Logo de Flus en blanc sur fond vert sombre." src="<?= url_static('logo-white.svg') ?>">
+                    </div>
+
+                    <p class="text--bold">Logo horizontal en blanc</p>
+
+                    <div class="cols cols--always cols--gap">
+                        <a class="button button--small" download href="<?= url_static('logo-white.svg') ?>"><abbr>SVG</abbr></a>
+                        <a class="button button--small" download href="<?= url_static('logo-white-512px.png') ?>"><abbr>PNG</abbr></a>
+                    </div>
+                </div>
+
+                <div class="col--size4 flow">
+                    <div class="press-kit__logo">
+                        <img alt="Icône de Flus" src="<?= url_static('flus.svg') ?>">
+                    </div>
+
+                    <p class="text--bold">Icône seule</p>
+
+                    <div class="cols cols--always cols--gap">
+                        <a class="button button--small" download href="<?= url_static('flus.svg') ?>"><abbr>SVG</abbr></a>
+                        <a class="button button--small" download href="<?= url_static('flus.png') ?>"><abbr>PNG</abbr></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel panel--grey" id="captures">
+        <div class="wrapper wrapper--large wrapper--center flow flow--large">
+            <div class="wrapper wrapper--text flow">
+                <h2>Captures d’écran</h2>
+
+                <p>
+                    Les captures ci-dessous sont libres d’utilisation pour illustrer Flus.
+                </p>
+            </div>
+
+            <div class="cols cols--gap-large">
+                <div class="col--size6">
+                    <figure class="press-kit__screenshot">
+                        <img
+                            loading="lazy"
+                            alt="L’écran Lecture de Flus sur ordinateur, avec un fil de veille « Accessibilité Web » et ses liens du jour."
+                            src="<?= url_static('screenshot.png') ?>"
+                        />
+
+                        <figcaption class="text--bold">Flus sur ordinateur</figcaption>
+
+                        <a class="button button--small" download href="<?= url_static('screenshot.png') ?>"><abbr>PNG</abbr></a>
+                    </figure>
+                </div>
+
+                <div class="col--size6">
+                    <figure class="press-kit__screenshot">
+                        <img
+                            loading="lazy"
+                            alt="L’écran Lecture de Flus sur mobile, avec un fil de veille « Accessibilité Web » et ses liens du jour."
+                            src="<?= url_static('screenshot-mobile.png') ?>"
+                        />
+
+                        <figcaption class="text--bold">Flus sur mobile</figcaption>
+
+                        <a class="button button--small" download href="<?= url_static('screenshot-mobile.png') ?>"><abbr>PNG</abbr></a>
+                    </figure>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel" id="couleurs">
+        <div class="wrapper wrapper--large wrapper--center flow flow--large">
+            <div class="wrapper wrapper--text flow">
+                <h2>Couleurs et polices</h2>
+            </div>
+
+            <ul class="list--nostyle cols cols--gap-large">
+                <li class="col--size3 flow flow--small">
+                    <div class="press-kit__colors press-kit__colors--gable"></div>
+                    <p>
+                        <strong>Vert gable</strong><br>
+                        <code>#0c3b34</code>
+                    </p>
+                </li>
+
+                <li class="col--size3 flow flow--small">
+                    <div class="press-kit__colors press-kit__colors--topaz"></div>
+                    <p>
+                        <strong>Vert topaz</strong><br>
+                        <code>#00baa8</code>
+                    </p>
+                </li>
+
+                <li class="col--size3 flow flow--small">
+                    <div class="press-kit__colors press-kit__colors--caribbean"></div>
+                    <p>
+                        <strong>Vert caribbean</strong><br>
+                        <code>#00d7ad</code>
+                    </p>
+                </li>
+
+                <li class="col--size3 flow flow--small">
+                    <div class="press-kit__colors press-kit__colors--pampas"></div>
+                    <p>
+                        <strong>Pampas</strong><br>
+                        <code>#f7f6f4</code>
+                    </p>
+                </li>
+            </ul>
+
+            <div class="wrapper wrapper--text flow">
+                <p>
+                    La police du logo est «&nbsp;<a href="https://fonts.google.com/specimen/Comfortaa">Comfortaa</a>&nbsp;»
+                    et celle du texte est «&nbsp;<a href="https://www .theleagueofmoveabletype.com/raleway">Raleway</a>&nbsp;».
+                </p>
+            </div>
+        </div>
+    </section>
+</article>
