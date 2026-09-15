@@ -1,0 +1,254 @@
+<?php
+    $this->layout('base.phtml', [
+        'title' => 'Flus pour les équipes · Flus',
+        'canonical' => url_full('pro offer'),
+        'current_page' => 'pro offer',
+        'description' => 'Une offre pro, pensée pour les entreprises, associations et universités, arrive en 2027. Inscrivez-vous pour recevoir l’annonce de son lancement.',
+        'og' => [
+            'type' => 'website',
+            'image' => url_full_static('og-card.png'),
+            'twitter_card' => 'summary_large_image',
+        ],
+    ]);
+?>
+
+<nav class="layout__breadcrumb" aria-label="Fil d’Ariane">
+    <ul class="list--nostyle">
+        <li class="breadcrumb__item">
+            <a class="breadcrumb__link" href="<?= url('home') ?>" rel="home">
+                Accueil
+            </a>
+        </li>
+
+        <li class="breadcrumb__item">
+            <a class="breadcrumb__link" aria-current="page" href="<?= url('pro offer') ?>">
+                Offre pro
+            </a>
+        </li>
+    </ul>
+</nav>
+
+<section class="panel panel--primary panel--header">
+    <div class="wrapper wrapper--larger wrapper--center cols cols--gap-larger">
+        <div class="col--size6 wrapper wrapper--text flow flow--large">
+            <h1>Flus pour les équipes</h1>
+
+            <p>
+                Entreprises, associations, universités&nbsp;: une offre pro pensée pour faire de la veille à plusieurs arrive en 2027.
+            </p>
+
+            <p>
+                <a class="button button--primary" href="#inscription">
+                    <?= icon('arrow-right') ?>
+                    Ne pas manquer le lancement
+                </a>
+            </p>
+        </div>
+
+        <div class="col--size6 text--right">
+            <img
+                class="panel--header__illustration"
+                alt=""
+                src="<?= url_static('illustrations/project-team.svg') ?>"
+            />
+        </div>
+    </div>
+</section>
+
+<section class="panel">
+    <div class="wrapper wrapper--text wrapper--center flow flow--large">
+        <h2>
+            Ce qui se prépare
+        </h2>
+
+        <p>
+            L’offre pro vise à faciliter la veille collaborative au sein des équipes.
+            Elle est encore en construction, mais voici ce qui est envisagé à ce stade&nbsp;:
+        </p>
+
+        <ul class="flow flow--small">
+            <li>
+                un <strong>espace dédié</strong> à votre structure pour centraliser, contextualiser et transmettre votre veille&nbsp;;
+            </li>
+
+            <li>
+                une <strong>administration simplifiée</strong> des comptes, avec l’importation facilitée des membres de votre structure&nbsp;;
+            </li>
+
+            <li>
+                un <strong>prix annuel fixe</strong>, quel que soit le nombre de membres, et une <strong>facturation adaptée</strong> (devis, bon de commande, virement)&nbsp;;
+            </li>
+
+            <li>
+                un <strong>support prioritaire</strong>.
+            </li>
+        </ul>
+
+        <p>
+            Vous avez des besoins particuliers&nbsp;?
+            N’hésitez pas à <a href="<?= url('contact') ?>">m’écrire</a>&nbsp;: vos retours m’aideront à construire une offre plus adaptée.
+        </p>
+    </div>
+</section>
+
+<section class="panel" id="inscription">
+    <div class="wrapper wrapper--center flow flow--large">
+        <div class="wrapper wrapper--text wrapper--center text--center flow">
+            <h2>
+                Recevoir l’annonce du lancement
+            </h2>
+
+            <p>
+                Les structures inscrites pourront tester l’offre pro en avant-première.
+            </p>
+        </div>
+
+        <div class="panel panel--grey panel--rounded">
+            <div class="wrapper wrapper--small wrapper--center flow flow--larger">
+                <?php if (isset($registered) && $registered): ?>
+                    <div class="panel panel--topaz panel--rounded text--center text--bold flow flow--large">
+                        <div class="text--bigger">
+                            <?= icon('check') ?>
+                        </div>
+
+                        <p>
+                            C’est noté&nbsp;! Je vous écrirai pour vous proposer de tester l’offre pro en avant-première, puis lors de son lancement.
+                        </p>
+
+                        <p>
+                            Vous avez des besoins particuliers&nbsp;?
+                            N’hésitez pas à <a href="<?= url('contact') ?>">m’écrire</a>.
+                        </p>
+                    </div>
+                <?php else: ?>
+                    <form
+                        method="post"
+                        action="<?= url('create pro registration') ?>#inscription"
+                        class="flow flow--large"
+                    >
+                        <?php if ($form->isInvalid('@base')): ?>
+                            <p class="form-group__error">
+                                Erreur&nbsp;:
+                                <?= $form->error('@base') ?>
+                            </p>
+                        <?php endif; ?>
+
+                        <div class="flow flow--small">
+                            <label for="email">
+                                Votre adresse courriel
+                            </label>
+
+                            <p class="form-group__caption">
+                                Je l’utiliserai uniquement pour vous proposer de tester l’offre pro et vous prévenir lors de son lancement.
+                            </p>
+
+                            <?php if ($form->isInvalid('email')): ?>
+                                <p class="form-group__error" id="email-error">
+                                    Erreur&nbsp;:
+                                    <?= $form->error('email') ?>
+                                </p>
+                            <?php endif; ?>
+
+                            <input
+                                id="email"
+                                name="email"
+                                type="email"
+                                value="<?= protect($form->email) ?>"
+                                required
+                                <?php if ($form->isInvalid('email')): ?>
+                                    aria-invalid="true"
+                                    aria-errormessage="email-error"
+                                <?php endif; ?>
+                            />
+                        </div>
+
+                        <div class="flow flow--small">
+                            <label for="organisation">
+                                Votre structure
+                                <span class="text--normal">(facultatif)</span>
+                            </label>
+
+                            <?php if ($form->isInvalid('organisation')): ?>
+                                <p class="form-group__error" id="organisation-error">
+                                    Erreur&nbsp;:
+                                    <?= $form->error('organisation') ?>
+                                </p>
+                            <?php endif; ?>
+
+                            <input
+                                id="organisation"
+                                name="organisation"
+                                type="text"
+                                value="<?= protect($form->organisation) ?>"
+                                <?php if ($form->isInvalid('organisation')): ?>
+                                    aria-invalid="true"
+                                    aria-errormessage="organisation-error"
+                                <?php endif; ?>
+                            />
+                        </div>
+
+                        <div>
+                            <altcha-widget challenge="<?= url('altcha') ?>"></altcha-widget>
+                        </div>
+
+                        <div class="text--center">
+                            <button type="submit" class="button--primary">
+                                Recevoir l’annonce
+                            </button>
+                        </div>
+
+                        <input type="hidden" name="csrf_token" value="<?= $form->csrfToken() ?>">
+                    </form>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="panel panel--grey">
+    <div class="wrapper wrapper--text wrapper--center flow flow--large">
+        <h2>
+            Questions fréquentes
+        </h2>
+
+        <div>
+            <details class="accordion">
+                <summary class="accordion__title">
+                    Le prix libre va-t-il disparaître&nbsp;?
+                </summary>
+
+                <div class="accordion__body">
+                    <p>
+                        Non, il restera disponible pour tout le monde, structures comprises.
+                        L’offre pro s’adressera à celles qui ont besoin de fonctionnalités et d’une facturation adaptées.
+                    </p>
+                </div>
+            </details>
+
+            <details class="accordion">
+                <summary class="accordion__title">
+                    Je travaille seul·e, l’offre pro me concerne-t-elle&nbsp;?
+                </summary>
+
+                <div class="accordion__body">
+                    <p>
+                        Le prix libre vous convient très bien&nbsp;: l’offre pro est pensée pour les équipes qui font de la veille à plusieurs.
+                    </p>
+                </div>
+            </details>
+
+            <details class="accordion">
+                <summary class="accordion__title">
+                    Ma structure peut-elle utiliser Flus dès maintenant&nbsp;?
+                </summary>
+
+                <div class="accordion__body">
+                    <p>
+                        Oui, votre structure peut déjà utiliser Flus à prix libre et payer en une seule fois pour l’ensemble de ses membres.
+                        <a href="<?= url('pricing') ?>">Découvrir les tarifs</a>.
+                    </p>
+                </div>
+            </details>
+        </div>
+    </div>
+</section>

@@ -3,3 +3,25 @@
         flex-direction: row-reverse;
     }
 }
+
+.features__summary {
+    flex-wrap: wrap;
+}
+
+.features__item h3::after {
+    content: "";
+
+    display: block;
+    width: 2rem;
+    margin-top: var(--space-small);
+
+    border-bottom: 2px solid var(--color-green-topaz);
+}
+
+.features__grid {
+    grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+}
+
+.features__card {
+    --card-background-color: var(--color-white);
+}

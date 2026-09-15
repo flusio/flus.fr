@@ -1,9 +1,9 @@
 <?php
     $this->layout('base.phtml', [
-        'title' => 'Flus en 6 fonctionnalités · Flus',
+        'title' => 'Fonctionnalités · Flus',
         'canonical' => url_full('features'),
         'current_page' => 'features',
-        'description' => 'Flux Web, collections, recherche, collaboratif, mobile, extension : Flus a tout ce qu’il vous faut pour une veille efficace.',
+        'description' => 'Suivre, lire, conserver, partager : découvrez comment Flus vous aide à faire votre veille.',
         'og' => [
             'type' => 'website',
             'image' => url_full_static('og-card.png'),
@@ -16,14 +16,12 @@
     <ul class="list--nostyle">
         <li class="breadcrumb__item">
             <a class="breadcrumb__link" href="<?= url('home') ?>" rel="home">
-
                 Accueil
             </a>
         </li>
 
         <li class="breadcrumb__item">
             <a class="breadcrumb__link" aria-current="page" href="<?= url('features') ?>">
-
                 Fonctionnalités
             </a>
         </li>
@@ -33,19 +31,49 @@
 <section class="panel panel--primary panel--header">
     <div class="wrapper wrapper--larger wrapper--center cols cols--gap-larger">
         <div class="col--size6 wrapper wrapper--text flow flow--large">
-            <h1>Flus en 6 fonctionnalités</h1>
+            <h1>Les fonctionnalités de Flus</h1>
 
             <p>
-                Flux Web, collections, recherche, collaboratif, mobile, extension&nbsp;:
-                Flus a tout ce qu’il vous faut pour une veille efficace.
+                Flus combine l’agrégation de flux, les listes « à lire plus tard » et le partage de signets pour vous éviter d’avoir à jongler entre trop d’outils.
             </p>
 
-            <p>
-                <a class="button button--primary" href="#liste">
-                    <?= icon('arrow-left', 'rotate180') ?>
-                    Découvrir les fonctionnalités
-                </a>
-            </p>
+            <nav aria-label="Sommaire des fonctionnalités">
+                <ul class="list--nostyle cols cols--always cols--gap-small features__summary">
+                    <li>
+                        <a class="button button--primary" href="#suivre">
+                            <?= icon('feed') ?>
+                            Suivre
+                        </a>
+                    </li>
+
+                    <li>
+                        <a class="button button--primary" href="#lire">
+                            <?= icon('reading') ?>
+                            Lire
+                        </a>
+                    </li>
+
+                    <li>
+                        <a class="button button--primary" href="#conserver">
+                            <?= icon('collection') ?>
+                            Conserver
+                        </a>
+                    </li>
+
+                    <li>
+                        <a class="button button--primary" href="#partager">
+                            <?= icon('share') ?>
+                            Partager
+                        </a>
+                    </li>
+
+                    <li>
+                        <a class="button button--ghost" href="#et-aussi">
+                            Et aussi…
+                        </a>
+                    </li>
+                </ul>
+            </nav>
         </div>
 
         <div class="col--size6 text--right">
@@ -58,25 +86,17 @@
     </div>
 </section>
 
-<section class="panel" id="liste">
+<section class="panel" id="suivre">
     <div class="wrapper wrapper--larger wrapper--center flow flow--large">
         <div class="panel panel--grey panel--rounded cols cols--center cols--gap-larger">
             <div class="col--size5 wrapper wrapper--text flow flow--large">
                 <h2>
-                    Veille éditorialisée
+                    <?= icon('feed') ?>
+                    Suivre vos sources
                 </h2>
 
                 <p>
-                    Rangez les liens glanés sur le Web dans des collections
-                    thématiques et commentez-les. Flus vous aide à retrouver
-                    rapidement les articles et sites que vous avez consultés par le
-                    passé grâce à son moteur de recherche.
-                </p>
-
-                <p>
-                    <a class="button" href="https://flus.fr/carnet/editorialisation-de-contenus.html">
-                        Qu’est-ce que l’éditorialisation ?
-                    </a>
+                    Suivez les sites, blogs, podcasts et chaînes vidéo qui comptent pour vous, directement dans Flus.
                 </p>
             </div>
 
@@ -84,54 +104,70 @@
                 <img
                     class="illustration"
                     loading="lazy"
-                    alt="L’écran Lecture de Flus affiche trois onglets : Journal, Signets et Liens lus."
+                    alt="L’écran Lecture de Flus affiche trois onglets : Journal, Signets et Liens lus."
                     src="<?= url_static('screenshots/onglet-lecture.webp') ?>"
                 />
             </div>
         </div>
 
+        <ul class="list--nostyle grid features__grid">
+            <li class="features__item flow flow--small">
+                <h3>Flux Web</h3>
+
+                <p>
+                    Flus lit les flux <abbr>RSS</abbr>, Atom et JSON.
+                    Renseignez l’adresse d’un site, d’un podcast ou d’une chaîne YouTube&nbsp;: il détecte le flux tout seul.
+                </p>
+            </li>
+
+            <li class="features__item flow flow--small">
+                <h3>Collections Flus</h3>
+
+                <p>
+                    Suivez la veille publiée par les autres utilisateurices de Flus au même titre que n’importe quel autre site.
+                </p>
+            </li>
+
+            <li class="features__item flow flow--small">
+                <h3>Fils de veille</h3>
+
+                <p>
+                    Regroupez vos sources par sujet et compartimentez votre veille professionnelle et personnelle.
+                </p>
+            </li>
+
+            <li class="features__item flow flow--small">
+                <h3>Filtres et vues</h3>
+
+                <p>
+                    Filtrez vos fils —&nbsp;par date, mots-clés, statut de lecture ou source&nbsp;— et enregistrez ces filtres sous forme de vues réutilisables.
+                </p>
+            </li>
+
+            <li class="features__item flow flow--small">
+                <h3>Import <abbr>OPML</abbr></h3>
+
+                <p>
+                    Vous venez d’un autre agrégateur&nbsp;?
+                    Importez vos abonnements depuis un fichier <abbr>OPML</abbr>.
+                </p>
+            </li>
+        </ul>
+    </div>
+</section>
+
+<section class="panel" id="lire">
+    <div class="wrapper wrapper--larger wrapper--center flow flow--large">
         <div class="features__feature--reverse panel panel--topaz panel--rounded cols cols--center cols--gap-larger">
             <div class="col--size5 wrapper wrapper--text flow flow--large">
                 <h2>
-                    Veille publique
+                    <?= icon('reading') ?>
+                    Lire à votre rythme
                 </h2>
 
                 <p>
-                    Vous collectionnez les liens à ne plus savoir quoi en
-                    faire&nbsp;? Vous pouvez partager vos collections avec le
-                    reste du monde&nbsp;! Qui sait, le dernier article que vous
-                    avez lu pourrait intéresser d’autres personnes&nbsp;?
-                </p>
-            </div>
-
-            <div class="col--size7 text--center">
-                <img
-                    class="illustration"
-                    loading="lazy"
-                    alt="Un profil dans Flus affiche trois liens partagés et une collection publiée."
-                    src="<?= url_static('screenshots/profil.webp') ?>"
-                />
-            </div>
-        </div>
-
-        <div class="panel panel--grey panel--rounded cols cols--center cols--gap-larger">
-            <div class="col--size5 wrapper wrapper--text flow flow--large">
-                <h2>
-                    Lecteur de flux
-                </h2>
-
-                <p>
-                    Ajoutez les flux Web de vos sites, chaînes vidéos et
-                    podcasts favoris, puis recevez les actualités directement
-                    dans Flus. Son journal est conçu pour que vous ne soyez
-                    jamais submergé·e par les informations et mettre en avant
-                    celles qui vous intéressent.
-                </p>
-
-                <p>
-                    <a class="button" href="https://flus.fr/carnet/ce-qui-differencie-flus-des-autres-agregateurs-de-flux.html">
-                        Flus, pas un simple agrégateur ?
-                    </a>
+                    Vous vous sentez submergé·e par tout ce que vous avez à lire&nbsp;?
+                    Flus est conçu pour vous rendre la tâche plus légère.
                 </p>
             </div>
 
@@ -145,74 +181,71 @@
             </div>
         </div>
 
-        <div class="features__feature--reverse panel panel--primary panel--rounded cols cols--center cols--gap-larger">
-            <div class="col--size5 wrapper wrapper--text flow flow--large">
-                <h2>
-                    Collections collaboratives
-                </h2>
+        <ul class="list--nostyle grid features__grid">
+            <li class="features__item flow flow--small">
+                <h3>Journal</h3>
 
                 <p>
-                    Faire sa veille, c’est bien&nbsp;; la faire à plusieurs,
-                    c’est mieux&nbsp;! Flus vous permet de partager vos
-                    collections avec les autres personnes présentes sur la
-                    plateforme. Il ne vous reste plus qu’à proposer à vos
-                    collègues et camarades de vous rejoindre.
+                    Une sélection des liens les plus récents issus de vos sources.
+                    Videz-le avant de pouvoir obtenir une nouvelle sélection.
                 </p>
-            </div>
+            </li>
 
-            <div class="col--size7 text--center">
-                <img
-                    class="illustration"
-                    loading="lazy"
-                    alt="Une fenêtre pour partager l’accès d’une collection avec une utilisateurice de Flus."
-                    src="<?= url_static('screenshots/veille-partagee.webp') ?>"
-                />
-            </div>
-        </div>
+            <li class="features__item flow flow--small">
+                <h3>Temps de lecture</h3>
 
+                <p>
+                    Chaque lien affiche une estimation du temps nécessaire pour le consulter afin de choisir vos lectures selon le temps dont vous disposez.
+                </p>
+            </li>
+
+            <li class="features__item flow flow--small">
+                <h3>Fréquence de publication</h3>
+
+                <p>
+                    Adaptez votre manière de suivre vos sources en fonction de leur fréquence de publication.
+                </p>
+            </li>
+
+            <li class="features__item flow flow--small">
+                <h3>À lire plus tard</h3>
+
+                <p>
+                    Mettez de côté les liens que vous voulez consulter plus tard, qu’ils viennent de vos sources ou d’ailleurs sur le Web.
+                </p>
+            </li>
+
+            <li class="features__item flow flow--small">
+                <h3>Liens lus</h3>
+
+                <p>
+                    Tout ce que vous marquez comme lu est mémorisé&nbsp;; vous pourrez facilement retrouver les articles dont vous vous souvenez vaguement.
+                </p>
+            </li>
+
+            <li class="features__item flow flow--small">
+                <h3>Liens ignorés</h3>
+
+                <p>
+                    Tout n’a pas vocation à être lu&nbsp;: libérez votre Journal et vos fils en ignorant les liens qui ne vous intéressent pas.
+                </p>
+            </li>
+        </ul>
+    </div>
+</section>
+
+<section class="panel" id="conserver">
+    <div class="wrapper wrapper--larger wrapper--center flow flow--large">
         <div class="panel panel--grey panel--rounded cols cols--center cols--gap-larger">
             <div class="col--size5 wrapper wrapper--text flow flow--large">
                 <h2>
-                    Accès mobile
+                    <?= icon('collection') ?>
+                    Conserver ce qui compte
                 </h2>
 
                 <p>
-                    Ayez Flus toujours dans votre poche et emportez-le avec vous
-                    dans les transports. Son interface adaptative en fait le
-                    compagnon idéal pour vos longs trajets en bus.
+                    Rangez les liens trouvés sur le Web dans des collections thématiques, annotez-les et préparez vos prochaines productions.
                 </p>
-
-                <p>
-                    <a class="button" href="https://flus.fr/carnet/flus-mobile.html">
-                        Utiliser Flus sur mobile
-                    </a>
-                </p>
-            </div>
-
-            <div class="col--size7 text--center">
-                <img
-                    class="illustration"
-                    loading="lazy"
-                    alt="L’onglet Lecture de Flus sur mobile. Trois liens sont affichés en colonne."
-                    src="<?= url_static('screenshots/mobile.webp') ?>"
-                />
-            </div>
-        </div>
-
-        <div class="features__feature--reverse panel panel--topaz panel--rounded cols cols--center cols--gap-larger">
-            <div class="col--size5 wrapper wrapper--text flow flow--large">
-                <h2>
-                    Extension navigateur
-                </h2>
-
-                <p>
-                    Vous tombez régulièrement sur des articles intéressants en navigant sur les réseaux sociaux ?
-                    Grâce à l’extension, un clic suffit pour l’enregistrer dans Flus, et à peine plus pour prendre quelques notes et taguer le lien.
-                </p>
-
-                <a class="button button--primary" href="https://flus.fr/carnet/comment-utiliser-l-extension-navigateur.html">
-                    Tutoriel pour utiliser l’extension
-                </a>
             </div>
 
             <div class="col--size7 text--center">
@@ -224,5 +257,227 @@
                 />
             </div>
         </div>
+
+        <ul class="list--nostyle grid features__grid">
+            <li class="features__item flow flow--small">
+                <h3>Collections</h3>
+
+                <p>
+                    Créez des collections thématiques et rangez-y vos liens pour les retrouver facilement.
+                </p>
+            </li>
+
+            <li class="features__item flow flow--small">
+                <h3>Bloc-note</h3>
+
+                <p>
+                    Ajoutez des notes à vos liens pour mémoriser ce que vous en retenez.
+                    Mettez-les en forme grâce à la syntaxe Markdown.
+                </p>
+            </li>
+
+            <li class="features__item flow flow--small">
+                <h3>Tags</h3>
+
+                <p>
+                    Associez des #tags à vos liens, et créez des ponts naturellement entre différents sujets.
+                </p>
+            </li>
+
+            <li class="features__item flow flow--small">
+                <h3>Origine des liens</h3>
+
+                <p>
+                    Flus retient automatiquement l’origine des liens que vous enregistrez, mais vous pouvez aussi la préciser vous-même.
+                </p>
+            </li>
+
+            <li class="features__item flow flow--small">
+                <h3>Personnalisation</h3>
+
+                <p>
+                    Personnalisez la description et l’illustration de vos collections, de vos liens et de vos fils pour les distinguer en un coup d’œil.
+                </p>
+            </li>
+        </ul>
+    </div>
+</section>
+
+<section class="panel" id="partager">
+    <div class="wrapper wrapper--larger wrapper--center flow flow--large">
+        <div class="features__feature--reverse panel panel--primary panel--rounded cols cols--center cols--gap-larger">
+            <div class="col--size5 wrapper wrapper--text flow flow--large">
+                <h2>
+                    <?= icon('share') ?>
+                    Partager votre veille
+                </h2>
+
+                <p>
+                    Faire sa veille, c’est bien&nbsp;; la faire à plusieurs, c’est mieux&nbsp;!
+                    Votre veille est privée par défaut, mais vous pouvez la publier sur votre profil, ou collaborer à plusieurs pour construire une veille commune.
+                </p>
+            </div>
+
+            <div class="col--size7 text--center">
+                <img
+                    class="illustration"
+                    loading="lazy"
+                    alt="Un profil dans Flus affiche trois liens partagés et une collection publiée."
+                    src="<?= url_static('screenshots/profil.webp') ?>"
+                />
+            </div>
+        </div>
+
+        <ul class="list--nostyle grid features__grid">
+            <li class="features__item flow flow--small">
+                <h3>Veille collaborative</h3>
+
+                <p>
+                    Donnez accès à vos collections et fils à d’autres personnes inscrites sur Flus, et construisez une veille commune.
+                </p>
+            </li>
+
+            <li class="features__item flow flow--small">
+                <h3>Profil public</h3>
+
+                <p>
+                    Votre profil liste les liens, les collections et les fils que vous avez choisi de rendre publics.
+                </p>
+            </li>
+
+            <li class="features__item flow flow--small">
+                <h3>Liens masqués</h3>
+
+                <p>
+                    Gardez certains liens pour vous, même dans une collection publique&nbsp;: vous avez la main sur ce qui est publié.
+                </p>
+            </li>
+
+            <li class="features__item flow flow--small">
+                <h3>Flux Web en sortie</h3>
+
+                <p>
+                    Chaque profil, collection publique et fil public dispose de son flux Web&nbsp;: on peut suivre votre veille depuis n’importe quel agrégateur.
+                </p>
+            </li>
+
+            <li class="features__item flow flow--small">
+                <h3>Partage vers Mastodon</h3>
+
+                <p>
+                    Connectez votre compte Mastodon et publiez votre veille sans quitter Flus.
+                </p>
+            </li>
+        </ul>
+    </div>
+</section>
+
+<section class="panel panel--grey" id="et-aussi">
+    <div class="wrapper wrapper--large wrapper--center flow flow--larger">
+        <div class="wrapper wrapper--text wrapper--center text--center flow">
+            <h2>
+                Et aussi…
+            </h2>
+        </div>
+
+        <div class="grid features__grid">
+            <div class="card features__card flow">
+                <h3>
+                    <?= icon('search') ?>
+                    Recherche
+                </h3>
+
+                <p>
+                    Recherche dans vos liens par mots, <abbr>URL</abbr>, #tags, ou avec des filtres avancés sur les notes, dates, temps de lecture, etc.
+                </p>
+            </div>
+
+            <div class="card features__card flow">
+                <h3>
+                    <?= icon('plugin') ?>
+                    Outils
+                </h3>
+
+                <p>
+                    <a href="https://flus.fr/carnet/comment-utiliser-l-extension-navigateur.html">Une extension</a> pour Firefox, Firefox mobile et Chrome, ou un bookmarklet pour les autres navigateurs.
+                </p>
+            </div>
+
+            <div class="card features__card flow">
+                <h3>
+                    <?= icon('color-palette') ?>
+                    Confort
+                </h3>
+
+                <p>
+                    Thème clair ou sombre.
+                    Police, taille du texte et mode compact configurables.
+                    Interface en français et en anglais.
+                </p>
+            </div>
+
+            <div class="card features__card flow">
+                <h3>
+                    <?= icon('smartphone') ?>
+                    Mobile
+                </h3>
+
+                <p>
+                    Interface adaptée sur mobile, installable sur votre écran d’accueil.
+                </p>
+            </div>
+
+            <div class="card features__card flow">
+                <h3>
+                    <?= icon('eye-hide') ?>
+                    Vie privée
+                </h3>
+
+                <p>
+                    Détection automatique des paramètres de pistage dans les <abbr>URL</abbr>.
+                </p>
+            </div>
+
+            <div class="card features__card flow">
+                <h3>
+                    <?= icon('sync') ?>
+                    Export
+                </h3>
+
+                <p>
+                    Export complet de vos données dans un format ouvert.
+                </p>
+            </div>
+
+            <div class="card features__card flow">
+                <h3>
+                    <?= icon('cog') ?>
+                    <abbr>API</abbr>
+                </h3>
+
+                <p>
+                    Connectez Flus à vos propres outils grâce à son <abbr>API</abbr>, <a href="https://github.com/flusio/Flus/blob/main/docs/api/README.md">documentée sur GitHub</a>.
+                </p>
+            </div>
+
+            <div class="card features__card flow">
+                <h3>
+                    <?= icon('code') ?>
+                    Logiciel libre
+                </h3>
+
+                <p>
+                    Flus est <a href="https://github.com/flusio/Flus">un logiciel libre</a>&nbsp;: vous pouvez l’installer sur votre propre serveur.
+                </p>
+            </div>
+        </div>
+
+        <?php /*
+        <p class="text--center">
+            <a class="button" href="<?= url_full('home') ?>carnet/feuille-de-route-2027.html">
+                Voir la feuille de route
+            </a>
+        </p>
+         */ ?>
     </div>
 </section>

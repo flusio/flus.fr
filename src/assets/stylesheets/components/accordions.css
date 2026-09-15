@@ -17,6 +17,7 @@
     background-position: right 0 top 50%;
     background-size: var(--accordion-icon-size);
 
+    cursor: pointer;
     list-style: none;
 }
 
@@ -38,6 +39,7 @@
 }
 
 .accordion__body {
+    margin-top: calc(-1 * var(--space-large));
     padding-top: var(--space-large);
     padding-bottom: var(--space-large);
 }

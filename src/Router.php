@@ -14,12 +14,15 @@ class Router
 
         $router->addRoute('GET', '/', 'Home#index', 'home');
         $router->addRoute('GET', '/tarifs', 'Home#pricing', 'pricing');
+        $router->addRoute('GET', '/pro', 'Home#pro', 'pro offer');
+        $router->addRoute('POST', '/pro', 'Home#createProRegistration', 'create pro registration');
         $router->addRoute('GET', '/fonctionnalites', 'Home#features', 'features');
         $router->addRoute('GET', '/financement', 'Home#funding', 'funding');
         $router->addRoute('GET', '/credits', 'Home#credits', 'credits');
         $router->addRoute('GET', '/contact', 'Home#contact', 'contact');
         $router->addRoute('POST', '/contact', 'Home#sendContactMessage', 'send contact message');
         $router->addRoute('GET', '/securite', 'Home#security', 'security');
+        $router->addRoute('GET', '/kit-presse', 'Home#pressKit', 'press kit');
         $router->addRoute('GET', '/plan-du-site', 'Home#sitemap', 'sitemap');
 
         $router->addRoute('GET', '/robots.txt', 'Home#robots', 'robots.txt');
@@ -77,6 +80,13 @@ class Router
         $router->addRoute('GET', '/admin/accounts', 'admin/Accounts#index', 'admin accounts');
         $router->addRoute('GET', '/admin/accounts/:id', 'admin/Accounts#show', 'admin account');
         $router->addRoute('POST', '/admin/accounts/:id', 'admin/Accounts#update', 'update admin account');
+        $router->addRoute('GET', '/admin/pro-registrations', 'admin/ProRegistrations#index', 'admin pro registrations');
+        $router->addRoute(
+            'POST',
+            '/admin/pro-registrations/:id/delete',
+            'admin/ProRegistrations#delete',
+            'delete admin pro registration'
+        );
         $router->addRoute(
             'GET',
             '/admin/accounts/:id/payments/new',

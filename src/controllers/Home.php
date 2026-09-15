@@ -148,8 +148,45 @@ class Home
         ]);
     }
 
-    #[Controller\AfterAction(only: ['contact', 'sendContactMessage'])]
-    public function setContactCSPHeaders(Request $request, Response $response): void
+    public function pro(Request $request): Response
+    {
+        $form = new forms\ProRegistration(model: new models\ProRegistration());
+
+        return Response::ok('home/pro.phtml', [
+            'form' => $form,
+        ]);
+    }
+
+    public function createProRegistration(Request $request): Response
+    {
+        $form = new forms\ProRegistration(model: new models\ProRegistration());
+
+        $form->handleRequest($request);
+
+        if (!$form->validate()) {
+            return Response::badRequest('home/pro.phtml', [
+                'form' => $form,
+            ]);
+        }
+
+        $pro_registration = $form->model();
+
+        $existing_pro_registration = models\ProRegistration::findBy(['email' => $pro_registration->email]);
+        if ($existing_pro_registration) {
+            $existing_pro_registration->organisation = $pro_registration->organisation;
+            $existing_pro_registration->save();
+        } else {
+            $pro_registration->save();
+        }
+
+        return Response::ok('home/pro.phtml', [
+            'registered' => true,
+            'form' => $form,
+        ]);
+    }
+
+    #[Controller\AfterAction(only: ['contact', 'sendContactMessage', 'pro', 'createProRegistration'])]
+    public function setAltchaCSPHeaders(Request $request, Response $response): void
     {
         $response->setContentSecurityPolicy('worker-src', "'self' blob:");
         $response->setContentSecurityPolicy('style-src-elem', "'self' 'unsafe-inline'");
@@ -163,5 +200,10 @@ class Home
     public function securityTxt(Request $request): Response
     {
         return Response::ok('home/security.txt');
+    }
+
+    public function pressKit(Request $request): Response
+    {
+        return Response::ok('home/press_kit.phtml');
     }
 }

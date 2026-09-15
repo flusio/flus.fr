@@ -138,7 +138,7 @@
 
                 <div class="col--extend text--right no-mobile">
                     <a class="button button--primary" href="https://app.flus.fr/registration">
-                        <?= icon('arrow-left', 'rotate180') ?>
+                        <?= icon('arrow-right') ?>
                         S’inscrire
                     </a>
 
@@ -154,112 +154,194 @@
 
             <footer class="layout__footer" role="contentinfo">
                 <div class="wrapper wrapper--larger wrapper--center flow flow--large">
-                    <div class="cols cols--center cols--gap-large">
-                        <a href="<?= url('home') ?>" rel="home" title="Flus - Accueil">
-                            <img
-                                class="footer__logo"
-                                alt="Flus"
-                                src="<?= url_static('logo.svg') ?>"
-                            />
-                        </a>
+                    <div class="cols cols--center cols--gap">
+                        <div class="col--extend flow flow--small">
+                            <a href="<?= url('home') ?>" rel="home" title="Flus - Accueil">
+                                <img
+                                    class="footer__logo"
+                                    alt="Flus"
+                                    src="<?= url_static('logo.svg') ?>"
+                                />
+                            </a>
 
-                        <ul class="list--nostyle list--inline col--extend cols cols--center cols--hcenter cols--gap">
-                            <li>
-                                <a class="footer__link" href="<?= url('features') ?>">
-                                    Fonctionnalités
-                                </a>
-                            </li>
+                            <p class="footer__tagline">
+                                Flus est un service en ligne libre pour collecter, organiser et partager votre veille.
+                            </p>
 
-                            <li>
-                                <a class="footer__link" href="<?= url('pricing') ?>">
-                                    Tarifs
-                                </a>
-                            </li>
-
-                            <li>
-                                <a class="footer__link" href="<?= url_full('home') ?>carnet/">
-                                    Blog
-                                </a>
-                            </li>
-
-                            <li>
-                                <a class="footer__link" href="<?= url('contact') ?>">
-                                    Contact
-                                </a>
-                            </li>
-                        </ul>
+                            <p class="text--small">
+                                © 2019&nbsp;–&nbsp;<?= \Minz\Time::now()->format('Y') ?> Flus
+                            </p>
+                        </div>
 
                         <p>
                             <a class="button button--primary" href="https://app.flus.fr/registration">
-                                <?= icon('arrow-left', 'rotate180') ?>
+                                <?= icon('arrow-right') ?>
                                 S’inscrire sur Flus
                             </a>
                         </p>
                     </div>
 
-                    <hr class="footer__separator">
+                    <nav class="footer__sections" aria-label="Menu de pied de page">
+                        <div class="footer__section footer__section--follow flow flow--smaller">
+                            <h2 class="footer__title">
+                                Suivre
+                            </h2>
 
-                    <ul class="list--nostyle list--inline text--small text--center">
-                        <li>
-                            <a class="footer__link" href="<?= url('credits') ?>">
-                                Crédits
-                            </a>
-                        </li>
+                            <ul class="list--nostyle">
+                                <li>
+                                    <a class="footer__link" href="https://app.flus.fr/collections/1697725479256195983">
+                                        <img class="footer__icon" alt="" src="<?= url_static('flus.svg') ?>" />
+                                        Flus
+                                    </a>
+                                </li>
 
-                        <li>
-                            <a class="footer__link" href="<?= url('security') ?>">
-                                Sécurité
-                            </a>
-                        </li>
+                                <li>
+                                    <a class="footer__link" rel="me" href="https://piaille.fr/@flus">
+                                        <img class="footer__icon" alt="" src="<?= url_static('icon-mastodon.svg') ?>" />
+                                        Mastodon
+                                    </a>
+                                </li>
 
-                        <li>
-                            <a class="footer__link" href="<?= url('legal') ?>">
-                                Informations légales
-                            </a>
-                        </li>
+                                <li>
+                                    <a class="footer__link" rel="me" href="https://www.linkedin.com/company/flus-fr">
+                                        <img class="footer__icon" alt="" src="<?= url_static('icon-linkedin.svg') ?>" />
+                                        LinkedIn
+                                    </a>
+                                </li>
 
-                        <li>
-                            <a class="footer__link" href="<?= url('sitemap') ?>">
-                                Plan du site
-                            </a>
-                        </li>
+                                <li>
+                                    <a class="footer__link" rel="me" href="https://github.com/flusio">
+                                        <img class="footer__icon" alt="" src="<?= url_static('icon-github.svg') ?>" />
+                                        GitHub
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
 
-                        <li>
-                            <a class="footer__link" href="https://github.com/flusio">
-                                Code source
-                            </a>
-                        </li>
+                        <div class="flow flow--large">
+                            <div class="footer__section flow flow--smaller">
+                                <h2 class="footer__title">
+                                    Pour commencer
+                                </h2>
 
-                        <li>
-                            <a class="footer__link" href="https://status.flus.fr">
-                                Statut des services
-                            </a>
-                        </li>
-                    </ul>
+                                <ul class="list--nostyle">
+                                    <li>
+                                        <a class="footer__link" href="<?= url('pricing') ?>">
+                                            Tarifs
+                                        </a>
+                                    </li>
 
-                    <p class="text--center">
-                        Retrouvez Flus sur
+                                    <li>
+                                        <a class="footer__link" href="<?= url('pro offer') ?>">
+                                            Offre pro
+                                        </a>
+                                    </li>
 
-                        <a class="footer__link" rel="me" href="https://www.linkedin.com/company/flus-fr">
-                            <img width="25" alt="" src="<?= url_static('icon-linkedin.svg') ?>" />
-                            LinkedIn
-                        </a>
+                                    <li>
+                                        <a class="footer__link" href="https://demo.flus.fr/">
+                                            Démo
+                                        </a>
+                                    </li>
 
-                        et
+                                    <li>
+                                        <a class="footer__link" href="https://app.flus.fr/login">
+                                            Se connecter
+                                        </a>
+                                    </li>
 
-                        <a class="footer__link" rel="me" href="https://piaille.fr/@flus">
-                            <img width="25" alt="" src="<?= url_static('icon-mastodon.svg') ?>" />
-                            Mastodon
-                        </a>
-                    </p>
+                                    <li>
+                                        <a class="footer__link" href="<?= url_full('home') ?>carnet/comment-utiliser-l-extension-navigateur.html">
+                                            Extension navigateur
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
 
-                    <p class="footer__license text--small text--center">
-                        Licence libre
+                            <div class="footer__section flow flow--smaller">
+                                <h2 class="footer__title">
+                                    Découvrir
+                                </h2>
 
-                        <a href="https://github.com/flusio/Flus/blob/main/LICENSE.txt">
-                            AGPL-3.0
-                        </a>
-                    </p>
+                                <ul class="list--nostyle">
+                                    <li>
+                                        <a class="footer__link" href="<?= url('features') ?>">
+                                            Fonctionnalités
+                                        </a>
+                                    </li>
+
+                                    <?php /*
+                                    <li>
+                                        <a class="footer__link" href="<?= url_full('home') ?>carnet/feuille-de-route-2027.html">
+                                            Feuille de route
+                                        </a>
+                                    </li>
+                                    */ ?>
+
+                                    <li>
+                                        <a class="footer__link" href="<?= url_full('home') ?>carnet/">
+                                            Blog
+                                        </a>
+                                    </li>
+
+                                    <li>
+                                        <a class="footer__link" href="https://github.com/flusio/Flus">
+                                            Code source
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="footer__section flow flow--smaller">
+                            <h2 class="footer__title">
+                                Informations
+                            </h2>
+
+                            <ul class="list--nostyle">
+                                <li>
+                                    <a class="footer__link" href="<?= url('contact') ?>">
+                                        Contact
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a class="footer__link" href="<?= url('press kit') ?>">
+                                        Kit de presse
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a class="footer__link" href="<?= url('credits') ?>">
+                                        Crédits
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a class="footer__link" href="<?= url('security') ?>">
+                                        Sécurité
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a class="footer__link" href="https://status.flus.fr">
+                                        Statut des services
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a class="footer__link" href="<?= url('legal') ?>">
+                                        Informations légales
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a class="footer__link" href="<?= url('sitemap') ?>">
+                                        Plan du site
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </nav>
                 </div>
             </footer>
         </div>

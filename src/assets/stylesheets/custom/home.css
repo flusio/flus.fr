@@ -24,3 +24,85 @@
 .home__panel--advantages {
     padding-top: calc(1.5 * var(--space-larger));
 }
+
+.home__screenshot-panel {
+    padding: var(--space-medium);
+
+    background-color: var(--color-pampas);
+    border-radius: var(--border-radius);
+}
+
+.home__testimonial {
+    --blockquote-color: var(--color-green-rangoon);
+    --blockquote-background-color: var(--color-white);
+    --blockquote-icon-color: var(--color-green-topaz);
+    --blockquote-icon-position: calc(
+            (var(--blockquote-padding-y) - var(--blockquote-icon-size)) /
+            2
+    );
+    --blockquote-icon-size: 1rem;
+    --blockquote-padding-x: var(--space-medium);
+    --blockquote-padding-y: var(--space-large);
+
+    position: relative;
+
+    display: flex;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding: var(--blockquote-padding-y) var(--blockquote-padding-x);
+
+    flex-direction: column;
+
+    color: var(--blockquote-color);
+
+    background-color: var(--blockquote-background-color);
+    border-radius: var(--border-radius);
+}
+
+.home__testimonial::before {
+    content: "";
+
+    position: absolute;
+    top: var(--blockquote-icon-position);
+    left: calc(-1 * var(--blockquote-icon-size) / 2);
+
+    display: block;
+    width: var(--blockquote-icon-size);
+    height: var(--blockquote-icon-size);
+
+    background-color: var(--blockquote-icon-color);
+    mask-image: url("../../icons/block-quote.svg");
+    mask-repeat: no-repeat;
+    mask-position: center;
+    mask-size: cover;
+}
+
+.home__testimonial::after {
+    content: "";
+
+    position: absolute;
+    top: var(--blockquote-padding-y);
+    bottom: var(--blockquote-padding-y);
+    left: -1px;
+
+    display: block;
+    width: 2px;
+
+    background: var(--blockquote-icon-color);
+}
+
+.home__testimonial-quote {
+    margin: 0;
+    padding: 0;
+
+    flex: 1;
+
+    background-color: transparent;
+    border: none;
+    border-radius: 0;
+}
+
+.home__testimonial-author {
+    color: var(--color-corduroy);
+    font-size: var(--font-size-small);
+}

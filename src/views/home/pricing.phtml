@@ -43,7 +43,7 @@
 
             <p>
                 <a class="button button--primary" href="#choisir">
-                    <?= icon('arrow-left', 'rotate180') ?>
+                    <?= icon('arrow-right') ?>
                     Découvrir les tarifs recommandés
                 </a>
             </p>
@@ -130,12 +130,12 @@
         <p class="wrapper wrapper--text wrapper--center text--center">
             <?php if ($account): ?>
                 <a class="button button--primary" href="<?= url('subscription init') ?>">
-                    <?= icon('arrow-left', 'rotate180') ?>
+                    <?= icon('arrow-right') ?>
                     Retour au renouvellement
                 </a>
             <?php else: ?>
                 <a class="button button--primary" href="https://app.flus.fr/registration">
-                    <?= icon('arrow-left', 'rotate180') ?>
+                    <?= icon('arrow-right') ?>
                     Commencer par 1 mois gratuit
                 </a>
             <?php endif; ?>
@@ -147,14 +147,19 @@
     <div class="wrapper wrapper--large wrapper--center flow flow--larger">
         <div class="wrapper wrapper--text wrapper--center text--center flow flow--large">
             <h2>
-                Entreprise, association ou collectivité&nbsp;?
+                Entreprise, association ou université&nbsp;?
             </h2>
 
             <p>
-                Payez en une seule fois pour l’ensemble de vos membres et
-                développez une culture collaborative de la veille dans votre
-                structure. Le prix libre vous est également disponible, sans
-                restriction.
+                Le prix libre vous est déjà accessible, sans restriction.
+                Une offre pro, avec un prix défini et pensée pour les structures, arrive en 2027.
+            </p>
+
+            <p>
+                <a class="button button--primary" href="<?= url('pro offer') ?>">
+                    <?= icon('arrow-right') ?>
+                    Découvrir l’offre pro
+                </a>
             </p>
 
             <div class="text--center">
@@ -192,7 +197,7 @@
             <p>
                 <strong>
                     <a class="button button--primary" href="https://flus.fr/carnet/bilan-2025.html">
-                        <?= icon('arrow-left', 'rotate180') ?>
+                        <?= icon('arrow-right') ?>
                         Lire mon bilan de l’année 2025
                     </a>
                 </strong>

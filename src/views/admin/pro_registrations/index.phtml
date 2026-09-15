@@ -1,0 +1,78 @@
+<?php
+    $this->layout('admin.phtml', [
+        'title' => 'Inscriptions à l’offre pro',
+        'current_page' => 'admin pro registrations',
+    ]);
+?>
+
+<section class="panel">
+    <div class="wrapper flow flow--larger">
+        <div class="cols cols--gap cols--center">
+            <h1 class="col--extend">
+                <?= count($pro_registrations) ?> inscriptions à l’offre pro
+            </h1>
+
+            <?php if ($pro_registrations): ?>
+                <div>
+                    <a class="button" href="<?= url('admin pro registrations', ['format' => 'csv']) ?>">
+                        Exporter en CSV
+                    </a>
+                </div>
+            <?php endif; ?>
+        </div>
+
+        <?php if (isset($error) && $error): ?>
+            <p class="form__error">
+                Erreur&nbsp;:
+                <?= $error ?>
+            </p>
+        <?php endif; ?>
+
+        <?php if ($status === 'pro_registration_deleted'): ?>
+            <p class="panel panel--topaz panel--rounded text--center text--bold">
+                L’inscription a bien été supprimée.
+            </p>
+        <?php endif; ?>
+
+        <?php if ($pro_registrations): ?>
+            <ul class="list--nostyle list--border list--strip list--padded">
+                <?php foreach ($pro_registrations as $pro_registration): ?>
+                    <li class="cols cols--gap cols--center">
+                        <div class="col--extend flow flow--smaller">
+                            <p>
+                                <strong><?= $this->protect($pro_registration->email) ?></strong>
+                                <?php if ($pro_registration->organisation): ?>
+                                    — <?= $this->protect($pro_registration->organisation) ?>
+                                <?php endif; ?>
+                            </p>
+
+                            <p>
+                                Inscription le <?= _d($pro_registration->created_at, 'dd MMMM yyyy') ?>
+                            </p>
+                        </div>
+
+                        <form
+                            method="post"
+                            action="<?= url('delete admin pro registration', ['id' => $pro_registration->id]) ?>"
+                            data-controller="confirm"
+                            data-action="submit->confirm#check"
+                            data-confirm-message-value="Voulez-vous vraiment supprimer l’inscription de <?= $this->protect($pro_registration->email) ?>&nbsp;?"
+                        >
+                            <button type="submit">
+                                Supprimer
+                            </button>
+
+                            <input type="hidden" name="csrf" value="<?= $csrf_token ?>" />
+                        </form>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
+        <?php else: ?>
+            <div class="wrapper wrapper--small">
+                <p class="panel panel--grey panel--rounded text--center text--bold">
+                    Personne ne s’est encore inscrit pour l’offre pro.
+                </p>
+            </div>
+        <?php endif; ?>
+    </div>
+</section>
