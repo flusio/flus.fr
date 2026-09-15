@@ -20,7 +20,7 @@
             </h1>
 
             <p>
-                Collectez, commentez et retrouvez vos liens favoris en un instant.
+                Collectez, organisez et partagez votre veille facilement.
             </p>
 
             <p class="cols cols--gap">
@@ -61,52 +61,62 @@
 
             <p>
                 Flus est le compagnon idéal de votre veille en ligne.<br>
-                Lisez, rangez, commentez, et partagez facilement les contenus
-                qui vous ont intéressés et marqués.
+                Il combine l’agrégation de flux, les listes « à lire plus tard » et le partage de signets pour vous éviter d‘avoir à jongler entre trop d’outils.
             </p>
         </div>
 
-        <div class="cols cols--gap-large">
-            <div class="col--size4 card card--gable">
-                <div class="card__body flow flow--large">
-                    <h3>
-                        Veille enrichie
-                    </h3>
+        <div class="flow flow--large">
+            <div class="cols cols--gap-large">
+                <div class="col--size6 card card--topaz">
+                    <div class="card__body flow flow--large">
+                        <h3 class="text--bold">
+                            1. Suivre
+                        </h3>
 
-                    <p>
-                        Rangez les liens issus de votre veille dans des
-                        collections thématiques, puis commentez-les.
-                        Retrouvez-les ensuite grâce au moteur de recherche
-                        intégré.
-                    </p>
+                        <p>
+                            Suivez des sources telles que des blogs, des podcasts ou des chaînes vidéo (flux RSS/Atom/JSON), ainsi que des collections partagées sur Flus, organisées en fils thématiques.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col--size6 card card--caribbean">
+                    <div class="card__body flow flow--large">
+                        <h3 class="text--bold">
+                            2. Lire
+                        </h3>
+
+                        <p>
+                            Lisez à votre rythme grâce au Journal qui vous propose des liens issus des sources que vous suivez, ainsi qu’aux listes « À lire » et « Liens lus ».
+                        </p>
+                    </div>
                 </div>
             </div>
 
-            <div class="col--size4 card card--topaz">
-                <div class="card__body flow flow--large">
-                    <h3>
-                        Veille apaisée
-                    </h3>
+            <div class="cols cols--gap-large">
+                <div class="col--size6 card card--caribbean">
+                    <div class="card__body flow flow--large">
+                        <h3 class="text--bold">
+                            3. Conserver
+                        </h3>
 
-                    <p>
-                        Ne vous laissez plus inonder de choses à lire. Le
-                        journal se connecte aux flux d’actualité de vos sites
-                        favoris et vous en présente une sélection digeste.
-                    </p>
+                        <p>
+                            Rangez vos liens dans des collections pour les retrouver facilement.
+                            Ajoutez-y vos notes et des #tags pour mémoriser ce que vous en avez pensé et préparer vos prochaines productions.
+                        </p>
+                    </div>
                 </div>
-            </div>
 
-            <div class="col--size4 card card--caribbean">
-                <div class="card__body flow flow--large">
-                    <h3>
-                        Veille adaptée
-                    </h3>
+                <div class="col--size6 card card--gable">
+                    <div class="card__body flow flow--large">
+                        <h3 class="text--bold">
+                            4. Partager
+                        </h3>
 
-                    <p>
-                        Emportez Flus dans votre poche ou utilisez l’extension
-                        navigateur pour accomplir votre veille sans bousculer
-                        vos habitudes.
-                    </p>
+                        <p>
+                            Partagez vos liens, vos collections et vos fils
+                            publiquement sur votre profil pour que d’autres personnes puissent vous suivre, ou en privé pour collaborer avec des personnes en particulier.
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -117,19 +127,25 @@
     <div class="wrapper wrapper--large wrapper--center cols cols--center cols--gap-larger">
         <div class="col--size6 wrapper wrapper--text flow flow--large">
             <h2>
-                Un espace lecture sur-mesure
+                Nouveauté Flus 3.0 : les fils de veille
             </h2>
 
-            <p>
-                Suivez vos sites, podcasts ou encore chaînes YouTube favorites
-                grâce au journal. Rangez vos liens à consulter plus tard dans
-                vos signets, tout en conservant une trace des liens déjà lus.
-            </p>
+            <ul class="flow">
+                <li>Organisez vos sources en fils thématiques pour vous concentrer sur un sujet à la fois.</li>
+                <li>Filtrez leur contenu (date, mot-clés, statut de lecture, sources) et enregistrez vos filtres sous forme de vues réutilisables.</li>
+                <li>Partagez vos fils publiquement, ou en privé pour construire une veille commune avec vos collègues.</li>
+            </ul>
 
-            <p>
+            <p class="flow">
                 <a class="button button--primary" href="<?= url('features') ?>">
                     <?= icon('arrow-left', 'rotate180') ?>
-                    Découvrir plus de fonctionnalités
+                    Toutes les fonctionnalités
+                </a>
+
+                <?php /* TODO: Flus 3.0 is not released yet, update the href when it's done. */ ?>
+                <a class="button" href="#">
+                    <?= icon('arrow-left', 'rotate180') ?>
+                    Les nouveautés de la 3.0
                 </a>
             </p>
         </div>
@@ -155,8 +171,7 @@
             </h2>
 
             <p>
-                La veille est une pratique saine d’information qui touche un
-                vaste public.
+                La veille est une pratique d’information qui touche un vaste public.
             </p>
         </div>
 
@@ -168,10 +183,7 @@
                     </h3>
 
                     <p>
-                        Vous êtes documentaliste, juriste ou encore développeuse,
-                        Flus vous aide à rester à jour dans votre domaine, tout
-                        en faisant bénéficier les autres utilisateurices de
-                        votre expertise en partageant votre propre veille.
+                        Vous êtes documentaliste, juriste ou encore développeuse, Flus vous aide à rester à jour dans votre domaine, tout en faisant bénéficier les autres utilisateurices de votre expertise en partageant votre propre veille.
                     </p>
                 </div>
             </div>
@@ -183,10 +195,8 @@
                     </h3>
 
                     <p>
-                        Que vous soyez militante, syndicaliste ou simple
-                        citoyen soucieux de la société, Flus vous prémâche vos
-                        newsletters et articles de veille. Ne polluez plus
-                        vos canaux militants de liens que personne ne lit.
+                        Que vous soyez militante, syndicaliste ou simple citoyen soucieux de la société, Flus vous prémâche vos newsletters et articles de veille.
+                        Ne polluez plus vos canaux militants de liens que personne ne lit.
                     </p>
                 </div>
             </div>
@@ -198,11 +208,8 @@
                     </h3>
 
                     <p>
-                        Son interface facile d’accès fait de Flus l’outil
-                        idéal pour faire ses premiers pas dans le monde de la
-                        veille. Son prix libre en fait l’allié parfait des
-                        budgets étudiants, tout en sensibilisant au coût d’un
-                        numérique éthique et positif.
+                        Son interface facile d’accès fait de Flus l’outil idéal pour faire ses premiers pas dans le monde de la veille.
+                        Son prix libre en fait l’allié parfait des budgets étudiants, tout en sensibilisant au coût d’un numérique éthique et positif.
                     </p>
                 </div>
             </div>
