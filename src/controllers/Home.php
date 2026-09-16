@@ -152,10 +152,7 @@ class Home
     public function setContactCSPHeaders(Request $request, Response $response): void
     {
         $response->setContentSecurityPolicy('worker-src', "'self' blob:");
-        $response->setContentSecurityPolicy(
-            'style-src-elem',
-            "'self' 'sha256-egofkfASsSTkzuyfBiXWBobV9ZDK4UIMKiNlvLr9nNE=' 'unsafe-hashes'"
-        );
+        $response->setContentSecurityPolicy('style-src-elem', "'self' 'unsafe-inline'");
     }
 
     public function security(Request $request): Response
