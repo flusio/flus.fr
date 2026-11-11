@@ -34,7 +34,6 @@ class Stripe
 
         return \Stripe\Checkout\Session::create([
             'customer_email' => $account->email,
-            'payment_method_types' => ['card'],
             'line_items' => [[
                 'quantity' => $payment->quantity,
                 'price_data' => [
