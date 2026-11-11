@@ -1,9 +1,17 @@
-SCRIPT_PATH=$(dirname $(realpath -s $0))
-export COMPOSE_FILE=$SCRIPT_PATH/../development/docker-compose.yml
-export USER=$(id -u):$(id -g)
+#!/bin/sh
 
-if [ -z `docker compose ps -q bundler` ] || [ -z `docker ps -q --no-trunc | grep $(docker compose ps -q bundler)` ]; then
-    docker compose run --rm --no-deps bundler npm "$@"
+SCRIPT_PATH=$(dirname "$(realpath -s "$0")")
+export COMPOSE_FILE="$SCRIPT_PATH/../development/docker-compose.yml"
+export USER="$(id -u):$(id -g)"
+
+if [ -t 0 ]; then
+    TTY_OPTION=""
 else
-    docker compose exec bundler npm "$@"
+    TTY_OPTION="-T"
+fi
+
+if [ -z "$(docker compose ps --status running -q bundler)" ]; then
+    docker compose run --rm --no-deps $TTY_OPTION bundler npm "$@"
+else
+    docker compose exec $TTY_OPTION bundler npm "$@"
 fi
