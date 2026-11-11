@@ -19,7 +19,7 @@ class Payment
     use Database\Resource;
     use Validable;
 
-    public const MIN_AMOUNT = 1 * 100;
+    public const MIN_AMOUNT = 100;
     public const MAX_AMOUNT = 120 * 100;
 
     #[Database\Column]
@@ -238,11 +238,10 @@ class Payment
 
         $last_invoice_number = self::findLastInvoiceNumber();
         if ($last_invoice_number) {
-            list(
-                $last_invoice_year,
-                $last_invoice_month,
-                $last_invoice_sequence
-            ) = array_map('intval', explode('-', $last_invoice_number));
+            [$last_invoice_year, $last_invoice_month, $last_invoice_sequence] = array_map(
+                intval(...),
+                explode('-', $last_invoice_number)
+            );
 
             $year = intval($now->format('Y'));
             if ($last_invoice_year === $year) {

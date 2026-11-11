@@ -134,7 +134,7 @@ class Payments
         ) {
             try {
                 $payment_intent->cancel();
-            } catch (\Stripe\Exception\ApiErrorException $e) {
+            } catch (\Stripe\Exception\ApiErrorException) {
                 // do nothing on purpose: the payment was already canceled
                 // by Stripe on their side.
             }

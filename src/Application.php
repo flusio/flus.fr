@@ -21,7 +21,7 @@ class Application
         if ($request->method() === 'CLI') {
             $this->initCli($request);
         } else {
-            $this->initApp($request);
+            $this->initApp();
         }
 
         $response = \Minz\Engine::run($request);
@@ -42,17 +42,15 @@ class Application
         return $response;
     }
 
-    private function initApp(Request $request): void
+    private function initApp(): void
     {
         $router = Router::loadApp();
-
         \Minz\Engine::init($router, [
             'start_session' => \Minz\Configuration::$environment !== 'test',
             'not_found_template' => 'not_found.phtml',
             'internal_server_error_template' => 'internal_server_error.phtml',
             'controller_namespace' => '\\Website\\controllers',
         ]);
-
         \Minz\Template\Simple::addGlobals([
             'environment' => \Minz\Configuration::$environment,
             'csrf_token' => \Website\Csrf::generate(),

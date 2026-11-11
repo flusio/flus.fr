@@ -6,7 +6,7 @@ namespace SpiderBits;
  * @author  Marien Fressinaud <dev@marienfressinaud.fr>
  * @license http://www.gnu.org/licenses/agpl-3.0.en.html AGPL
  */
-class Response
+class Response implements \Stringable
 {
     public int $status;
 
@@ -159,7 +159,7 @@ class Response
     {
         try {
             $data = mb_convert_encoding($this->data, 'utf-8', $this->encoding());
-        } catch (\ValueError $exception) {
+        } catch (\ValueError) {
             $data = mb_convert_encoding($this->data, 'utf-8', 'utf-8');
         }
 
@@ -221,7 +221,6 @@ class Response
         }
 
         $charset = $matches['charset'];
-        $charset = trim($charset, '"');
-        return $charset;
+        return trim($charset, '"');
     }
 }

@@ -51,7 +51,7 @@ class AltchaService
 
     public function verifySolution(string $field): bool
     {
-        list($challenge_data, $solution_data) = $this->parseAltchaField($field);
+        [$challenge_data, $solution_data] = $this->parseAltchaField($field);
 
         $challenge_parameters = Altcha\ChallengeParameters::fromArray($challenge_data['parameters'] ?? []);
 

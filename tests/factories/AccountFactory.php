@@ -20,37 +20,21 @@ class AccountFactory extends Database\Factory
         $faker = \Faker\Factory::create();
 
         return [
-            'id' => function (): string {
-                return \Minz\Random::hex(32);
-            },
+            'id' => fn(): string => \Minz\Random::hex(32),
 
-            'created_at' => function () use ($faker) {
-                return $faker->dateTime;
-            },
+            'created_at' => fn() => $faker->dateTime,
 
-            'expired_at' => function () use ($faker) {
-                return $faker->dateTime;
-            },
+            'expired_at' => fn() => $faker->dateTime,
 
-            'preferred_service' => function () use ($faker) {
-                return $faker->randomElement(['flus', 'freshrss']);
-            },
+            'preferred_service' => fn() => $faker->randomElement(['flus', 'freshrss']),
 
-            'email' => function () use ($faker) {
-                return $faker->email;
-            },
+            'email' => fn() => $faker->email,
 
-            'reminder' => function () use ($faker) {
-                return $faker->boolean;
-            },
+            'reminder' => fn() => $faker->boolean,
 
-            'entity_type' => function () use ($faker) {
-                return $faker->randomElement(['natural', 'legal']);
-            },
+            'entity_type' => fn() => $faker->randomElement(['natural', 'legal']),
 
-            'address_country' => function () use ($faker) {
-                return $faker->randomElement(\Website\utils\Countries::codes());
-            },
+            'address_country' => fn() => $faker->randomElement(\Website\utils\Countries::codes()),
         ];
     }
 }

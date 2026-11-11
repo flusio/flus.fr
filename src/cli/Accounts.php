@@ -18,9 +18,10 @@ class Accounts
     public function index(Request $request): Response
     {
         $accounts = models\Account::listAll();
-        $formatted_accounts = array_map(function (models\Account $account): string {
-            return "{$account->id} {$account->email}";
-        }, $accounts);
+        $formatted_accounts = array_map(
+            fn(models\Account $account): string => "{$account->id} {$account->email}",
+            $accounts
+        );
 
         return Response::text(200, implode("\n", $formatted_accounts));
     }

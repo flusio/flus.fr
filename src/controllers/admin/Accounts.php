@@ -27,9 +27,7 @@ class Accounts extends BaseController
 
         $accounts = models\Account::listWithCountPayments();
 
-        usort($accounts, function ($account1, $account2): int {
-            return $account1->email <=> $account2->email;
-        });
+        usort($accounts, fn($account1, $account2): int => $account1->email <=> $account2->email);
 
         return Response::ok('admin/accounts/index.phtml', [
             'accounts' => $accounts,

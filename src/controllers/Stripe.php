@@ -4,6 +4,7 @@ namespace Website\controllers;
 
 use Minz\Request;
 use Minz\Response;
+use Stripe\Exception\SignatureVerificationException;
 use Website\models;
 
 class Stripe
@@ -29,10 +30,7 @@ class Stripe
 
         try {
             $event = \Stripe\Webhook::constructEvent($payload, $signature, $hook_secret);
-        } catch (\UnexpectedValueException $e) {
-            \Minz\Log::error($e->getMessage());
-            return Response::badRequest();
-        } catch (\Stripe\Exception\SignatureVerificationException $e) {
+        } catch (\UnexpectedValueException | SignatureVerificationException $e) {
             \Minz\Log::error($e->getMessage());
             return Response::badRequest();
         }

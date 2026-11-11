@@ -20,29 +20,17 @@ class PaymentFactory extends Database\Factory
         $faker = \Faker\Factory::create();
 
         return [
-            'id' => function (): string {
-                return \Minz\Random::hex(32);
-            },
+            'id' => fn(): string => \Minz\Random::hex(32),
 
-            'created_at' => function () use ($faker) {
-                return $faker->dateTime;
-            },
+            'created_at' => fn() => $faker->dateTime,
 
-            'is_paid' => function () use ($faker) {
-                return $faker->boolean;
-            },
+            'is_paid' => fn() => $faker->boolean,
 
-            'type' => function () use ($faker) {
-                return $faker->randomElement(['common_pot', 'subscription']);
-            },
+            'type' => fn() => $faker->randomElement(['common_pot', 'subscription']),
 
-            'account_id' => function () {
-                return AccountFactory::create()->id;
-            },
+            'account_id' => fn() => AccountFactory::create()->id,
 
-            'amount' => function () use ($faker) {
-                return $faker->numberBetween(100, 12000);
-            },
+            'amount' => fn() => $faker->numberBetween(100, 12000),
         ];
     }
 }

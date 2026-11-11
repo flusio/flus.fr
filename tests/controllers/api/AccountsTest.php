@@ -89,7 +89,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     #[\PHPUnit\Framework\Attributes\DataProvider('showParamsProvider')]
     public function testShowFailsIfMissingAuth(string $email): void
     {
-        $account = AccountFactory::create([
+        AccountFactory::create([
             'email' => $email,
         ]);
 
@@ -239,7 +239,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
     public function testExpiredAtFailsIfAccountIsInvalid(): void
     {
-        $account = AccountFactory::create();
+        AccountFactory::create();
 
         $response = $this->appRun('GET', '/api/account/expired-at', [
             'account_id' => 'not the id',

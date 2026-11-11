@@ -58,7 +58,7 @@ class Reminder extends Job
                 try {
                     $mailer->sendReminderSubscriptionEnded($account);
                     $number_reminders += 1;
-                } catch (\Minz\Errors\MailerError $e) {
+                } catch (\Minz\Errors\MailerError) {
                     \Minz\Log::error("Failed to send reminder email to {$account->email}");
                 }
             } elseif ($interval->invert === 0 && ($diff_days === 2 || $diff_days === 7)) {
@@ -75,7 +75,7 @@ class Reminder extends Job
                 try {
                     $mailer->sendReminderSubscriptionEnding($account);
                     $number_reminders += 1;
-                } catch (\Minz\Errors\MailerError $e) {
+                } catch (\Minz\Errors\MailerError) {
                     \Minz\Log::error("Failed to send reminder email to {$account->email}");
                 }
             }

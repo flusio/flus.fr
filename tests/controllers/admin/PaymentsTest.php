@@ -79,7 +79,7 @@ class PaymentsTest extends \PHPUnit\Framework\TestCase
     public function testConfirmFailsIfInvalidId(): void
     {
         $this->loginAdmin();
-        $payment = PaymentFactory::create([
+        PaymentFactory::create([
             'is_paid' => false,
         ]);
 

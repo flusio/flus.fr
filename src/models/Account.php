@@ -64,22 +64,22 @@ class Account
     public string $entity_type;
 
     #[Database\Column]
-    public ?string $address_first_name;
+    public ?string $address_first_name = null;
 
     #[Database\Column]
-    public ?string $address_last_name;
+    public ?string $address_last_name = null;
 
     #[Database\Column]
-    public ?string $address_legal_name;
+    public ?string $address_legal_name = null;
 
     #[Database\Column]
-    public ?string $address_address1;
+    public ?string $address_address1 = null;
 
     #[Database\Column]
-    public ?string $address_postcode;
+    public ?string $address_postcode = null;
 
     #[Database\Column]
-    public ?string $address_city;
+    public ?string $address_city = null;
 
     /** @var ?CountryCode */
     #[Validable\Inclusion(
@@ -273,9 +273,7 @@ class Account
             'managed_by_id' => $this->id,
         ]);
 
-        usort($accounts, function ($account1, $account2): int {
-            return $account1->email <=> $account2->email;
-        });
+        usort($accounts, fn($account1, $account2): int => $account1->email <=> $account2->email);
 
         return $accounts;
     }

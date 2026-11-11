@@ -40,7 +40,7 @@ class PaymentCompleter
                 $invoice_mailer = new mailers\Invoices();
                 try {
                     $invoice_mailer->sendInvoice($account->email, $invoice_filepath);
-                } catch (\Minz\Errors\MailerError $e) {
+                } catch (\Minz\Errors\MailerError) {
                     \Minz\Log::error("[PaymentCompleter#complete] Can't send {$payment->id} invoice by email.");
                 }
             }

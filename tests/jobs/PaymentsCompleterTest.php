@@ -57,7 +57,7 @@ class PaymentsCompleterTest extends \PHPUnit\Framework\TestCase
         $account = AccountFactory::create([
             'expired_at' => \Minz\Time::now(),
         ]);
-        $payment = PaymentFactory::create([
+        PaymentFactory::create([
             'type' => 'subscription',
             'completed_at' => null,
             'is_paid' => true,
@@ -83,7 +83,7 @@ class PaymentsCompleterTest extends \PHPUnit\Framework\TestCase
             'expired_at' => \Minz\Time::fromNow(5, 'days'),
             'managed_by_id' => $account->id,
         ]);
-        $payment = PaymentFactory::create([
+        PaymentFactory::create([
             'type' => 'subscription',
             'completed_at' => null,
             'is_paid' => true,
@@ -109,7 +109,7 @@ class PaymentsCompleterTest extends \PHPUnit\Framework\TestCase
         $account = AccountFactory::create([
             'expired_at' => $expired_at,
         ]);
-        $payment = PaymentFactory::create([
+        PaymentFactory::create([
             'type' => 'common_pot',
             'completed_at' => null,
             'is_paid' => true,
@@ -145,7 +145,7 @@ class PaymentsCompleterTest extends \PHPUnit\Framework\TestCase
         $account = AccountFactory::create([
             'email' => $email,
         ]);
-        $payment = PaymentFactory::create([
+        PaymentFactory::create([
             'account_id' => $account->id,
             'completed_at' => null,
             'is_paid' => true,

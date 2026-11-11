@@ -118,7 +118,7 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
         $now = $this->fake('dateTime');
         $this->freeze($now);
         $days = $this->fake('numberBetween', 0, 2);
-        $default_account = models\Account::defaultAccount();
+        models\Account::defaultAccount();
         $account = AccountFactory::create([
             'last_sync_at' => \Minz\Time::ago($days, 'days'),
         ]);

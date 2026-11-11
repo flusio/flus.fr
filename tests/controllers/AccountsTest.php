@@ -92,7 +92,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
             'access_token' => $token->token,
         ]);
 
-        $response = $this->appRun('GET', '/account/login', [
+        $this->appRun('GET', '/account/login', [
             'account_id' => $account->id,
             'access_token' => $token->token,
         ]);
@@ -149,7 +149,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
         $token = TokenFactory::create([
             'expired_at' => \Minz\Time::fromNow(30, 'days'),
         ]);
-        $account = AccountFactory::create([
+        AccountFactory::create([
             'access_token' => $token->token,
         ]);
 
@@ -203,7 +203,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
 
     public function testLoginFailsIfAccessTokenIsNotSet(): void
     {
-        $token = TokenFactory::create([
+        TokenFactory::create([
             'expired_at' => \Minz\Time::fromNow(30, 'days'),
         ]);
         $account = AccountFactory::create([
@@ -427,7 +427,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     #[\PHPUnit\Framework\Attributes\DataProvider('addressesProvider')]
     public function testUpdateProfileFailsIfCsrfIsInvalid(string $email, array $address): void
     {
-        $user = $this->loginUser();
+        $this->loginUser();
 
         $response = $this->appRun('POST', '/account/profile', [
             'csrf_token' => 'not the token',
@@ -479,7 +479,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     #[\PHPUnit\Framework\Attributes\DataProvider('addressesProvider')]
     public function testUpdateProfileFailsWithMissingEmail(string $email, array $address): void
     {
-        $user = $this->loginUser();
+        $this->loginUser();
 
         $response = $this->appRun('POST', '/account/profile', [
             'csrf_token' => $this->csrfToken(forms\Profile::class),
@@ -503,7 +503,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     #[\PHPUnit\Framework\Attributes\DataProvider('addressesProvider')]
     public function testUpdateProfileFailsWithMissingFirstName(string $email, array $address): void
     {
-        $user = $this->loginUser();
+        $this->loginUser();
 
         $response = $this->appRun('POST', '/account/profile', [
             'csrf_token' => $this->csrfToken(forms\Profile::class),
@@ -527,7 +527,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     #[\PHPUnit\Framework\Attributes\DataProvider('addressesProvider')]
     public function testUpdateProfileFailsWithMissingLastName(string $email, array $address): void
     {
-        $user = $this->loginUser();
+        $this->loginUser();
 
         $response = $this->appRun('POST', '/account/profile', [
             'csrf_token' => $this->csrfToken(forms\Profile::class),
@@ -551,7 +551,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     #[\PHPUnit\Framework\Attributes\DataProvider('addressesProvider')]
     public function testUpdateProfileFailsWithMissingLegalName(string $email, array $address): void
     {
-        $user = $this->loginUser();
+        $this->loginUser();
 
         $response = $this->appRun('POST', '/account/profile', [
             'csrf_token' => $this->csrfToken(forms\Profile::class),
@@ -575,7 +575,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     #[\PHPUnit\Framework\Attributes\DataProvider('addressesProvider')]
     public function testUpdateProfileFailsWithMissingAddress1(string $email, array $address): void
     {
-        $user = $this->loginUser();
+        $this->loginUser();
 
         $response = $this->appRun('POST', '/account/profile', [
             'csrf_token' => $this->csrfToken(forms\Profile::class),
@@ -599,7 +599,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     #[\PHPUnit\Framework\Attributes\DataProvider('addressesProvider')]
     public function testUpdateProfileFailsWithMissingPostcode(string $email, array $address): void
     {
-        $user = $this->loginUser();
+        $this->loginUser();
 
         $response = $this->appRun('POST', '/account/profile', [
             'csrf_token' => $this->csrfToken(forms\Profile::class),
@@ -623,7 +623,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     #[\PHPUnit\Framework\Attributes\DataProvider('addressesProvider')]
     public function testUpdateProfileFailsWithMissingCity(string $email, array $address): void
     {
-        $user = $this->loginUser();
+        $this->loginUser();
 
         $response = $this->appRun('POST', '/account/profile', [
             'csrf_token' => $this->csrfToken(forms\Profile::class),
@@ -647,7 +647,7 @@ class AccountsTest extends \PHPUnit\Framework\TestCase
     #[\PHPUnit\Framework\Attributes\DataProvider('addressesProvider')]
     public function testUpdateProfileFailsWithInvalidCountry(string $email, array $address): void
     {
-        $user = $this->loginUser();
+        $this->loginUser();
 
         $response = $this->appRun('POST', '/account/profile', [
             'csrf_token' => $this->csrfToken(forms\Profile::class),

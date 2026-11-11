@@ -20,21 +20,13 @@ class ProRegistrationFactory extends Database\Factory
         $faker = \Faker\Factory::create();
 
         return [
-            'id' => function (): string {
-                return \Minz\Random::hex(32);
-            },
+            'id' => fn(): string => \Minz\Random::hex(32),
 
-            'created_at' => function () use ($faker) {
-                return $faker->dateTime;
-            },
+            'created_at' => fn() => $faker->dateTime,
 
-            'email' => function () use ($faker) {
-                return $faker->email;
-            },
+            'email' => fn() => $faker->email,
 
-            'organisation' => function () use ($faker) {
-                return $faker->company;
-            },
+            'organisation' => fn() => $faker->company,
         ];
     }
 }

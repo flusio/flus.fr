@@ -110,7 +110,7 @@ class InvoicesTest extends \PHPUnit\Framework\TestCase
         \DateTimeImmutable $completed_at,
         string $invoice_number
     ): void {
-        $user = $this->loginUser();
+        $this->loginUser();
         $account = AccountFactory::create();
         $payment = PaymentFactory::create([
             'completed_at' => $completed_at,
